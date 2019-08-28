@@ -13,11 +13,6 @@ import com.taiwan.justvet.justpet.databinding.DialogAchievementBinding
 
 class AchievementDialog : AppCompatDialogFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.Add2CartDialog)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
