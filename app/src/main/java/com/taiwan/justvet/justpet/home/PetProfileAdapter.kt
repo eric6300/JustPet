@@ -11,6 +11,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemCardPetProfileBinding
 
@@ -73,6 +74,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         fun bind(petProfile: PetProfile) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
+            binding.converter = Converter
             binding.petProfile = petProfile
             binding.executePendingBindings()
         }

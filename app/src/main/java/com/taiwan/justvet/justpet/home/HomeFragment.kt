@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.taiwan.justvet.justpet.Converter
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
@@ -37,11 +38,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
 
         val petProfileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener{
-            viewModel.modifyPetProfile()
-        })
 
-        viewModel.isModified.observe(this, Observer {
-            Log.d(TAG, "$it")
         })
 
         val listProfilePet = binding.listProfilePet
@@ -53,9 +50,9 @@ class HomeFragment : Fragment() {
         }
 
         val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei"))
-        list.add(PetProfile("多多"))
-        list.add(PetProfile("Lucky"))
+        list.add(PetProfile("Meimei", 0, 0,"900123256344452"))
+        list.add(PetProfile("多多", 1, 0,"900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1,"900135996333216"))
 
         petProfileAdapter.submitList(list)
 
