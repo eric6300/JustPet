@@ -3,5 +3,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="hint_id_chip">晶片號碼 共 15 碼</string>
+    <string name="hint_breed">品種</string>
 
 </resources>
