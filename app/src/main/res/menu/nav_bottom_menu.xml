@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title=""
+    <item android:title="Home"
             android:id="@+id/nav_bottom_home" android:icon="@drawable/nav_bottom_home"/>
 
-    <item android:title=""
+    <item android:title="Calendar"
             android:id="@+id/nav_bottom_calendar" android:icon="@drawable/nav_bottom_calendar"/>
 
     <item android:title="" android:enabled="false"/>
 
-    <item android:title=""
+    <item android:title="Chart"
             android:id="@+id/nav_bottom_chart" android:icon="@drawable/nav_bottom_chart"/>
 
-    <item android:title=""
+    <item android:title="Tool"
             android:id="@+id/nav_bottom_tool" android:icon="@drawable/nav_bottom_tool"/>
 
 </menu>

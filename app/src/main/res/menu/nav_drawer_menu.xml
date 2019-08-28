@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_home"
+                android:title="施工中"/>
+        <item
+                android:id="@+id/nav_gallery"
+                android:title="施工中"/>
+
+        <item
+                android:id="@+id/nav_slideshow"
+                android:title="施工中"/>
+
+        <item
+                android:id="@+id/nav_tools"
+                android:title="施工中"/>
+
+    </group>
+
+    <item android:title="施工中">
+        <menu>
+            <item
+                    android:id="@+id/nav_share"
+                    android:title="設定"/>
+
+            <item
+                    android:id="@+id/nav_send"
+                    android:title="登出"/>
+
+        </menu>
+    </item>
+
+</menu>

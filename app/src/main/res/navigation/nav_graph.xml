@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+        app:startDestination="@id/homeFragment">
+
+    <fragment
+            android:id="@+id/homeFragment"
+            android:name="com.taiwan.justvet.justpet.home.HomeFragment"
+            android:label="HomeFragment" />
+    <fragment
+            android:id="@+id/calendarFragment"
+            android:name="com.taiwan.justvet.justpet.calendar.CalendarFragment"
+            android:label="CalendarFragment" />
+    <fragment
+            android:id="@+id/toolFragment"
+            android:name="com.taiwan.justvet.justpet.tool.ToolFragment"
+            android:label="ToolFragment" />
+    <fragment
+            android:id="@+id/chartFragment"
+            android:name="com.taiwan.justvet.justpet.chart.ChartFragment"
+            android:label="ChartFragment" />
+    <dialog
+            android:id="@+id/eventDialog"
+            android:name="com.taiwan.justvet.justpet.event.EventDialog"
+            android:label="EventDialog" />
+    <dialog
+            android:id="@+id/achievementDialog"
+            android:name="com.taiwan.justvet.justpet.achievement.AchievementDialog"
+            android:label="AchievementDialog" />
+
+    <action android:id="@+id/navigate_to_homeFragment" app:destination="@id/homeFragment" />
+    <action android:id="@+id/navigate_to_calendarFragment" app:destination="@id/calendarFragment" />
+    <action android:id="@+id/navigate_to_toolFragment" app:destination="@id/toolFragment" />
+    <action android:id="@+id/navigate_to_chartFragment" app:destination="@id/chartFragment" />
+    <action android:id="@+id/navigate_to_eventDialog" app:destination="@id/eventDialog" />
+    <action android:id="@+id/navigate_to_achievementDialog" app:destination="@id/achievementDialog" />
+
+</navigation>
