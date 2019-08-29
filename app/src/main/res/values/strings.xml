@@ -14,5 +14,12 @@
     <string name="text_treatment">醫療</string>
     <string name="text_next_step">下一步</string>
     <string name="text_quick_save">快速紀錄</string>
+    <string name="title_time">時間</string>
+    <string name="title_tag">分類</string>
+    <string name="title_note">備註</string>
+    <string name="title_media">照片</string>
+    <string name="title_notification">提醒</string>
+    <string name="title_advance">進階選項</string>
+    <string name="text_complete">完成</string>
 
 </resources>

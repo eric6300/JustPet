@@ -20,10 +20,6 @@
             android:name="com.taiwan.justvet.justpet.chart.ChartFragment"
             android:label="ChartFragment" />
     <dialog
-            android:id="@+id/eventDialog"
-            android:name="com.taiwan.justvet.justpet.event.EventDialog"
-            android:label="EventDialog" />
-    <dialog
             android:id="@+id/achievementDialog"
             android:name="com.taiwan.justvet.justpet.achievement.AchievementDialog"
             android:label="AchievementDialog" />
@@ -32,7 +28,19 @@
     <action android:id="@+id/navigate_to_calendarFragment" app:destination="@id/calendarFragment" />
     <action android:id="@+id/navigate_to_toolFragment" app:destination="@id/toolFragment" />
     <action android:id="@+id/navigate_to_chartFragment" app:destination="@id/chartFragment" />
-    <action android:id="@+id/navigate_to_eventDialog" app:destination="@id/eventDialog" />
     <action android:id="@+id/navigate_to_achievementDialog" app:destination="@id/achievementDialog" />
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
+        android:label="EventDetailFragment" />
+    <dialog
+        android:id="@+id/tagDialog"
+        android:name="com.taiwan.justvet.justpet.tag.TagDialog"
+        android:label="TagDialog" >
+        <action
+            android:id="@+id/action_tagDialog_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+    </dialog>
+    <action android:id="@+id/navigate_to_tagDialog" app:destination="@id/tagDialog" />
 
 </navigation>

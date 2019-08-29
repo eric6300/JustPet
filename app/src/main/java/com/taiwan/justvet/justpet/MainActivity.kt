@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.nav_bottom_home -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun setupFAB() {
         binding.floatingActionButton.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_eventDialog)
+            findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_tagDialog)
         }
     }
 
