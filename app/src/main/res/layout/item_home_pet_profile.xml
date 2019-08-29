@@ -133,66 +133,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/icon_id_chip"
                         app:layout_constraintVertical_bias="1.0" />
 
-                    <EditText
-                        android:id="@+id/edit_text_name"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:ems="10"
-                        android:fontFamily="@font/roboto_mono"
-                        android:hint="@string/text_name"
-                        android:inputType="textPersonName"
-                        android:singleLine="true"
-                        android:text="@={viewModel.petName}"
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="@+id/icon_species"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/icon_gender"
-                        app:layout_constraintTop_toTopOf="@+id/icon_species"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                    <EditText
-                        android:id="@+id/edit_text_birthday"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:clickable="false"
-                        android:cursorVisible="false"
-                        android:ems="10"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"
-                        android:fontFamily="@font/roboto_mono"
-                        android:hint="出生日期"
-                        android:inputType="none"
-                        android:singleLine="true"
-                        android:text="@={viewModel.petBirthDay}"
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="@+id/icon_birthday"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/icon_calendar"
-                        app:layout_constraintTop_toTopOf="@+id/icon_birthday"
-                        app:layout_constraintVertical_bias="1.0" />
-
-                    <EditText
-                        android:id="@+id/edit_text_id_chip"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:ems="10"
-                        android:fontFamily="@font/roboto_mono"
-                        android:hint="@string/hint_id_chip"
-                        android:inputType="number"
-                        android:maxLength="15"
-                        android:text="@={viewModel.petIdChip}"
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="@+id/icon_id_chip"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/icon_id_chip"
-                        app:layout_constraintTop_toTopOf="@+id/icon_id_chip" />
-
                     <Button
                         android:id="@+id/button_cancel"
                         android:layout_width="wrap_content"
@@ -215,6 +155,75 @@
                         app:layout_constraintBottom_toBottomOf="@+id/icon_birthday"
                         app:layout_constraintStart_toEndOf="@+id/icon_birthday"
                         app:layout_constraintTop_toTopOf="@+id/icon_birthday" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/edit_text_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_species"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/icon_gender"
+                        app:layout_constraintTop_toTopOf="@+id/icon_species">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_mono"
+                            android:hint="@string/text_name"
+                            android:inputType="textNoSuggestions"
+                            android:text="@={viewModel.petName}"
+                            android:textAlignment="center" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/edit_text_id_chip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="15"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_id_chip"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/icon_id_chip"
+                        app:layout_constraintTop_toTopOf="@+id/icon_id_chip">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_mono"
+                            android:hint="@string/hint_id_chip"
+                            android:text="@={viewModel.petIdChip}"
+                            android:textAlignment="center" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_birthday"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/icon_calendar"
+                        app:layout_constraintTop_toTopOf="@+id/icon_birthday">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:cursorVisible="false"
+                            android:editable="false"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:fontFamily="@font/roboto_mono"
+                            android:hint="@string/text_birthday"
+                            android:inputType="none"
+                            android:singleLine="true"
+                            android:text="@={viewModel.petBirthDay}"
+                            android:textAlignment="center" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -269,7 +278,8 @@
                     android:background="@drawable/ic_achievement"
                     android:backgroundTint="@android:color/background_light"
                     app:layout_constraintBottom_toBottomOf="@id/image_pet"
-                    app:layout_constraintStart_toEndOf="@+id/text_name_pet" />
+                    app:layout_constraintStart_toEndOf="@+id/text_name_pet"
+                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

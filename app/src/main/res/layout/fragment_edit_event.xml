@@ -69,7 +69,7 @@
                     app:srcCompat="@drawable/ic_edit" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/title_note"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -79,7 +79,7 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/title_date_and_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -89,7 +89,7 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
                 <TextView
-                    android:id="@+id/textView10"
+                    android:id="@+id/title_media"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -99,7 +99,7 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/title_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -125,11 +125,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
                     app:srcCompat="@drawable/ic_edit" />
 
                 <TextView
-                    android:id="@+id/textView12"
+                    android:id="@+id/title_advance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -139,7 +139,7 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/title_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -177,6 +177,51 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView3"
                     app:srcCompat="@drawable/ic_edit" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/roboto_mono"
+                    android:text="TextView"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/title_date_and_time"
+                    app:layout_constraintTop_toTopOf="@+id/title_date_and_time" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list_tags"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_tag"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/title_tag"
+                    app:layout_constraintTop_toTopOf="@+id/title_tag"
+                    tools:itemCount="4" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/title_note"
+                    app:layout_constraintTop_toTopOf="@+id/title_note">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_mono"
+                        android:hint="@string/title_note" />
+                </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

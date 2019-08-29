@@ -68,6 +68,8 @@ class HomeFragment : Fragment() {
             }
         })
 
+
+
         return binding.root
     }
 
@@ -241,9 +243,9 @@ class HomeFragment : Fragment() {
         profileAdapter.submitList(list)
 
         eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(date = "1", type = 0, tag = 0, note = "hello"))
-        eventList.add(PetEvent(date = "2", type = 1, tag = 1, note = "hey"))
-        eventList.add(PetEvent(date = "3", type = 2, tag = 2, note = "yo"))
+        eventList.add(PetEvent(date = "1", type = 0, tag = 0, note = "年度健康檢查還剩 15 天"))
+        eventList.add(PetEvent(date = "2", type = 1, tag = 1, note = "除蚤滴劑要記得點喔!"))
+        eventList.add(PetEvent(date = "3", type = 2, tag = 2, note = "這四週內已經吐了三次喔!"))
         eventAdapter.submitList(eventList)
 
     }

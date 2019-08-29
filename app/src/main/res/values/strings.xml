@@ -21,5 +21,6 @@
     <string name="title_notification">提醒</string>
     <string name="title_advance">進階選項</string>
     <string name="text_complete">完成</string>
+    <string name="text_birthday">出生日期</string>
 
 </resources>
