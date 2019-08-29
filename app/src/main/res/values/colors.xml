@@ -9,10 +9,12 @@
     <color name="translucent_70">#B3000000</color>
     <color name="transparent">#00000000</color>
 
-
     <color name="colorSyndrome">#FA7470</color>
+    <color name="colorSyndromeDark">#c24345</color>
     <color name="colorTreatment">#F5A44D</color>
+    <color name="colorTreatmentDark">#be751d</color>
     <color name="colorDiary">#7CD175</color>
+    <color name="colorDiaryDark">#4a9f47</color>
 
 
 </resources>

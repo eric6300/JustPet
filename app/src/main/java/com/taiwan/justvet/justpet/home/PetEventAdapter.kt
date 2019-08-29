@@ -85,7 +85,7 @@ class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClick
         }
 
         override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
-            return oldItem == newItem
+            return oldItem.date == newItem.date
         }
     }
 
