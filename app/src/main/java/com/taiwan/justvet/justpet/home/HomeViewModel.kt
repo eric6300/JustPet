@@ -4,13 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.data.PetProfile
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
-import android.widget.DatePicker
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.util.Log
 import android.view.View
-import com.taiwan.justvet.justpet.JustPetApplication
 
 
 class HomeViewModel : ViewModel() {
@@ -18,6 +15,10 @@ class HomeViewModel : ViewModel() {
     private val _isModified = MutableLiveData<Boolean>()
     val isModified: LiveData<Boolean>
         get() = _isModified
+
+    private val _birthdayChange = MutableLiveData<Boolean>()
+    val birthdayChange: LiveData<Boolean>
+        get() = _birthdayChange
 
     val petName = MutableLiveData<String>()
 
@@ -34,6 +35,7 @@ class HomeViewModel : ViewModel() {
             DatePickerDialog.OnDateSetListener { view, year, month, day ->
                 val dateTime = "$year 年 $month 月 $day 日"
                 petBirthDay.value = dateTime
+                _birthdayChange.value = true
             }, year, month, day
         ).show()
     }
@@ -53,6 +55,10 @@ class HomeViewModel : ViewModel() {
 
     fun modifyCancelled() {
         _isModified.value = false
+    }
+
+    fun birthdayChangeCompleted() {
+        _birthdayChange.value = false
     }
 
 }

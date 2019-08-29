@@ -16,8 +16,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemCardPetProfileBinding
 
 class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<PetProfile,
-            PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
+    ListAdapter<PetProfile, PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     private lateinit var context: Context
 

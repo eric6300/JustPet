@@ -21,6 +21,7 @@ const val TAG = "testEric"
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var petProfileAdapter: PetProfileAdapter
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
@@ -36,7 +37,30 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        val petProfileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
+        setupPetProfile()
+
+        viewModel.birthdayChange.observe(this, Observer {
+            if (it) {
+                petProfileAdapter.notifyDataSetChanged()
+            }
+        })
+
+        val list = mutableListOf<PetProfile>()
+        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
+        list.add(PetProfile("多多", 1, 0, "900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1, ""))
+        petProfileAdapter.submitList(list)
+
+        binding.buttonAchievement.setOnClickListener {
+            findNavController().navigate(R.id.navigate_to_achievementDialog)
+        }
+
+        return binding.root
+    }
+
+    fun setupPetProfile() {
+
+        petProfileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
 
         })
 
@@ -59,19 +83,6 @@ class HomeFragment : Fragment() {
                 petProfileAdapter.notifyDataSetChanged()
             }
         })
-
-        val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, ""))
-
-        petProfileAdapter.submitList(list)
-
-        binding.buttonAchievement.setOnClickListener {
-            findNavController().navigate(R.id.navigate_to_achievementDialog)
-        }
-
-        return binding.root
     }
 }
 
