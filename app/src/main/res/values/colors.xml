@@ -7,7 +7,7 @@
 
     <color name="translucent_40">#66000000</color>
     <color name="translucent_70">#B3000000</color>
-    <color name="translucent_completed">#00000000</color>
+    <color name="transparent">#00000000</color>
 
 
 </resources>

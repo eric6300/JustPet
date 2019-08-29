@@ -42,16 +42,17 @@ class HomeViewModel : ViewModel() {
         petName.value = petProfile.name
         petIdChip.value = petProfile.idChip
         _isModified.value = true
+        Log.d(TAG, "modified pet profile")
     }
 
     fun modifyCompleted() {
         // update to firebase in the future
         Log.d(TAG, "Pet Name : ${petName.value} Pet BirthDay : ${petBirthDay.value} Pet IdChip : ${petIdChip.value}")
-        _isModified.value = null
+        _isModified.value = false
     }
 
     fun modifyCancelled() {
-        _isModified.value = null
+        _isModified.value = false
     }
 
 }

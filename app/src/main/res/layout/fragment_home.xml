@@ -37,9 +37,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_profile_pet"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 tools:listitem="@layout/item_card_pet_profile"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
