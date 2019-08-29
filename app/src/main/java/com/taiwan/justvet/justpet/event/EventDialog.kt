@@ -11,6 +11,8 @@ import com.taiwan.justvet.justpet.databinding.DialogEventBinding
 
 class EventDialog : BottomSheetDialogFragment() {
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

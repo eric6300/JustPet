@@ -3,7 +3,16 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    //  HomeFragment  //
     <string name="hint_id_chip">晶片號碼 共 15 碼</string>
     <string name="text_name">名字</string>
+
+    //  EventDialog  //
+    <string name="text_diary">日常</string>
+    <string name="text_syndrome">症狀</string>
+    <string name="text_treatment">醫療</string>
+    <string name="text_next_step">下一步</string>
+    <string name="text_quick_save">快速紀錄</string>
 
 </resources>

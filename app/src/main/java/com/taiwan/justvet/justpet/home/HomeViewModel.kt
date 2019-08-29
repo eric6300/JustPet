@@ -20,6 +20,10 @@ class HomeViewModel : ViewModel() {
     val birthdayChange: LiveData<Boolean>
         get() = _birthdayChange
 
+    private val _navigateToAchievement = MutableLiveData<Boolean>()
+    val navigateToAchievement: LiveData<Boolean>
+        get() = _navigateToAchievement
+
     val petName = MutableLiveData<String>()
 
     val petBirthDay = MutableLiveData<String>()
@@ -59,6 +63,14 @@ class HomeViewModel : ViewModel() {
 
     fun birthdayChangeCompleted() {
         _birthdayChange.value = false
+    }
+
+    fun navigateToAchievement() {
+        _navigateToAchievement.value = true
+    }
+
+    fun navigateToAchievementCompleted() {
+        _navigateToAchievement.value = null
     }
 
 }

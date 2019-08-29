@@ -1,11 +1,10 @@
 package com.taiwan.justvet.justpet.home
 
-import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color.parseColor
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,15 +17,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.CustomLayoutManager
 import com.taiwan.justvet.justpet.JustPetApplication
+import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
-
 const val TAG = "testEric"
-
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
@@ -62,19 +61,21 @@ class HomeFragment : Fragment() {
             }
         })
 
-        binding.buttonAchievement.setOnClickListener {
-            findNavController().navigate(R.id.navigate_to_achievementDialog)
-        }
+        viewModel.navigateToAchievement.observe(this, Observer {
+            if (it == true) {
+                findNavController().navigate(NavGraphDirections.navigateToAchievementDialog())
+                viewModel.navigateToAchievementCompleted()
+            }
+        })
 
         return binding.root
     }
 
     private fun setupPetProfile() {
         profileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
-
         })
 
-        val layoutManager = CustomGLayoutManager(this.context)
+        val layoutManager = CustomLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         val listProfilePet = binding.listProfilePet
@@ -84,18 +85,19 @@ class HomeFragment : Fragment() {
             PagerSnapHelper().attachToRecyclerView(this)
         }
 
+        // disable scroll function when editing pet profile
         viewModel.isModified.observe(this, Observer {
             if (it == true) {
-                (listProfilePet.layoutManager as CustomGLayoutManager).setScrollEnabled(flag = false)
+                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = false)
                 profileAdapter.notifyDataSetChanged()
             } else {
-                (listProfilePet.layoutManager as CustomGLayoutManager).setScrollEnabled(flag = true)
+                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = true)
                 profileAdapter.notifyDataSetChanged()
             }
         })
     }
 
-    fun setupPetEvent() {
+    private fun setupPetEvent() {
         eventAdapter = PetEventAdapter(viewModel, PetEventAdapter.OnClickListener {
 
         })
@@ -106,27 +108,9 @@ class HomeFragment : Fragment() {
             PagerSnapHelper().attachToRecyclerView(this)
             enableSwipe(this)
         }
-
-
     }
 
-    fun mockupData() {
-        val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, ""))
-        profileAdapter.submitList(list)
-
-        eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(date = "1", type = 0, tag = 0, note = "hello"))
-        eventList.add(PetEvent(date = "2", type = 1, tag = 1, note = "hey"))
-        eventList.add(PetEvent(date = "3", type = 2, tag = 2, note = "yo"))
-        eventAdapter.submitList(eventList)
-
-    }
-
-    fun enableSwipe(listEventPet: RecyclerView) {
-
+    private fun enableSwipe(recyclerView: RecyclerView) {
         val itemTouchHelperCallback =
             object :
                 ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -139,6 +123,10 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDirection: Int) {
+                    if (swipeDirection == ItemTouchHelper.LEFT) {
+                        Log.d(TAG, "完成並詢問要不要設定推播")
+                        // TODO 推播詢問及設定
+                    }
                     eventList.removeAt(viewHolder.adapterPosition)
                     eventAdapter.submitList(eventList)
                     eventAdapter.notifyDataSetChanged()
@@ -154,14 +142,15 @@ class HomeFragment : Fragment() {
                     actionState: Int,
                     isCurrentlyActive: Boolean
                 ) {
-
                     if (dX > 0) {
                         swipeIcon = ContextCompat.getDrawable(
                             JustPetApplication.appContext,
                             R.drawable.ic_delete
                         )!!
+
                         colorDrawableBackground = ColorDrawable()
-                        colorDrawableBackground.color = JustPetApplication.appContext.getColor(R.color.colorSyndromeDark)
+                        colorDrawableBackground.color =
+                            JustPetApplication.appContext.getColor(R.color.colorSyndromeDark)
 
                         val itemView = viewHolder.itemView
                         val iconMarginVertical =
@@ -180,7 +169,9 @@ class HomeFragment : Fragment() {
                             itemView.left + iconMarginVertical + swipeIcon.intrinsicWidth,
                             itemView.bottom - iconMarginVertical
                         )
+
                         c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
+
                     } else {
                         swipeIcon = ContextCompat.getDrawable(
                             JustPetApplication.appContext,
@@ -188,7 +179,8 @@ class HomeFragment : Fragment() {
                         )!!
 
                         colorDrawableBackground = ColorDrawable()
-                        colorDrawableBackground.color = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
+                        colorDrawableBackground.color =
+                            JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
 
                         val itemView = viewHolder.itemView
                         val iconMarginVertical =
@@ -208,7 +200,6 @@ class HomeFragment : Fragment() {
                             itemView.bottom - iconMarginVertical
                         )
 
-                        swipeIcon.level = 0
                         c.clipRect(
                             itemView.right + dX.toInt(),
                             itemView.top,
@@ -239,19 +230,21 @@ class HomeFragment : Fragment() {
             }
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(listEventPet)
-    }
-}
-
-class CustomGLayoutManager(context: Context?) : LinearLayoutManager(context) {
-    private var isScrollEnabled = true
-
-    fun setScrollEnabled(flag: Boolean) {
-        this.isScrollEnabled = flag
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    override fun canScrollHorizontally(): Boolean {
-        //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
-        return isScrollEnabled && super.canScrollHorizontally()
+    fun mockupData() {
+        val list = mutableListOf<PetProfile>()
+        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
+        list.add(PetProfile("多多", 1, 0, "900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1, ""))
+        profileAdapter.submitList(list)
+
+        eventList = mutableListOf<PetEvent>()
+        eventList.add(PetEvent(date = "1", type = 0, tag = 0, note = "hello"))
+        eventList.add(PetEvent(date = "2", type = 1, tag = 1, note = "hey"))
+        eventList.add(PetEvent(date = "3", type = 2, tag = 2, note = "yo"))
+        eventAdapter.submitList(eventList)
+
     }
 }

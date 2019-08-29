@@ -75,8 +75,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/image_pet"
-                    tools:visibility="gone">
+                    app:layout_constraintTop_toBottomOf="@+id/image_pet">
 
                     <ImageView
                         android:id="@+id/icon_species"
@@ -226,8 +225,12 @@
                     android:background="@drawable/filter_image"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/image_pet"
-                    app:layout_constraintTop_toTopOf="@+id/image_pet"></androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintTop_toTopOf="@+id/image_pet"
+                    app:layout_constraintVertical_bias="0.0">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/text_name_pet"
@@ -255,6 +258,18 @@
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     app:srcCompat="@drawable/ic_edit_white" />
+
+                <ImageView
+                    android:id="@+id/icon_achievement"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:onClick="@{() -> viewModel.navigateToAchievement()}"
+                    android:background="@drawable/ic_achievement"
+                    android:backgroundTint="@android:color/background_light"
+                    app:layout_constraintBottom_toBottomOf="@id/image_pet"
+                    app:layout_constraintStart_toEndOf="@+id/text_name_pet" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
