@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
@@ -21,7 +22,8 @@ const val TAG = "testEric"
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var petProfileAdapter: PetProfileAdapter
+    private lateinit var profileAdapter: PetProfileAdapter
+    private lateinit var eventAdapter: PetEventAdapter
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
@@ -38,18 +40,14 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
 
         setupPetProfile()
+        setupPetEvent()
+        mockupData()
 
         viewModel.birthdayChange.observe(this, Observer {
             if (it) {
-                petProfileAdapter.notifyDataSetChanged()
+                profileAdapter.notifyDataSetChanged()
             }
         })
-
-        val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, ""))
-        petProfileAdapter.submitList(list)
 
         binding.buttonAchievement.setOnClickListener {
             findNavController().navigate(R.id.navigate_to_achievementDialog)
@@ -58,9 +56,8 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    fun setupPetProfile() {
-
-        petProfileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
+    private fun setupPetProfile() {
+        profileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
 
         })
 
@@ -70,19 +67,46 @@ class HomeFragment : Fragment() {
         val listProfilePet = binding.listProfilePet
         listProfilePet.apply {
             this.layoutManager = layoutManager
-            this.adapter = petProfileAdapter
+            this.adapter = profileAdapter
             PagerSnapHelper().attachToRecyclerView(this)
         }
 
         viewModel.isModified.observe(this, Observer {
             if (it == true) {
                 (listProfilePet.layoutManager as CustomGLayoutManager).setScrollEnabled(flag = false)
-                petProfileAdapter.notifyDataSetChanged()
+                profileAdapter.notifyDataSetChanged()
             } else {
                 (listProfilePet.layoutManager as CustomGLayoutManager).setScrollEnabled(flag = true)
-                petProfileAdapter.notifyDataSetChanged()
+                profileAdapter.notifyDataSetChanged()
             }
         })
+    }
+
+    fun setupPetEvent() {
+        eventAdapter = PetEventAdapter(viewModel, PetEventAdapter.OnClickListener {
+
+        })
+
+        val listEventPet = binding.listEventPet
+        listEventPet.apply {
+            this.adapter = eventAdapter
+            PagerSnapHelper().attachToRecyclerView(this)
+        }
+    }
+
+    fun mockupData() {
+        val list = mutableListOf<PetProfile>()
+        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
+        list.add(PetProfile("多多", 1, 0, "900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1, ""))
+        profileAdapter.submitList(list)
+
+        val eventList = mutableListOf<PetEvent>()
+        eventList.add(PetEvent(type = 0, tag = "1", note = "hello"))
+        eventList.add(PetEvent(type = 1, tag = "2", note = "hey"))
+        eventList.add(PetEvent(type = 2, tag = "3", note = "yo"))
+        eventAdapter.submitList(eventList)
+
     }
 }
 

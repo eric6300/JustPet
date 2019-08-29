@@ -10,26 +10,28 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.Converter
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
 
-class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<PetProfile, PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
+class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
+    ListAdapter<PetEvent, PetEventAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val petProfile = getItem(position)
-        holder.binding.layoutPetProfile.setOnClickListener {
-            onClickListener.onClick(petProfile)
+        val event = getItem(position)
+        holder.binding.layoutPetEvent.setOnClickListener {
+            onClickListener.onClick(event)
         }
-        holder.bind(petProfile)
+        holder.bind(event)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
-            ItemHomePetProfileBinding.inflate(
+            ItemHomePetEventBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -47,7 +49,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomePetProfileBinding, val viewModel: HomeViewModel) :
+    class ViewHolder(val binding: ItemHomePetEventBinding, val viewModel: HomeViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
@@ -68,26 +70,25 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
             lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         }
 
-        fun bind(petProfile: PetProfile) {
+        fun bind(event: PetEvent) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
-            binding.converter = Converter
-            binding.petProfile = petProfile
+            binding.event = event
             binding.executePendingBindings()
         }
     }
 
-    class ProfileDiffCallback : DiffUtil.ItemCallback<PetProfile>() {
-        override fun areItemsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
+    class ProfileDiffCallback : DiffUtil.ItemCallback<PetEvent>() {
+        override fun areItemsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
-            return oldItem.name == newItem.name
+        override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
+            return oldItem == newItem
         }
     }
 
-    class OnClickListener(val clickListener: (profile: PetProfile) -> Unit) {
-        fun onClick(profile: PetProfile) = clickListener(profile)
+    class OnClickListener(val clickListener: (event: PetEvent) -> Unit) {
+        fun onClick(event: PetEvent) = clickListener(event)
     }
 }
