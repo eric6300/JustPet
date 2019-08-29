@@ -4,6 +4,6 @@ data class PetEvent (
     val date: String? = null,
     val time: String? = null,
     val type: Int,
-    val tag: String,
+    val tag: Int,
     val note: String
 )

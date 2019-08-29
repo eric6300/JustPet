@@ -10,4 +10,9 @@
     <color name="transparent">#00000000</color>
 
 
+    <color name="colorSyndrome">#FA7470</color>
+    <color name="colorTreatment">#F5A44D</color>
+    <color name="colorDiary">#7CD175</color>
+
+
 </resources>

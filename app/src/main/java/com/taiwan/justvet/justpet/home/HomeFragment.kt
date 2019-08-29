@@ -1,16 +1,24 @@
 package com.taiwan.justvet.justpet.home
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
@@ -24,6 +32,9 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
     private lateinit var eventAdapter: PetEventAdapter
+    private lateinit var colorDrawableBackground: ColorDrawable
+    private lateinit var deleteIcon: Drawable
+
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
@@ -46,6 +57,7 @@ class HomeFragment : Fragment() {
         viewModel.birthdayChange.observe(this, Observer {
             if (it) {
                 profileAdapter.notifyDataSetChanged()
+                viewModel.birthdayChangeCompleted()
             }
         })
 
@@ -102,9 +114,9 @@ class HomeFragment : Fragment() {
         profileAdapter.submitList(list)
 
         val eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(type = 0, tag = "1", note = "hello"))
-        eventList.add(PetEvent(type = 1, tag = "2", note = "hey"))
-        eventList.add(PetEvent(type = 2, tag = "3", note = "yo"))
+        eventList.add(PetEvent(type = 0, tag = 0, note = "hello"))
+        eventList.add(PetEvent(type = 1, tag = 1, note = "hey"))
+        eventList.add(PetEvent(type = 2, tag = 2, note = "yo"))
         eventAdapter.submitList(eventList)
 
     }

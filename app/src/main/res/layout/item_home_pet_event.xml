@@ -29,6 +29,7 @@
             android:clickable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="3dp"
+            eventBackground="@{event.type}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +51,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_cat" />
+                    eventTagIcon="@{event.tag}" />
 
                 <TextView
                     android:id="@+id/text_event"
