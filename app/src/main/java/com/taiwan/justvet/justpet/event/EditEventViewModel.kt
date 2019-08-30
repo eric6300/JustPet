@@ -10,12 +10,20 @@ class EditEventViewModel : ViewModel() {
     val navigateToCalendar: LiveData<Boolean>
         get() = _navigateToCalendar
 
+    private val _expandStatus = MutableLiveData<Boolean>()
+    val expandStatus: LiveData<Boolean>
+        get() = _expandStatus
+
     fun navigateToCalendar() {
         _navigateToCalendar.value = true
     }
 
     fun navigateToCalendarCompleted() {
         _navigateToCalendar.value = null
+    }
+
+    fun expandAdvanceMenu() {
+        _expandStatus.value = _expandStatus.value != true
     }
 
 }

@@ -83,4 +83,6 @@ dependencies {
     implementation "androidx.fragment:fragment:$version_fragment"
     implementation "androidx.fragment:fragment-testing:$version_fragment"
 
+    //BubbleSeekBar
+    implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
 }

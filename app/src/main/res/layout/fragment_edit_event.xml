@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.event.EditEventViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,42 +44,30 @@
 
 
         <ScrollView
-            android:id="@+id/scrollView2"
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/button4"
+            app:layout_constraintBottom_toTopOf="@+id/button_save"
             app:layout_constraintTop_toBottomOf="@+id/icon_species"
-            app:layout_constraintVertical_bias="1.0"
-            tools:layout_editor_absoluteX="-16dp">
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="-58dp">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="178dp">
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView6"
-                    app:srcCompat="@drawable/ic_edit" />
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/title_note"
+                    android:id="@+id/title_memo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_note"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-                    app:layout_constraintStart_toEndOf="@+id/imageView4"
-                    app:layout_constraintTop_toTopOf="@+id/imageView4" />
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_note"
+                    app:layout_constraintStart_toEndOf="@+id/icon_note"
+                    app:layout_constraintTop_toTopOf="@+id/icon_note" />
 
                 <TextView
                     android:id="@+id/title_date_and_time"
@@ -84,9 +75,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_time"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                    app:layout_constraintStart_toEndOf="@+id/imageView2"
-                    app:layout_constraintTop_toTopOf="@+id/imageView2" />
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_date_and_time"
+                    app:layout_constraintStart_toEndOf="@+id/icon_date_and_time"
+                    app:layout_constraintTop_toTopOf="@+id/icon_date_and_time" />
 
                 <TextView
                     android:id="@+id/title_media"
@@ -94,9 +85,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_media"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-                    app:layout_constraintStart_toEndOf="@+id/imageView5"
-                    app:layout_constraintTop_toTopOf="@+id/imageView5" />
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_media"
+                    app:layout_constraintStart_toEndOf="@+id/icon_media"
+                    app:layout_constraintTop_toTopOf="@+id/icon_media" />
 
                 <TextView
                     android:id="@+id/title_notification"
@@ -104,39 +95,29 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_notification"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView6"
-                    app:layout_constraintStart_toEndOf="@+id/imageView6"
-                    app:layout_constraintTop_toTopOf="@+id/imageView6" />
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_notification"
+                    app:layout_constraintStart_toEndOf="@+id/icon_notification"
+                    app:layout_constraintTop_toTopOf="@+id/icon_notification" />
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/icon_notification"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView5"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_media"
                     app:srcCompat="@drawable/ic_edit" />
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/icon_media"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/editText"
                     app:srcCompat="@drawable/ic_edit" />
-
-                <TextView
-                    android:id="@+id/title_advance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_advance"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView7"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toTopOf="@+id/imageView7" />
 
                 <TextView
                     android:id="@+id/title_tag"
@@ -144,22 +125,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_tag"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-                    app:layout_constraintStart_toEndOf="@+id/imageView3"
-                    app:layout_constraintTop_toTopOf="@+id/imageView3" />
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_tag"
+                    app:layout_constraintStart_toEndOf="@+id/icon_tag"
+                    app:layout_constraintTop_toTopOf="@+id/icon_tag" />
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/icon_tag"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_date_and_time"
                     app:srcCompat="@drawable/ic_edit" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/icon_date_and_time"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
@@ -169,23 +150,23 @@
                     app:srcCompat="@drawable/ic_edit" />
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/icon_note"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_tag"
                     app:srcCompat="@drawable/ic_edit" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/text_date_and_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="TextView"
+                    android:text="2019年8月27日，星期二"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -206,34 +187,278 @@
                     app:layout_constraintTop_toTopOf="@+id/title_tag"
                     tools:itemCount="4" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout"
+                <EditText
+                    android:id="@+id/editText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
+                    android:background="@drawable/border_and_corner"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/title_note"
-                    app:layout_constraintTop_toTopOf="@+id/title_note">
+                    app:layout_constraintStart_toEndOf="@+id/title_memo"
+                    app:layout_constraintTop_toTopOf="@+id/icon_note" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/icon_advance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/icon_notification"
+                    app:srcCompat="@drawable/ic_edit" />
+
+                <TextView
+                    android:id="@+id/title_advance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/title_advance"
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_advance"
+                    app:layout_constraintStart_toEndOf="@+id/icon_advance"
+                    app:layout_constraintTop_toTopOf="@+id/icon_advance" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_advance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_advance"
+                    app:layout_constraintVertical_bias="0.0">
+
+                    <TextView
+                        android:id="@+id/check_spirit"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_mono"
-                        android:hint="@string/title_note" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/title_spirite"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.xw.repo.BubbleSeekBar
+                        android:id="@+id/seek_bar_spirit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:bsb_auto_adjust_section_mark="true"
+                        app:bsb_bubble_color="@color/colorDiary"
+                        app:bsb_bubble_text_color="@color/colorDiaryDark"
+                        app:bsb_max="5"
+                        app:bsb_min="0"
+                        app:bsb_second_track_color="@color/colorDiaryDark"
+                        app:bsb_section_count="5"
+                        app:bsb_section_text_position="bottom_sides"
+                        app:bsb_show_section_mark="true"
+                        app:bsb_show_section_text="true"
+                        app:bsb_show_thumb_text="true"
+                        app:bsb_touch_to_seek="true"
+                        app:bsb_track_color="@color/colorDiary"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_spirit"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_spirit" />
+
+                    <TextView
+                        android:id="@+id/check_appetite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/title_appetite"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/check_spirit" />
+
+                    <com.xw.repo.BubbleSeekBar
+                        android:id="@+id/seek_bar_appetite"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:bsb_auto_adjust_section_mark="true"
+                        app:bsb_bubble_color="@color/colorDiary"
+                        app:bsb_bubble_text_color="@color/colorDiaryDark"
+                        app:bsb_max="5"
+                        app:bsb_min="0"
+                        app:bsb_second_track_color="@color/colorDiaryDark"
+                        app:bsb_section_count="5"
+                        app:bsb_section_text_position="bottom_sides"
+                        app:bsb_show_section_mark="true"
+                        app:bsb_show_section_text="true"
+                        app:bsb_show_thumb_text="true"
+                        app:bsb_touch_to_seek="true"
+                        app:bsb_track_color="@color/colorDiary"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_appetite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_appetite" />
+
+                    <TextView
+                        android:id="@+id/check_body_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/title_body_weight"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/check_appetite" />
+
+                    <TextView
+                        android:id="@+id/check_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/title_temperature"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/check_body_weight" />
+
+                    <TextView
+                        android:id="@+id/check_respiratory_rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/title_rr"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/check_temperature" />
+
+                    <TextView
+                        android:id="@+id/check_heart_rate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/title_heart_rate"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/check_respiratory_rate" />
+
+                    <EditText
+                        android:id="@+id/text_body_weight"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:ems="10"
+                        android:inputType="number"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_body_weight"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/text_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_body_weight" />
+
+                    <EditText
+                        android:id="@+id/text_temperature"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ems="10"
+                        android:inputType="number"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_temperature"
+                        app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_temperature" />
+
+                    <EditText
+                        android:id="@+id/text_respiratory_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ems="10"
+                        android:inputType="number"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_respiratory_rate"
+                        app:layout_constraintEnd_toEndOf="@+id/text_temperature"
+                        app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_respiratory_rate" />
+
+                    <EditText
+                        android:id="@+id/text_heart_rate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:ems="10"
+                        android:inputType="number"
+                        app:layout_constraintBottom_toBottomOf="@+id/check_heart_rate"
+                        app:layout_constraintEnd_toEndOf="@+id/text_temperature"
+                        app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/check_heart_rate" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/unit_body_weight"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_body_weight"
+                        app:layout_constraintStart_toEndOf="@+id/text_body_weight"
+                        app:layout_constraintTop_toTopOf="@+id/text_body_weight" />
+
+                    <TextView
+                        android:id="@+id/textView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/unit_temperature"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_temperature"
+                        app:layout_constraintStart_toEndOf="@+id/text_temperature"
+                        app:layout_constraintTop_toTopOf="@+id/text_temperature" />
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/unit_respiratory_rate"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_respiratory_rate"
+                        app:layout_constraintStart_toEndOf="@+id/text_respiratory_rate"
+                        app:layout_constraintTop_toTopOf="@+id/text_respiratory_rate" />
+
+                    <TextView
+                        android:id="@+id/textView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/unit_respiratory_rate"
+                        app:layout_constraintBottom_toBottomOf="@+id/text_heart_rate"
+                        app:layout_constraintStart_toEndOf="@+id/text_heart_rate"
+                        app:layout_constraintTop_toTopOf="@+id/text_heart_rate" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/icon_expand"
+                    expandIcon="@{viewModel.expandStatus}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_advance"
+                    app:layout_constraintStart_toEndOf="@+id/title_advance"
+                    app:layout_constraintTop_toTopOf="@+id/title_advance" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/text_complete"
             android:onClick="@{()-> viewModel.navigateToCalendar()}"
+            android:text="@string/text_complete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

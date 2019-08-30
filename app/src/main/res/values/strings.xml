@@ -22,5 +22,15 @@
     <string name="title_advance">進階選項</string>
     <string name="text_complete">完成</string>
     <string name="text_birthday">出生日期</string>
+    <string name="title_treatment">醫療</string>
+    <string name="title_rr">呼吸次數</string>
+    <string name="title_spirite">精神</string>
+    <string name="title_appetite">食慾</string>
+    <string name="title_body_weight">體重</string>
+    <string name="title_temperature">體溫</string>
+    <string name="title_heart_rate">脈搏</string>
+    <string name="unit_body_weight">公斤</string>
+    <string name="unit_temperature">℃</string>
+    <string name="unit_respiratory_rate">次 / 分鐘</string>
 
 </resources>

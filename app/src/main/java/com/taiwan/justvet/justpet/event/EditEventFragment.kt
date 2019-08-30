@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,8 +37,14 @@ class EditEventFragment : Fragment() {
         viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
+                viewModel.navigateToCalendarCompleted()
             }
         })
+
+        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
+            binding.seekBarAppetite.correctOffsetWhenContainerOnScrolling()
+            binding.seekBarSpirit.correctOffsetWhenContainerOnScrolling()
+        }
 
         return binding.root
     }

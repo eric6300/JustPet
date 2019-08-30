@@ -65,3 +65,17 @@ fun bindEventTagIcon (imageView: ImageView, tag: Int) {
         }
     }
 }
+
+@BindingAdapter("expandIcon")
+fun bindExpandIcon (imageView: ImageView, status: Boolean) {
+    status.let {
+        when (it) {
+            true -> {
+                imageView.setImageDrawable(JustPetApplication.appContext.getDrawable(R.drawable.ic_expand_more))
+            }
+            else -> {
+                imageView.setImageDrawable(JustPetApplication.appContext.getDrawable(R.drawable.ic_expand_less))
+            }
+        }
+    }
+}
