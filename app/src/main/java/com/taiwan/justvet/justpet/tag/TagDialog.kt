@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
 
 class TagDialog : BottomSheetDialogFragment() {
@@ -55,16 +54,16 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
-        setupTag()
+        setupListOfTags()
 
         return binding.root
     }
 
-    private fun setupTag() {
+    private fun setupListOfTags() {
         val tagAdapter = TagListAdapter(viewModel, TagListAdapter.OnClickListener {
 
         })
-        binding.listTags.adapter = tagAdapter
+        binding.listOfTags.adapter = tagAdapter
 
     }
 

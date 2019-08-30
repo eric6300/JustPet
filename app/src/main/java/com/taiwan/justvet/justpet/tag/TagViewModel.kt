@@ -1,12 +1,18 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.graphics.drawable.Drawable
+import android.nfc.Tag
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.home.TAG
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.logging.SimpleFormatter
 
 class TagViewModel : ViewModel() {
 
@@ -22,6 +28,9 @@ class TagViewModel : ViewModel() {
     val listOfTags: LiveData<List<EventTag>>
         get() = _listOfTags
 
+    private val _currentTime = MutableLiveData<String>()
+    val currentTime: LiveData<String>
+        get() = _currentTime
 
     val tagMap = mutableMapOf<Int, Drawable>()
 
@@ -33,12 +42,22 @@ class TagViewModel : ViewModel() {
 
 
     init {
-
         setupDiaryTagList()
         setupSyndromeTagList()
         setupTreatmentTagList()
 
         showDiaryTagList()
+
+        getCurrentTime()
+    }
+
+    private fun getCurrentTime() {
+        val formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm")
+        val answer: String =  LocalDateTime.now().format(formatter)
+        _currentTime.value = answer
+
+        val timeStamp = System.currentTimeMillis()
+        Log.d(TAG, "$timeStamp")
     }
 
     fun showDiaryTagList() {
