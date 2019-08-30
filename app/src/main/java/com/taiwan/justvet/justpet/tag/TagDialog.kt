@@ -4,15 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
 
 class TagDialog : BottomSheetDialogFragment() {
+
+    private lateinit var binding: DialogTagBinding
 
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
@@ -24,9 +25,7 @@ class TagDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding: DialogTagBinding = DataBindingUtil.inflate(
-            inflater, R.layout.dialog_tag, container, false
-        )
+        binding = DialogTagBinding.inflate( inflater, container, false )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -44,6 +43,29 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
+        setupTag()
+
         return binding.root
+    }
+
+    private fun setupTag() {
+        val tagAdapter = TagListAdapter(viewModel, TagListAdapter.OnClickListener {
+
+        })
+        binding.listTags.adapter = tagAdapter
+        mockData(tagAdapter)
+    }
+
+    fun mockData(tagAdapter: TagListAdapter) {
+        val listTag = mutableListOf<EventTag>()
+
+        listTag.add(EventTag(1, "吃飯"))
+        listTag.add(EventTag(2, "洗澡"))
+        listTag.add(EventTag(3, "散步"))
+        listTag.add(EventTag(4, "剪指甲"))
+        listTag.add(EventTag(5, "剃毛"))
+        listTag.add(EventTag(6, "量體重"))
+
+        tagAdapter.submitList(listTag)
     }
 }

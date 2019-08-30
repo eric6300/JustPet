@@ -90,12 +90,16 @@
             app:layout_constraintTop_toBottomOf="@+id/text_name_pet" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="0dp"
+            android:id="@+id/list_tags"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            app:spanCount="5"
+            android:padding="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button2" />
@@ -107,13 +111,13 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/text_next_step"
             android:onClick="@{() -> viewModel.navigateToEditEvent()}"
+            android:text="@string/text_next_step"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_quick_save"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+            app:layout_constraintTop_toBottomOf="@+id/list_tags" />
 
         <Button
             android:id="@+id/button_quick_save"
@@ -132,10 +136,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:onClick="@{() -> viewModel.leaveTagDialog()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_close"
-            android:onClick="@{() -> viewModel.leaveTagDialog()}"/>
+            app:srcCompat="@drawable/ic_close" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
