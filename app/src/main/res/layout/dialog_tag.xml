@@ -46,6 +46,7 @@
             android:background="@drawable/rounded_corners_left_button"
             android:text="@string/text_diary"
             android:textSize="18sp"
+            android:onClick="@{() -> viewModel.showDiaryTagList()}"
             app:layout_constraintEnd_toStartOf="@+id/button2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -59,6 +60,7 @@
             android:background="@android:color/background_light"
             android:text="@string/text_syndrome"
             android:textSize="18sp"
+            android:onClick="@{() -> viewModel.showSyndromeTagList()}"
             app:layout_constraintBaseline_toBaselineOf="@+id/button"
             app:layout_constraintEnd_toStartOf="@+id/button3"
             app:layout_constraintHorizontal_bias="0.5"
@@ -71,6 +73,7 @@
             android:background="@drawable/rounded_corners_right_button"
             android:text="@string/text_treatment"
             android:textSize="18sp"
+            android:onClick="@{() -> viewModel.showTreatmentTagList()}"
             app:layout_constraintBaseline_toBaselineOf="@+id/button2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -91,18 +94,19 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_tags"
+            listOfTags="@{viewModel.listOfTags}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            app:spanCount="5"
             android:padding="16dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button2" />
+            app:layout_constraintTop_toBottomOf="@+id/button2"
+            app:spanCount="5" />
 
         <Button
             android:id="@+id/button_next_step"

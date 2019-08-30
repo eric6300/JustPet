@@ -3,6 +3,9 @@ package com.taiwan.justvet.justpet
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
 fun bindSpeciesIcon(imageView: ImageView, species: Int) {
@@ -75,6 +78,17 @@ fun bindExpandIcon (imageView: ImageView, status: Boolean) {
             }
             else -> {
                 imageView.setImageDrawable(JustPetApplication.appContext.getDrawable(R.drawable.ic_expand_less))
+            }
+        }
+    }
+}
+
+@BindingAdapter("listOfTags")
+fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventTag>?) {
+    list?.let {
+        recyclerView.adapter?.apply {
+            when (this) {
+                is TagListAdapter -> submitList(it)
             }
         }
     }

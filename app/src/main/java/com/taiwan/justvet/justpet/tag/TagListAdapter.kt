@@ -1,6 +1,7 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,7 @@ import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
 import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
 import com.taiwan.justvet.justpet.home.HomeViewModel
 import com.taiwan.justvet.justpet.home.PetEventAdapter
+import com.taiwan.justvet.justpet.home.TAG
 
 class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
     ListAdapter<EventTag, TagListAdapter.ViewHolder>(TagDiffCallback()) {
@@ -23,7 +25,7 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val eventTag = getItem(position)
         holder.itemView.setOnClickListener {
-            onClickListener.onClick(eventTag)
+            Log.d(TAG, eventTag.title)
         }
         holder.bind(eventTag)
     }

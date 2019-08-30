@@ -9,12 +9,16 @@
     <color name="translucent_70">#B3000000</color>
     <color name="transparent">#00000000</color>
 
-    <color name="colorSyndrome">#FA7470</color>
-    <color name="colorSyndromeDark">#c24345</color>
-    <color name="colorTreatment">#F5A44D</color>
-    <color name="colorTreatmentDark">#be751d</color>
-    <color name="colorDiary">#7CD175</color>
-    <color name="colorDiaryDark">#4a9f47</color>
+    <color name="colorSyndrome">#ff5252</color>
+    <color name="colorSyndromeDark">#c50e29</color>
+
+    <color name="colorTreatmentLight">#ffffb3</color>
+    <color name="colorTreatment">#ffe082</color>
+    <color name="colorTreatmentDark">#caae53</color>
+
+    <color name="colorDiaryLight">#d7ffd9</color>
+    <color name="colorDiary">#a5d6a7</color>
+    <color name="colorDiaryDark">#75a478</color>
 
 
 </resources>
