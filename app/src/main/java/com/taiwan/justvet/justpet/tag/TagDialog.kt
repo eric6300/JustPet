@@ -31,6 +31,12 @@ class TagDialog : BottomSheetDialogFragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        viewModel.leaveTagDialog.observe(this, Observer {
+            if (it == true) {
+                findNavController().popBackStack()
+            }
+        })
+
         viewModel.navigateToEditEvent.observe(this, Observer {
             if (it == true) {
                 findNavController().navigate(TagDialogDirections.actionTagDialogToEventDetailFragment())

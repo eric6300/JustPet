@@ -10,6 +10,10 @@ class TagViewModel : ViewModel() {
     val navigateToEditEvent: LiveData<Boolean>
         get() = _navigateToEditEvent
 
+    private val _leaveTagDialog = MutableLiveData<Boolean>()
+    val leaveTagDialog: LiveData<Boolean>
+        get() = _leaveTagDialog
+
     fun navigateToEditEvent() {
         _navigateToEditEvent.value = true
     }
@@ -17,5 +21,11 @@ class TagViewModel : ViewModel() {
     fun navigateToEditEventCompleted() {
         _navigateToEditEvent.value = null
     }
+
+    fun leaveTagDialog() {
+        _leaveTagDialog.value = true
+    }
+
+
 
 }
