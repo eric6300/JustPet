@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet
+package com.taiwan.justvet.justpet.util
 
 import androidx.databinding.InverseMethod
 

@@ -44,23 +44,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_corners_left_button"
+            android:onClick="@{() -> viewModel.showDiaryTagList()}"
             android:text="@string/text_diary"
             android:textSize="18sp"
-            android:onClick="@{() -> viewModel.showDiaryTagList()}"
             app:layout_constraintEnd_toStartOf="@+id/button2"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            app:layout_constraintTop_toBottomOf="@+id/text_date" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/background_light"
+            android:onClick="@{() -> viewModel.showSyndromeTagList()}"
             android:text="@string/text_syndrome"
             android:textSize="18sp"
-            android:onClick="@{() -> viewModel.showSyndromeTagList()}"
             app:layout_constraintBaseline_toBaselineOf="@+id/button"
             app:layout_constraintEnd_toStartOf="@+id/button3"
             app:layout_constraintHorizontal_bias="0.5"
@@ -71,26 +71,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corners_right_button"
+            android:onClick="@{() -> viewModel.showTreatmentTagList()}"
             android:text="@string/text_treatment"
             android:textSize="18sp"
-            android:onClick="@{() -> viewModel.showTreatmentTagList()}"
             app:layout_constraintBaseline_toBaselineOf="@+id/button2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/button2" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/text_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:elevation="2dp"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/roboto_mono"
-            android:text="@{viewModel.currentTime}"
+            android:text="@{viewModel.currentDate}"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_name_pet" />
+            app:layout_constraintBottom_toBottomOf="@+id/button_date"
+            app:layout_constraintEnd_toStartOf="@+id/button_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_date"
+            app:layout_constraintTop_toTopOf="@+id/button_date"
+            tools:text="2019年8月31日" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_of_tags"
@@ -144,6 +146,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close" />
+
+        <ImageView
+            android:id="@+id/button_date"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:onClick="@{() -> viewModel.showDatePickerDialog()}"
+            app:layout_constraintEnd_toStartOf="@+id/text_date"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_name_pet"
+            app:srcCompat="@drawable/nav_bottom_calendar" />
+
+        <ImageView
+            android:id="@+id/button_time"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/text_date"
+            app:layout_constraintEnd_toStartOf="@+id/text_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/text_date"
+            app:layout_constraintTop_toTopOf="@+id/text_date"
+            app:srcCompat="@drawable/nav_bottom_calendar" />
+
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_mono"
+            android:text="@{viewModel.currentTime}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_time"
+            app:layout_constraintTop_toTopOf="@+id/button_time"
+            tools:text="10:40" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

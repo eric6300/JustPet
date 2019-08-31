@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet
+package com.taiwan.justvet.justpet.home
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager

@@ -1,6 +1,9 @@
 package com.taiwan.justvet.justpet.tag
 
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +15,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
+import com.taiwan.justvet.justpet.home.TAG
 
 class TagDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogTagBinding
-
+    private lateinit var datePickerDialog: DatePickerDialog
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
     }
@@ -54,7 +58,15 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
+        viewModel.showDatePickerDialog.observe(this, Observer {
+            if (it == true) {
+                datePickerDialog.show()
+                viewModel.showDateDialogCompleted()
+            }
+        })
+
         setupListOfTags()
+        setupDatePickerDialog()
 
         return binding.root
     }
@@ -65,6 +77,21 @@ class TagDialog : BottomSheetDialogFragment() {
         })
         binding.listOfTags.adapter = tagAdapter
 
+    }
+
+    fun setupDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val dateListener =
+            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                viewModel.updateDate(year, month.plus(1), dayOfMonth)
+            }
+        datePickerDialog = DatePickerDialog(
+            this.context!!,
+            dateListener,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
     }
 
 }

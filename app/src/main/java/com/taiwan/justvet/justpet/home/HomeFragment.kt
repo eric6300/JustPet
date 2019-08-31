@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.CustomLayoutManager
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R

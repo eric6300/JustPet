@@ -15,7 +15,7 @@
 
         <variable
             name="converter"
-            type="com.taiwan.justvet.justpet.Converter" />
+            type="com.taiwan.justvet.justpet.util.Converter" />
 
         <import type="android.view.View" />
     </data>

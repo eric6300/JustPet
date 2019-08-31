@@ -1,18 +1,14 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.graphics.drawable.Drawable
-import android.nfc.Tag
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.home.TAG
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.logging.SimpleFormatter
+import com.taiwan.justvet.justpet.util.timestampToDateString
+import com.taiwan.justvet.justpet.util.timestampToTimeString
 
 class TagViewModel : ViewModel() {
 
@@ -24,9 +20,17 @@ class TagViewModel : ViewModel() {
     val leaveTagDialog: LiveData<Boolean>
         get() = _leaveTagDialog
 
+    private val _showDatePickerDialog = MutableLiveData<Boolean>()
+    val showDatePickerDialog: LiveData<Boolean>
+        get() = _showDatePickerDialog
+
     private val _listOfTags = MutableLiveData<List<EventTag>>()
     val listOfTags: LiveData<List<EventTag>>
         get() = _listOfTags
+
+    private val _currentDate = MutableLiveData<String>()
+    val currentDate: LiveData<String>
+        get() = _currentDate
 
     private val _currentTime = MutableLiveData<String>()
     val currentTime: LiveData<String>
@@ -34,11 +38,11 @@ class TagViewModel : ViewModel() {
 
     val tagMap = mutableMapOf<Int, Drawable>()
 
-    val appContext = JustPetApplication.appContext
+    private val appContext = JustPetApplication.appContext
 
-    val listTagDiary = mutableListOf<EventTag>()
-    val listTagSyndrome = mutableListOf<EventTag>()
-    val listTagTreatment = mutableListOf<EventTag>()
+    private val listTagDiary = mutableListOf<EventTag>()
+    private val listTagSyndrome = mutableListOf<EventTag>()
+    private val listTagTreatment = mutableListOf<EventTag>()
 
 
     init {
@@ -48,16 +52,15 @@ class TagViewModel : ViewModel() {
 
         showDiaryTagList()
 
-        getCurrentTime()
+        showCurrentTime()
     }
 
-    private fun getCurrentTime() {
-        val formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH:mm")
-        val answer: String =  LocalDateTime.now().format(formatter)
-        _currentTime.value = answer
-
+    private fun showCurrentTime() {
         val timeStamp = System.currentTimeMillis()
-        Log.d(TAG, "$timeStamp")
+        timeStamp.let {
+            _currentDate.value = it.timestampToDateString()
+            _currentTime.value = it.timestampToTimeString()
+        }
     }
 
     fun showDiaryTagList() {
@@ -152,6 +155,14 @@ class TagViewModel : ViewModel() {
         tagMap[209] = appContext.getDrawable(R.drawable.ic_food)!!
     }
 
+    fun showDatePickerDialog() {
+        _showDatePickerDialog.value = true
+    }
+
+    fun showDateDialogCompleted() {
+        _showDatePickerDialog.value = false
+    }
+
     fun navigateToEditEvent() {
         _navigateToEditEvent.value = true
     }
@@ -166,6 +177,10 @@ class TagViewModel : ViewModel() {
 
     fun getIconDrawable(index: Int): Drawable? {
         return tagMap[index]
+    }
+
+    fun updateDate(year: Int, month: Int, dayOfMonth: Int) {
+        _currentDate.value = "${year}年${month}月${dayOfMonth}日"
     }
 
 }
