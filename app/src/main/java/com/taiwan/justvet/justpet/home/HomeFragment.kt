@@ -86,6 +86,16 @@ class HomeFragment : Fragment() {
             PagerSnapHelper().attachToRecyclerView(this)
         }
 
+        var lastPosition = -1
+
+        listProfilePet.setOnScrollChangeListener { view, _, _, _, _ ->
+            val newPosition = (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
+            if (lastPosition != newPosition) {
+                Log.d(TAG, "change position! lastPosition = $lastPosition , newPosition = $newPosition")
+                lastPosition = newPosition
+            }
+        }
+
         // disable scroll function when editing pet profile
         viewModel.isModified.observe(this, Observer {
             if (it == true) {
