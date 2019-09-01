@@ -86,6 +86,12 @@ class HomeFragment : Fragment() {
             PagerSnapHelper().attachToRecyclerView(this)
         }
 
+        val recyclerIndicator = binding.indicatorProfilePet
+        recyclerIndicator.apply {
+            this.visibleDotCount = 3
+            this.attachToRecyclerView(listProfilePet)
+        }
+
         var lastPosition = -1
 
         listProfilePet.setOnScrollChangeListener { view, _, _, _, _ ->

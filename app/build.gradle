@@ -83,6 +83,9 @@ dependencies {
     implementation "androidx.fragment:fragment:$version_fragment"
     implementation "androidx.fragment:fragment-testing:$version_fragment"
 
-    //BubbleSeekBar
+    // BubbleSeekBar
     implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+
+    // ScrollingPagerIndicator
+    implementation "ru.tinkoff.scrollingpagerindicator:scrollingpagerindicator:1.0.6"
 }
