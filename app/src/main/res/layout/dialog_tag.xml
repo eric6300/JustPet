@@ -166,6 +166,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
+            android:onClick="@{() -> viewModel.showTimePickerDialog()}"
             app:layout_constraintBottom_toBottomOf="@+id/text_date"
             app:layout_constraintEnd_toStartOf="@+id/text_time"
             app:layout_constraintHorizontal_bias="0.5"

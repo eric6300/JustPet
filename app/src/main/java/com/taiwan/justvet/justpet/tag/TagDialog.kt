@@ -1,13 +1,14 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -15,12 +16,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
-import com.taiwan.justvet.justpet.home.TAG
 
 class TagDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogTagBinding
     private lateinit var datePickerDialog: DatePickerDialog
+    private lateinit var timePickerDialog: TimePickerDialog
+    private lateinit var calendar: Calendar
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
     }
@@ -31,7 +33,7 @@ class TagDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DialogTagBinding.inflate( inflater, container, false )
+        binding = DialogTagBinding.inflate(inflater, container, false)
 
         dialog?.setOnShowListener {
 
@@ -65,8 +67,18 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
+        viewModel.showTimePickerDialog.observe(this, Observer {
+            if (it == true) {
+                timePickerDialog.show()
+                viewModel.showTimeDialogCompleted()
+            }
+        })
+
         setupListOfTags()
+
+        calendar = Calendar.getInstance()
         setupDatePickerDialog()
+        setupTimePickerDialog()
 
         return binding.root
     }
@@ -79,11 +91,11 @@ class TagDialog : BottomSheetDialogFragment() {
 
     }
 
-    fun setupDatePickerDialog() {
-        val calendar = Calendar.getInstance()
+    private fun setupDatePickerDialog() {
         val dateListener =
             DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                viewModel.updateDate(year, month.plus(1), dayOfMonth)
+                calendar.set(year, month, dayOfMonth)
+                viewModel.updateDate(calendar)
             }
         datePickerDialog = DatePickerDialog(
             this.context!!,
@@ -91,6 +103,21 @@ class TagDialog : BottomSheetDialogFragment() {
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    private fun setupTimePickerDialog() {
+        val timeListener =
+            TimePickerDialog.OnTimeSetListener { view: TimePicker, hourOfDay: Int, minute: Int ->
+                calendar.set(hourOfDay, minute)
+                viewModel.updateTime(calendar)
+            }
+        timePickerDialog = TimePickerDialog(
+            this.context,
+            timeListener,
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
         )
     }
 

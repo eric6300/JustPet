@@ -93,6 +93,7 @@ class HomeFragment : Fragment() {
             if (lastPosition != newPosition) {
                 Log.d(TAG, "change position! lastPosition = $lastPosition , newPosition = $newPosition")
                 lastPosition = newPosition
+                // TODO change pet event while change pet profile
             }
         }
 

@@ -1,6 +1,7 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.graphics.drawable.Drawable
+import android.icu.util.Calendar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,8 @@ import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.util.timestampToDateString
 import com.taiwan.justvet.justpet.util.timestampToTimeString
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TagViewModel : ViewModel() {
 
@@ -23,6 +26,10 @@ class TagViewModel : ViewModel() {
     private val _showDatePickerDialog = MutableLiveData<Boolean>()
     val showDatePickerDialog: LiveData<Boolean>
         get() = _showDatePickerDialog
+
+    private val _showTimePickerDialog = MutableLiveData<Boolean>()
+    val showTimePickerDialog: LiveData<Boolean>
+        get() = _showTimePickerDialog
 
     private val _listOfTags = MutableLiveData<List<EventTag>>()
     val listOfTags: LiveData<List<EventTag>>
@@ -163,6 +170,14 @@ class TagViewModel : ViewModel() {
         _showDatePickerDialog.value = false
     }
 
+    fun showTimePickerDialog() {
+        _showTimePickerDialog.value = true
+    }
+
+    fun showTimeDialogCompleted() {
+        _showTimePickerDialog.value = false
+    }
+
     fun navigateToEditEvent() {
         _navigateToEditEvent.value = true
     }
@@ -179,8 +194,14 @@ class TagViewModel : ViewModel() {
         return tagMap[index]
     }
 
-    fun updateDate(year: Int, month: Int, dayOfMonth: Int) {
-        _currentDate.value = "${year}年${month}月${dayOfMonth}日"
+    fun updateDate(calendar: Calendar) {
+        val time = SimpleDateFormat(JustPetApplication.appContext.getString(R.string.date_format), Locale.TAIWAN)
+        _currentDate.value = time.format(calendar.time)
+    }
+
+    fun updateTime(calendar: Calendar) {
+        val time = SimpleDateFormat(JustPetApplication.appContext.getString(R.string.time_format), Locale.TAIWAN)
+        _currentTime.value = time.format(calendar.time)
     }
 
 }
