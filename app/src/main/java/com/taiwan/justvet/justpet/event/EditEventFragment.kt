@@ -95,6 +95,9 @@ class EditEventFragment : Fragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         val uri = data!!.data
+                        if (eventImage.visibility == View.GONE) {
+                            eventImage.visibility = View.VISIBLE
+                        }
                         eventImage.setImageURI(uri)
                     }
                     Activity.RESULT_CANCELED -> {
@@ -106,6 +109,9 @@ class EditEventFragment : Fragment() {
             PHOTO_FROM_CAMERA -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
+                        if (eventImage.visibility == View.GONE) {
+                            eventImage.visibility = View.VISIBLE
+                        }
                         Glide.with(this).load(saveUri).into(eventImage)
                     }
                     Activity.RESULT_CANCELED -> {

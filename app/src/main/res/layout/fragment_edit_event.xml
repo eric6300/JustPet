@@ -464,6 +464,7 @@
                     android:layout_height="160dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon_media"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
