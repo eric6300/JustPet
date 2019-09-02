@@ -9,8 +9,9 @@
     <color name="translucent_70">#B3000000</color>
     <color name="transparent">#00000000</color>
 
-    <color name="colorSyndrome">#ff5252</color>
-    <color name="colorSyndromeDark">#c50e29</color>
+    <color name="colorSyndromeLight">#ffb8ae</color>
+    <color name="colorSyndrome">#ff867f</color>
+    <color name="colorSyndromeDark">#c85653</color>
 
     <color name="colorTreatmentLight">#ffffb3</color>
     <color name="colorTreatment">#ffe082</color>
