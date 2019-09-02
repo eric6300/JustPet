@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
@@ -143,9 +144,7 @@ class TagViewModel : ViewModel() {
 
     fun navigateToEditEvent() {
         _navigateToEditEvent.value = true
-        for (tag in selectedList) {
-            Log.d(TAG, "Tag index: ${tag.index} , Tag title: ${tag.title}")
-        }
+//        addToSelectedList()
     }
 
     fun navigateToEditEventCompleted() {
@@ -179,7 +178,30 @@ class TagViewModel : ViewModel() {
     }
 
     fun addToSelectedList() {
-        
+        viewModelScope.let {
+            for (tag in listTagDiary) {
+                if (tag.isSelected == true) {
+                    selectedList.add(tag)
+                }
+            }
+        }
+        viewModelScope.let {
+            for (tag in listTagSyndrome) {
+                if (tag.isSelected == true) {
+                    selectedList.add(tag)
+                }
+            }
+        }
+        viewModelScope.let {
+            for (tag in listTagTreatment) {
+                if (tag.isSelected == true) {
+                    selectedList.add(tag)
+                }
+            }
+        }
+        for (tag in selectedList) {
+            Log.d(TAG, "Tag index: ${tag.index} , Tag title: ${tag.title}")
+        }
     }
 
 }

@@ -180,6 +180,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="horizontal"
+                    listOfTags="@{viewModel.listOfTags}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="@+id/title_tag"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -19,23 +19,28 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_CAMERA
 import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
+import com.taiwan.justvet.justpet.tag.TagListAdapter
 import com.taiwan.justvet.justpet.tag.TagViewModel
+import com.taiwan.justvet.justpet.util.bindGenderIcon
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
 
 class EditEventFragment : Fragment() {
 
+    private lateinit var binding: FragmentEditEventBinding
     private val viewModel: EditEventViewModel by lazy {
         ViewModelProviders.of(this).get(EditEventViewModel::class.java)
     }
-    lateinit var saveUri: Uri  //外部定義變數
+    lateinit var saveUri: Uri
     lateinit var eventImage: ImageView
 
     override fun onCreateView(
@@ -44,7 +49,7 @@ class EditEventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding = FragmentEditEventBinding.inflate(inflater, container, false)
+        binding = FragmentEditEventBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -63,29 +68,23 @@ class EditEventFragment : Fragment() {
         }
 
         binding.buttonCamera.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            val tmpFile = File(
-                JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                System.currentTimeMillis().toString() + ".png"
-            )
-            val uriForCamera = FileProvider.getUriForFile(
-                JustPetApplication.appContext,
-                "com.taiwan.justvet.justpet.provider",
-                tmpFile
-            )
-            saveUri = uriForCamera
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForCamera)
-
-            startActivityForResult(intent, PHOTO_FROM_CAMERA)
+            startCamera()
         }
 
         binding.buttonGallery.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            startActivityForResult(intent, PHOTO_FROM_GALLERY)
+            startGallery()
         }
 
+        setupTagRecyclerView()
+
         return binding.root
+    }
+
+    private fun setupTagRecyclerView() {
+        val listOfTag = binding.listTags
+        val adapter = EditEventTagAdapter(viewModel, EditEventTagAdapter.OnClickListener {
+        })
+        listOfTag.adapter = adapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -121,5 +120,28 @@ class EditEventFragment : Fragment() {
 
             }
         }
+    }
+
+    fun startCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val tmpFile = File(
+            JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            System.currentTimeMillis().toString() + ".png"
+        )
+        val uriForCamera = FileProvider.getUriForFile(
+            JustPetApplication.appContext,
+            "com.taiwan.justvet.justpet.provider",
+            tmpFile
+        )
+        saveUri = uriForCamera
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForCamera)
+
+        startActivityForResult(intent, PHOTO_FROM_CAMERA)
+    }
+
+    fun startGallery() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PHOTO_FROM_GALLERY)
     }
 }

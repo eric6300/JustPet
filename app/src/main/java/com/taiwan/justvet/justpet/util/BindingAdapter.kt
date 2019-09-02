@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.event.EditEventTagAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -127,6 +128,7 @@ fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventT
         recyclerView.adapter?.apply {
             when (this) {
                 is TagListAdapter -> submitList(it)
+                is EditEventTagAdapter -> submitList(it)
             }
         }
     }
