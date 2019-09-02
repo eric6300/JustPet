@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.util.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
 import com.taiwan.justvet.justpet.util.timestampToTimeString
 import java.text.SimpleDateFormat
@@ -43,7 +44,9 @@ class TagViewModel : ViewModel() {
     val currentTime: LiveData<String>
         get() = _currentTime
 
-    val tagMap = mutableMapOf<Int, Drawable>()
+    private val _tagType = MutableLiveData<TagType>()
+    val tagType: LiveData<TagType>
+        get() = _tagType
 
     private val appContext = JustPetApplication.appContext
 
@@ -57,7 +60,7 @@ class TagViewModel : ViewModel() {
         setupSyndromeTagList()
         setupTreatmentTagList()
 
-        showDiaryTagList()
+        showDiaryTag()
 
         showCurrentTime()
     }
@@ -70,96 +73,51 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun showDiaryTagList() {
+    fun showDiaryTag() {
         _listOfTags.value = listTagDiary
     }
 
-    fun showSyndromeTagList() {
+    fun showSyndromeTag() {
         _listOfTags.value = listTagSyndrome
     }
 
-    fun showTreatmentTagList() {
+    fun showTreatmentTag() {
         _listOfTags.value = listTagTreatment
     }
 
     private fun setupDiaryTagList() {
-        listTagDiary.add(EventTag(1, "吃飯"))
-        tagMap[1] = appContext.getDrawable(R.drawable.ic_food)!!
+        listTagDiary.add(EventTag(TagType.DIARY,0, "吃飯"))
+        listTagDiary.add(EventTag(TagType.DIARY,1, "洗澡"))
+        listTagDiary.add(EventTag(TagType.DIARY,2, "散步"))
+        listTagDiary.add(EventTag(TagType.DIARY,3, "剪指甲"))
+        listTagDiary.add(EventTag(TagType.DIARY,4, "剃毛"))
+        listTagDiary.add(EventTag(TagType.DIARY,5, "量體重"))
+        listTagDiary.add(EventTag(TagType.DIARY,6, "其他"))
 
-        listTagDiary.add(EventTag(2, "洗澡"))
-        tagMap[2] = appContext.getDrawable(R.drawable.ic_shower)!!
-
-        listTagDiary.add(EventTag(3, "散步"))
-        tagMap[3] = appContext.getDrawable(R.drawable.ic_walking)!!
-
-        listTagDiary.add(EventTag(4, "剪指甲"))
-        tagMap[4] = appContext.getDrawable(R.drawable.ic_nail_trimming)!!
-
-        listTagDiary.add(EventTag(5, "剃毛"))
-        tagMap[5] = appContext.getDrawable(R.drawable.ic_grooming)!!
-
-        listTagDiary.add(EventTag(6, "量體重"))
-        tagMap[6] = appContext.getDrawable(R.drawable.ic_weighting)!!
-
-        listTagDiary.add(EventTag(7, "其他"))
     }
 
     private fun setupSyndromeTagList() {
-        listTagSyndrome.add(EventTag(101, "嘔吐"))
-        tagMap[101] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(102, "下痢"))
-        tagMap[102] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(103, "咳嗽"))
-        tagMap[103] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(104, "打噴嚏"))
-        tagMap[104] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(105, "搔癢"))
-        tagMap[105] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(106, "癲癇"))
-        tagMap[106] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(107, "昏倒"))
-        tagMap[107] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(108, "排尿異常"))
-        tagMap[108] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagSyndrome.add(EventTag(109, "其他"))
-        tagMap[109] = appContext.getDrawable(R.drawable.ic_food)!!
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,100, "嘔吐"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,101, "下痢"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,102, "咳嗽"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,103, "打噴嚏"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,104, "搔癢"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,105, "癲癇"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,106, "昏倒"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,107, "排尿異常"))
+        listTagSyndrome.add(EventTag(TagType.SYNDROME,108, "其他"))
     }
 
     private fun setupTreatmentTagList() {
-        listTagTreatment.add(EventTag(201, "除蚤"))
-        tagMap[201] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(202, "驅蟲"))
-        tagMap[202] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(203, "心絲蟲"))
-        tagMap[203] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(204, "皮下注射"))
-        tagMap[204] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(205, "血糖紀錄"))
-        tagMap[205] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(206, "口服藥"))
-        tagMap[206] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(207, "外用藥"))
-        tagMap[207] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(208, "眼藥/耳藥"))
-        tagMap[208] = appContext.getDrawable(R.drawable.ic_food)!!
-
-        listTagTreatment.add(EventTag(209, "其他"))
-        tagMap[209] = appContext.getDrawable(R.drawable.ic_food)!!
+        listTagTreatment.add(EventTag(TagType.TREATMENT,200, "除蚤"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,201, "驅蟲"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,202, "心絲蟲"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,203, "皮下注射"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,204, "血糖紀錄"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,205, "口服藥"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,206, "外用藥"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,207, "眼藥/耳藥"))
+        listTagTreatment.add(EventTag(TagType.TREATMENT,208, "其他"))
     }
 
     fun showDatePickerDialog() {
@@ -191,7 +149,15 @@ class TagViewModel : ViewModel() {
     }
 
     fun getIconDrawable(index: Int): Drawable? {
-        return tagMap[index]
+        return when (index) {
+            0 -> appContext.getDrawable(R.drawable.ic_food)
+            1 -> appContext.getDrawable(R.drawable.ic_shower)
+            2 -> appContext.getDrawable(R.drawable.ic_walking)
+            3 -> appContext.getDrawable(R.drawable.ic_nail_trimming)
+            4 -> appContext.getDrawable(R.drawable.ic_grooming)
+            5 -> appContext.getDrawable(R.drawable.ic_weighting)
+            else -> appContext.getDrawable(R.drawable.ic_food)
+        }
     }
 
     fun updateDate(calendar: Calendar) {

@@ -1,12 +1,18 @@
 package com.taiwan.justvet.justpet.tag
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,13 +26,40 @@ import com.taiwan.justvet.justpet.home.TAG
 class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
     ListAdapter<EventTag, TagListAdapter.ViewHolder>(TagDiffCallback()) {
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    private var tracker: SelectionTracker<Long>? = null
+
+    fun setTracker(tracker: SelectionTracker<Long>?) {
+        this.tracker = tracker
+    }
+
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val eventTag = getItem(position)
         holder.itemView.setOnClickListener {
             Log.d(TAG, eventTag.title)
+            tracker?.select(position.toLong())
         }
+
+        val parent = holder.binding.layoutTagBackground as ConstraintLayout
+
+        if(tracker!!.isSelected(position.toLong())) {
+            parent.background = ColorDrawable(
+                Color.parseColor("#80deea")
+            )
+        } else {
+            // Reset color to white if not selected
+            parent.background = ColorDrawable(Color.WHITE)
+        }
+
         holder.bind(eventTag)
     }
 
@@ -78,6 +111,18 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
             binding.eventTag = eventTag
             binding.executePendingBindings()
         }
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
+            object: ItemDetailsLookup.ItemDetails<Long>() {
+                override fun getPosition(): Int {
+                    return adapterPosition
+                }
+
+                override fun getSelectionKey(): Long? {
+                    return itemId
+                }
+            }
+
     }
 
     class TagDiffCallback : DiffUtil.ItemCallback<EventTag>() {
