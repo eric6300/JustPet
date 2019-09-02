@@ -252,15 +252,15 @@ class HomeFragment : Fragment() {
 
     fun mockupData() {
         val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, ""))
+        list.add(PetProfile("Meimei", 0, 0, idChip = "900123256344452"))
+        list.add(PetProfile("多多", 1, 0, idChip = "900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1, idChip = ""))
         profileAdapter.submitList(list)
 
         eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(date = "1", type = 0, tag = 0, note = "年度健康檢查還剩 15 天"))
-        eventList.add(PetEvent(date = "2", type = 1, tag = 1, note = "除蚤滴劑要記得點喔!"))
-        eventList.add(PetEvent(date = "3", type = 2, tag = 2, note = "這四週內已經吐了三次喔!"))
+        eventList.add(PetEvent(date = "1", eventType = 0, note = "年度健康檢查還剩 15 天"))
+        eventList.add(PetEvent(date = "2", eventType = 1, note = "除蚤滴劑要記得點喔!"))
+        eventList.add(PetEvent(date = "3", eventType = 2, note = "這四週內已經吐了三次喔!"))
         eventAdapter.submitList(eventList)
 
     }

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class PetEvent (
     val date: String? = null,
     val time: String? = null,
-    val type: Int,
-    val tag: Int,
+    val eventType: Int? = null,
+    val tags: Int? = null,
     val note: String
 ): Parcelable

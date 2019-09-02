@@ -12,13 +12,109 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:id="@+id/textView4"
+            android:id="@+id/title_tool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/title_tool"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout">
+
+            <TextView
+                android:id="@+id/title_calculate_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tool"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="8dp"
+                android:text="@string/title_calculate_rate"
+                app:layout_constraintEnd_toEndOf="@+id/image_calculate_rate"
+                app:layout_constraintStart_toStartOf="@+id/image_calculate_rate"
+                app:layout_constraintTop_toBottomOf="@+id/image_calculate_rate" />
+
+            <ImageView
+                android:id="@+id/image_calculate_rate"
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/image_cat" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_tool">
+
+            <ImageView
+                android:id="@+id/image_food_intake"
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/image_cat" />
+
+            <TextView
+                android:id="@+id/title_food_intake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/title_calculate_food"
+                app:layout_constraintEnd_toEndOf="@+id/image_food_intake"
+                app:layout_constraintStart_toStartOf="@+id/image_food_intake"
+                app:layout_constraintTop_toBottomOf="@+id/image_food_intake" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+
+            <ImageView
+                android:id="@+id/image_water_intake"
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/image_cat" />
+
+            <TextView
+                android:id="@+id/title_water_intake"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/title_water_intake"
+                app:layout_constraintEnd_toEndOf="@+id/image_water_intake"
+                app:layout_constraintStart_toStartOf="@+id/image_water_intake"
+                app:layout_constraintTop_toBottomOf="@+id/image_water_intake" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

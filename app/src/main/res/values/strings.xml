@@ -34,4 +34,10 @@
     <string name="unit_temperature">℃</string>
     <string name="unit_respiratory_rate">次 / 分鐘</string>
 
+    //  ToolFragment  //
+    <string name="title_tool">小工具</string>
+    <string name="title_calculate_food">基礎攝取熱量</string>
+    <string name="title_water_intake">基礎飲水量</string>
+    <string name="title_calculate_rate">呼吸/脈搏計算</string>
+
 </resources>

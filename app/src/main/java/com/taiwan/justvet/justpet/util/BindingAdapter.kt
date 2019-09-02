@@ -51,8 +51,8 @@ fun bindGenderIcon(imageView: ImageView, gender: Int) {
 }
 
 @BindingAdapter("eventBackground")
-fun bindEventBackground (cardView: CardView, type: Int) {
-    type.let {
+fun bindEventBackground (cardView: CardView, eventType: Int) {
+    eventType.let {
         when (it) {
             0 -> {
                 cardView.setCardBackgroundColor(
