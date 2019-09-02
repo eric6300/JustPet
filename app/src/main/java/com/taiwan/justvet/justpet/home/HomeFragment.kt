@@ -88,7 +88,6 @@ class HomeFragment : Fragment() {
 
         val recyclerIndicator = binding.indicatorProfilePet
         recyclerIndicator.apply {
-            this.visibleDotCount = 3
             this.attachToRecyclerView(listProfilePet)
         }
 

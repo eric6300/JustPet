@@ -75,6 +75,7 @@ dependencies {
 
     // RecyclerView
     implementation "androidx.recyclerview:recyclerview:$version_recyclerview"
+    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
 
     // Paging
     implementation "androidx.paging:paging-runtime-ktx:$version_paging"

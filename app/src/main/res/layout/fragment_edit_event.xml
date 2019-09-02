@@ -106,7 +106,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/icon_media"
+                    app:layout_constraintTop_toBottomOf="@+id/image_event"
                     app:srcCompat="@drawable/ic_edit" />
 
                 <ImageView
@@ -447,6 +447,35 @@
                     app:layout_constraintBottom_toBottomOf="@+id/title_advance"
                     app:layout_constraintStart_toEndOf="@+id/title_advance"
                     app:layout_constraintTop_toTopOf="@+id/title_advance" />
+
+                <Button
+                    android:id="@+id/button_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="Camera"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_media"
+                    app:layout_constraintStart_toEndOf="@+id/title_media"
+                    app:layout_constraintTop_toTopOf="@+id/title_media" />
+
+                <ImageView
+                    android:id="@+id/image_event"
+                    android:layout_width="90dp"
+                    android:layout_height="160dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_media"
+                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                <Button
+                    android:id="@+id/button_gallery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gallery"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_camera"
+                    app:layout_constraintStart_toEndOf="@+id/button_camera"
+                    app:layout_constraintTop_toTopOf="@+id/button_camera" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
