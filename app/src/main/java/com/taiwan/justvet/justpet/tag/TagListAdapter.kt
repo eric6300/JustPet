@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -17,10 +16,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
 import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
-import com.taiwan.justvet.justpet.home.HomeViewModel
-import com.taiwan.justvet.justpet.home.PetEventAdapter
 import com.taiwan.justvet.justpet.home.TAG
 
 class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
@@ -44,20 +40,10 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val eventTag = getItem(position)
+
         holder.itemView.setOnClickListener {
-            Log.d(TAG, eventTag.title)
-            tracker?.select(position.toLong())
-        }
-
-        val parent = holder.binding.layoutTagBackground as ConstraintLayout
-
-        if(tracker!!.isSelected(position.toLong())) {
-            parent.background = ColorDrawable(
-                Color.parseColor("#80deea")
-            )
-        } else {
-            // Reset color to white if not selected
-            parent.background = ColorDrawable(Color.WHITE)
+            eventTag.isSelected = eventTag.isSelected == false
+            notifyItemChanged(position)
         }
 
         holder.bind(eventTag)
@@ -113,7 +99,7 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
-            object: ItemDetailsLookup.ItemDetails<Long>() {
+            object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getPosition(): Int {
                     return adapterPosition
                 }
