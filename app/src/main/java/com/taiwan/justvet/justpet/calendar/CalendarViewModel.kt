@@ -1,7 +1,9 @@
 package com.taiwan.justvet.justpet.calendar
 
 import androidx.lifecycle.*
+import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.util.TagType
 import kotlinx.coroutines.launch
 
 class CalendarViewModel : ViewModel() {
@@ -25,17 +27,26 @@ class CalendarViewModel : ViewModel() {
 
     fun mockData() {
         val list = mutableListOf<PetEvent>()
+        val tagList = mutableListOf<EventTag>()
+
+        tagList.let {
+            it.add(EventTag(TagType.DIARY, 0, "散步"))
+            it.add(EventTag(TagType.DIARY, 0, "吃飯"))
+            it.add(EventTag(TagType.DIARY, 0, "打咚咚"))
+        }
+
         list.let {
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 12, timeString = "15:29"))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 12, timeString = "15:29", tags = tagList))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:15"))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:29"))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:29", tags = tagList))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, timeString = "09:19"))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, timeString = "21:55"))
             it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, timeString = "21:55"))
-            it.add(PetEvent(year = 2019, month = 8, dayOfMonth = 18, timeString = "21:55"))
+            it.add(PetEvent(year = 2019, month = 8, dayOfMonth = 18, timeString = "21:55", tags = tagList))
             it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, timeString = "21:55"))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, timeString = "21:55"))
         }
+
         _data.value = list
     }
 

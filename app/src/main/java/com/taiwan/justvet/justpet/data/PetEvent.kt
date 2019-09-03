@@ -11,6 +11,6 @@ data class PetEvent (
     val dayOfMonth: Int? = null,
     val timeString: String? = null,
     val eventType: Int? = null,
-    val tags: Int? = null,
+    val tags: List<EventTag>? = null,
     val note: String? = null
 ): Parcelable

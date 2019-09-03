@@ -23,11 +23,13 @@ class CalendarEvnetAdapter(val viewModel: CalendarViewModel, val onClickListener
         holder.itemView.setOnClickListener {
             onClickListener.onClick(petEvent)
         }
-        holder.bind(petEvent)
-
         holder.binding.listOfTags.let {
-
+            val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
+            })
+            it.adapter = adapter
+            adapter.submitList(petEvent.tags)
         }
+        holder.bind(petEvent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

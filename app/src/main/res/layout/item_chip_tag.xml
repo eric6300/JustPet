@@ -5,8 +5,11 @@
 
     <data>
         <variable
-            name="viewModel"
+            name="editEventViewModel"
             type="com.taiwan.justvet.justpet.event.EditEventViewModel" />
+        <variable
+            name="calendarViewModel"
+            type="com.taiwan.justvet.justpet.calendar.CalendarViewModel" />
         <variable
             name="eventTag"
             type="com.taiwan.justvet.justpet.data.EventTag" />
