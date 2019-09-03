@@ -79,7 +79,7 @@ class HomeFragment : Fragment() {
         val layoutManager = CustomLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
-        val listProfilePet = binding.listProfilePet
+        val listProfilePet = binding.homeListProfilePet
         listProfilePet.apply {
             this.layoutManager = layoutManager
             this.adapter = profileAdapter
@@ -119,7 +119,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        val listEventPet = binding.listEventPet
+        val listEventPet = binding.homeListEventPet
         listEventPet.apply {
             this.adapter = eventAdapter
             PagerSnapHelper().attachToRecyclerView(this)
@@ -258,9 +258,9 @@ class HomeFragment : Fragment() {
         profileAdapter.submitList(list)
 
         eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(date = "1", eventType = 0, note = "年度健康檢查還剩 15 天"))
-        eventList.add(PetEvent(date = "2", eventType = 1, note = "除蚤滴劑要記得點喔!"))
-        eventList.add(PetEvent(date = "3", eventType = 2, note = "這四週內已經吐了三次喔!"))
+        eventList.add(PetEvent(timeStamp = 123, eventType = 0, note = "年度健康檢查還剩 15 天"))
+        eventList.add(PetEvent(timeStamp = 1222, eventType = 1, note = "除蚤滴劑要記得點喔!"))
+        eventList.add(PetEvent(timeStamp = 3333, eventType = 2, note = "這四週內已經吐了三次喔!"))
         eventAdapter.submitList(eventList)
 
     }

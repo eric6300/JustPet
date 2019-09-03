@@ -4,7 +4,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.taiwan.justvet.justpet.calendar.CalendarViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,24 +21,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/calendar_view"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingTop="16dp"
-                android:paddingEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:mcv_calendarMode="month"
-                app:mcv_headerTextAppearance="@style/TextAppearance.AppCompat.Large"
-                app:mcv_selectionColor="@color/colorDiary"
-                app:mcv_selectionMode="single"
-                app:mcv_showOtherDates="all"
-                app:mcv_weekDayTextAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:layout_height="match_parent">
 
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/calendar_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:mcv_calendarMode="month"
+                    app:mcv_headerTextAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:mcv_selectionColor="@color/colorDiary"
+                    app:mcv_selectionMode="single"
+                    app:mcv_showOtherDates="all"
+                    app:mcv_weekDayTextAppearance="@style/TextAppearance.AppCompat.Medium">
+
+                </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/calendar_list_event"
+                    listOfEvents="@{viewModel.listOfEvents}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/calendar_view"
+                    tools:listitem="@layout/item_calendar_event" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
