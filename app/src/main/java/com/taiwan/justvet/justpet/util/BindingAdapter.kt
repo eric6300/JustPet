@@ -136,13 +136,13 @@ fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventT
     }
 }
 
-@BindingAdapter("listOfEvents")
-fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<PetEvent>?) {
-    list?.let {
-        recyclerView.adapter?.apply {
-            when (this) {
-                is CalendarEvnetAdapter -> submitList(it)
-            }
-        }
-    }
-}
+//@BindingAdapter("listOfEvents")
+//fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<PetEvent>?) {
+//    list?.let {
+//        recyclerView.adapter?.apply {
+//            when (this) {
+//                is CalendarEvnetAdapter -> submitList(it)
+//            }
+//        }
+//    }
+//}

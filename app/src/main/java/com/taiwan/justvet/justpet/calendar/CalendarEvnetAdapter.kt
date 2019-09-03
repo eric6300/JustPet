@@ -71,6 +71,7 @@ class CalendarEvnetAdapter(val viewModel: CalendarViewModel, val onClickListener
         fun bind(petEvent: PetEvent) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
+            binding.event = petEvent
             binding.executePendingBindings()
         }
 

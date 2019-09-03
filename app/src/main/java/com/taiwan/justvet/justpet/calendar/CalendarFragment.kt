@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.calendar
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,18 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProviders
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
+import com.taiwan.justvet.justpet.decorators.EventDecorator
 import com.taiwan.justvet.justpet.home.TAG
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     lateinit var binding: FragmentCalendarBinding
+    lateinit var list: Array<CalendarDay>
+    lateinit var calendarView: MaterialCalendarView
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
     }
@@ -38,6 +44,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
         setupCalendarView()
         setupEventRecyclerView()
+        setup()
 
         return binding.root
     }
@@ -46,7 +53,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         val instance = LocalDate.now()
 //        val list = ArrayList<CalendarDay>()
 //        list.add(CalendarDay.from(2019,9,27))
-        val calendarView = binding.calendarView
+        calendarView = binding.calendarView
         calendarView.apply {
             this.setOnDateChangedListener(this@CalendarFragment)
             this.showOtherDates = MaterialCalendarView.SHOW_ALL
@@ -60,6 +67,22 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         val adapter = CalendarEvnetAdapter(viewModel, CalendarEvnetAdapter.OnClickListener{
         })
         listOfEvents.adapter = adapter
+    }
+
+    fun setup() {
+        viewModel.listOfEvents.observe(this, Observer {
+            for (event in it) {
+                event.dateString?.let {
+                    val splitString = it.split("/")
+                    val year = splitString[0].toInt()
+                    val month = splitString[1].toInt()
+                    val dayOfMonth = splitString[2].toInt()
+                    val list = ArrayList<CalendarDay>()
+                    list.add(CalendarDay.from(year, month, dayOfMonth))
+                    calendarView.addDecorator(EventDecorator(Color.RED, list))
+                }
+            }
+        })
     }
 
     override fun onDateSelected(

@@ -47,7 +47,6 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/calendar_list_event"
-                    listOfEvents="@{viewModel.listOfEvents}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
