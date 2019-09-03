@@ -13,16 +13,12 @@ import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
 import com.taiwan.justvet.justpet.home.TAG
-import com.taiwan.justvet.justpet.tag.adapter.MyLookup
 
 class TagDialog : BottomSheetDialogFragment() {
 
@@ -30,7 +26,6 @@ class TagDialog : BottomSheetDialogFragment() {
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var timePickerDialog: TimePickerDialog
     private lateinit var calendar: Calendar
-    private lateinit var tracker: SelectionTracker<Long>
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
     }
@@ -97,29 +92,6 @@ class TagDialog : BottomSheetDialogFragment() {
 
         })
         listOfTags.adapter = tagAdapter
-
-        tracker = SelectionTracker.Builder<Long>(
-            "selection-1",
-            listOfTags,
-            StableIdKeyProvider(listOfTags),
-            MyLookup(listOfTags),
-            StorageStrategy.createLongStorage()
-        ).withSelectionPredicate(
-            SelectionPredicates.createSelectAnything()
-        ).build()
-
-        tracker.addObserver(
-            object: SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-//                    val selectedItemSize= tracker.selection?.size()
-                    tracker.selection.forEach {
-                        Log.d(TAG, "Selected Tag index : $it")
-                    }
-                }
-            })
-
-        tagAdapter.setTracker(tracker)
-
     }
 
     private fun setupDatePickerDialog() {
@@ -140,8 +112,10 @@ class TagDialog : BottomSheetDialogFragment() {
     private fun setupTimePickerDialog() {
         val timeListener =
             TimePickerDialog.OnTimeSetListener { view: TimePicker, hourOfDay: Int, minute: Int ->
-                calendar.set(hourOfDay, minute)
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
                 viewModel.updateTime(calendar)
+                Log.d(TAG, "$hourOfDay,$minute")
             }
         timePickerDialog = TimePickerDialog(
             this.context,

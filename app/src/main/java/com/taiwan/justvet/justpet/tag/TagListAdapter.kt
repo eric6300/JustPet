@@ -22,20 +22,6 @@ import com.taiwan.justvet.justpet.home.TAG
 class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
     ListAdapter<EventTag, TagListAdapter.ViewHolder>(TagDiffCallback()) {
 
-    init {
-        setHasStableIds(true)
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    private var tracker: SelectionTracker<Long>? = null
-
-    fun setTracker(tracker: SelectionTracker<Long>?) {
-        this.tracker = tracker
-    }
-
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -97,17 +83,6 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
             binding.eventTag = eventTag
             binding.executePendingBindings()
         }
-
-        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
-            object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getPosition(): Int {
-                    return adapterPosition
-                }
-
-                override fun getSelectionKey(): Long? {
-                    return itemId
-                }
-            }
 
     }
 
