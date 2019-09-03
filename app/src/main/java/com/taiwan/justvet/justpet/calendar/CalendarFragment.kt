@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModelProviders
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -23,8 +22,8 @@ import org.threeten.bp.LocalDate
 class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     lateinit var binding: FragmentCalendarBinding
-    lateinit var list: Array<CalendarDay>
     lateinit var calendarView: MaterialCalendarView
+    lateinit var localDate: LocalDate
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
     }
@@ -44,39 +43,57 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
         setupCalendarView()
         setupEventRecyclerView()
-        setup()
+
+        setupMonthChangedListener()
+        showThisMonthEvent(localDate)
+        setupDecoration()
+
 
         return binding.root
     }
 
     private fun setupCalendarView() {
-        val instance = LocalDate.now()
-//        val list = ArrayList<CalendarDay>()
-//        list.add(CalendarDay.from(2019,9,27))
+        localDate = LocalDate.now()
         calendarView = binding.calendarView
         calendarView.apply {
             this.setOnDateChangedListener(this@CalendarFragment)
-            this.showOtherDates = MaterialCalendarView.SHOW_ALL
-            this.setSelectedDate(instance)
-//            this.addDecorator(EventDecorator(Color.RED, list))
+            this.showOtherDates = MaterialCalendarView.SHOW_DEFAULTS
+            this.setSelectedDate(localDate)
         }
     }
 
     private fun setupEventRecyclerView() {
         val listOfEvents = binding.calendarListEvent
-        val adapter = CalendarEvnetAdapter(viewModel, CalendarEvnetAdapter.OnClickListener{
+        val adapter = CalendarEvnetAdapter(viewModel, CalendarEvnetAdapter.OnClickListener {
         })
         listOfEvents.adapter = adapter
     }
 
-    fun setup() {
-        viewModel.listOfEvents.observe(this, Observer {
+    private fun setupMonthChangedListener() {
+        calendarView.setOnMonthChangedListener { widget, date ->
+            viewModel.eventFilter(date.year, date.month, null)
+        }
+    }
+
+    private fun showThisMonthEvent(localDate: LocalDate) {
+        viewModel.data.observe(this, Observer {
+            val year = localDate.year
+            val month = localDate.monthValue
+            val dayOfMonth = localDate.dayOfMonth
+            // filter for events of this month and set decoration
+            viewModel.eventFilter(year = year, month = month, dayOfMonth = null)
+            // filter for events of today and show in the recyclerView
+            viewModel.eventFilter(year = year, month = month, dayOfMonth = dayOfMonth)
+        })
+    }
+
+    private fun setupDecoration() {
+        viewModel.decorateListOfEvents.observe(this, Observer {
             for (event in it) {
-                event.dateString?.let {
-                    val splitString = it.split("/")
-                    val year = splitString[0].toInt()
-                    val month = splitString[1].toInt()
-                    val dayOfMonth = splitString[2].toInt()
+                event.dayOfMonth?.let {
+                    val year = event.year
+                    val month = event.month
+                    val dayOfMonth = event.dayOfMonth
                     val list = ArrayList<CalendarDay>()
                     list.add(CalendarDay.from(year, month, dayOfMonth))
                     calendarView.addDecorator(EventDecorator(Color.RED, list))
@@ -90,6 +107,6 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         date: CalendarDay,
         selected: Boolean
     ) {
-        Log.d(TAG, "selected timeStamp : $date")
+        viewModel.eventFilter(date.year, date.month, date.day)
     }
 }

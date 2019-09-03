@@ -257,11 +257,11 @@ class HomeFragment : Fragment() {
         list.add(PetProfile("Lucky", 1, 1, idChip = ""))
         profileAdapter.submitList(list)
 
-        eventList = mutableListOf<PetEvent>()
-        eventList.add(PetEvent(timeStamp = 123, eventType = 0, note = "年度健康檢查還剩 15 天"))
-        eventList.add(PetEvent(timeStamp = 1222, eventType = 1, note = "除蚤滴劑要記得點喔!"))
-        eventList.add(PetEvent(timeStamp = 3333, eventType = 2, note = "這四週內已經吐了三次喔!"))
-        eventAdapter.submitList(eventList)
+//        eventList = mutableListOf<PetEvent>()
+//        eventList.add(PetEvent(timeStamp = 123, eventType = 0, note = "年度健康檢查還剩 15 天"))
+//        eventList.add(PetEvent(timeStamp = 1222, eventType = 1, note = "除蚤滴劑要記得點喔!"))
+//        eventList.add(PetEvent(timeStamp = 3333, eventType = 2, note = "這四週內已經吐了三次喔!"))
+//        eventAdapter.submitList(eventList)
 
     }
 }
