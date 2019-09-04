@@ -5,8 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventNotification(
-    val notificationId: Long? = null,
     val type: Int,
     val title: String,
-    val timeStamp: Long
-): Parcelable
+    val timeStamp: Long?
+) : Parcelable

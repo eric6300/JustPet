@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.calendar
+package com.taiwan.justvet.justpet.home
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,36 +6,29 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.databinding.ItemCalendarEventBinding
-import com.taiwan.justvet.justpet.databinding.ItemChipTagBinding
-import com.taiwan.justvet.justpet.home.PetEventAdapter
+import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
 
-class CalendarEvnetAdapter(val viewModel: CalendarViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<PetEvent, CalendarEvnetAdapter.ViewHolder>(PetEventAdapter.EventDiffCallback()) {
+class PetNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
+    ListAdapter<PetEvent, PetNotificationAdapter.ViewHolder>(EventDiffCallback()) {
 
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val petEvent = getItem(position)
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(petEvent)
+        val event = getItem(position)
+        holder.binding.layoutPetEvent.setOnClickListener {
+            onClickListener.onClick(event)
         }
-        holder.binding.listOfTags.let {
-            val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
-            })
-            it.adapter = adapter
-            adapter.submitList(petEvent.tags)
-        }
-        holder.bind(petEvent)
+        holder.bind(event)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return CalendarEvnetAdapter.ViewHolder(
-            ItemCalendarEventBinding.inflate(
+        return ViewHolder(
+            ItemHomePetEventBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -43,17 +36,17 @@ class CalendarEvnetAdapter(val viewModel: CalendarViewModel, val onClickListener
         )
     }
 
-    override fun onViewAttachedToWindow(holder: CalendarEvnetAdapter.ViewHolder) {
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: CalendarEvnetAdapter.ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemCalendarEventBinding, val viewModel: CalendarViewModel) :
+    class ViewHolder(val binding: ItemHomePetEventBinding, val viewModel: HomeViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
@@ -74,16 +67,25 @@ class CalendarEvnetAdapter(val viewModel: CalendarViewModel, val onClickListener
             lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         }
 
-        fun bind(petEvent: PetEvent) {
+        fun bind(event: PetEvent) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
-            binding.event = petEvent
+            binding.event = event
             binding.executePendingBindings()
         }
-
     }
 
-    class OnClickListener(val clickListener: (petEvent: PetEvent) -> Unit) {
-        fun onClick(petEvent: PetEvent) = clickListener(petEvent)
+    class EventDiffCallback : DiffUtil.ItemCallback<PetEvent>() {
+        override fun areItemsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
+            return oldItem === newItem
+        }
+
+        override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
+            return oldItem.timeStamp == newItem.timeStamp
+        }
+    }
+
+    class OnClickListener(val clickListener: (event: PetEvent) -> Unit) {
+        fun onClick(event: PetEvent) = clickListener(event)
     }
 }

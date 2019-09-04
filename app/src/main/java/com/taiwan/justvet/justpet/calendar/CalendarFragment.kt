@@ -2,7 +2,6 @@ package com.taiwan.justvet.justpet.calendar
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
 import com.taiwan.justvet.justpet.decorators.EventDecorator
-import com.taiwan.justvet.justpet.home.TAG
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
@@ -64,7 +62,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     private fun setupEventRecyclerView() {
         val listOfEvents = binding.calendarListEvent
-        val adapter = CalendarEvnetAdapter(viewModel, CalendarEvnetAdapter.OnClickListener {
+        val adapter = CalendarEventAdapter(viewModel, CalendarEventAdapter.OnClickListener {
         })
         listOfEvents.adapter = adapter
     }

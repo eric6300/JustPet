@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.home
+package com.taiwan.justvet.justpet.calendar
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,25 +10,31 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
+import com.taiwan.justvet.justpet.databinding.ItemCalendarEventBinding
 
-class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<PetEvent, PetEventAdapter.ViewHolder>(EventDiffCallback()) {
+class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener: OnClickListener) :
+    ListAdapter<PetEvent, CalendarEventAdapter.ViewHolder>(CalendarEventAdapter.EventDiffCallback()) {
 
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val event = getItem(position)
-        holder.binding.layoutPetEvent.setOnClickListener {
-            onClickListener.onClick(event)
+        val petEvent = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(petEvent)
         }
-        holder.bind(event)
+        holder.binding.listOfTags.let {
+            val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
+            })
+            it.adapter = adapter
+            adapter.submitList(petEvent.tags)
+        }
+        holder.bind(petEvent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return ViewHolder(
-            ItemHomePetEventBinding.inflate(
+        return CalendarEventAdapter.ViewHolder(
+            ItemCalendarEventBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -36,17 +42,17 @@ class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClick
         )
     }
 
-    override fun onViewAttachedToWindow(holder: ViewHolder) {
+    override fun onViewAttachedToWindow(holder: CalendarEventAdapter.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: CalendarEventAdapter.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomePetEventBinding, val viewModel: HomeViewModel) :
+    class ViewHolder(val binding: ItemCalendarEventBinding, val viewModel: CalendarViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
@@ -67,12 +73,13 @@ class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClick
             lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         }
 
-        fun bind(event: PetEvent) {
+        fun bind(petEvent: PetEvent) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
-            binding.event = event
+            binding.event = petEvent
             binding.executePendingBindings()
         }
+
     }
 
     class EventDiffCallback : DiffUtil.ItemCallback<PetEvent>() {
@@ -85,7 +92,7 @@ class PetEventAdapter(val viewModel: HomeViewModel, val onClickListener: OnClick
         }
     }
 
-    class OnClickListener(val clickListener: (event: PetEvent) -> Unit) {
-        fun onClick(event: PetEvent) = clickListener(event)
+    class OnClickListener(val clickListener: (petEvent: PetEvent) -> Unit) {
+        fun onClick(petEvent: PetEvent) = clickListener(petEvent)
     }
 }

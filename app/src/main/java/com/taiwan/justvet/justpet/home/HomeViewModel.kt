@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.data.EventNotification
+import com.taiwan.justvet.justpet.data.PetEvent
 import kotlinx.coroutines.launch
 import com.taiwan.justvet.justpet.data.userProfile
 
@@ -38,12 +40,13 @@ class HomeViewModel : ViewModel() {
 
     val petIdChip = MutableLiveData<String>()
 
-    val db = FirebaseFirestore.getInstance()
+    val petData = mutableListOf<PetProfile>()
 
+    val db = FirebaseFirestore.getInstance()
     val pets = db.collection("pets")
 
     init {
-        getPetData(mockUser())
+        getPetProfileData(mockUser())
     }
 
     fun mockUser(): userProfile {
@@ -56,9 +59,8 @@ class HomeViewModel : ViewModel() {
         return userProfile("eric6300", "6300eric@gmail.com", petList)
     }
 
-    fun getPetData(userProfile: userProfile) {
+    fun getPetProfileData(userProfile: userProfile) {
         userProfile.pets?.let {
-            val petData = mutableListOf<PetProfile>()
             viewModelScope.launch {
                 for (petId in userProfile.pets) {
                     pets.document(petId).get()
@@ -74,14 +76,6 @@ class HomeViewModel : ViewModel() {
                             )
                             petData.add(petProfile)
                             _petList.value = petData
-//                            Log.d(
-//                                TAG,
-//                                "name:${petProfile.name} species:${petProfile.species} gender:${petProfile.gender}"
-//                            )
-//                            Log.d(
-//                                TAG,
-//                                "neutered:${petProfile.neutered} birthDay:${petProfile.birthDay} idNumber:${petProfile.idNumber} owner:${petProfile.owner}"
-//                            )
                         }
                         .addOnFailureListener {
                             Log.d(TAG, "Failed")
@@ -89,6 +83,10 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getPetEventData(index: Int) {
+
     }
 
     fun datePicker(view: View) {
@@ -136,6 +134,13 @@ class HomeViewModel : ViewModel() {
 
     fun navigateToAchievementCompleted() {
         _navigateToAchievement.value = null
+    }
+
+    fun mockNotification() {
+        val eventList = mutableListOf<EventNotification>()
+        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天" , timeStamp = null))
+        eventList.add(EventNotification(type = 0, title = "除蚤滴劑要記得點喔!", timeStamp = null))
+        eventList.add(EventNotification(type = 0, title = "這四週內已經吐了三次喔!", timeStamp = null))
     }
 
 }

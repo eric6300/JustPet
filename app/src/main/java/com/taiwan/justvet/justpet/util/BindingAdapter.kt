@@ -6,12 +6,10 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.calendar.CalendarEvnetAdapter
+import com.taiwan.justvet.justpet.calendar.CalendarEventAdapter
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
-import com.taiwan.justvet.justpet.home.PetProfileAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -143,7 +141,7 @@ fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<P
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
-                is CalendarEvnetAdapter -> submitList(it)
+                is CalendarEventAdapter -> submitList(it)
             }
         }
     }

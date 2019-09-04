@@ -17,13 +17,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.FirebaseApp
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
 const val TAG = "testEric"
@@ -31,7 +28,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
-    private lateinit var eventAdapter: PetEventAdapter
+    private lateinit var notificationAdapter: PetNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
     private lateinit var eventList: MutableList<PetEvent>
@@ -104,8 +101,8 @@ class HomeFragment : Fragment() {
             val newPosition = (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
             if (lastPosition != newPosition) {
                 Log.d(TAG, "change position! lastPosition = $lastPosition , newPosition = $newPosition")
+                viewModel.getPetEventData(newPosition)
                 lastPosition = newPosition
-                // TODO change pet event while change pet profile
             }
         }
 
@@ -122,13 +119,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPetEvent() {
-        eventAdapter = PetEventAdapter(viewModel, PetEventAdapter.OnClickListener {
+        notificationAdapter = PetNotificationAdapter(viewModel, PetNotificationAdapter.OnClickListener {
 
         })
 
         val listEventPet = binding.homeListEventPet
         listEventPet.apply {
-            this.adapter = eventAdapter
+            this.adapter = notificationAdapter
             PagerSnapHelper().attachToRecyclerView(this)
             enableSwipe(this)
         }
@@ -152,9 +149,9 @@ class HomeFragment : Fragment() {
                         // TODO 推播詢問及設定
                     }
                     eventList.removeAt(viewHolder.adapterPosition)
-                    eventAdapter.submitList(eventList)
-                    eventAdapter.notifyDataSetChanged()
-                    // TODO Connect to Firebase
+                    notificationAdapter.submitList(eventList)
+                    notificationAdapter.notifyDataSetChanged()
+                    // TODO deleted
                 }
 
                 override fun onChildDraw(
