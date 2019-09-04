@@ -26,7 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_cat" />
+            iconSpecies="@{profile.species}" />
 
         <TextView
             android:id="@+id/text_name"
@@ -39,6 +39,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            android:text="@{profile.name}"
             tools:text="MeiMei" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

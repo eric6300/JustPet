@@ -26,7 +26,7 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
             val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
             })
             it.adapter = adapter
-            adapter.submitList(petEvent.tags)
+            adapter.submitList(petEvent.eventTags)
         }
         holder.bind(petEvent)
     }

@@ -27,6 +27,7 @@ import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_CAMERA
 import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
+import com.taiwan.justvet.justpet.home.TAG
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 import com.taiwan.justvet.justpet.tag.TagViewModel
 import com.taiwan.justvet.justpet.util.bindGenderIcon
@@ -54,6 +55,10 @@ class EditEventFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         eventImage = binding.imageEvent
+
+        val currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
+
+        Log.d(TAG, "$currentEvent")
 
         viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {

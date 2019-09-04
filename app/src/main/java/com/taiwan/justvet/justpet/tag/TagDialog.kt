@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,12 @@ import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
-import com.taiwan.justvet.justpet.home.TAG
 
 class TagDialog : BottomSheetDialogFragment() {
 
@@ -26,6 +25,7 @@ class TagDialog : BottomSheetDialogFragment() {
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var timePickerDialog: TimePickerDialog
     private lateinit var calendar: Calendar
+    private lateinit var avatarAdapter: PetAvatarAdapter
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
     }
@@ -58,8 +58,14 @@ class TagDialog : BottomSheetDialogFragment() {
 
         viewModel.navigateToEditEvent.observe(this, Observer {
             if (it == true) {
-                findNavController().navigate(TagDialogDirections.actionTagDialogToEventDetailFragment())
-                viewModel.navigateToEditEventCompleted()
+                viewModel.currentEvent.value?.apply {
+                    findNavController().navigate(
+                        TagDialogDirections.actionTagDialogToEventDetailFragment(
+                            this
+                        )
+                    )
+                    viewModel.navigateToEditEventCompleted()
+                }
             }
         })
 
@@ -77,13 +83,39 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
+        setupPetProfile()
         setupListOfTags()
 
         calendar = Calendar.getInstance()
         setupDatePickerDialog()
         setupTimePickerDialog()
 
+        viewModel.getCurrentDateAndTime(calendar)
+
         return binding.root
+    }
+
+    private fun setupPetProfile() {
+        var lastPosition: Int? = -1
+
+        val listOfProfile = binding.listOfProfile
+        avatarAdapter = PetAvatarAdapter(viewModel)
+
+        listOfProfile.apply {
+            PagerSnapHelper().attachToRecyclerView(this)
+
+            this.adapter = avatarAdapter
+
+            this.setOnScrollChangeListener { _, _, _, _, _ ->
+                val newPosition = (listOfProfile.layoutManager as LinearLayoutManager)
+                    .findFirstVisibleItemPosition()
+
+                if (lastPosition != newPosition) {
+                    viewModel.getProfilePosition(newPosition)
+                    lastPosition = newPosition
+                }
+            }
+        }
     }
 
     private fun setupListOfTags() {
@@ -96,7 +128,7 @@ class TagDialog : BottomSheetDialogFragment() {
 
     private fun setupDatePickerDialog() {
         val dateListener =
-            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
                 viewModel.updateDate(calendar)
             }
@@ -111,11 +143,10 @@ class TagDialog : BottomSheetDialogFragment() {
 
     private fun setupTimePickerDialog() {
         val timeListener =
-            TimePickerDialog.OnTimeSetListener { view: TimePicker, hourOfDay: Int, minute: Int ->
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
                 viewModel.updateTime(calendar)
-                Log.d(TAG, "$hourOfDay,$minute")
             }
         timePickerDialog = TimePickerDialog(
             this.context,

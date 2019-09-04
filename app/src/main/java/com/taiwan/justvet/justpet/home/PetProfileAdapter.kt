@@ -1,6 +1,7 @@
 package com.taiwan.justvet.justpet.home
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle

@@ -32,7 +32,11 @@
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
-        android:label="EventDetailFragment" />
+        android:label="EventDetailFragment" >
+        <argument
+            android:name="petEvent"
+            app:argType="com.taiwan.justvet.justpet.data.PetEvent" />
+    </fragment>
     <dialog
         android:id="@+id/tagDialog"
         android:name="com.taiwan.justvet.justpet.tag.TagDialog"

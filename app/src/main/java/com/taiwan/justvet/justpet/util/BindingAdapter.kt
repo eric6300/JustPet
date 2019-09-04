@@ -10,8 +10,10 @@ import com.taiwan.justvet.justpet.calendar.CalendarEventAdapter
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
+import com.taiwan.justvet.justpet.tag.PetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -153,6 +155,23 @@ fun bindRecyclerViewWithListOfNotification(recyclerView: RecyclerView, list: Lis
         recyclerView.adapter?.apply {
             when (this) {
                 is EventNotificationAdapter -> submitList(it)
+            }
+        }
+    }
+}
+
+@BindingAdapter("listOfProfile")
+fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<PetProfile>?) {
+    list?.let {
+        recyclerView.adapter?.apply {
+            when (this) {
+                is PetAvatarAdapter -> {
+                    when (itemCount) {
+                        0 -> submitList(it)
+                        it.size -> notifyDataSetChanged()
+                        else -> submitList(it)
+                    }
+                }
             }
         }
     }

@@ -36,13 +36,13 @@ class CalendarViewModel : ViewModel() {
         }
 
         list.let {
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 12, timeString = "15:29", tags = tagList))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 12, timeString = "15:29", eventTags = tagList))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:15"))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:29", tags = tagList))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:29", eventTags = tagList))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, timeString = "09:19"))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, timeString = "21:55"))
             it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, timeString = "21:55"))
-            it.add(PetEvent(year = 2019, month = 8, dayOfMonth = 18, timeString = "21:55", tags = tagList))
+            it.add(PetEvent(year = 2019, month = 8, dayOfMonth = 18, timeString = "21:55", eventTags = tagList))
             it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, timeString = "21:55"))
             it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, timeString = "21:55"))
         }

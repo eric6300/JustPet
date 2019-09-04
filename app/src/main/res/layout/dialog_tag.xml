@@ -92,7 +92,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:onClick="@{() -> viewModel.navigateToEditEvent()}"
+            android:onClick="@{() -> viewModel.makeTagList()}"
             android:text="@string/text_next_step"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/button_quick_save"
@@ -133,7 +133,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+            app:layout_constraintTop_toBottomOf="@+id/list_of_profile"
             app:srcCompat="@drawable/nav_bottom_calendar" />
 
         <ImageView
@@ -164,13 +164,14 @@
             tools:text="10:40" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/list_of_profile"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
             tools:listitem="@layout/item_tag_dialog_pet"
+            listOfProfile="@{viewModel.listOfProfile}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

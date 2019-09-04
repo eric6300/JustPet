@@ -68,7 +68,6 @@ class HomeFragment : Fragment() {
         viewModel.petList.observe(this, Observer {
             it?.let {
                 profileAdapter.submitList(it)
-                Log.d(TAG, "observe: $it")
                 profileAdapter.notifyDataSetChanged()
             }
         })
@@ -101,10 +100,10 @@ class HomeFragment : Fragment() {
 
         // monitor position after scrolling
         var lastPosition = -1
-        listProfilePet.setOnScrollChangeListener { view, _, _, _, _ ->
+        listProfilePet.setOnScrollChangeListener { _, _, _, _, _ ->
             val newPosition = (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
+
             if (lastPosition != newPosition) {
-                Log.d(TAG, "change position! lastPosition = $lastPosition , newPosition = $newPosition")
                 viewModel.getPetEventData(newPosition)
                 lastPosition = newPosition
             }

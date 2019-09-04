@@ -69,6 +69,7 @@ class HomeViewModel : ViewModel() {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
                             val petProfile = PetProfile(
+                                id = document.id,
                                 name = document["name"] as String?,
                                 species = document["species"] as Long?,
                                 gender = document["gender"] as Long?,

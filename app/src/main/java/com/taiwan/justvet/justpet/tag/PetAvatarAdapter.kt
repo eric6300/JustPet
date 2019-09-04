@@ -14,7 +14,7 @@ import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
 import com.taiwan.justvet.justpet.databinding.ItemTagDialogPetBinding
 import com.taiwan.justvet.justpet.home.PetProfileAdapter
 
-class PetAvatarAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
+class PetAvatarAdapter(val viewModel: TagViewModel) :
     ListAdapter<PetProfile, PetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
 
     private lateinit var context: Context
@@ -73,9 +73,5 @@ class PetAvatarAdapter(val viewModel: TagViewModel, val onClickListener: OnClick
             binding.executePendingBindings()
         }
 
-    }
-
-    class OnClickListener(val clickListener: (profile: PetProfile) -> Unit) {
-        fun onClick(profile: PetProfile) = clickListener(profile)
     }
 }
