@@ -83,7 +83,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         }
 
         override fun areContentsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
-            return oldItem.name == newItem.name
+            return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthDay == newItem.birthDay)
         }
     }
 

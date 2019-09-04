@@ -9,42 +9,16 @@ import android.icu.util.Calendar
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.JustPetApplication
 import kotlinx.coroutines.launch
+import com.taiwan.justvet.justpet.data.userProfile
 
 
 class HomeViewModel : ViewModel() {
 
-    val petName = MutableLiveData<String>()
-
-    val petBirthDay = MutableLiveData<String>()
-
-    val petIdChip = MutableLiveData<String>()
-
-    val db = FirebaseFirestore.getInstance()
-
-    val users = db.collection("users")
-
-    init {
-        getData()
-    }
-
-    fun getData() {
-        viewModelScope.launch {
-            users.whereEqualTo("email", "6300eric@gmail.com")
-                .get()
-                .addOnSuccessListener {
-                    for (document in it) {
-                        Log.d(TAG, "${document["pets"]}")
-                    }
-                }
-                .addOnFailureListener {
-
-                }
-        }
-    }
+    private val _petList = MutableLiveData<List<PetProfile>>()
+    val petList: LiveData<List<PetProfile>>
+        get() = _petList
 
     private val _isModified = MutableLiveData<Boolean>()
     val isModified: LiveData<Boolean>
@@ -57,6 +31,65 @@ class HomeViewModel : ViewModel() {
     private val _navigateToAchievement = MutableLiveData<Boolean>()
     val navigateToAchievement: LiveData<Boolean>
         get() = _navigateToAchievement
+
+    val petName = MutableLiveData<String>()
+
+    val petBirthDay = MutableLiveData<String>()
+
+    val petIdChip = MutableLiveData<String>()
+
+    val db = FirebaseFirestore.getInstance()
+
+    val pets = db.collection("pets")
+
+    init {
+        getPetData(mockUser())
+    }
+
+    fun mockUser(): userProfile {
+        val petList = ArrayList<String>()
+        petList.let {
+            it.add("5DjrhdAlZka29LSmOe12")
+            it.add("BR1unuBGFmeioH4VpKc2")
+            it.add("FeHxkWD6VwpPMtL2bZT4")
+        }
+        return userProfile("eric6300", "6300eric@gmail.com", petList)
+    }
+
+    fun getPetData(userProfile: userProfile) {
+        userProfile.pets?.let {
+            val petData = mutableListOf<PetProfile>()
+            viewModelScope.launch {
+                for (petId in userProfile.pets) {
+                    pets.document(petId).get()
+                        .addOnSuccessListener { document ->
+                            val petProfile = PetProfile(
+                                name = document["name"] as String?,
+                                species = document["species"] as Long?,
+                                gender = document["gender"] as Long?,
+                                neutered = document["neutered"] as Boolean?,
+                                birthDay = document["birthDay"] as String?,
+                                idNumber = document["idNumber"] as String?,
+                                owner = document["owner"] as String?
+                            )
+                            petData.add(petProfile)
+                            _petList.value = petData
+//                            Log.d(
+//                                TAG,
+//                                "name:${petProfile.name} species:${petProfile.species} gender:${petProfile.gender}"
+//                            )
+//                            Log.d(
+//                                TAG,
+//                                "neutered:${petProfile.neutered} birthDay:${petProfile.birthDay} idNumber:${petProfile.idNumber} owner:${petProfile.owner}"
+//                            )
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Failed")
+                        }
+                }
+            }
+        }
+    }
 
     fun datePicker(view: View) {
         val calendar = Calendar.getInstance()

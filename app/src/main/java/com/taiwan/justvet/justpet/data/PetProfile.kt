@@ -1,9 +1,11 @@
 package com.taiwan.justvet.justpet.data
 
 data class PetProfile(
-    val name: String,
-    val species: Int,
-    val gender: Int,
-    val birthDay: String? = null,
-    val idNumber: String? = null
+    val name: String?,
+    val species: Long?,
+    val gender: Long?,
+    val neutered: Boolean?,
+    val birthDay: String?,
+    val idNumber: String?,
+    val owner: String?
 )

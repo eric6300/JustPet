@@ -9,20 +9,22 @@ import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.calendar.CalendarEvnetAdapter
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
+import com.taiwan.justvet.justpet.home.PetProfileAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
-fun bindSpeciesIcon(imageView: ImageView, species: Int) {
+fun bindSpeciesIcon(imageView: ImageView, species: Long) {
     species.let {
         when (it) {
-            0 -> {
+            0L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_cat
                     ))
             }
-            1 -> {
+            1L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_dog
@@ -33,16 +35,16 @@ fun bindSpeciesIcon(imageView: ImageView, species: Int) {
 }
 
 @BindingAdapter("iconGender")
-fun bindGenderIcon(imageView: ImageView, gender: Int) {
+fun bindGenderIcon(imageView: ImageView, gender: Long) {
     gender.let {
         when (it) {
-            0 -> {
+            0L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_female
                     ))
             }
-            1 -> {
+            1L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_male

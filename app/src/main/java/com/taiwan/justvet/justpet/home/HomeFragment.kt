@@ -53,7 +53,6 @@ class HomeFragment : Fragment() {
 
         setupPetProfile()
         setupPetEvent()
-        mockupData()
 
         viewModel.birthdayChange.observe(this, Observer {
             if (it) {
@@ -69,7 +68,13 @@ class HomeFragment : Fragment() {
             }
         })
 
-
+        viewModel.petList.observe(this, Observer {
+            it?.let {
+                profileAdapter.submitList(it)
+                Log.d(TAG, "observe: $it")
+                profileAdapter.notifyDataSetChanged()
+            }
+        })
 
         return binding.root
     }
@@ -250,20 +255,5 @@ class HomeFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
-    }
-
-    fun mockupData() {
-        val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, idNumber = "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, idNumber = "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, idNumber = ""))
-        profileAdapter.submitList(list)
-
-//        eventList = mutableListOf<PetEvent>()
-//        eventList.add(PetEvent(timeStamp = 123, eventType = 0, note = "年度健康檢查還剩 15 天"))
-//        eventList.add(PetEvent(timeStamp = 1222, eventType = 1, note = "除蚤滴劑要記得點喔!"))
-//        eventList.add(PetEvent(timeStamp = 3333, eventType = 2, note = "這四週內已經吐了三次喔!"))
-//        eventAdapter.submitList(eventList)
-
     }
 }
