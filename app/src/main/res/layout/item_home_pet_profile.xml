@@ -32,10 +32,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
+            app:cardElevation="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -161,7 +161,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         app:layout_constraintBottom_toBottomOf="@+id/icon_species"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/icon_gender"
@@ -182,7 +181,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         app:counterEnabled="true"
                         app:counterMaxLength="15"
                         app:layout_constraintBottom_toBottomOf="@+id/icon_id_chip"
@@ -203,7 +201,6 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         app:layout_constraintBottom_toBottomOf="@+id/icon_birthday"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/icon_calendar"
@@ -274,12 +271,12 @@
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="16dp"
-                    android:onClick="@{() -> viewModel.navigateToAchievement()}"
                     android:background="@drawable/ic_achievement"
                     android:backgroundTint="@android:color/background_light"
+                    android:onClick="@{() -> viewModel.navigateToAchievement()}"
+                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@id/image_pet"
-                    app:layout_constraintStart_toEndOf="@+id/text_name_pet"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"/>
+                    app:layout_constraintStart_toEndOf="@+id/text_name_pet" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

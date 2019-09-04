@@ -57,7 +57,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         calendarView = binding.calendarView
         calendarView.apply {
             this.setOnDateChangedListener(this@CalendarFragment)
-            this.showOtherDates = MaterialCalendarView.SHOW_DEFAULTS
+            this.showOtherDates = MaterialCalendarView.SHOW_OTHER_MONTHS
             this.setSelectedDate(localDate)
         }
     }
