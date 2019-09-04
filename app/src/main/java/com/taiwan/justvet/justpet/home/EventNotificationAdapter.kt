@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.EventNotification
-import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
+import com.taiwan.justvet.justpet.databinding.ItemHomeNotificationBinding
 
 class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
     ListAdapter<EventNotification, EventNotificationAdapter.ViewHolder>(EventDiffCallback()) {
@@ -28,7 +28,7 @@ class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
-            ItemHomePetEventBinding.inflate(
+            ItemHomeNotificationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -46,7 +46,7 @@ class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomePetEventBinding, val viewModel: HomeViewModel) :
+    class ViewHolder(val binding: ItemHomeNotificationBinding, val viewModel: HomeViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)

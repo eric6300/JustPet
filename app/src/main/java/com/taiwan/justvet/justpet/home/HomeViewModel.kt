@@ -11,7 +11,6 @@ import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.data.EventNotification
-import com.taiwan.justvet.justpet.data.PetEvent
 import kotlinx.coroutines.launch
 import com.taiwan.justvet.justpet.data.userProfile
 
@@ -21,6 +20,10 @@ class HomeViewModel : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
+
+    private val _notificationList = MutableLiveData<List<EventNotification>>()
+    val notificationList: LiveData<List<EventNotification>>
+        get() = _notificationList
 
     private val _isModified = MutableLiveData<Boolean>()
     val isModified: LiveData<Boolean>
@@ -86,7 +89,11 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getPetEventData(index: Int) {
-
+        when (index) {
+            0 -> dataOne()
+            1 -> dataTwo()
+            2 -> dataThree()
+        }
     }
 
     fun datePicker(view: View) {
@@ -136,11 +143,24 @@ class HomeViewModel : ViewModel() {
         _navigateToAchievement.value = null
     }
 
-    fun mockNotification() {
+    fun dataOne() {
         val eventList = mutableListOf<EventNotification>()
         eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天" , timeStamp = null))
-        eventList.add(EventNotification(type = 0, title = "除蚤滴劑要記得點喔!", timeStamp = null))
-        eventList.add(EventNotification(type = 0, title = "這四週內已經吐了三次喔!", timeStamp = null))
+        eventList.add(EventNotification(type = 1, title = "除蚤滴劑要記得點喔!", timeStamp = null))
+        eventList.add(EventNotification(type = 2, title = "這四週內已經吐了三次喔!", timeStamp = null))
+        _notificationList.value = eventList
+    }
+
+    fun dataTwo() {
+        val eventList = mutableListOf<EventNotification>()
+        eventList.add(EventNotification(type = 1, title = "要記得吃心絲蟲預防藥喔!", timeStamp = null))
+        _notificationList.value = eventList
+    }
+
+    fun dataThree() {
+        val eventList = mutableListOf<EventNotification>()
+        eventList.add(EventNotification(type = 1, title = "今天要記得回診、拿藥喔!", timeStamp = null))
+        _notificationList.value = eventList
     }
 
 }

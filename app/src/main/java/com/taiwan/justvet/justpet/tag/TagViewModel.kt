@@ -163,7 +163,7 @@ class TagViewModel : ViewModel() {
             3 -> getDrawable(R.drawable.ic_nail_trimming)
             4 -> getDrawable(R.drawable.ic_grooming)
             5 -> getDrawable(R.drawable.ic_weighting)
-            else -> getDrawable(R.drawable.ic_food)
+            else -> getDrawable(R.drawable.ic_synrige)
         }
     }
 

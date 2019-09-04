@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.calendar.CalendarEventAdapter
+import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
+import com.taiwan.justvet.justpet.home.EventNotificationAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -78,28 +80,26 @@ fun bindEventBackground (cardView: CardView, eventType: Int) {
     }
 }
 
-@BindingAdapter("eventTagIcon")
-fun bindEventTagIcon (imageView: ImageView, tag: Int) {
-    tag.let {
+@BindingAdapter("notificationType")
+fun bindEventTagIcon (imageView: ImageView, type: Int) {
+    type.let {
         when (it) {
+            // normal
             0 -> {
                 imageView.setImageDrawable(
-                    JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_dog
-                    ))
+                    Util.getDrawable(R.drawable.ic_walking))
             }
+            // medicine
             1 -> {
                 imageView.setImageDrawable(
-                    JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_cake
-                    ))
+                    Util.getDrawable(R.drawable.ic_medicine))
             }
+            // warning
             2 -> {
                 imageView.setImageDrawable(
-                    JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_cat
-                    ))
+                    Util.getDrawable(R.drawable.ic_warning))
             }
+            // TODO : birthday
         }
     }
 }
@@ -142,6 +142,17 @@ fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<P
         recyclerView.adapter?.apply {
             when (this) {
                 is CalendarEventAdapter -> submitList(it)
+            }
+        }
+    }
+}
+
+@BindingAdapter("listOfNotification")
+fun bindRecyclerViewWithListOfNotification(recyclerView: RecyclerView, list: List<EventNotification>?) {
+    list?.let {
+        recyclerView.adapter?.apply {
+            when (this) {
+                is EventNotificationAdapter -> submitList(it)
             }
         }
     }
