@@ -13,31 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/icon_species"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="24dp"
-            android:elevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_cat" />
-
-        <TextView
-            android:id="@+id/text_name_pet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:elevation="2dp"
-            android:fontFamily="@font/roboto_mono"
-            android:text="MeiMei"
-            android:textAlignment="center"
-            android:textSize="36sp"
-            app:layout_constraintEnd_toEndOf="@+id/icon_species"
-            app:layout_constraintStart_toStartOf="@+id/icon_species"
-            app:layout_constraintTop_toBottomOf="@+id/icon_species" />
-
         <Button
             android:id="@+id/button"
             android:layout_width="wrap_content"
@@ -151,14 +126,14 @@
             android:id="@+id/button_date"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:onClick="@{() -> viewModel.showDatePickerDialog()}"
             app:layout_constraintEnd_toStartOf="@+id/text_date"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_name_pet"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView"
             app:srcCompat="@drawable/nav_bottom_calendar" />
 
         <ImageView
@@ -187,6 +162,18 @@
             app:layout_constraintStart_toEndOf="@+id/button_time"
             app:layout_constraintTop_toTopOf="@+id/button_time"
             tools:text="10:40" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_tag_dialog_pet"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

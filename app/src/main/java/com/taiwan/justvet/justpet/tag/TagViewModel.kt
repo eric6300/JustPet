@@ -7,15 +7,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.data.userProfile
 import com.taiwan.justvet.justpet.home.TAG
 import com.taiwan.justvet.justpet.util.TagType
 import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getDrawable
 import com.taiwan.justvet.justpet.util.timestampToDateString
 import com.taiwan.justvet.justpet.util.timestampToTimeString
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,12 +55,15 @@ class TagViewModel : ViewModel() {
 
     val selectedList = mutableListOf<EventTag>()
 
+    val petData = mutableListOf<PetProfile>()
+
     private val listTagDiary = mutableListOf<EventTag>()
     private val listTagSyndrome = mutableListOf<EventTag>()
     private val listTagTreatment = mutableListOf<EventTag>()
 
 
     init {
+        getPetProfileData(mockUser())
         setupDiaryTagList()
         setupSyndromeTagList()
         setupTreatmentTagList()
@@ -64,6 +71,44 @@ class TagViewModel : ViewModel() {
         showDiaryTag()
 
         showCurrentTime()
+    }
+
+    val db = FirebaseFirestore.getInstance()
+    val pets = db.collection("pets")
+
+    fun mockUser(): userProfile {
+        val petList = ArrayList<String>()
+        petList.let {
+            it.add("5DjrhdAlZka29LSmOe12")
+            it.add("BR1unuBGFmeioH4VpKc2")
+            it.add("FeHxkWD6VwpPMtL2bZT4")
+        }
+        return userProfile("eric6300", "6300eric@gmail.com", petList)
+    }
+
+    fun getPetProfileData(userProfile: userProfile) {
+        userProfile.pets?.let {
+            viewModelScope.launch {
+                for (petId in userProfile.pets) {
+                    pets.document(petId).get()
+                        .addOnSuccessListener { document ->
+                            val petProfile = PetProfile(
+                                name = document["name"] as String?,
+                                species = document["species"] as Long?,
+                                gender = document["gender"] as Long?,
+                                neutered = document["neutered"] as Boolean?,
+                                birthDay = document["birthDay"] as String?,
+                                idNumber = document["idNumber"] as String?,
+                                owner = document["owner"] as String?
+                            )
+                            petData.add(petProfile)
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Failed")
+                        }
+                }
+            }
+        }
     }
 
     private fun showCurrentTime() {
