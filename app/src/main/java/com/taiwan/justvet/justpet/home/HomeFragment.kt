@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
@@ -252,9 +254,9 @@ class HomeFragment : Fragment() {
 
     fun mockupData() {
         val list = mutableListOf<PetProfile>()
-        list.add(PetProfile("Meimei", 0, 0, idChip = "900123256344452"))
-        list.add(PetProfile("多多", 1, 0, idChip = "900001255677536"))
-        list.add(PetProfile("Lucky", 1, 1, idChip = ""))
+        list.add(PetProfile("Meimei", 0, 0, idNumber = "900123256344452"))
+        list.add(PetProfile("多多", 1, 0, idNumber = "900001255677536"))
+        list.add(PetProfile("Lucky", 1, 1, idNumber = ""))
         profileAdapter.submitList(list)
 
 //        eventList = mutableListOf<PetEvent>()

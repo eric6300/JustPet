@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class PetEventNotification(
+data class EventNotification(
     val notificationId: Long? = null,
     val type: Int,
     val title: String,

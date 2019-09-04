@@ -5,6 +5,5 @@ data class PetProfile(
     val species: Int,
     val gender: Int,
     val birthDay: String? = null,
-    val idChip: String? = null,
-    val image: String? = null
+    val idNumber: String? = null
 )
