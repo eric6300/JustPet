@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="event"
-            type="com.taiwan.justvet.justpet.data.PetEvent" />
+            name="notification"
+            type="com.taiwan.justvet.justpet.data.EventNotification"/>
 
         <variable
             name="viewModel"
@@ -29,7 +29,7 @@
             android:clickable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="3dp"
-            eventBackground="@{event.eventType}"
+            eventBackground="@{notification.type}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,11 +51,11 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    eventTagIcon="@{event.eventType}" />
+                    eventTagIcon="@{notification.type}" />
 
                 <TextView
                     android:id="@+id/text_home_event"
-                    android:text="@{event.note}"
+                    android:text="@{notification.title}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
 const val TAG = "testEric"
@@ -28,10 +28,10 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
-    private lateinit var notificationAdapter: PetNotificationAdapter
+    private lateinit var notificationAdapter: EventNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
-    private lateinit var eventList: MutableList<PetEvent>
+    private lateinit var eventList: MutableList<EventNotification>
 
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
 
         setupPetProfile()
-        setupPetEvent()
+        setupEventNotification()
 
         viewModel.birthdayChange.observe(this, Observer {
             if (it) {
@@ -77,12 +77,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPetProfile() {
+        // set adapter
         profileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
         })
 
+        // set layoutManager
         val layoutManager = CustomLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
+        // set recyclerView with adapter and layoutManager
         val listProfilePet = binding.homeListProfilePet
         listProfilePet.apply {
             this.layoutManager = layoutManager
@@ -90,13 +93,14 @@ class HomeFragment : Fragment() {
             PagerSnapHelper().attachToRecyclerView(this)
         }
 
+        // set indicator of recyclerView
         val recyclerIndicator = binding.indicatorProfilePet
         recyclerIndicator.apply {
             this.attachToRecyclerView(listProfilePet)
         }
 
+        // monitor position after scrolling
         var lastPosition = -1
-
         listProfilePet.setOnScrollChangeListener { view, _, _, _, _ ->
             val newPosition = (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
             if (lastPosition != newPosition) {
@@ -118,13 +122,13 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun setupPetEvent() {
-        notificationAdapter = PetNotificationAdapter(viewModel, PetNotificationAdapter.OnClickListener {
+    private fun setupEventNotification() {
+        notificationAdapter = EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
 
         })
 
-        val listEventPet = binding.homeListEventPet
-        listEventPet.apply {
+        val listEventNotification = binding.homeListEventNotification
+        listEventNotification.apply {
             this.adapter = notificationAdapter
             PagerSnapHelper().attachToRecyclerView(this)
             enableSwipe(this)

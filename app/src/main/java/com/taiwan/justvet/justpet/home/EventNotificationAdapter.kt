@@ -9,20 +9,20 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.ItemHomePetEventBinding
 
-class PetNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<PetEvent, PetNotificationAdapter.ViewHolder>(EventDiffCallback()) {
+class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
+    ListAdapter<EventNotification, EventNotificationAdapter.ViewHolder>(EventDiffCallback()) {
 
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val event = getItem(position)
+        val notification = getItem(position)
         holder.binding.layoutPetEvent.setOnClickListener {
-            onClickListener.onClick(event)
+            onClickListener.onClick(notification)
         }
-        holder.bind(event)
+        holder.bind(notification)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -67,25 +67,25 @@ class PetNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: 
             lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         }
 
-        fun bind(event: PetEvent) {
+        fun bind(notification: EventNotification) {
             binding.lifecycleOwner = this
             binding.viewModel = viewModel
-            binding.event = event
+            binding.notification = notification
             binding.executePendingBindings()
         }
     }
 
-    class EventDiffCallback : DiffUtil.ItemCallback<PetEvent>() {
-        override fun areItemsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
+    class EventDiffCallback : DiffUtil.ItemCallback<EventNotification>() {
+        override fun areItemsTheSame(oldItem: EventNotification, newItem: EventNotification): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
+        override fun areContentsTheSame(oldItem: EventNotification, newItem: EventNotification): Boolean {
             return oldItem.timeStamp == newItem.timeStamp
         }
     }
 
-    class OnClickListener(val clickListener: (event: PetEvent) -> Unit) {
-        fun onClick(event: PetEvent) = clickListener(event)
+    class OnClickListener(val clickListener: (notification: EventNotification) -> Unit) {
+        fun onClick(notification: EventNotification) = clickListener(notification)
     }
 }
