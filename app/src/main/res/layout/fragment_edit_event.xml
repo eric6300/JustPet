@@ -162,7 +162,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="@{viewModel.eventDateAndTime}"
+                    android:text="@{viewModel.dateAndTime}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
                     app:layout_constraintEnd_toEndOf="parent"

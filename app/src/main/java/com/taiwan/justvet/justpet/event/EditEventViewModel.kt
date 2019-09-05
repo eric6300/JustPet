@@ -28,7 +28,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         get() = _eventTags
 
     private val _dateAndTime = MutableLiveData<String>()
-    val eventDateAndTime: LiveData<String>
+    val dateAndTime: LiveData<String>
         get() = _dateAndTime
 
     val eventNote = MutableLiveData<String>()
@@ -48,13 +48,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun setDateAndTime() {
-        val formatter = SimpleDateFormat(getString(R.string.date_time_format), Locale.TAIWAN)
-        val dateAndTimeString = formatter.format(Date(petEvent.timeStamp))
-        _dateAndTime.value = dateAndTimeString
+        _dateAndTime.value = "${petEvent.year}年${petEvent.month}月${petEvent.dayOfMonth}日 ${petEvent.time}"
     }
 
     fun postEvent() {
-        val findalEvent = petEvent.let {
+        val finalEvent = petEvent.let {
             PetEvent(
                 petProfile = it.petProfile,
                 timeStamp = it.timeStamp,
@@ -69,7 +67,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             )
         }
         eventDatabase?.let {
-            it.add(findalEvent)
+            it.add(finalEvent)
                 .addOnSuccessListener { documentReference->
                     Log.d(TAG, "上傳成功, ID : ${documentReference.id}")
                     navigateToCalendar()

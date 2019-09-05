@@ -62,8 +62,7 @@ class TagViewModel : ViewModel() {
     val currentEvent: LiveData<PetEvent>
         get() = _currentEvent
 
-    var timeList = mutableListOf<String>()
-
+    val calendar = Calendar.getInstance()
     var selectedPetProfile: PetProfile? = null
     val petData = mutableListOf<PetProfile>()
     val eventTags = mutableListOf<EventTag>()
@@ -205,20 +204,17 @@ class TagViewModel : ViewModel() {
         _showTimePickerDialog.value = false
     }
 
-    fun getCurrentDateAndTime(calendar: Calendar) {
-        timeList.addAll(
-            SimpleDateFormat(
-                getString(R.string.timelist_format),
-                Locale.TAIWAN
-            ).format(calendar.time).split("/")
-        )
-    }
-
     fun navigateToEditEvent() {
+        // get selected time and date string list
+        val timeList = SimpleDateFormat(
+            getString(R.string.timelist_format),
+            Locale.TAIWAN
+        ).format(calendar.time).split("/")
+
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
                 petProfile = it,
-                timeStamp = System.currentTimeMillis(),
+                timeStamp = calendar.timeInMillis,
                 year = timeList[0].toInt(),
                 month = timeList[1].toInt(),
                 dayOfMonth = timeList[2].toInt(),
@@ -250,14 +246,14 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun updateDate(calendar: Calendar) {
+    fun updateDate() {
         _currentDate.value = SimpleDateFormat(
             getString(R.string.date_format),
             Locale.TAIWAN
         ).format(calendar.time)
     }
 
-    fun updateTime(calendar: Calendar) {
+    fun updateTime() {
         _currentTime.value = SimpleDateFormat(
             getString(R.string.time_format),
             Locale.TAIWAN

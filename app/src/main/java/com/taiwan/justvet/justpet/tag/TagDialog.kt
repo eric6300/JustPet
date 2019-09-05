@@ -86,11 +86,9 @@ class TagDialog : BottomSheetDialogFragment() {
         setupPetProfile()
         setupListOfTags()
 
-        calendar = Calendar.getInstance()
+        calendar = viewModel.calendar
         setupDatePickerDialog()
         setupTimePickerDialog()
-
-        viewModel.getCurrentDateAndTime(calendar)
 
         return binding.root
     }
@@ -130,7 +128,7 @@ class TagDialog : BottomSheetDialogFragment() {
         val dateListener =
             DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
-                viewModel.updateDate(calendar)
+                viewModel.updateDate()
             }
         datePickerDialog = DatePickerDialog(
             this.context!!,
@@ -146,7 +144,7 @@ class TagDialog : BottomSheetDialogFragment() {
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
-                viewModel.updateTime(calendar)
+                viewModel.updateTime()
             }
         timePickerDialog = TimePickerDialog(
             this.context,
