@@ -6,14 +6,14 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PetEvent (
-    val petProfile: PetProfile,
-    val timeStamp: Long,
-    val year: Int,
-    val month: Int,
-    val dayOfMonth: Int,
+    val petProfile: PetProfile? = null,
+    val timestamp: Long,
+    val year: Long,
+    val month: Long,
+    val dayOfMonth: Long,
     val time: String,
-    val eventType: Int? = 0,
-    val eventTags: List<EventTag>? = null,
+    val eventType: Long? = 0,
+    @get:Exclude val eventTags: List<EventTag>? = null,
     val tagTitleList: List<String>? = null,
     val note: String? = null
 ): Parcelable

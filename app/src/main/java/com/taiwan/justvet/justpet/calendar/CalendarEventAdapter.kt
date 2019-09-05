@@ -88,7 +88,7 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
         }
 
         override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
-            return oldItem.timeStamp == newItem.timeStamp
+            return oldItem.timestamp == newItem.timestamp
         }
     }
 

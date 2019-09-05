@@ -5,13 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.home.TAG
-import com.taiwan.justvet.justpet.util.Util.getString
-import java.text.SimpleDateFormat
-import java.util.*
 
 class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
@@ -34,7 +30,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventNote = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val eventDatabase = petEvent.petProfile.id?.let { petId ->
+    val eventDatabase = petEvent.petProfile?.id?.let { petId ->
         firebase.collection("pets").document(petId).collection("events")
     }
 
@@ -55,7 +51,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val finalEvent = petEvent.let {
             PetEvent(
                 petProfile = it.petProfile,
-                timeStamp = it.timeStamp,
+                timestamp = it.timestamp,
                 year = it.year,
                 month = it.month,
                 dayOfMonth = it.dayOfMonth,

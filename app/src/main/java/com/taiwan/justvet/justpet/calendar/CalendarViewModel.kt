@@ -1,116 +1,92 @@
 package com.taiwan.justvet.justpet.calendar
 
-import androidx.lifecycle.*
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.data.userProfile
+import com.taiwan.justvet.justpet.home.TAG
 import com.taiwan.justvet.justpet.util.TagType
 import kotlinx.coroutines.launch
 
 class CalendarViewModel : ViewModel() {
 
-    // get month data from firebase
-    private val _data = MutableLiveData<List<PetEvent>>()
-    val data: LiveData<List<PetEvent>>
-        get() = _data
+    private val _eventsData = MutableLiveData<List<PetEvent>>()
+    val eventsData: LiveData<List<PetEvent>>
+        get() = _eventsData
 
-    private val _filterListOfEvents = MutableLiveData<List<PetEvent>>()
-    val filterListOfEvents: LiveData<List<PetEvent>>
-        get() = _filterListOfEvents
+    private val _filteredEvents = MutableLiveData<List<PetEvent>>()
+    val filteredEvents: LiveData<List<PetEvent>>
+        get() = _filteredEvents
 
     private val _decorateListOfEvents = MutableLiveData<List<PetEvent>>()
     val decorateListOfEvents: LiveData<List<PetEvent>>
         get() = _decorateListOfEvents
 
+    val firebase = FirebaseFirestore.getInstance()
+    val pets = firebase.collection("pets")
+
     init {
-        mockData()
+        getPetEventsData(mockUser())
     }
 
-    fun mockData() {
-        val list = mutableListOf<PetEvent>()
-        val tagList = mutableListOf<EventTag>()
-        val petProfile = PetProfile(
-            idNumber = "900123123795226",
-            id = "123123",
-            birthDay = "2011/6/6",
-            name = "mei",
-            gender = 0,
-            neutered = false,
-            owner = "asdfasdf",
-            species = 0
-        )
-
-        tagList.let {
-            it.add(EventTag(TagType.DIARY, 0, "散步"))
-            it.add(EventTag(TagType.DIARY, 0, "吃飯"))
-            it.add(EventTag(TagType.DIARY, 0, "打咚咚"))
+    fun mockUser(): userProfile {
+        val petList = ArrayList<String>()
+        petList.let {
+            it.add("5DjrhdAlZka29LSmOe12")
+            it.add("BR1unuBGFmeioH4VpKc2")
+            it.add("FeHxkWD6VwpPMtL2bZT4")
         }
-
-        list.let {
-            it.add(
-                PetEvent(
-                    year = 2019,
-                    month = 9,
-                    dayOfMonth = 12,
-                    time = "15:29",
-                    eventTags = tagList,
-                    petProfile = petProfile,
-                    timeStamp = 123456
-                )
-            )
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, time = "15:15", petProfile = petProfile,
-                timeStamp = 123456))
-            it.add(
-                PetEvent(
-                    year = 2019,
-                    month = 9,
-                    dayOfMonth = 3,
-                    time = "15:29",
-                    eventTags = tagList,
-                    petProfile = petProfile,
-                    timeStamp = 123456
-                )
-            )
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, time = "09:19", petProfile = petProfile,
-                timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, time = "21:55", petProfile = petProfile,
-                timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, time = "21:55", petProfile = petProfile,
-                timeStamp = 123456))
-            it.add(
-                PetEvent(
-                    year = 2019,
-                    month = 8,
-                    dayOfMonth = 18,
-                    time = "21:55",
-                    eventTags = tagList,
-                    petProfile = petProfile,
-                    timeStamp = 123456
-                )
-            )
-            it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, time = "21:55",
-                petProfile=petProfile,
-                timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, time = "21:55",petProfile = petProfile,
-                timeStamp = 123456))
-        }
-
-        _data.value = list
+        return userProfile("eric6300", "6300eric@gmail.com", petList)
     }
 
-    fun eventFilter(year: Int, month: Int, dayOfMonth: Int?) {
-        _data.value?.let {
+    fun getPetEventsData(userProfile: userProfile) {
+        userProfile.pets?.let {
+            viewModelScope.launch {
+                val data = mutableListOf<PetEvent>()
+                for (petId in userProfile.pets) {
+                    pets.document(petId).collection("events")
+                        .get()
+                        .addOnSuccessListener { document ->
+                            for (event in document) {
+                                data.add(
+                                    PetEvent(
+                                        timestamp = event["timeStamp"] as Long,
+                                        year = event["year"] as Long,
+                                        month = event["month"] as Long,
+                                        dayOfMonth = event["dayOfMonth"] as Long,
+                                        time = event["time"] as String
+                                        )
+                                )
+                                _eventsData.value = data
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Failed")
+                        }
+                }
+            }
+        }
+    }
+
+    fun eventFilter(year: Long, month: Long, dayOfMonth: Long?) {
+        _eventsData.value?.let { eventList ->
             if (dayOfMonth != null) {
                 viewModelScope.launch {
-                    val newList = it.filter { event ->
+                    val newList = eventList.filter { event ->
                         (event.year == year) && (event.month == month) && (event.dayOfMonth == dayOfMonth)
                     }
-                    _filterListOfEvents.value = newList
+                    _filteredEvents.value = newList
                 }
             } else {
                 viewModelScope.launch {
                     // Get decoration list of the month
-                    val newList = _data.value?.filter { event ->
+                    val newList = _eventsData.value?.filter { event ->
                         (event.year == year) && (event.month == month)
                     }
                     _decorateListOfEvents.value = newList

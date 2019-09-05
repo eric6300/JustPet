@@ -43,7 +43,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         setupEventRecyclerView()
 
         setupMonthChangedListener()
-        showThisMonthEvent(localDate)
+        showThisMonthEvent()
         setupDecoration()
 
 
@@ -69,19 +69,19 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     private fun setupMonthChangedListener() {
         calendarView.setOnMonthChangedListener { widget, date ->
-            viewModel.eventFilter(date.year, date.month, null)
+            viewModel.eventFilter(date.year.toLong(), date.month.toLong(), null)
         }
     }
 
-    private fun showThisMonthEvent(localDate: LocalDate) {
-        viewModel.data.observe(this, Observer {
+    private fun showThisMonthEvent() {
+        viewModel.eventsData.observe(this, Observer {
             val year = localDate.year
             val month = localDate.monthValue
             val dayOfMonth = localDate.dayOfMonth
             // filter for events of this month and set decoration
-            viewModel.eventFilter(year = year, month = month, dayOfMonth = null)
+            viewModel.eventFilter(year = year.toLong(), month = month.toLong(), dayOfMonth = null)
             // filter for events of today and show in the recyclerView
-            viewModel.eventFilter(year = year, month = month, dayOfMonth = dayOfMonth)
+            viewModel.eventFilter(year = year.toLong(), month = month.toLong(), dayOfMonth = dayOfMonth.toLong())
         })
     }
 
@@ -93,7 +93,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
                     val month = event.month
                     val dayOfMonth = event.dayOfMonth
                     val list = ArrayList<CalendarDay>()
-                    list.add(CalendarDay.from(year, month, dayOfMonth))
+                    list.add(CalendarDay.from(year.toInt(), month.toInt(), dayOfMonth.toInt()))
                     calendarView.addDecorator(EventDecorator(Color.RED, list))
                 }
             }
@@ -105,6 +105,6 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         date: CalendarDay,
         selected: Boolean
     ) {
-        viewModel.eventFilter(date.year, date.month, date.day)
+        viewModel.eventFilter(date.year.toLong(), date.month.toLong(), date.day.toLong())
     }
 }

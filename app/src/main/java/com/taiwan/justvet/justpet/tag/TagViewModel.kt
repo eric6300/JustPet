@@ -214,10 +214,10 @@ class TagViewModel : ViewModel() {
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
                 petProfile = it,
-                timeStamp = calendar.timeInMillis,
-                year = timeList[0].toInt(),
-                month = timeList[1].toInt(),
-                dayOfMonth = timeList[2].toInt(),
+                timestamp = calendar.timeInMillis,
+                year = timeList[0].toLong(),
+                month = timeList[1].toLong(),
+                dayOfMonth = timeList[2].toLong(),
                 time = timeList[3],
                 eventTags = eventTags,
                 tagTitleList = tagTitleList

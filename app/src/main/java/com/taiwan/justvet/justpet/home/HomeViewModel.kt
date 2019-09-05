@@ -43,10 +43,8 @@ class HomeViewModel : ViewModel() {
 
     val petIdChip = MutableLiveData<String>()
 
-    val petData = mutableListOf<PetProfile>()
-
-    val db = FirebaseFirestore.getInstance()
-    val pets = db.collection("pets")
+    val firebase = FirebaseFirestore.getInstance()
+    val pets = firebase.collection("pets")
 
     init {
         getPetProfileData(mockUser())
@@ -65,20 +63,22 @@ class HomeViewModel : ViewModel() {
     fun getPetProfileData(userProfile: userProfile) {
         userProfile.pets?.let {
             viewModelScope.launch {
+                val petData = mutableListOf<PetProfile>()
                 for (petId in userProfile.pets) {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
-                            val petProfile = PetProfile(
-                                id = document.id,
-                                name = document["name"] as String?,
-                                species = document["species"] as Long?,
-                                gender = document["gender"] as Long?,
-                                neutered = document["neutered"] as Boolean?,
-                                birthDay = document["birthDay"] as String?,
-                                idNumber = document["idNumber"] as String?,
-                                owner = document["owner"] as String?
+                            petData.add(
+                                PetProfile(
+                                    id = document.id,
+                                    name = document["name"] as String?,
+                                    species = document["species"] as Long?,
+                                    gender = document["gender"] as Long?,
+                                    neutered = document["neutered"] as Boolean?,
+                                    birthDay = document["birthDay"] as String?,
+                                    idNumber = document["idNumber"] as String?,
+                                    owner = document["owner"] as String?
+                                )
                             )
-                            petData.add(petProfile)
                             _petList.value = petData
                         }
                         .addOnFailureListener {
@@ -146,7 +146,7 @@ class HomeViewModel : ViewModel() {
 
     fun dataOne() {
         val eventList = mutableListOf<EventNotification>()
-        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天" , timeStamp = null))
+        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天", timeStamp = null))
         eventList.add(EventNotification(type = 1, title = "除蚤滴劑要記得點喔!", timeStamp = null))
         eventList.add(EventNotification(type = 2, title = "這四週內已經吐了三次喔!", timeStamp = null))
         _notificationList.value = eventList
