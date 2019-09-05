@@ -151,11 +151,12 @@ class HomeFragment : Fragment() {
                         Log.d(TAG, "完成並詢問要不要設定推播")
                         // TODO 推播詢問及設定
                     }
-                    eventList.removeAt(viewHolder.adapterPosition)
-                    notificationAdapter.submitList(eventList)
-                    notificationAdapter.notifyDataSetChanged()
+//                    eventList.removeAt(viewHolder.adapterPosition)
+//                    notificationAdapter.submitList(eventList)
+//                    notificationAdapter.notifyDataSetChanged()
                     // TODO deleted
                 }
+
 
                 override fun onChildDraw(
                     c: Canvas,

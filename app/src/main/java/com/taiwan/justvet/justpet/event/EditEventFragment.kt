@@ -10,17 +10,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.ImageView
-import android.widget.ScrollView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_CAMERA
@@ -28,9 +23,6 @@ import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
 import com.taiwan.justvet.justpet.home.TAG
-import com.taiwan.justvet.justpet.tag.TagListAdapter
-import com.taiwan.justvet.justpet.tag.TagViewModel
-import com.taiwan.justvet.justpet.util.bindGenderIcon
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -38,11 +30,9 @@ import java.io.File
 class EditEventFragment : Fragment() {
 
     private lateinit var binding: FragmentEditEventBinding
-    private val viewModel: EditEventViewModel by lazy {
-        ViewModelProviders.of(this).get(EditEventViewModel::class.java)
-    }
+    private lateinit var viewModel: EditEventViewModel
     lateinit var saveUri: Uri
-    lateinit var eventImage: ImageView
+    lateinit var eventPicture: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,14 +41,14 @@ class EditEventFragment : Fragment() {
     ): View? {
 
         binding = FragmentEditEventBinding.inflate(inflater, container, false)
+        val currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
+        val viewModelFactory = EditEventViewModelFactory(currentEvent)
+        viewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        eventImage = binding.imageEvent
-
-        val currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
-
-        Log.d(TAG, "$currentEvent")
+        binding.petProfile = currentEvent.petProfile
 
         viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {
@@ -82,6 +72,8 @@ class EditEventFragment : Fragment() {
 
         setupTagRecyclerView()
 
+        eventPicture = binding.imageEvent
+
         return binding.root
     }
 
@@ -99,10 +91,10 @@ class EditEventFragment : Fragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         val uri = data!!.data
-                        if (eventImage.visibility == View.GONE) {
-                            eventImage.visibility = View.VISIBLE
+                        if (eventPicture.visibility == View.GONE) {
+                            eventPicture.visibility = View.VISIBLE
                         }
-                        eventImage.setImageURI(uri)
+                        eventPicture.setImageURI(uri)
                     }
                     Activity.RESULT_CANCELED -> {
                         Log.wtf("getImageResult", resultCode.toString())
@@ -113,10 +105,10 @@ class EditEventFragment : Fragment() {
             PHOTO_FROM_CAMERA -> {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
-                        if (eventImage.visibility == View.GONE) {
-                            eventImage.visibility = View.VISIBLE
+                        if (eventPicture.visibility == View.GONE) {
+                            eventPicture.visibility = View.VISIBLE
                         }
-                        Glide.with(this).load(saveUri).into(eventImage)
+                        Glide.with(this).load(saveUri).into(eventPicture)
                     }
                     Activity.RESULT_CANCELED -> {
                         Log.wtf("getImageResult", resultCode.toString())

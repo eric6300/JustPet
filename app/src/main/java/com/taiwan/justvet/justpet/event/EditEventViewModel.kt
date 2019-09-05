@@ -1,12 +1,20 @@
 package com.taiwan.justvet.justpet.event
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.home.TAG
 import com.taiwan.justvet.justpet.util.TagType
+import com.taiwan.justvet.justpet.util.Util
+import com.taiwan.justvet.justpet.util.Util.getString
+import java.text.SimpleDateFormat
+import java.util.*
 
-class EditEventViewModel : ViewModel() {
+class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private val _navigateToCalendar = MutableLiveData<Boolean>()
     val navigateToCalendar: LiveData<Boolean>
@@ -20,19 +28,23 @@ class EditEventViewModel : ViewModel() {
     val listOfTags: LiveData<List<EventTag>>
         get() = _listOfTags
 
+    private val _dateAndTime = MutableLiveData<String>()
+    val dateAndTime: LiveData<String>
+        get() = _dateAndTime
+
     init {
-        mockData()
+        setEventTags()
+        setDateAndTime()
     }
 
-    fun mockData() {
-        val listTagSyndrome = mutableListOf<EventTag>()
-        listTagSyndrome.let {
-            it.add(EventTag(TagType.SYNDROME, 100, "嘔吐"))
-            it.add(EventTag(TagType.SYNDROME, 101, "下痢"))
-            it.add(EventTag(TagType.SYNDROME, 102, "咳嗽"))
-        }
+    private fun setEventTags() {
+        _listOfTags.value = petEvent.eventTags
+    }
 
-        _listOfTags.value = listTagSyndrome
+    private fun setDateAndTime() {
+        val formatter = SimpleDateFormat(getString(R.string.date_time_format), Locale.TAIWAN)
+        val dateAndTimeString = formatter.format(Date(petEvent.timeStamp))
+        _dateAndTime.value = dateAndTimeString
     }
 
     fun navigateToCalendar() {

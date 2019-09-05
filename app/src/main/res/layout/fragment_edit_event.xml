@@ -8,8 +8,11 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.event.EditEventViewModel" />
-
+        <variable
+            name="petProfile"
+            type="com.taiwan.justvet.justpet.data.PetProfile" />
         <import type="android.view.View" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,41 +21,34 @@
 
         <ImageView
             android:id="@+id/icon_species"
-            android:layout_width="60dp"
-            android:layout_height="60sp"
+            iconSpecies="@{petProfile.species}"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toStartOf="@+id/text_name_pet"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_cat" />
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/text_name_pet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_mono"
-            android:text="MeiMei"
-            android:textSize="36sp"
-            app:layout_constraintBottom_toBottomOf="@+id/icon_species"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/icon_species"
-            app:layout_constraintTop_toTopOf="@+id/icon_species" />
-
+            android:textSize="24sp"
+            android:text="@{petProfile.name}"
+            app:layout_constraintEnd_toEndOf="@+id/icon_species"
+            app:layout_constraintStart_toStartOf="@+id/icon_species"
+            app:layout_constraintTop_toBottomOf="@+id/icon_species" />
 
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/button_save"
-            app:layout_constraintTop_toBottomOf="@+id/icon_species"
-            app:layout_constraintVertical_bias="0.0"
-            tools:layout_editor_absoluteX="-58dp">
+            app:layout_constraintTop_toBottomOf="@+id/text_name_pet"
+            tools:layout_editor_absoluteX="0dp">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -166,7 +162,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="2019年8月27日，星期二"
+                    android:text="@{viewModel.dateAndTime}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -175,12 +171,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_tags"
+                    listOfTags="@{viewModel.listOfTags}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="horizontal"
-                    listOfTags="@{viewModel.listOfTags}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="@+id/title_tag"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -194,7 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/border_and_corner"
+                    android:background="@drawable/edittex_border_corner"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"

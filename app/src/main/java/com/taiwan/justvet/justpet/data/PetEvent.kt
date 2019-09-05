@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PetEvent (
-    val petId: String? = null,
-    val timeStamp: Long? = null,
+    val petProfile: PetProfile?,
+    val timeStamp: Long,
     val year: Int,
     val month: Int,
     val dayOfMonth: Int,

@@ -216,7 +216,7 @@ class TagViewModel : ViewModel() {
 
     fun navigateToEditEvent() {
         _currentEvent.value = PetEvent(
-            petId = selectedPetProfile?.id,
+            petProfile = selectedPetProfile,
             timeStamp = System.currentTimeMillis(),
             year = timeList[0].toInt(),
             month = timeList[1].toInt(),

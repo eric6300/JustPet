@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.calendar
 import androidx.lifecycle.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.TagType
 import kotlinx.coroutines.launch
 
@@ -28,6 +29,16 @@ class CalendarViewModel : ViewModel() {
     fun mockData() {
         val list = mutableListOf<PetEvent>()
         val tagList = mutableListOf<EventTag>()
+        val petProfile = PetProfile(
+            idNumber = "900123123795226",
+            id = "123123",
+            birthDay = "2011/6/6",
+            name = "mei",
+            gender = 0,
+            neutered = false,
+            owner = "asdfasdf",
+            species = 0
+        )
 
         tagList.let {
             it.add(EventTag(TagType.DIARY, 0, "散步"))
@@ -36,15 +47,52 @@ class CalendarViewModel : ViewModel() {
         }
 
         list.let {
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 12, timeString = "15:29", eventTags = tagList))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:15"))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:29", eventTags = tagList))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, timeString = "09:19"))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, timeString = "21:55"))
-            it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, timeString = "21:55"))
-            it.add(PetEvent(year = 2019, month = 8, dayOfMonth = 18, timeString = "21:55", eventTags = tagList))
-            it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, timeString = "21:55"))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, timeString = "21:55"))
+            it.add(
+                PetEvent(
+                    year = 2019,
+                    month = 9,
+                    dayOfMonth = 12,
+                    timeString = "15:29",
+                    eventTags = tagList,
+                    petProfile = petProfile,
+                    timeStamp = 123456
+                )
+            )
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:15", petProfile = petProfile,
+                timeStamp = 123456))
+            it.add(
+                PetEvent(
+                    year = 2019,
+                    month = 9,
+                    dayOfMonth = 3,
+                    timeString = "15:29",
+                    eventTags = tagList,
+                    petProfile = petProfile,
+                    timeStamp = 123456
+                )
+            )
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, timeString = "09:19", petProfile = petProfile,
+                timeStamp = 123456))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, timeString = "21:55", petProfile = petProfile,
+                timeStamp = 123456))
+            it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, timeString = "21:55", petProfile = petProfile,
+                timeStamp = 123456))
+            it.add(
+                PetEvent(
+                    year = 2019,
+                    month = 8,
+                    dayOfMonth = 18,
+                    timeString = "21:55",
+                    eventTags = tagList,
+                    petProfile = petProfile,
+                    timeStamp = 123456
+                )
+            )
+            it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, timeString = "21:55",
+                petProfile=petProfile,
+                timeStamp = 123456))
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, timeString = "21:55",petProfile = petProfile,
+                timeStamp = 123456))
         }
 
         _data.value = list
