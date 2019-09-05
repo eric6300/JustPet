@@ -85,8 +85,8 @@ class TagViewModel : ViewModel() {
         showCurrentTime()
     }
 
-    val db = FirebaseFirestore.getInstance()
-    val pets = db.collection("pets")
+    val database = FirebaseFirestore.getInstance()
+    val pets = database.collection("pets")
 
     fun mockUser(): userProfile {
         val petList = ArrayList<String>()
@@ -215,17 +215,19 @@ class TagViewModel : ViewModel() {
     }
 
     fun navigateToEditEvent() {
-        _currentEvent.value = PetEvent(
-            petProfile = selectedPetProfile,
-            timeStamp = System.currentTimeMillis(),
-            year = timeList[0].toInt(),
-            month = timeList[1].toInt(),
-            dayOfMonth = timeList[2].toInt(),
-            timeString = timeList[3],
-            eventTags = eventTags,
-            tagTitleList = tagTitleList
-        )
-        _navigateToEditEvent.value = true
+        selectedPetProfile?.let {
+            _currentEvent.value = PetEvent(
+                petProfile = it,
+                timeStamp = System.currentTimeMillis(),
+                year = timeList[0].toInt(),
+                month = timeList[1].toInt(),
+                dayOfMonth = timeList[2].toInt(),
+                time = timeList[3],
+                eventTags = eventTags,
+                tagTitleList = tagTitleList
+            )
+            _navigateToEditEvent.value = true
+        }
     }
 
     fun navigateToEditEventCompleted() {

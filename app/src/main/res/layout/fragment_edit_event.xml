@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/button_save"
+            app:layout_constraintBottom_toTopOf="@+id/button_post_event"
             app:layout_constraintTop_toBottomOf="@+id/text_name_pet"
             tools:layout_editor_absoluteX="0dp">
 
@@ -162,7 +162,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="@{viewModel.dateAndTime}"
+                    android:text="@{viewModel.eventDateAndTime}"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -171,7 +171,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_tags"
-                    listOfTags="@{viewModel.listOfTags}"
+                    listOfTags="@{viewModel.eventTags}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -194,6 +194,7 @@
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"
+                    android:text="@={viewModel.eventNote}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/title_memo"
                     app:layout_constraintTop_toTopOf="@+id/icon_note" />
@@ -445,16 +446,6 @@
                     app:layout_constraintStart_toEndOf="@+id/title_advance"
                     app:layout_constraintTop_toTopOf="@+id/title_advance" />
 
-                <Button
-                    android:id="@+id/button_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="Camera"
-                    app:layout_constraintBottom_toBottomOf="@+id/title_media"
-                    app:layout_constraintStart_toEndOf="@+id/title_media"
-                    app:layout_constraintTop_toTopOf="@+id/title_media" />
-
                 <ImageView
                     android:id="@+id/image_event"
                     android:layout_width="90dp"
@@ -466,25 +457,28 @@
                     app:layout_constraintTop_toBottomOf="@+id/icon_media"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-                <Button
-                    android:id="@+id/button_gallery"
+                <ImageView
+                    android:id="@+id/buttonCamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gallery"
-                    app:layout_constraintBottom_toBottomOf="@+id/button_camera"
-                    app:layout_constraintStart_toEndOf="@+id/button_camera"
-                    app:layout_constraintTop_toTopOf="@+id/button_camera" />
+                    android:layout_marginStart="32dp"
+                    android:clickable="true"
+                    android:focusable="auto"
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_media"
+                    app:layout_constraintStart_toEndOf="@+id/title_media"
+                    app:layout_constraintTop_toTopOf="@+id/icon_media"
+                    app:srcCompat="@drawable/ic_camera" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
 
         <Button
-            android:id="@+id/button_save"
+            android:id="@+id/button_post_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:onClick="@{()-> viewModel.navigateToCalendar()}"
+            android:onClick="@{()-> viewModel.postEvent()}"
             android:text="@string/text_complete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

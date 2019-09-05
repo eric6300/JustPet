@@ -4,12 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.home.TAG
-import com.taiwan.justvet.justpet.util.TagType
-import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,13 +23,20 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
-    private val _listOfTags = MutableLiveData<List<EventTag>>()
-    val listOfTags: LiveData<List<EventTag>>
-        get() = _listOfTags
+    private val _eventTags = MutableLiveData<List<EventTag>>()
+    val eventTags: LiveData<List<EventTag>>
+        get() = _eventTags
 
     private val _dateAndTime = MutableLiveData<String>()
-    val dateAndTime: LiveData<String>
+    val eventDateAndTime: LiveData<String>
         get() = _dateAndTime
+
+    val eventNote = MutableLiveData<String>()
+
+    val firebase = FirebaseFirestore.getInstance()
+    val eventDatabase = petEvent.petProfile.id?.let { petId ->
+        firebase.collection("pets").document(petId).collection("events")
+    }
 
     init {
         setEventTags()
@@ -38,13 +44,40 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun setEventTags() {
-        _listOfTags.value = petEvent.eventTags
+        _eventTags.value = petEvent.eventTags
     }
 
     private fun setDateAndTime() {
         val formatter = SimpleDateFormat(getString(R.string.date_time_format), Locale.TAIWAN)
         val dateAndTimeString = formatter.format(Date(petEvent.timeStamp))
         _dateAndTime.value = dateAndTimeString
+    }
+
+    fun postEvent() {
+        val findalEvent = petEvent.let {
+            PetEvent(
+                petProfile = it.petProfile,
+                timeStamp = it.timeStamp,
+                year = it.year,
+                month = it.month,
+                dayOfMonth = it.dayOfMonth,
+                time = it.time,
+                eventType = it.eventType,
+                eventTags = it.eventTags,
+                tagTitleList = it.tagTitleList,
+                note = eventNote.value
+            )
+        }
+        eventDatabase?.let {
+            it.add(findalEvent)
+                .addOnSuccessListener { documentReference->
+                    Log.d(TAG, "上傳成功, ID : ${documentReference.id}")
+                    navigateToCalendar()
+                }
+                .addOnFailureListener { e ->
+                    Log.w("testEric", "Error adding document", e)
+                }
+        }
     }
 
     fun navigateToCalendar() {

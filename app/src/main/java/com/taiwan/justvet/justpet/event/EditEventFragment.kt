@@ -66,9 +66,9 @@ class EditEventFragment : Fragment() {
             startCamera()
         }
 
-        binding.buttonGallery.setOnClickListener {
-            startGallery()
-        }
+//        binding.buttonGallery.setOnClickListener {
+//            startGallery()
+//        }
 
         setupTagRecyclerView()
 

@@ -52,46 +52,46 @@ class CalendarViewModel : ViewModel() {
                     year = 2019,
                     month = 9,
                     dayOfMonth = 12,
-                    timeString = "15:29",
+                    time = "15:29",
                     eventTags = tagList,
                     petProfile = petProfile,
                     timeStamp = 123456
                 )
             )
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, timeString = "15:15", petProfile = petProfile,
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 3, time = "15:15", petProfile = petProfile,
                 timeStamp = 123456))
             it.add(
                 PetEvent(
                     year = 2019,
                     month = 9,
                     dayOfMonth = 3,
-                    timeString = "15:29",
+                    time = "15:29",
                     eventTags = tagList,
                     petProfile = petProfile,
                     timeStamp = 123456
                 )
             )
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, timeString = "09:19", petProfile = petProfile,
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 15, time = "09:19", petProfile = petProfile,
                 timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, timeString = "21:55", petProfile = petProfile,
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 16, time = "21:55", petProfile = petProfile,
                 timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, timeString = "21:55", petProfile = petProfile,
+            it.add(PetEvent(year = 2019, month = 7, dayOfMonth = 25, time = "21:55", petProfile = petProfile,
                 timeStamp = 123456))
             it.add(
                 PetEvent(
                     year = 2019,
                     month = 8,
                     dayOfMonth = 18,
-                    timeString = "21:55",
+                    time = "21:55",
                     eventTags = tagList,
                     petProfile = petProfile,
                     timeStamp = 123456
                 )
             )
-            it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, timeString = "21:55",
+            it.add(PetEvent(year = 2019, month = 10, dayOfMonth = 16, time = "21:55",
                 petProfile=petProfile,
                 timeStamp = 123456))
-            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, timeString = "21:55",petProfile = petProfile,
+            it.add(PetEvent(year = 2019, month = 9, dayOfMonth = 17, time = "21:55",petProfile = petProfile,
                 timeStamp = 123456))
         }
 
