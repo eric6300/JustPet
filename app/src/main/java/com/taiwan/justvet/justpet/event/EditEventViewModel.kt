@@ -66,11 +66,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         eventDatabase?.let {
             it.add(finalEvent)
                 .addOnSuccessListener { documentReference->
-                    Log.d(TAG, "上傳成功, ID : ${documentReference.id}")
+                    Log.d(TAG, "postEvent succeeded ID : ${documentReference.id}")
                     navigateToCalendar()
                 }
                 .addOnFailureListener { e ->
-                    Log.w("testEric", "Error adding document", e)
+                    Log.d(TAG, "postEvent failed : $e")
                 }
         }
     }
