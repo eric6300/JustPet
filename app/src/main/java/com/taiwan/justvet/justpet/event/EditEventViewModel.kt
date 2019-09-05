@@ -51,6 +51,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val finalEvent = petEvent.let {
             PetEvent(
                 petProfile = it.petProfile,
+                petId = it.petId,
+                petName = it.petName,
                 timestamp = it.timestamp,
                 year = it.year,
                 month = it.month,
@@ -58,7 +60,6 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 time = it.time,
                 eventType = it.eventType,
                 eventTags = it.eventTags,
-                tagTitleList = it.tagTitleList,
                 note = eventNote.value
             )
         }

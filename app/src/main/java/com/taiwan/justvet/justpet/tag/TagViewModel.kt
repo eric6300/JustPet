@@ -214,13 +214,14 @@ class TagViewModel : ViewModel() {
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
                 petProfile = it,
+                petId = it.id,
+                petName = it.name,
                 timestamp = calendar.timeInMillis,
                 year = timeList[0].toLong(),
                 month = timeList[1].toLong(),
                 dayOfMonth = timeList[2].toLong(),
                 time = timeList[3],
-                eventTags = eventTags,
-                tagTitleList = tagTitleList
+                eventTags = eventTags
             )
             _navigateToEditEvent.value = true
         }
