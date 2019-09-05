@@ -44,7 +44,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun setDateAndTime() {
-        _dateAndTime.value = "${petEvent.year}年${petEvent.month}月${petEvent.dayOfMonth}日 ${petEvent.time}"
+        _dateAndTime.value =
+            "${petEvent.year}年${petEvent.month}月${petEvent.dayOfMonth}日 ${petEvent.time}"
     }
 
     fun postEvent() {
@@ -65,13 +66,30 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         }
         eventDatabase?.let {
             it.add(finalEvent)
-                .addOnSuccessListener { documentReference->
+                .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "postEvent succeeded ID : ${documentReference.id}")
-                    navigateToCalendar()
+                    postTags(documentReference.id)
+//                    navigateToCalendar()
                 }
                 .addOnFailureListener { e ->
                     Log.d(TAG, "postEvent failed : $e")
                 }
+        }
+    }
+
+    fun postTags(eventId: String) {
+        petEvent.eventTags?.apply {
+            eventDatabase?.let {
+                for (tag in this) {
+                    it.document(eventId).collection("tags").add(tag)
+                        .addOnSuccessListener {
+                            Log.d(TAG, "postTags succeeded ID : ${it.id}")
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "postTags failed : $it")
+                        }
+                }
+            }
         }
     }
 
