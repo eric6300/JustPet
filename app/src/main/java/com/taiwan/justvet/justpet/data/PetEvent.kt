@@ -9,6 +9,7 @@ data class PetEvent (
     @get:Exclude val petProfile: PetProfile? = null,
     val petId: String? = "",
     val petName: String? = "",
+    @get:Exclude val eventId: String? = null,
     val timestamp: Long,
     val year: Long,
     val month: Long,

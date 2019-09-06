@@ -8,10 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.userProfile
 import com.taiwan.justvet.justpet.home.TAG
-import com.taiwan.justvet.justpet.util.TagType
 import kotlinx.coroutines.launch
 
 class CalendarViewModel : ViewModel() {
@@ -56,6 +54,7 @@ class CalendarViewModel : ViewModel() {
                             for (event in document) {
                                 data.add(
                                     PetEvent(
+                                        eventId = event.id,
                                         petId = event["petId"] as String?,
                                         petName = event["petName"] as String?,
                                         timestamp = event["timestamp"] as Long,
@@ -63,10 +62,10 @@ class CalendarViewModel : ViewModel() {
                                         month = event["month"] as Long,
                                         dayOfMonth = event["dayOfMonth"] as Long,
                                         time = event["time"] as String
-                                        )
+                                    )
                                 )
-                                _eventsData.value = data
                             }
+                            getEventWithTags(data)
                         }
                         .addOnFailureListener {
                             Log.d(TAG, "Failed")
@@ -74,6 +73,48 @@ class CalendarViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getEventWithTags(data: List<PetEvent>) {
+        val finalEventData = mutableListOf<PetEvent>()
+        for (event in data) {
+            event.petId?.let {
+                event.eventId?.let {
+                    val tagList = mutableListOf<EventTag>()
+                    pets.document(event.petId).collection("events").document(event.eventId)
+                        .collection("tags")
+                        .get()
+                        .addOnSuccessListener { document ->
+                            for (tag in document) {
+                                tagList.add(
+                                    EventTag(
+                                        type = tag["type"] as String?,
+                                        index = tag["index"] as Long?,
+                                        title = tag["title"] as String?,
+                                        isSelected = tag["isSelected"] as Boolean?
+                                    )
+                                )
+                            }
+                            finalEventData.add(
+                                PetEvent(
+                                    petId = event.petId,
+                                    petName = event.petName,
+                                    timestamp = event.timestamp,
+                                    year = event.year,
+                                    month = event.month,
+                                    dayOfMonth = event.dayOfMonth,
+                                    time = event.time,
+                                    eventTags = tagList
+                                )
+                            )
+                        }
+                        .addOnFailureListener {
+                            Log.d(TAG, "Failed")
+                        }
+                }
+            }
+        }
+        _eventsData.value = finalEventData
     }
 
     fun eventFilter(year: Long, month: Long, dayOfMonth: Long?) {

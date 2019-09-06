@@ -150,41 +150,41 @@ class TagViewModel : ViewModel() {
 
     private fun setupDiaryTagList() {
         listTagDiary.let {
-            it.add(EventTag(TagType.DIARY, 0, "吃飯"))
-            it.add(EventTag(TagType.DIARY, 1, "洗澡"))
-            it.add(EventTag(TagType.DIARY, 2, "散步"))
-            it.add(EventTag(TagType.DIARY, 3, "剪指甲"))
-            it.add(EventTag(TagType.DIARY, 4, "剃毛"))
-            it.add(EventTag(TagType.DIARY, 5, "量體重"))
-            it.add(EventTag(TagType.DIARY, 6, "其他"))
+            it.add(EventTag(TagType.DIARY.value, 0, "吃飯"))
+            it.add(EventTag(TagType.DIARY.value, 1, "洗澡"))
+            it.add(EventTag(TagType.DIARY.value, 2, "散步"))
+            it.add(EventTag(TagType.DIARY.value, 3, "剪指甲"))
+            it.add(EventTag(TagType.DIARY.value, 4, "剃毛"))
+            it.add(EventTag(TagType.DIARY.value, 5, "量體重"))
+            it.add(EventTag(TagType.DIARY.value, 6, "其他"))
         }
     }
 
     private fun setupSyndromeTagList() {
         listTagSyndrome.let {
-            it.add(EventTag(TagType.SYNDROME, 100, "嘔吐"))
-            it.add(EventTag(TagType.SYNDROME, 101, "下痢"))
-            it.add(EventTag(TagType.SYNDROME, 102, "咳嗽"))
-            it.add(EventTag(TagType.SYNDROME, 103, "打噴嚏"))
-            it.add(EventTag(TagType.SYNDROME, 104, "搔癢"))
-            it.add(EventTag(TagType.SYNDROME, 105, "癲癇"))
-            it.add(EventTag(TagType.SYNDROME, 106, "昏倒"))
-            it.add(EventTag(TagType.SYNDROME, 107, "排尿異常"))
-            it.add(EventTag(TagType.SYNDROME, 108, "其他"))
+            it.add(EventTag(TagType.SYNDROME.value, 100, "嘔吐"))
+            it.add(EventTag(TagType.SYNDROME.value, 101, "下痢"))
+            it.add(EventTag(TagType.SYNDROME.value, 102, "咳嗽"))
+            it.add(EventTag(TagType.SYNDROME.value, 103, "打噴嚏"))
+            it.add(EventTag(TagType.SYNDROME.value, 104, "搔癢"))
+            it.add(EventTag(TagType.SYNDROME.value, 105, "癲癇"))
+            it.add(EventTag(TagType.SYNDROME.value, 106, "昏倒"))
+            it.add(EventTag(TagType.SYNDROME.value, 107, "排尿異常"))
+            it.add(EventTag(TagType.SYNDROME.value, 108, "其他"))
         }
     }
 
     private fun setupTreatmentTagList() {
         listTagTreatment.let {
-            it.add(EventTag(TagType.TREATMENT, 200, "除蚤"))
-            it.add(EventTag(TagType.TREATMENT, 201, "驅蟲"))
-            it.add(EventTag(TagType.TREATMENT, 202, "心絲蟲"))
-            it.add(EventTag(TagType.TREATMENT, 203, "皮下注射"))
-            it.add(EventTag(TagType.TREATMENT, 204, "血糖紀錄"))
-            it.add(EventTag(TagType.TREATMENT, 205, "口服藥"))
-            it.add(EventTag(TagType.TREATMENT, 206, "外用藥"))
-            it.add(EventTag(TagType.TREATMENT, 207, "眼藥/耳藥"))
-            it.add(EventTag(TagType.TREATMENT, 208, "其他"))
+            it.add(EventTag(TagType.TREATMENT.value, 200, "除蚤"))
+            it.add(EventTag(TagType.TREATMENT.value, 201, "驅蟲"))
+            it.add(EventTag(TagType.TREATMENT.value, 202, "心絲蟲"))
+            it.add(EventTag(TagType.TREATMENT.value, 203, "皮下注射"))
+            it.add(EventTag(TagType.TREATMENT.value, 204, "血糖紀錄"))
+            it.add(EventTag(TagType.TREATMENT.value, 205, "口服藥"))
+            it.add(EventTag(TagType.TREATMENT.value, 206, "外用藥"))
+            it.add(EventTag(TagType.TREATMENT.value, 207, "眼藥/耳藥"))
+            it.add(EventTag(TagType.TREATMENT.value, 208, "其他"))
         }
     }
 
@@ -235,14 +235,14 @@ class TagViewModel : ViewModel() {
         _leaveTagDialog.value = true
     }
 
-    fun getIconDrawable(index: Int): Drawable? {
+    fun getIconDrawable(index: Long): Drawable? {
         return when (index) {
-            0 -> getDrawable(R.drawable.ic_food)
-            1 -> getDrawable(R.drawable.ic_shower)
-            2 -> getDrawable(R.drawable.ic_walking)
-            3 -> getDrawable(R.drawable.ic_nail_trimming)
-            4 -> getDrawable(R.drawable.ic_grooming)
-            5 -> getDrawable(R.drawable.ic_weighting)
+            0L -> getDrawable(R.drawable.ic_food)
+            1L -> getDrawable(R.drawable.ic_shower)
+            2L -> getDrawable(R.drawable.ic_walking)
+            3L -> getDrawable(R.drawable.ic_nail_trimming)
+            4L -> getDrawable(R.drawable.ic_grooming)
+            5L -> getDrawable(R.drawable.ic_weighting)
             else -> getDrawable(R.drawable.ic_synrige)
         }
     }
@@ -269,10 +269,12 @@ class TagViewModel : ViewModel() {
         viewModelScope.let {
             for (list in arrayOfList) {
                 for (tag in list) {
-                    if (tag.isSelected == true) {
-                        eventTags.add(tag)
-                        tagTitleList.add(tag.title)
-                        Log.d(TAG, "$tag")
+                    tag.title?.let {
+                        if (tag.isSelected == true) {
+                            eventTags.add(tag)
+                            tagTitleList.add(tag.title)
+                            Log.d(TAG, "$tag")
+                        }
                     }
                 }
             }

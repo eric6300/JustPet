@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class EventTag(
-    val type: TagType,
-    val index: Int,
-    val title: String,
+    val type: String?,
+    val index: Long?,
+    val title: String?,
     var isSelected: Boolean? = false
 ): Parcelable
