@@ -26,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
+import com.taiwan.justvet.justpet.home.TAG
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -185,33 +186,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
+                Log.d(TAG, "firebaseAuthWithGoogle[Account ID]:" + account.id!!)
+                Log.d(TAG, "firebaseAuthWithGoogle[Account Token]:" + account.idToken!!)
+
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
-                Log.w(com.taiwan.justvet.justpet.home.TAG, "Google sign in failed", e)
-                // ...
+                Log.w(TAG, "Google sign in failed", e)
             }
         }
     }
 
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
-        Log.d(com.taiwan.justvet.justpet.home.TAG, "firebaseAuthWithGoogle:" + acct.id!!)
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
 
-        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-                    Log.d(com.taiwan.justvet.justpet.home.TAG, "signInWithCredential:success")
+                    Log.d(TAG, "signInWithCredential: success")
                     val user = auth.currentUser
-//                    updateUI(user)
+                    Log.d(TAG, "User ID : ${user?.uid}")
+
                 } else {
                     // If sign in fails, display a message to the user.
-                    Log.w(com.taiwan.justvet.justpet.home.TAG, "signInWithCredential:failure", task.exception)
+                    Log.w(TAG, "signInWithCredential: failure", task.exception)
                     Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
-//                    updateUI(null)
                 }
-
-                // ...
             }
     }
 
