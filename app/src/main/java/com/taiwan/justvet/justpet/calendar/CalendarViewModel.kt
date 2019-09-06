@@ -13,6 +13,10 @@ import com.taiwan.justvet.justpet.home.TAG
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
+const val PETS = "pets"
+const val EVENTS = "events"
+const val TAGS = "tags"
+
 class CalendarViewModel : ViewModel() {
 
     private val _monthEventsData = MutableLiveData<List<PetEvent>>()
@@ -34,7 +38,7 @@ class CalendarViewModel : ViewModel() {
     val localDate = LocalDate.now()
 
     val firebase = FirebaseFirestore.getInstance()
-    val pets = firebase.collection("pets")
+    val pets = firebase.collection(PETS)
 
     init {
         getMonthEventsData(mockUser(), localDate.year.toLong(), localDate.monthValue.toLong())
@@ -55,7 +59,7 @@ class CalendarViewModel : ViewModel() {
             viewModelScope.launch {
                 val data = mutableListOf<PetEvent>()
                 for (petId in userProfile.pets) {
-                    pets.document(petId).collection("events")
+                    pets.document(petId).collection(EVENTS)
                         .whereEqualTo("year", year)
                         .whereEqualTo("month", month)
                         .get()
@@ -94,8 +98,8 @@ class CalendarViewModel : ViewModel() {
             event.petId?.let {
                 event.eventId?.let {
                     val tagList = mutableListOf<EventTag>()
-                    pets.document(event.petId).collection("events").document(event.eventId)
-                        .collection("tags")
+                    pets.document(event.petId).collection(EVENTS).document(event.eventId)
+                        .collection(TAGS)
                         .get()
                         .addOnSuccessListener { document ->
                             if (document.size() > 0) {
@@ -153,15 +157,35 @@ class CalendarViewModel : ViewModel() {
     fun deleteEvent(petEvent: PetEvent) {
         petEvent.petId?.let { petId ->
             petEvent.eventId?.let { eventId ->
-                pets.document(petId).collection("events").document(eventId).delete()
+                pets.document(petId).collection(EVENTS).document(eventId).delete()
+                    .addOnSuccessListener {
+                        deleteEventTags(petEvent)
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "deleteEvent() failed : $it")
+                    }
+            }
+        }
+    }
+
+    fun deleteEventTags(petEvent: PetEvent) {
+        petEvent.petId?.let { petId ->
+            petEvent.eventId?.let { eventId ->
+                pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
+                    .document().delete()
                     .addOnSuccessListener {
                         refreshEventData()
                     }
                     .addOnFailureListener {
-
+                        Log.d(TAG, "deleteEvent() failed : $it")
                     }
             }
         }
+    }
+
+    fun default() {
+        _dayEventsData.value = ArrayList<PetEvent>()
+        _monthEventsData.value = ArrayList<PetEvent>()
     }
 
     fun refreshEventData() {

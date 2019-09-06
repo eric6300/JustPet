@@ -42,17 +42,23 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
         setupCalendarView()
         setupEventRecyclerView()
-        setupMonthChangedListener()
-        setupDecorationObserver()
 
-        viewModel.monthEventsData.observe(this, Observer { list ->
-            calendarView.selectedDate?.let {
-                viewModel.getDecorationEvents(list)
+        monthChangedListener()
+        decorationObserver()
 
-                if (it.year == localDate.year && it.month == localDate.monthValue
-                    && it.day == localDate.dayOfMonth
-                ) {
-                    showTodayEvents()
+        showThisMonthEvents()
+
+        viewModel.refreshEventData.observe(this, Observer {
+            calendarView.selectedDate?.apply {
+                if (it) {
+                    calendarView.removeDecorators()
+                    viewModel.default()
+                    viewModel.getMonthEventsData(
+                        viewModel.mockUser(),
+                        this.year.toLong(),
+                        this.month.toLong()
+                    )
+                    viewModel.refreshEventDataCompleted()
                 }
             }
         })
@@ -64,8 +70,9 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         calendarView = binding.calendarView
         calendarView.apply {
             this.setOnDateChangedListener(this@CalendarFragment)
-            this.showOtherDates = MaterialCalendarView.SHOW_OTHER_MONTHS
+            this.showOtherDates = MaterialCalendarView.SHOW_DEFAULTS
             this.setSelectedDate(localDate)
+            this.isDynamicHeightEnabled = true
         }
     }
 
@@ -76,7 +83,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         listOfEvents.adapter = adapter
     }
 
-    private fun setupMonthChangedListener() {
+    private fun monthChangedListener() {
         calendarView.setOnMonthChangedListener { widget, date ->
             viewModel.getMonthEventsData(
                 viewModel.mockUser(),
@@ -86,7 +93,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         }
     }
 
-    private fun setupDecorationObserver() {
+    private fun decorationObserver() {
         viewModel.decorateListOfEvents.observe(this, Observer {
             val list = ArrayList<CalendarDay>()
             for (event in it) {
@@ -99,6 +106,19 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
+    fun showThisMonthEvents() {
+        viewModel.monthEventsData.observe(this, Observer { list ->
+            calendarView.selectedDate?.let {
+                viewModel.getDecorationEvents(list)
+
+                if (it.year == localDate.year && it.month == localDate.monthValue
+                    && it.day == localDate.dayOfMonth
+                ) {
+                    showTodayEvents()
+                }
+            }
+        })
+    }
 
     fun showTodayEvents() {
         viewModel.dayEventsFilter(
