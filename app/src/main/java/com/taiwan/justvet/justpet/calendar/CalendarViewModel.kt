@@ -168,7 +168,7 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun deleteEventTags(petEvent: PetEvent) {
+    private fun deleteEventTags(petEvent: PetEvent) {
         petEvent.petId?.let { petId ->
             petEvent.eventId?.let { eventId ->
                 pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
@@ -184,11 +184,11 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun default() {
-        _dayEventsData.value = ArrayList<PetEvent>()
-        _monthEventsData.value = ArrayList<PetEvent>()
+        _dayEventsData.value = ArrayList()
+        _monthEventsData.value = ArrayList()
     }
 
-    fun refreshEventData() {
+    private fun refreshEventData() {
         _refreshEventData.value = true
     }
 

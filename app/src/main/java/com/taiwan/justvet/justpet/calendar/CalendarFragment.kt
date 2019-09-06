@@ -106,7 +106,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
-    fun showThisMonthEvents() {
+    private fun showThisMonthEvents() {
         viewModel.monthEventsData.observe(this, Observer { list ->
             calendarView.selectedDate?.let {
                 viewModel.getDecorationEvents(list)
@@ -120,7 +120,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
-    fun showTodayEvents() {
+    private fun showTodayEvents() {
         viewModel.dayEventsFilter(
             year = localDate.year.toLong(),
             month = localDate.monthValue.toLong(),
