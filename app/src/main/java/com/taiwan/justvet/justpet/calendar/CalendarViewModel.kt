@@ -15,21 +15,21 @@ import org.threeten.bp.LocalDate
 
 class CalendarViewModel : ViewModel() {
 
-    private val _eventsData = MutableLiveData<List<PetEvent>>()
-    val eventsData: LiveData<List<PetEvent>>
-        get() = _eventsData
+    private val _monthEventsData = MutableLiveData<List<PetEvent>>()
+    val monthEventsData: LiveData<List<PetEvent>>
+        get() = _monthEventsData
 
-    private val _filteredEvents = MutableLiveData<List<PetEvent>>()
-    val filteredEvents: LiveData<List<PetEvent>>
-        get() = _filteredEvents
+    private val _dayEventsData = MutableLiveData<List<PetEvent>>()
+    val dayEventsData: LiveData<List<PetEvent>>
+        get() = _dayEventsData
 
     private val _decorateListOfEvents = MutableLiveData<List<PetEvent>>()
     val decorateListOfEvents: LiveData<List<PetEvent>>
         get() = _decorateListOfEvents
 
-    private val _firstTimeDecoration = MutableLiveData<List<PetEvent>>()
-    val firstTimeDecoration: LiveData<List<PetEvent>>
-        get() = _firstTimeDecoration
+    private val _refreshEventData = MutableLiveData<Boolean>()
+    val refreshEventData: LiveData<Boolean>
+        get() = _refreshEventData
 
     val localDate = LocalDate.now()
 
@@ -37,7 +37,7 @@ class CalendarViewModel : ViewModel() {
     val pets = firebase.collection("pets")
 
     init {
-        getPetEventsData(mockUser())
+        getMonthEventsData(mockUser(), localDate.year.toLong(), localDate.monthValue.toLong())
     }
 
     fun mockUser(): userProfile {
@@ -50,33 +50,38 @@ class CalendarViewModel : ViewModel() {
         return userProfile("eric6300", "6300eric@gmail.com", petList)
     }
 
-    fun getPetEventsData(userProfile: userProfile) {
+    fun getMonthEventsData(userProfile: userProfile, year: Long, month: Long) {
         userProfile.pets?.let {
             viewModelScope.launch {
                 val data = mutableListOf<PetEvent>()
                 for (petId in userProfile.pets) {
                     pets.document(petId).collection("events")
+                        .whereEqualTo("year", year)
+                        .whereEqualTo("month", month)
                         .get()
                         .addOnSuccessListener { document ->
-                            for (event in document) {
-                                Log.d(TAG, "${event.id}")
-                                data.add(
-                                    PetEvent(
-                                        eventId = event.id,
-                                        petId = event["petId"] as String?,
-                                        petName = event["petName"] as String?,
-                                        timestamp = event["timestamp"] as Long,
-                                        year = event["year"] as Long,
-                                        month = event["month"] as Long,
-                                        dayOfMonth = event["dayOfMonth"] as Long,
-                                        time = event["time"] as String
+                            if (document.size() > 0) {
+                                Log.d(TAG, "=== pet id : $petId ===")
+                                for (event in document) {
+                                    Log.d(TAG, "event id : ${event.id}")
+                                    data.add(
+                                        PetEvent(
+                                            eventId = event.id,
+                                            petId = event["petId"] as String?,
+                                            petName = event["petName"] as String?,
+                                            timestamp = event["timestamp"] as Long,
+                                            year = event["year"] as Long,
+                                            month = event["month"] as Long,
+                                            dayOfMonth = event["dayOfMonth"] as Long,
+                                            time = event["time"] as String
+                                        )
                                     )
-                                )
+                                }
+                                getEventWithTags(data)
                             }
-                            getEventWithTags(data)
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "Failed")
+                            Log.d(TAG, "getMonthEventsData() failed : $it")
                         }
                 }
             }
@@ -84,7 +89,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun getEventWithTags(data: List<PetEvent>) {
-        val finalEventData = mutableListOf<PetEvent>()
+        val finalMonthEventData = mutableListOf<PetEvent>()
         for (event in data) {
             event.petId?.let {
                 event.eventId?.let {
@@ -93,61 +98,77 @@ class CalendarViewModel : ViewModel() {
                         .collection("tags")
                         .get()
                         .addOnSuccessListener { document ->
-                            for (tag in document) {
-                                tagList.add(
-                                    EventTag(
-                                        type = tag["type"] as String?,
-                                        index = tag["index"] as Long?,
-                                        title = tag["title"] as String?,
-                                        isSelected = tag["isSelected"] as Boolean?
+                            if (document.size() > 0) {
+                                for (tag in document) {
+                                    tagList.add(
+                                        EventTag(
+                                            type = tag["type"] as String?,
+                                            index = tag["index"] as Long?,
+                                            title = tag["title"] as String?,
+                                            isSelected = tag["isSelected"] as Boolean?
+                                        )
+                                    )
+                                }
+                                finalMonthEventData.add(
+                                    PetEvent(
+                                        petId = event.petId,
+                                        petName = event.petName,
+                                        eventId = event.eventId,
+                                        timestamp = event.timestamp,
+                                        year = event.year,
+                                        month = event.month,
+                                        dayOfMonth = event.dayOfMonth,
+                                        time = event.time,
+                                        eventTags = tagList
                                     )
                                 )
+                                _monthEventsData.value = finalMonthEventData
                             }
-                            finalEventData.add(
-                                PetEvent(
-                                    petId = event.petId,
-                                    petName = event.petName,
-                                    timestamp = event.timestamp,
-                                    year = event.year,
-                                    month = event.month,
-                                    dayOfMonth = event.dayOfMonth,
-                                    time = event.time,
-                                    eventTags = tagList
-                                )
-                            )
-                            _eventsData.value = finalEventData
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "Failed")
+                            Log.d(TAG, "getEventWithTags() failed : $it")
                         }
                 }
             }
         }
     }
 
-    fun getDecotaionEvents(finalEventData: List<PetEvent>?) {
-        finalEventData?.let {
-            val decorationEvents = it.filter { event ->
-                (event.year == localDate.year.toLong()) && (event.month == localDate.monthValue.toLong())
-            }
-            _firstTimeDecoration.value = decorationEvents
+    fun getDecorationEvents(eventList: List<PetEvent>?) {
+        eventList?.let {
+            _decorateListOfEvents.value = eventList
         }
     }
 
-    fun eventFilter(year: Long, month: Long, dayOfMonth: Long?, events: List<PetEvent>?) {
+    fun dayEventsFilter(year: Long, month: Long, dayOfMonth: Long?, events: List<PetEvent>?) {
         events?.let { eventList ->
             if (dayOfMonth != null) {
                 val newList = eventList.filter { event ->
                     (event.year == year) && (event.month == month) && (event.dayOfMonth == dayOfMonth)
                 }
-                _filteredEvents.value = newList
-            } else {
-                // Get decoration list of the month
-                val newList = _eventsData.value?.filter { event ->
-                    (event.year == year) && (event.month == month)
-                }
-                _decorateListOfEvents.value = newList
+                _dayEventsData.value = newList
             }
         }
+    }
+
+    fun deleteEvent(petEvent: PetEvent) {
+        petEvent.petId?.let { petId ->
+            petEvent.eventId?.let { eventId ->
+                pets.document(petId).collection("events").document(eventId).delete()
+                    .addOnSuccessListener {
+                        refreshEventData()
+                    }
+                    .addOnFailureListener {
+
+                    }
+            }
+        }
+    }
+
+    fun refreshEventData() {
+        _refreshEventData.value = true
+    }
+
+    fun refreshEventDataCompleted() {
+        _refreshEventData.value = false
     }
 }

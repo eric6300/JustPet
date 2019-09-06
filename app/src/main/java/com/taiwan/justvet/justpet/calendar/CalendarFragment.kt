@@ -45,10 +45,16 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         setupMonthChangedListener()
         setupDecorationObserver()
 
-        showThisMonthEvents()
+        viewModel.monthEventsData.observe(this, Observer { list ->
+            calendarView.selectedDate?.let {
+                viewModel.getDecorationEvents(list)
 
-        viewModel.eventsData.observe(this, Observer {
-            viewModel.getDecotaionEvents(it)
+                if (it.year == localDate.year && it.month == localDate.monthValue
+                    && it.day == localDate.dayOfMonth
+                ) {
+                    showTodayEvents()
+                }
+            }
         })
 
         return binding.root
@@ -72,11 +78,10 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     private fun setupMonthChangedListener() {
         calendarView.setOnMonthChangedListener { widget, date ->
-            viewModel.eventFilter(
+            viewModel.getMonthEventsData(
+                viewModel.mockUser(),
                 date.year.toLong(),
-                date.month.toLong(),
-                null,
-                viewModel.eventsData.value
+                date.month.toLong()
             )
         }
     }
@@ -94,26 +99,14 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
-    fun showThisMonthEvents() {
-        viewModel.firstTimeDecoration.observe(this, Observer {
-            val year = localDate.year
-            val month = localDate.monthValue
-            val dayOfMonth = localDate.dayOfMonth
-            // get this month events and decorate at calendar
-            viewModel.eventFilter(
-                year = year.toLong(),
-                month = month.toLong(),
-                dayOfMonth = null,
-                events = viewModel.eventsData.value
-            )
-            // show today events
-            viewModel.eventFilter(
-                year = year.toLong(),
-                month = month.toLong(),
-                dayOfMonth = dayOfMonth.toLong(),
-                events = viewModel.eventsData.value
-            )
-        })
+
+    fun showTodayEvents() {
+        viewModel.dayEventsFilter(
+            year = localDate.year.toLong(),
+            month = localDate.monthValue.toLong(),
+            dayOfMonth = localDate.dayOfMonth.toLong(),
+            events = viewModel.monthEventsData.value
+        )
     }
 
     override fun onDateSelected(
@@ -121,11 +114,11 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         date: CalendarDay,
         selected: Boolean
     ) {
-        viewModel.eventFilter(
+        viewModel.dayEventsFilter(
             date.year.toLong(),
             date.month.toLong(),
             date.day.toLong(),
-            viewModel.eventsData.value
+            viewModel.monthEventsData.value
         )
     }
 
