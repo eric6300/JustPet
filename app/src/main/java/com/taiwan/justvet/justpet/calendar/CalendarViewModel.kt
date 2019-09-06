@@ -11,6 +11,7 @@ import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.userProfile
 import com.taiwan.justvet.justpet.home.TAG
 import kotlinx.coroutines.launch
+import org.threeten.bp.LocalDate
 
 class CalendarViewModel : ViewModel() {
 
@@ -25,6 +26,14 @@ class CalendarViewModel : ViewModel() {
     private val _decorateListOfEvents = MutableLiveData<List<PetEvent>>()
     val decorateListOfEvents: LiveData<List<PetEvent>>
         get() = _decorateListOfEvents
+
+    private val _firstTimeDecoration = MutableLiveData<List<PetEvent>>()
+    val firstTimeDecoration: LiveData<List<PetEvent>>
+        get() = _firstTimeDecoration
+
+    val finalEventData = mutableListOf<PetEvent>()
+
+    val localDate = LocalDate.now()
 
     val firebase = FirebaseFirestore.getInstance()
     val pets = firebase.collection("pets")
@@ -52,6 +61,7 @@ class CalendarViewModel : ViewModel() {
                         .get()
                         .addOnSuccessListener { document ->
                             for (event in document) {
+                                Log.d(TAG, "${event.id}")
                                 data.add(
                                     PetEvent(
                                         eventId = event.id,
@@ -76,7 +86,6 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun getEventWithTags(data: List<PetEvent>) {
-        val finalEventData = mutableListOf<PetEvent>()
         for (event in data) {
             event.petId?.let {
                 event.eventId?.let {
@@ -107,6 +116,7 @@ class CalendarViewModel : ViewModel() {
                                     eventTags = tagList
                                 )
                             )
+                            _eventsData.value = finalEventData
                         }
                         .addOnFailureListener {
                             Log.d(TAG, "Failed")
@@ -114,11 +124,20 @@ class CalendarViewModel : ViewModel() {
                 }
             }
         }
-        _eventsData.value = finalEventData
     }
 
-    fun eventFilter(year: Long, month: Long, dayOfMonth: Long?) {
-        _eventsData.value?.let { eventList ->
+    fun getDecotaionEvents(finalEventData: List<PetEvent>?) {
+        finalEventData?.let {
+            val decorationEvents = it.filter {event ->
+                (event.year == localDate.year.toLong()) && (event.month == localDate.monthValue.toLong())
+            }
+            _firstTimeDecoration.value = decorationEvents
+            Log.d(TAG, "$decorationEvents")
+        }
+    }
+
+    fun eventFilter(year: Long, month: Long, dayOfMonth: Long?, events: List<PetEvent>?) {
+        events?.let { eventList ->
             if (dayOfMonth != null) {
                 viewModelScope.launch {
                     val newList = eventList.filter { event ->
@@ -126,7 +145,8 @@ class CalendarViewModel : ViewModel() {
                     }
                     _filteredEvents.value = newList
                 }
-            } else {
+            }
+            else {
                 viewModelScope.launch {
                     // Get decoration list of the month
                     val newList = _eventsData.value?.filter { event ->
