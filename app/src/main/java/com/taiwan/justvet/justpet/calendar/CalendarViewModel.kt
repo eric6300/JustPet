@@ -31,8 +31,6 @@ class CalendarViewModel : ViewModel() {
     val firstTimeDecoration: LiveData<List<PetEvent>>
         get() = _firstTimeDecoration
 
-    val finalEventData = mutableListOf<PetEvent>()
-
     val localDate = LocalDate.now()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -86,6 +84,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun getEventWithTags(data: List<PetEvent>) {
+        val finalEventData = mutableListOf<PetEvent>()
         for (event in data) {
             event.petId?.let {
                 event.eventId?.let {
@@ -128,32 +127,26 @@ class CalendarViewModel : ViewModel() {
 
     fun getDecotaionEvents(finalEventData: List<PetEvent>?) {
         finalEventData?.let {
-            val decorationEvents = it.filter {event ->
+            val decorationEvents = it.filter { event ->
                 (event.year == localDate.year.toLong()) && (event.month == localDate.monthValue.toLong())
             }
             _firstTimeDecoration.value = decorationEvents
-            Log.d(TAG, "$decorationEvents")
         }
     }
 
     fun eventFilter(year: Long, month: Long, dayOfMonth: Long?, events: List<PetEvent>?) {
         events?.let { eventList ->
             if (dayOfMonth != null) {
-                viewModelScope.launch {
-                    val newList = eventList.filter { event ->
-                        (event.year == year) && (event.month == month) && (event.dayOfMonth == dayOfMonth)
-                    }
-                    _filteredEvents.value = newList
+                val newList = eventList.filter { event ->
+                    (event.year == year) && (event.month == month) && (event.dayOfMonth == dayOfMonth)
                 }
-            }
-            else {
-                viewModelScope.launch {
-                    // Get decoration list of the month
-                    val newList = _eventsData.value?.filter { event ->
-                        (event.year == year) && (event.month == month)
-                    }
-                    _decorateListOfEvents.value = newList
+                _filteredEvents.value = newList
+            } else {
+                // Get decoration list of the month
+                val newList = _eventsData.value?.filter { event ->
+                    (event.year == year) && (event.month == month)
                 }
+                _decorateListOfEvents.value = newList
             }
         }
     }

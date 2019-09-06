@@ -45,16 +45,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         setupMonthChangedListener()
         setupDecorationObserver()
 
-        viewModel.firstTimeDecoration.observe(this, Observer {
-            val year = localDate.year
-            val month = localDate.monthValue
-            viewModel.eventFilter(
-                year = year.toLong(),
-                month = month.toLong(),
-                dayOfMonth = null,
-                events = viewModel.eventsData.value
-            )
-        })
+        showThisMonthEvents()
 
         viewModel.eventsData.observe(this, Observer {
             viewModel.getDecotaionEvents(it)
@@ -103,6 +94,28 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
+    fun showThisMonthEvents() {
+        viewModel.firstTimeDecoration.observe(this, Observer {
+            val year = localDate.year
+            val month = localDate.monthValue
+            val dayOfMonth = localDate.dayOfMonth
+            // get this month events and decorate at calendar
+            viewModel.eventFilter(
+                year = year.toLong(),
+                month = month.toLong(),
+                dayOfMonth = null,
+                events = viewModel.eventsData.value
+            )
+            // show today events
+            viewModel.eventFilter(
+                year = year.toLong(),
+                month = month.toLong(),
+                dayOfMonth = dayOfMonth.toLong(),
+                events = viewModel.eventsData.value
+            )
+        })
+    }
+
     override fun onDateSelected(
         calendarView: MaterialCalendarView,
         date: CalendarDay,
@@ -116,19 +129,4 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         )
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        val year = localDate.year
-//        val month = localDate.monthValue
-//        val dayOfMonth = localDate.dayOfMonth
-//        // filter for events of this month and set decoration
-//        viewModel.eventFilter(year = year.toLong(), month = month.toLong(), dayOfMonth = null , events = viewModel.eventsData.value)
-//        // filter for events of today and show in the recyclerView
-//        viewModel.eventFilter(
-//            year = year.toLong(),
-//            month = month.toLong(),
-//            dayOfMonth = dayOfMonth.toLong(),
-//            events = viewModel.eventsData.value
-//        )
-//    }
 }
