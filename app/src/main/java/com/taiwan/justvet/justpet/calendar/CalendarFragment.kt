@@ -17,15 +17,17 @@ import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.UserManager
+import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
 import com.taiwan.justvet.justpet.decorators.EventDecorator
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
 
-    lateinit var binding: FragmentCalendarBinding
-    lateinit var calendarView: MaterialCalendarView
-    lateinit var localDate: LocalDate
+    private lateinit var binding: FragmentCalendarBinding
+    private lateinit var calendarView: MaterialCalendarView
+    private lateinit var userProfile: UserProfile
+    private lateinit var localDate: LocalDate
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
     }
@@ -40,6 +42,10 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
             inflater, R.layout.fragment_calendar, container, false
         )
 
+        UserManager.userProfile.value?.let {
+            userProfile = it
+        }
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         localDate = viewModel.localDate
@@ -52,13 +58,15 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
         showThisMonthEvents()
 
+
+
         viewModel.refreshEventData.observe(this, Observer {
             calendarView.selectedDate?.apply {
                 if (it) {
                     calendarView.removeDecorators()
                     viewModel.default()
                     viewModel.getMonthEventsData(
-                        viewModel.mockUser(),
+                        userProfile,
                         this.year.toLong(),
                         this.month.toLong()
                     )
@@ -90,7 +98,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
     private fun monthChangedListener() {
         calendarView.setOnMonthChangedListener { widget, date ->
             viewModel.getMonthEventsData(
-                viewModel.mockUser(),
+                userProfile,
                 date.year.toLong(),
                 date.month.toLong()
             )

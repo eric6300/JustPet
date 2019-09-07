@@ -6,10 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.EVENTS
-import com.taiwan.justvet.justpet.PETS
-import com.taiwan.justvet.justpet.TAG
-import com.taiwan.justvet.justpet.TAGS
+import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
@@ -40,7 +37,9 @@ class CalendarViewModel : ViewModel() {
     val pets = firebase.collection(PETS)
 
     init {
-        getMonthEventsData(mockUser(), localDate.year.toLong(), localDate.monthValue.toLong())
+        UserManager.userProfile.value?.let {
+            getMonthEventsData(it, localDate.year.toLong(), localDate.monthValue.toLong())
+        }
     }
 
     fun mockUser(): UserProfile {

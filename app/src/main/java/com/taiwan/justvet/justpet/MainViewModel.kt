@@ -1,18 +1,14 @@
 package com.taiwan.justvet.justpet
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 
 class MainViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val users = firebase.collection(USERS)
-//    val pets = firebase.collection(PETS)
 
     fun checkUserProfile(userProfile: UserProfile) {
         userProfile.UID?.let { uid ->

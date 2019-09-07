@@ -114,6 +114,12 @@ class TagDialog : BottomSheetDialogFragment() {
                 }
             }
         }
+
+        // set indicator of recyclerView
+        val recyclerIndicator = binding.indicatorProfilePetDialogTag
+        recyclerIndicator.apply {
+            this.attachToRecyclerView(listOfProfile)
+        }
     }
 
     private fun setupListOfTags() {
