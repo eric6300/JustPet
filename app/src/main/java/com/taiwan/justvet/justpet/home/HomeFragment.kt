@@ -17,10 +17,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.NavGraphDirections
-import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
@@ -51,8 +49,17 @@ class HomeFragment : Fragment() {
         setupPetProfile()
         setupEventNotification()
 
+        UserManager.userProfileWithPetsCompleted.observe(this, Observer {
+            if (it == true) {
+                UserManager.userProfile.value?.let { userProfile ->
+                    viewModel.getPetProfileData(userProfile)
+                    UserManager.userProfileWithPetsCompleted()
+                }
+            }
+        })
+
         viewModel.birthdayChange.observe(this, Observer {
-            if (it) {
+            if (it == true) {
                 profileAdapter.notifyDataSetChanged()
                 viewModel.birthdayChangeCompleted()
             }
@@ -101,7 +108,8 @@ class HomeFragment : Fragment() {
         // monitor position after scrolling
         var lastPosition = -1
         listProfilePet.setOnScrollChangeListener { _, _, _, _, _ ->
-            val newPosition = (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
+            val newPosition =
+                (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
 
             if (lastPosition != newPosition) {
                 viewModel.getPetEventData(newPosition)
@@ -122,9 +130,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupEventNotification() {
-        notificationAdapter = EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
+        notificationAdapter =
+            EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
 
-        })
+            })
 
         val listEventNotification = binding.homeListEventNotification
         listEventNotification.apply {

@@ -15,6 +15,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
 import com.taiwan.justvet.justpet.decorators.EventDecorator

@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.EVENTS
+import com.taiwan.justvet.justpet.PETS
 import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.TAGS
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 
@@ -31,7 +34,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val eventDatabase = petEvent.petProfile?.id?.let { petId ->
-        firebase.collection("pets").document(petId).collection("events")
+        firebase.collection(PETS).document(petId).collection(EVENTS)
     }
 
     init {
@@ -80,7 +83,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         petEvent.eventTags?.apply {
             eventDatabase?.let {
                 for (tag in this) {
-                    it.document(eventId).collection("tags").add(tag)
+                    it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
                             Log.d(TAG, "postTags succeeded ID : ${it.id}")
                             navigateToCalendar()

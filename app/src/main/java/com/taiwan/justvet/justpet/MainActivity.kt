@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -11,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -26,15 +28,19 @@ import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
+
+const val USERS = "users"
 const val PETS = "pets"
 const val EVENTS = "events"
 const val TAGS = "tags"
+const val UID = "UID"
+
 const val TAG = "testEric"
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var firebaseUser: FirebaseUser
+//    private lateinit var firebaseUser: FirebaseUser
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -77,6 +83,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         requestPermission()
 
         setupFirebaseAuth()
+
+        setUserManager()
 
     }
 
@@ -196,7 +204,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .build()
                     startActivityForResult(intent, RC_SIGN_IN)
                 } else {
-                    firebaseUser = user
                     UserManager.setupUserProfile(user)
                 }
             }
@@ -212,5 +219,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(applicationContext, "已登出", Toast.LENGTH_SHORT).show()
                 UserManager.clear()
             }
+    }
+
+    fun setUserManager() {
+        UserManager.userProfileCompleted.observe(this, Observer {
+            if (it == true) {
+                UserManager.userProfile.value?.let { userProfile ->
+                    viewModel.checkUserProfile(userProfile)
+                    UserManager.userProfileCompleted()
+                }
+            }
+        })
     }
 }

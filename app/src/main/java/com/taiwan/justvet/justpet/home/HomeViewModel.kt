@@ -8,12 +8,11 @@ import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventNotification
-import kotlinx.coroutines.launch
 import com.taiwan.justvet.justpet.data.UserProfile
+import java.io.UncheckedIOException
 
 
 class HomeViewModel : ViewModel() {
@@ -39,33 +38,76 @@ class HomeViewModel : ViewModel() {
         get() = _navigateToAchievement
 
     val petName = MutableLiveData<String>()
-
     val petBirthDay = MutableLiveData<String>()
-
     val petIdChip = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val pets = firebase.collection("pets")
+//    val users = firebase.collection(USERS)
+    val pets = firebase.collection(PETS)
 
-    init {
-        getPetProfileData(mockUser())
-    }
+//    fun checkUserProfile(userProfile: UserProfile) {
+//        userProfile.UID?.let { uid ->
+//            users.whereEqualTo(UID, uid).get()
+//                .addOnSuccessListener {
+//                    if (it.size() == 0) {
+//                        registerUserProfile(userProfile)
+//                    } else {
+//                        Log.d(TAG, "user already registered")
+//                        for (item in it) {
+//                            addPetsDataToUserProfile(
+//                                UserProfile(
+//                                    profileId = item.id,
+//                                    UID = item[UID] as String?,
+//                                    email = item["email"] as String?
+//                                )
+//                            )
+//                        }
+//                    }
+//                }
+//                .addOnFailureListener {
+//
+//                }
+//        }
+//    }
+//
+//    fun registerUserProfile(userProfile: UserProfile) {
+//        userProfile.UID?.let {
+//            users.add(userProfile)
+//                .addOnSuccessListener {
+//                    Log.d(TAG, "registerUserProfile() succeeded")
+//                }
+//                .addOnFailureListener {
+//                    Log.d(TAG, "registerUserProfile() failed : $it")
+//                }
+//        }
+//    }
+//
+//    fun addPetsDataToUserProfile(userProfile: UserProfile) {
+//        userProfile.profileId?.let { profileId ->
+//            users.document(profileId).collection(PETS).get()
+//                .addOnSuccessListener { pets ->
+//                    if (pets.size() >0) {
+//                        val petList = mutableListOf<String>()
+//                        for (item in pets) {
+//                            petList.add((item["petId"] as String))
+//                            Log.d(TAG, "${item.id}")
+//                        }
+//                        UserManager.setupUserProfileWithPets(userProfile, petList)
+//                    } else {
+//                        Log.d(TAG,"user doesn't have pets")
+//                    }
+//                }
+//                .addOnFailureListener {
+//
+//                }
+//        }
+//    }
 
-    fun mockUser(): UserProfile {
-        val petList = ArrayList<String>()
-        petList.let {
-            it.add("5DjrhdAlZka29LSmOe12")
-            it.add("BR1unuBGFmeioH4VpKc2")
-            it.add("FeHxkWD6VwpPMtL2bZT4")
-        }
-        return UserProfile("eric6300", "6300eric@gmail.com", petList)
-    }
-
-    fun getPetProfileData(UserProfile: UserProfile) {
-        UserProfile.pets?.let {
-            viewModelScope.launch {
+    fun getPetProfileData(userProfile: UserProfile) {
+        userProfile.pets?.let {
+            if (it.isNotEmpty()) {
                 val petData = mutableListOf<PetProfile>()
-                for (petId in UserProfile.pets) {
+                for (petId in userProfile.pets) {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
                             petData.add(

@@ -92,7 +92,7 @@ class TagViewModel : ViewModel() {
             it.add("BR1unuBGFmeioH4VpKc2")
             it.add("FeHxkWD6VwpPMtL2bZT4")
         }
-        return UserProfile("eric6300", "6300eric@gmail.com", petList)
+        return UserProfile("Vn4lVYwPEM9RBoQXjyTr","eric6300", "6300eric@gmail.com", petList)
     }
 
     fun getPetProfileData(UserProfile: UserProfile) {
