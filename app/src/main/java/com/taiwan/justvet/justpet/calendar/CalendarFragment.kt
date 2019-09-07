@@ -2,6 +2,7 @@ package com.taiwan.justvet.justpet.calendar
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
 import com.taiwan.justvet.justpet.decorators.EventDecorator
 import org.threeten.bp.LocalDate

@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.home.TAG
 
 class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 

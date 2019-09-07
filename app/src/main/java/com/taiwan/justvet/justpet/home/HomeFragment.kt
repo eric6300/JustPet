@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
-const val TAG = "testEric"
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding

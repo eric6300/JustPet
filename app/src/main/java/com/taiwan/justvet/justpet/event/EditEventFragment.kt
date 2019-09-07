@@ -16,16 +16,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
-import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.MainActivity
-import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_CAMERA
-import com.taiwan.justvet.justpet.MainActivity.Companion.PHOTO_FROM_GALLERY
-import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
-import com.taiwan.justvet.justpet.home.TAG
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-
 
 class EditEventFragment : Fragment() {
 

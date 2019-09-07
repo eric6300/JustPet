@@ -4,8 +4,8 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class userProfile(
-    val userId: String,
-    val email: String,
+data class UserProfile(
+    val UID: String?,
+    val email: String?,
     val pets: ArrayList<String>? = null
 ) : Parcelable

@@ -6,16 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.EVENTS
+import com.taiwan.justvet.justpet.PETS
+import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.TAGS
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.userProfile
-import com.taiwan.justvet.justpet.home.TAG
+import com.taiwan.justvet.justpet.data.UserProfile
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
-
-const val PETS = "pets"
-const val EVENTS = "events"
-const val TAGS = "tags"
 
 class CalendarViewModel : ViewModel() {
 
@@ -44,21 +43,21 @@ class CalendarViewModel : ViewModel() {
         getMonthEventsData(mockUser(), localDate.year.toLong(), localDate.monthValue.toLong())
     }
 
-    fun mockUser(): userProfile {
+    fun mockUser(): UserProfile {
         val petList = ArrayList<String>()
         petList.let {
             it.add("5DjrhdAlZka29LSmOe12")
             it.add("BR1unuBGFmeioH4VpKc2")
             it.add("FeHxkWD6VwpPMtL2bZT4")
         }
-        return userProfile("eric6300", "6300eric@gmail.com", petList)
+        return UserProfile("eric6300", "6300eric@gmail.com", petList)
     }
 
-    fun getMonthEventsData(userProfile: userProfile, year: Long, month: Long) {
-        userProfile.pets?.let {
+    fun getMonthEventsData(UserProfile: UserProfile, year: Long, month: Long) {
+        UserProfile.pets?.let {
             viewModelScope.launch {
                 val data = mutableListOf<PetEvent>()
-                for (petId in userProfile.pets) {
+                for (petId in UserProfile.pets) {
                     pets.document(petId).collection(EVENTS)
                         .whereEqualTo("year", year)
                         .whereEqualTo("month", month)

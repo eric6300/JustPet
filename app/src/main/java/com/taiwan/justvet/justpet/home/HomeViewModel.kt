@@ -10,9 +10,10 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.data.EventNotification
 import kotlinx.coroutines.launch
-import com.taiwan.justvet.justpet.data.userProfile
+import com.taiwan.justvet.justpet.data.UserProfile
 
 
 class HomeViewModel : ViewModel() {
@@ -50,21 +51,21 @@ class HomeViewModel : ViewModel() {
         getPetProfileData(mockUser())
     }
 
-    fun mockUser(): userProfile {
+    fun mockUser(): UserProfile {
         val petList = ArrayList<String>()
         petList.let {
             it.add("5DjrhdAlZka29LSmOe12")
             it.add("BR1unuBGFmeioH4VpKc2")
             it.add("FeHxkWD6VwpPMtL2bZT4")
         }
-        return userProfile("eric6300", "6300eric@gmail.com", petList)
+        return UserProfile("eric6300", "6300eric@gmail.com", petList)
     }
 
-    fun getPetProfileData(userProfile: userProfile) {
-        userProfile.pets?.let {
+    fun getPetProfileData(UserProfile: UserProfile) {
+        UserProfile.pets?.let {
             viewModelScope.launch {
                 val petData = mutableListOf<PetProfile>()
-                for (petId in userProfile.pets) {
+                for (petId in UserProfile.pets) {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
                             petData.add(

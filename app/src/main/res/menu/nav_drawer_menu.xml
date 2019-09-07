@@ -21,14 +21,11 @@
 
     </group>
 
-    <item android:title="施工中">
+    <item android:title="帳號">
         <menu>
-            <item
-                    android:id="@+id/nav_share"
-                    android:title="設定"/>
 
             <item
-                    android:id="@+id/nav_send"
+                    android:id="@+id/nav_sign_out"
                     android:title="登出"/>
 
         </menu>
