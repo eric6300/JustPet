@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.UserProfile
 import java.io.UncheckedIOException
@@ -43,6 +44,16 @@ class HomeViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val pets = firebase.collection(PETS)
+
+    init {
+        userProfile.value?.let { userProfile ->
+            userProfile.pets?.apply {
+                if (this.isNotEmpty()){
+                    getPetProfileData(userProfile)
+                }
+            }
+        }
+    }
 
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {

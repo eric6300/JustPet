@@ -28,6 +28,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    compileOptions {
+        sourceCompatibility '1.8'
+        targetCompatibility '1.8'
+    }
     androidExtensions {
         experimental = true
     }
@@ -108,4 +112,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+    // Segmented Button
+    implementation 'com.github.addisonelliott:SegmentedButton:3.1.5'
 }

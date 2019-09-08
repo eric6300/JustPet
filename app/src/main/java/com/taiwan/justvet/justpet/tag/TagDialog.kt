@@ -89,6 +89,7 @@ class TagDialog : BottomSheetDialogFragment() {
         calendar = viewModel.calendar
         setupDatePickerDialog()
         setupTimePickerDialog()
+        setupSegmentedButtonGroup()
 
         return binding.root
     }
@@ -159,6 +160,22 @@ class TagDialog : BottomSheetDialogFragment() {
             calendar.get(Calendar.MINUTE),
             true
         )
+    }
+
+    private fun setupSegmentedButtonGroup() {
+        binding.tagCategoryButtonGroup.setOnPositionChangedListener {
+            when(it) {
+                0 -> {
+                    viewModel.showDiaryTag()
+                }
+                1 -> {
+                    viewModel.showSyndromeTag()
+                }
+                2 -> {
+                    viewModel.showTreatmentTag()
+                }
+            }
+        }
     }
 
 }
