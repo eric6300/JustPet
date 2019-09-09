@@ -1,9 +1,13 @@
 package com.taiwan.justvet.justpet.util
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
+import com.taiwan.justvet.justpet.GlideApp
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.calendar.CalendarEventAdapter
@@ -174,5 +178,24 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
                 }
             }
         }
+    }
+}
+
+/**
+ * Uses the Glide library to load an image by URL into an [ImageView]
+ */
+@BindingAdapter("imageUrl")
+fun bindImage(imgView: ImageView, imgUrl: Uri?) {
+    imgUrl?.let {
+        val imgUri = it.buildUpon().build()
+        GlideApp.with(imgView.context)
+            .load(imgUri)
+            .circleCrop()
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.ic_account)
+                    .error(R.drawable.ic_account)
+            )
+            .into(imgView)
     }
 }

@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
@@ -7,41 +8,50 @@ import com.taiwan.justvet.justpet.data.UserProfile
 
 object UserManager {
 
-//    private const val USER_DATA = "user_data"
-//    private const val USER_UID = "user_uid"
-
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile>
         get() = _userProfile
 
-    private val _userProfileCompleted = MutableLiveData<Boolean>()
-    val userProfileCompleted: LiveData<Boolean>
-        get() = _userProfileCompleted
+    private val _getFirebaseUserCompleted = MutableLiveData<Boolean>()
+    val getFirebaseUserCompleted: LiveData<Boolean>
+        get() = _getFirebaseUserCompleted
 
-    private val _userProfileWithPetsCompleted = MutableLiveData<Boolean>()
-    val userProfileWithPetsCompleted: LiveData<Boolean>
-        get() = _userProfileWithPetsCompleted
+    private val _refreshUserProfileCompleted = MutableLiveData<Boolean>()
+    val refreshUserProfileCompleted: LiveData<Boolean>
+        get() = _refreshUserProfileCompleted
 
-    fun setupUserProfile(firebaseUser: FirebaseUser) {
-        _userProfile.value = UserProfile(
-            UID = firebaseUser.uid,
-            email = firebaseUser.email,
-            pets = null
-        )
-        _userProfileCompleted.value = true
+    private val _userName = MutableLiveData<String>()
+    val userName: LiveData<String>
+        get() = _userName
+
+    private val _userPhotoUrl = MutableLiveData<Uri>()
+    val userPhotoUrl: LiveData<Uri>
+        get() = _userPhotoUrl
+
+    fun getFirebaseUser(firebaseUser: FirebaseUser) {
+        firebaseUser.apply {
+            _userProfile.value = UserProfile(
+                uid = this.uid,
+                email = this.email,
+                pets = null,
+                displayName = this.displayName,
+                photoUrl = this.photoUrl
+            )
+        }
+        _getFirebaseUserCompleted.value = true
     }
 
     fun userProfileCompleted() {
-        _userProfileCompleted.value = null
+        _getFirebaseUserCompleted.value = null
     }
 
-    fun setupUserProfileWithPets(userProfile: UserProfile) {
+    fun refreshUserProfile(userProfile: UserProfile) {
         _userProfile.value = userProfile
-        _userProfileWithPetsCompleted.value = true
+        _refreshUserProfileCompleted.value = true
     }
 
-    fun userProfileWithPetsCompleted() {
-        _userProfileWithPetsCompleted.value = null
+    fun refreshUserProfileCompleted() {
+        _refreshUserProfileCompleted.value = null
     }
 
     /**
@@ -49,6 +59,10 @@ object UserManager {
      */
     fun clear() {
         _userProfile.value = null
+        _userName.value = null
+        _userPhotoUrl.value = null
+        _getFirebaseUserCompleted.value = null
+        _refreshUserProfileCompleted.value = null
     }
 
 }

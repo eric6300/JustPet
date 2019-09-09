@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -23,24 +24,21 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
-import com.taiwan.justvet.justpet.profile.PetProfileDialog
+import com.taiwan.justvet.justpet.databinding.NavDrawerHeaderBinding
 
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
-
 const val USERS = "users"
 const val PETS = "pets"
 const val EVENTS = "events"
 const val TAGS = "tags"
 const val UID = "uid"
-
 const val TAG = "testEric"
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-//    private lateinit var firebaseUser: FirebaseUser
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -114,7 +112,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Set drawer Navigation itemSelectedListener
         binding.drawerNavView.setNavigationItemSelectedListener(this)
 
-        // TODO : detail of drawer
+        // Set up header of drawer ui using data binding
+        val bindingNavHeader = NavDrawerHeaderBinding.inflate(
+            LayoutInflater.from(this), binding.drawerNavView, false
+        )
+
+        bindingNavHeader.lifecycleOwner = this
+        bindingNavHeader.viewModel = viewModel
+        binding.drawerNavView.addHeaderView(bindingNavHeader.root)
     }
 
     fun setupFAB() {
@@ -204,7 +209,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .build()
                     startActivityForResult(intent, RC_SIGN_IN)
                 } else {
-                    UserManager.setupUserProfile(user)
+                    UserManager.getFirebaseUser(user)
                 }
             }
 
@@ -221,11 +226,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
     }
 
-    fun setUserManager() {
-        UserManager.userProfileCompleted.observe(this, Observer {
+    private fun setUserManager() {
+        UserManager.getFirebaseUserCompleted.observe(this, Observer {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.checkUserProfile(userProfile)
+                    viewModel.setupDrawerUser(userProfile)
                     UserManager.userProfileCompleted()
                 }
             }

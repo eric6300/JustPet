@@ -38,7 +38,7 @@ class HomeViewModel : ViewModel() {
         get() = _navigateToAchievement
 
     val petName = MutableLiveData<String>()
-    val petBirthDay = MutableLiveData<String>()
+    val petBirthday = MutableLiveData<String>()
     val petIdChip = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -75,9 +75,10 @@ class HomeViewModel : ViewModel() {
                             )
                         }
                         _petList.value = petData
+                        Log.d(TAG, "getPetProfileData() succeeded")
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "Failed")
+                        Log.d(TAG, "getPetProfileData() failed: $it")
                     }
 
             }
@@ -101,7 +102,7 @@ class HomeViewModel : ViewModel() {
             view.context,
             DatePickerDialog.OnDateSetListener { view, year, month, day ->
                 val dateTime = "$year 年 $month 月 $day 日"
-                petBirthDay.value = dateTime
+                petBirthday.value = dateTime
                 _birthdayChange.value = true
             }, year, month, day
         ).show()
@@ -118,7 +119,7 @@ class HomeViewModel : ViewModel() {
         // update to firebase in the future
         Log.d(
             TAG,
-            "Pet Name : ${petName.value} Pet BirthDay : ${petBirthDay.value} Pet IdChip : ${petIdChip.value}"
+            "Pet Name : ${petName.value} Pet BirthDay : ${petBirthday.value} Pet IdChip : ${petIdChip.value}"
         )
         _isModified.value = false
     }

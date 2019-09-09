@@ -1,15 +1,22 @@
 package com.taiwan.justvet.justpet.home
 
 import android.content.Context
+import android.graphics.Outline
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
+import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
@@ -21,9 +28,23 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val petProfile = getItem(position)
-        holder.binding.layoutPetProfile.setOnClickListener {
-            onClickListener.onClick(petProfile)
+
+        val petImage = holder.binding.imagePet
+        petImage.clipToOutline = true
+        petImage.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline?) {
+                outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+            }
         }
+
+        val filter = holder.binding.filterImage
+        filter.clipToOutline = true
+        filter.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline?) {
+                outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+            }
+        }
+
         holder.bind(petProfile)
     }
 

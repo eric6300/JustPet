@@ -64,18 +64,31 @@
                     app:srcCompat="@drawable/image_cat" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/filter_image"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/filter_image"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
+                    app:layout_constraintEnd_toEndOf="@+id/image_pet"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/image_pet"
+                    app:layout_constraintTop_toTopOf="@+id/image_pet"
+                    app:layout_constraintVertical_bias="0.0">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/detail_pet_profile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
                     android:visibility="@{ viewModel.isModified() != true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/image_pet">
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <ImageView
                         android:id="@+id/icon_species"
@@ -218,23 +231,9 @@
                             android:hint="@string/text_birthday"
                             android:inputType="none"
                             android:singleLine="true"
-                            android:text="@={viewModel.petBirthDay}"
+                            android:text="@={viewModel.petBirthday}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/filter_image"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@drawable/filter_image"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
-                    app:layout_constraintEnd_toEndOf="@+id/image_pet"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/image_pet"
-                    app:layout_constraintTop_toTopOf="@+id/image_pet"
-                    app:layout_constraintVertical_bias="0.0">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -242,15 +241,15 @@
                     android:id="@+id/text_name_pet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="8dp"
                     android:fontFamily="@font/roboto_mono"
                     android:text="@{petProfile.name}"
                     android:textColor="@android:color/background_light"
                     android:textSize="36sp"
                     android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
-                    app:layout_constraintStart_toStartOf="@+id/image_pet"
+                    app:layout_constraintBottom_toBottomOf="@+id/filter_image"
+                    app:layout_constraintStart_toStartOf="@+id/filter_image"
                     tools:text="MeiMei" />
 
                 <ImageView
@@ -274,9 +273,10 @@
                     android:background="@drawable/ic_achievement"
                     android:backgroundTint="@android:color/background_light"
                     android:onClick="@{() -> viewModel.navigateToAchievement()}"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@id/image_pet"
-                    app:layout_constraintStart_toEndOf="@+id/text_name_pet" />
+                    app:layout_constraintStart_toEndOf="@+id/text_name_pet"
+                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

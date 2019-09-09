@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
@@ -49,11 +48,11 @@ class HomeFragment : Fragment() {
         setupPetProfile()
         setupEventNotification()
 
-        UserManager.userProfileWithPetsCompleted.observe(this, Observer {
+        UserManager.refreshUserProfileCompleted.observe(this, Observer {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.getPetProfileData(userProfile)
-                    UserManager.userProfileWithPetsCompleted()
+                    UserManager.refreshUserProfileCompleted()
                 }
             }
         })

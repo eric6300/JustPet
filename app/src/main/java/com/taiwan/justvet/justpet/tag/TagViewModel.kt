@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
@@ -72,7 +73,10 @@ class TagViewModel : ViewModel() {
     private val listTagTreatment = mutableListOf<EventTag>()
 
     init {
-        getPetProfileData(mockUser())
+        UserManager.userProfile.value?.let {
+            getPetProfileData(it)
+        }
+
         setupDiaryTagList()
         setupSyndromeTagList()
         setupTreatmentTagList()
@@ -84,16 +88,6 @@ class TagViewModel : ViewModel() {
 
     val database = FirebaseFirestore.getInstance()
     val pets = database.collection("pets")
-
-    fun mockUser(): UserProfile {
-        val petList = ArrayList<String>()
-        petList.let {
-            it.add("5DjrhdAlZka29LSmOe12")
-            it.add("BR1unuBGFmeioH4VpKc2")
-            it.add("FeHxkWD6VwpPMtL2bZT4")
-        }
-        return UserProfile("Vn4lVYwPEM9RBoQXjyTr","eric6300", "6300eric@gmail.com", petList)
-    }
 
     fun getPetProfileData(UserProfile: UserProfile) {
         UserProfile.pets?.let {
@@ -113,9 +107,10 @@ class TagViewModel : ViewModel() {
                             )
                             petData.add(petProfile)
                             _listOfProfile.value = petData
+                            Log.d(TAG, "TagViewModel getPetProfileData() succeeded")
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "Failed")
+                            Log.d(TAG, "TagViewModel getPetProfileData() failed : $it")
                         }
                 }
             }
