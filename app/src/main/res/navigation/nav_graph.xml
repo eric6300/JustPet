@@ -23,12 +23,6 @@
             android:id="@+id/achievementDialog"
             android:name="com.taiwan.justvet.justpet.achievement.AchievementDialog"
             android:label="AchievementDialog" />
-
-    <action android:id="@+id/navigate_to_homeFragment" app:destination="@id/homeFragment" />
-    <action android:id="@+id/navigate_to_calendarFragment" app:destination="@id/calendarFragment" />
-    <action android:id="@+id/navigate_to_toolFragment" app:destination="@id/toolFragment" />
-    <action android:id="@+id/navigate_to_chartFragment" app:destination="@id/chartFragment" />
-    <action android:id="@+id/navigate_to_achievementDialog" app:destination="@id/achievementDialog" />
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
@@ -45,6 +39,32 @@
             android:id="@+id/action_tagDialog_to_eventDetailFragment"
             app:destination="@id/eventDetailFragment" />
     </dialog>
+    <dialog
+        android:id="@+id/petProfileDialogFragment"
+        android:name="com.taiwan.justvet.justpet.profile.PetProfileDialog"
+        android:label="PetProfileDialogFragment" />
+
+    <action
+        android:id="@+id/navigate_to_homeFragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@+id/nav_graph" />
+    <action
+        android:id="@+id/navigate_to_calendarFragment"
+        app:destination="@id/calendarFragment"
+        app:popUpTo="@+id/nav_graph" />
+    <action
+        android:id="@+id/navigate_to_toolFragment"
+        app:destination="@id/toolFragment"
+        app:popUpTo="@+id/nav_graph" />
+    <action
+        android:id="@+id/navigate_to_chartFragment"
+        app:destination="@id/chartFragment"
+        app:popUpTo="@+id/nav_graph" />
+    <action android:id="@+id/navigate_to_achievementDialog" app:destination="@id/achievementDialog" />
     <action android:id="@+id/navigate_to_tagDialog" app:destination="@id/tagDialog" />
+    <action
+        android:id="@+id/navigate_to_petProfileDialogFragment"
+        app:destination="@id/petProfileDialogFragment"
+        app:popUpTo="@+id/homeFragment" />
 
 </navigation>

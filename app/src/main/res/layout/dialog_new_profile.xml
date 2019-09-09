@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.taiwan.justvet.justpet.profile.PetProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/button_female"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:onClick="@{() -> viewModel.selectGender(0)}"
+            android:padding="@dimen/mcv_arrow_padding"
+            app:layout_constraintEnd_toEndOf="@+id/button_dog"
+            app:layout_constraintStart_toStartOf="@+id/button_dog"
+            app:layout_constraintTop_toBottomOf="@+id/button_dog"
+            app:srcCompat="@drawable/ic_female" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/button_dog"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/button_cat"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_text_name_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_name"
+                android:text="@={viewModel.petName}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/button_cat"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:onClick="@{() -> viewModel.selectSpecies(0)}"
+            android:padding="@dimen/mcv_arrow_padding"
+            app:layout_constraintEnd_toStartOf="@+id/button_dog"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+            app:srcCompat="@drawable/ic_cat" />
+
+        <ImageView
+            android:id="@+id/button_dog"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:onClick="@{() -> viewModel.selectSpecies(1)}"
+            android:padding="@dimen/mcv_arrow_padding"
+            app:layout_constraintBottom_toBottomOf="@+id/button_cat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_cat"
+            app:layout_constraintTop_toTopOf="@+id/button_cat"
+            app:srcCompat="@drawable/ic_dog" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout4"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="32dp"
+            android:onClick="@{() -> viewModel.selectGender(1)}"
+            app:layout_constraintEnd_toEndOf="@+id/button_cat"
+            app:layout_constraintStart_toStartOf="@+id/button_cat"
+            app:layout_constraintTop_toBottomOf="@+id/button_cat">
+
+            <ImageView
+                android:id="@+id/button_male"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="@dimen/mcv_arrow_padding"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_male" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:onClick="@{() -> viewModel.newPetProfile()}"
+            android:text="確認"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/button_cat"
+            app:layout_constraintStart_toStartOf="@+id/button_cat"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            app:layout_constraintBottom_toBottomOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="@+id/button_dog"
+            app:layout_constraintStart_toStartOf="@+id/button_dog"
+            app:layout_constraintTop_toTopOf="@+id/button" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

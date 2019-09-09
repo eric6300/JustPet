@@ -13,7 +13,6 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.UserProfile
-import java.io.UncheckedIOException
 
 
 class HomeViewModel : ViewModel() {
@@ -48,7 +47,7 @@ class HomeViewModel : ViewModel() {
     init {
         userProfile.value?.let { userProfile ->
             userProfile.pets?.apply {
-                if (this.isNotEmpty()){
+                if (this.isNotEmpty()) {
                     getPetProfileData(userProfile)
                 }
             }
@@ -58,28 +57,29 @@ class HomeViewModel : ViewModel() {
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {
             if (it.isNotEmpty()) {
-                val petData = mutableListOf<PetProfile>()
-                for (petId in userProfile.pets) {
-                    pets.document(petId).get()
-                        .addOnSuccessListener { document ->
+                pets.whereEqualTo("owner", userProfile.UID).get()
+                    .addOnSuccessListener { list ->
+                        val petData = mutableListOf<PetProfile>()
+                        for (item in list) {
                             petData.add(
                                 PetProfile(
-                                    id = document.id,
-                                    name = document["name"] as String?,
-                                    species = document["species"] as Long?,
-                                    gender = document["gender"] as Long?,
-                                    neutered = document["neutered"] as Boolean?,
-                                    birthDay = document["birthDay"] as String?,
-                                    idNumber = document["idNumber"] as String?,
-                                    owner = document["owner"] as String?
+                                    profileId = item.id,
+                                    name = item["name"] as String?,
+                                    species = item["species"] as Long?,
+                                    gender = item["gender"] as Long?,
+                                    neutered = item["neutered"] as Boolean?,
+                                    birthDay = item["birthDay"] as String?,
+                                    idNumber = item["idNumber"] as String?,
+                                    owner = item["owner"] as String?
                                 )
                             )
-                            _petList.value = petData
                         }
-                        .addOnFailureListener {
-                            Log.d(TAG, "Failed")
-                        }
-                }
+                        _petList.value = petData
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "Failed")
+                    }
+
             }
         }
     }

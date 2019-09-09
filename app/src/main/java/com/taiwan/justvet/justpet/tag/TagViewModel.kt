@@ -102,7 +102,7 @@ class TagViewModel : ViewModel() {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
                             val petProfile = PetProfile(
-                                id = document.id,
+                                profileId = document.id,
                                 name = document["name"] as String?,
                                 species = document["species"] as Long?,
                                 gender = document["gender"] as Long?,
@@ -212,7 +212,7 @@ class TagViewModel : ViewModel() {
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
                 petProfile = it,
-                petId = it.id,
+                petId = it.profileId,
                 petName = it.name,
                 timestamp = calendar.timeInMillis,
                 year = timeList[0].toLong(),

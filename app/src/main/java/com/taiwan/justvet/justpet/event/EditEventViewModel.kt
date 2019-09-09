@@ -33,7 +33,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventNote = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val eventDatabase = petEvent.petProfile?.id?.let { petId ->
+    val eventDatabase = petEvent.petProfile?.profileId?.let { petId ->
         firebase.collection(PETS).document(petId).collection(EVENTS)
     }
 

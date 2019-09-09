@@ -30,7 +30,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
                 .addOnFailureListener {
-
+                    Log.d(TAG, "checkUserProfile() failed : $it")
                 }
         }
     }
@@ -51,11 +51,11 @@ class MainViewModel : ViewModel() {
         userProfile.profileId?.let { profileId ->
             users.document(profileId).collection(PETS).get()
                 .addOnSuccessListener { pets ->
-                    if (pets.size() >0) {
+                    if (pets.size() > 0) {
                         val petList = mutableListOf<String>()
                         for (item in pets) {
                             petList.add((item["petId"] as String))
-                            Log.d(TAG, item.id)
+                            Log.d(TAG, "document Id : ${item.id}" )
                         }
                         UserManager.setupUserProfileWithPets(userProfile, petList)
                     } else {

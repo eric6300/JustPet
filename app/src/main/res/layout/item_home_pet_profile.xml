@@ -192,7 +192,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_mono"
-                            android:hint="@string/hint_id_chip"
+                            android:hint="@string/text_id_number"
                             android:text="@={viewModel.petIdChip}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>

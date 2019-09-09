@@ -42,16 +42,6 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun mockUser(): UserProfile {
-        val petList = ArrayList<String>()
-        petList.let {
-            it.add("5DjrhdAlZka29LSmOe12")
-            it.add("BR1unuBGFmeioH4VpKc2")
-            it.add("FeHxkWD6VwpPMtL2bZT4")
-        }
-        return UserProfile("Vn4lVYwPEM9RBoQXjyTr","eric6300", "6300eric@gmail.com", petList)
-    }
-
     fun getMonthEventsData(UserProfile: UserProfile, year: Long, month: Long) {
         UserProfile.pets?.let {
             viewModelScope.launch {
@@ -63,9 +53,9 @@ class CalendarViewModel : ViewModel() {
                         .get()
                         .addOnSuccessListener { document ->
                             if (document.size() > 0) {
-                                Log.d(TAG, "=== pet id : $petId ===")
+                                Log.d(TAG, "=== pet profileId : $petId ===")
                                 for (event in document) {
-                                    Log.d(TAG, "event id : ${event.id}")
+                                    Log.d(TAG, "event profileId : ${event.id}")
                                     data.add(
                                         PetEvent(
                                             eventId = event.id,

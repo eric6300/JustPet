@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -24,6 +23,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
+import com.taiwan.justvet.justpet.profile.PetProfileDialog
 
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
-
+                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
             R.id.nav_gallery -> {
 
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 //        val customLayout = AuthMethodPickerLayout
 //            .Builder(R.layout.your_custom_layout_xml)
-//            .setGoogleButtonId(R.id.bar)
+//            .setGoogleButtonId(R.profileId.bar)
 //            .build()
 
         val authListener: FirebaseAuth.AuthStateListener =

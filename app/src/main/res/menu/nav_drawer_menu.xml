@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
                 android:id="@+id/nav_home"
-                android:title="施工中"/>
+                android:title="新增寵物"/>
         <item
                 android:id="@+id/nav_gallery"
                 android:title="施工中"/>
