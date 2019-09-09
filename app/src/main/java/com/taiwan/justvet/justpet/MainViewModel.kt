@@ -19,11 +19,12 @@ class MainViewModel : ViewModel() {
                     } else {
                         Log.d(TAG, "user already registered")
                         for (item in it) {
-                            addPetsDataToUserProfile(
+                            UserManager.setupUserProfileWithPets(
                                 UserProfile(
                                     profileId = item.id,
                                     UID = item[UID] as String?,
-                                    email = item["email"] as String?
+                                    email = item["email"] as String?,
+                                    pets = item["pets"] as List<String>?
                                 )
                             )
                         }
@@ -47,24 +48,4 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun addPetsDataToUserProfile(userProfile: UserProfile) {
-        userProfile.profileId?.let { profileId ->
-            users.document(profileId).collection(PETS).get()
-                .addOnSuccessListener { pets ->
-                    if (pets.size() > 0) {
-                        val petList = mutableListOf<String>()
-                        for (item in pets) {
-                            petList.add((item["petId"] as String))
-                            Log.d(TAG, "document Id : ${item.id}" )
-                        }
-                        UserManager.setupUserProfileWithPets(userProfile, petList)
-                    } else {
-                        Log.d(TAG,"user doesn't have pets")
-                    }
-                }
-                .addOnFailureListener {
-
-                }
-        }
-    }
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 
@@ -52,9 +53,8 @@ class PetProfileViewModel : ViewModel() {
     fun updatePetsOfUser(petId: String) {
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
-                users.document(profileId).collection(PETS).add(petId)
+                users.document(profileId).update("pets", FieldValue.arrayUnion(petId))
                     .addOnSuccessListener {
-                        updatePetsOfUser(it.id)
                         Log.d(TAG, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {

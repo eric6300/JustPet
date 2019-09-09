@@ -57,7 +57,7 @@ class HomeViewModel : ViewModel() {
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {
             if (it.isNotEmpty()) {
-                pets.whereEqualTo("owner", userProfile.UID).get()
+                pets.whereEqualTo("owner", userProfile.profileId).get()
                     .addOnSuccessListener { list ->
                         val petData = mutableListOf<PetProfile>()
                         for (item in list) {

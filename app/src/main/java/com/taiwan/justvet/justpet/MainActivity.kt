@@ -33,7 +33,7 @@ const val USERS = "users"
 const val PETS = "pets"
 const val EVENTS = "events"
 const val TAGS = "tags"
-const val UID = "UID"
+const val UID = "uid"
 
 const val TAG = "testEric"
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

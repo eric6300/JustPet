@@ -35,12 +35,8 @@ object UserManager {
         _userProfileCompleted.value = null
     }
 
-    fun setupUserProfileWithPets(userProfile: UserProfile, list: List<String>) {
-        _userProfile.value = UserProfile(
-            UID = userProfile.UID,
-            email = userProfile.email,
-            pets = list
-        )
+    fun setupUserProfileWithPets(userProfile: UserProfile) {
+        _userProfile.value = userProfile
         _userProfileWithPetsCompleted.value = true
     }
 

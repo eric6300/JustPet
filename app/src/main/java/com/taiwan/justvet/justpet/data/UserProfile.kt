@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class UserProfile(
-    val profileId: String? = null,
+    @get:Exclude val profileId: String? = null,
     val UID: String?,
     val email: String?,
     @get:Exclude val pets: List<String>? = null
