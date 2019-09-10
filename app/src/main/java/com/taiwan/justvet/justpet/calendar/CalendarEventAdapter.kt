@@ -23,6 +23,9 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val petEvent = getItem(position)
+        holder.itemView.setOnClickListener {
+            viewModel.navigateToDetail(petEvent)
+        }
         holder.binding.listOfTags.let {
             val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
             })

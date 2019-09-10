@@ -31,6 +31,10 @@ class CalendarViewModel : ViewModel() {
     val refreshEventData: LiveData<Boolean>
         get() = _refreshEventData
 
+    private val _navigateToDetail = MutableLiveData<PetEvent>()
+    val navigateToDetail: LiveData<PetEvent>
+        get() = _navigateToDetail
+
     val localDate = LocalDate.now()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -200,5 +204,14 @@ class CalendarViewModel : ViewModel() {
 
     fun refreshEventDataCompleted() {
         _refreshEventData.value = false
+    }
+
+    fun navigateToDetail(petEvent: PetEvent) {
+        _navigateToDetail.value = petEvent
+        Log.d(TAG, "navigateToDetail")
+    }
+
+    fun navigateToDetailCompleted() {
+        _navigateToDetail.value = null
     }
 }

@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -65,7 +66,16 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
 
         showThisMonthEvents()
 
-
+        viewModel.navigateToDetail.observe(this, Observer {
+            it?.let {
+                findNavController().navigate(
+                    CalendarFragmentDirections.actionCalendarFragmentToEventDetailFragment(
+                        it
+                    )
+                )
+                viewModel.navigateToDetailCompleted()
+            }
+        })
 
         viewModel.refreshEventData.observe(this, Observer {
             calendarView.selectedDate?.apply {
@@ -100,7 +110,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         adapter = CalendarEventAdapter(viewModel, CalendarEventAdapter.OnClickListener {
         })
         listOfEvents.adapter = adapter
-        enableSwipe(listOfEvents)
+//        enableSwipe(listOfEvents)
     }
 
     private fun monthChangedListener() {

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.taiwan.justvet.justpet.NavGraphDirections
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
 
 class TagDialog : BottomSheetDialogFragment() {
@@ -126,7 +129,6 @@ class TagDialog : BottomSheetDialogFragment() {
     private fun setupListOfTags() {
         val listOfTags = binding.listOfTags
         val tagAdapter = TagListAdapter(viewModel, TagListAdapter.OnClickListener {
-
         })
         listOfTags.adapter = tagAdapter
     }
@@ -164,7 +166,7 @@ class TagDialog : BottomSheetDialogFragment() {
 
     private fun setupSegmentedButtonGroup() {
         binding.tagCategoryButtonGroup.setOnPositionChangedListener {
-            when(it) {
+            when (it) {
                 0 -> {
                     viewModel.showDiaryTag()
                 }

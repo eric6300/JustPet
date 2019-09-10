@@ -18,7 +18,7 @@
         android:id="@+id/layout_tag_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@{ eventTag.isSelected == true ? @drawable/selected_icon_tag : null }" >
+        android:background="@{ eventTag.isSelected != true ? @drawable/background_white : @drawable/selected_icon_tag }" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/background_tag"

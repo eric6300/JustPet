@@ -10,7 +10,11 @@
     <fragment
             android:id="@+id/calendarFragment"
             android:name="com.taiwan.justvet.justpet.calendar.CalendarFragment"
-            android:label="CalendarFragment" />
+            android:label="CalendarFragment" >
+        <action
+            android:id="@+id/action_calendarFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+    </fragment>
     <fragment
             android:id="@+id/toolFragment"
             android:name="com.taiwan.justvet.justpet.tool.ToolFragment"
