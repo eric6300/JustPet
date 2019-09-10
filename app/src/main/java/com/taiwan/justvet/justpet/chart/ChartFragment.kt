@@ -15,6 +15,7 @@ import com.taiwan.justvet.justpet.DateFormatter
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
+import java.util.*
 
 
 class ChartFragment : Fragment() {
@@ -45,28 +46,33 @@ class ChartFragment : Fragment() {
     fun setupChart() {
         // generate Dates
         val calendar = Calendar.getInstance()
-        val d1 = calendar.getTime()
+        val d1 = calendar.time
         calendar.add(Calendar.DATE, 1)
-        val d2 = calendar.getTime()
+        val d2 = calendar.time
         calendar.add(Calendar.DATE, 1)
-        val d3 = calendar.getTime()
+        val d3 = calendar.time
+        calendar.set(2019,8,17)
+        val d4 = calendar.time
 
         val graph = binding.graph
 
         // you can directly pass Date objects to DataPoint-Constructor
         // this will convert the Date to double via Date#getTime()
         val series = LineGraphSeries(
-            arrayOf<DataPoint>(
+            arrayOf(
                 DataPoint(d1, 4.0),
-                DataPoint(d2, 5.0),
                 DataPoint(d2, 6.0),
-                DataPoint(d3, 3.0)
+                DataPoint(d2, 5.0),
+                DataPoint(d3, 3.0),
+                DataPoint(d4, 9.0)
             )
         )
 
         series.isDrawDataPoints = true
         series.setOnDataPointTapListener { series, dataPoint ->
+            val yyy = dataPoint.x
             Log.d(TAG, "dataPoint : ${dataPoint.y}")
+            Log.d(TAG, "dataPoint : ${Date(yyy.toLong())}")
         }
 
         graph.addSeries(series)
@@ -79,7 +85,7 @@ class ChartFragment : Fragment() {
 
         // set manual x bounds to have nice steps
         graph.viewport.setMinX(d1.time.toDouble())
-        graph.viewport.setMaxX(d3.time.toDouble())
+        graph.viewport.setMaxX(d4.time.toDouble())
         graph.viewport.isXAxisBoundsManual = true
 
         // as we use dates as labels, the human rounding to nice readable numbers
