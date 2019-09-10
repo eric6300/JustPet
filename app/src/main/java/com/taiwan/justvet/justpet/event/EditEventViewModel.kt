@@ -71,6 +71,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             it.add(finalEvent)
                 .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "postEvent succeeded ID : ${documentReference.id}")
+                    navigateToCalendar()
                     postTags(documentReference.id)
                 }
                 .addOnFailureListener { e ->

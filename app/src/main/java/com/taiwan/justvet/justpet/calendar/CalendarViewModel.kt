@@ -142,12 +142,12 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun deleteEvent(petEvent: PetEvent) {
+    private fun deleteEvent(petEvent: PetEvent) {
         petEvent.petId?.let { petId ->
             petEvent.eventId?.let { eventId ->
                 pets.document(petId).collection(EVENTS).document(eventId).delete()
                     .addOnSuccessListener {
-                        deleteEventTags(petEvent)
+                        refreshEventData()
                     }
                     .addOnFailureListener {
                         Log.d(TAG, "deleteEvent() failed : $it")
@@ -156,16 +156,34 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    private fun deleteEventTags(petEvent: PetEvent) {
+    fun getEventTagsToDelete(petEvent: PetEvent) {
         petEvent.petId?.let { petId ->
             petEvent.eventId?.let { eventId ->
                 pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
-                    .document().delete()
+                    .get()
                     .addOnSuccessListener {
-                        refreshEventData()
+                        for (item in it) {
+                            deleteTags(petEvent, item.id)
+                        }
+                        deleteEvent(petEvent)
                     }
                     .addOnFailureListener {
                         Log.d(TAG, "deleteEvent() failed : $it")
+                    }
+            }
+        }
+    }
+
+    fun deleteTags(petEvent: PetEvent, documentId: String) {
+        petEvent.petId?.let { petId ->
+            petEvent.eventId?.let { eventId ->
+                pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
+                    .document(documentId).delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "deleteTags() succeeded")
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "deleteTags() failed : $it")
                     }
             }
         }
