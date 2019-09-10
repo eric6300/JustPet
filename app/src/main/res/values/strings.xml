@@ -44,4 +44,7 @@
     <string name="title_water_intake">基礎飲水量</string>
     <string name="title_calculate_rate">呼吸/脈搏計算</string>
 
+    //  ChartFragment  //
+    <string name="chart_date_format">MM/dd</string>
+
 </resources>

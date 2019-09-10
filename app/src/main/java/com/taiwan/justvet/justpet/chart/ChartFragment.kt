@@ -1,26 +1,21 @@
 package com.taiwan.justvet.justpet.chart
 
-import android.graphics.Color
+import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
+import com.taiwan.justvet.justpet.DateFormatter
 import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
-import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
-import com.taiwan.justvet.justpet.event.EditEventViewModel
+
 
 class ChartFragment : Fragment() {
 
@@ -36,7 +31,7 @@ class ChartFragment : Fragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_chart, container, false
+            inflater, com.taiwan.justvet.justpet.R.layout.fragment_chart, container, false
         )
 
         binding.lifecycleOwner = this
@@ -48,71 +43,49 @@ class ChartFragment : Fragment() {
     }
 
     fun setupChart() {
-        val lineChart = binding.chartLine
+        // generate Dates
+        val calendar = Calendar.getInstance()
+        val d1 = calendar.getTime()
+        calendar.add(Calendar.DATE, 1)
+        val d2 = calendar.getTime()
+        calendar.add(Calendar.DATE, 1)
+        val d3 = calendar.getTime()
 
-        lineChart.setExtraOffsets(5f, 0f, 5f, 5f)
+        val graph = binding.graph
 
-        // enable scaling and dragging
-        lineChart.isDragEnabled = true
-        lineChart.setScaleEnabled(true)
+        // you can directly pass Date objects to DataPoint-Constructor
+        // this will convert the Date to double via Date#getTime()
+        val series = LineGraphSeries(
+            arrayOf<DataPoint>(
+                DataPoint(d1, 4.0),
+                DataPoint(d2, 5.0),
+                DataPoint(d2, 6.0),
+                DataPoint(d3, 3.0)
+            )
+        )
 
-        // disable grid background
-        lineChart.setDrawGridBackground(false)
+        series.isDrawDataPoints = true
+        series.setOnDataPointTapListener { series, dataPoint ->
+            Log.d(TAG, "dataPoint : ${dataPoint.y}")
+        }
 
-        lineChart.setPinchZoom(true)
+        graph.addSeries(series)
 
-        // disable legend
-        lineChart.legend.isEnabled = false
+        graph.viewport.isScalable = true
 
-        // set X axis
-        val xAxis = lineChart.xAxis
-        xAxis.textSize = 16f
-        xAxis.axisMinimum = 0f
-        xAxis.axisMaximum = 31f
-        xAxis.setDrawAxisLine(true)
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.granularity = 1f
+        // set date label formatter
+        graph.gridLabelRenderer.labelFormatter = DateFormatter(JustPetApplication.appContext)
+        graph.gridLabelRenderer.numHorizontalLabels = 3 // only 4 because of the space
 
-        // set Y axis
-        val yAxisRight = lineChart.axisRight
-        yAxisRight.isEnabled = false
-        val yAxisLeft = lineChart.axisLeft
-        yAxisLeft.setDrawGridLines(false)
-        yAxisLeft.setDrawLabels(true)
-        yAxisLeft.setDrawZeroLine(true)
-        yAxisLeft.textSize = 14f
-        yAxisLeft.setDrawGridLinesBehindData(true)
-        yAxisLeft.granularity = 1f
+        // set manual x bounds to have nice steps
+        graph.viewport.setMinX(d1.time.toDouble())
+        graph.viewport.setMaxX(d3.time.toDouble())
+        graph.viewport.isXAxisBoundsManual = true
 
-        // disable description
-        val description = Description()
-        description.isEnabled = false
-        lineChart.description = description
-
-        // Setting Data
-        val entries = ArrayList<Entry>()
-        entries.add(Entry(1f, 4.5f))
-        entries.add(Entry(6f, 4.6f))
-        entries.add(Entry(10f, 5.2f))
-        entries.add(Entry(20f, 3.9f))
-
-        // set lineDataSet
-        val dataset = LineDataSet(entries, "體重")
-        dataset.setDrawCircles(true)
-        dataset.setDrawValues(true)
-        dataset.lineWidth = 3f
-        dataset.circleRadius = 6f
-        dataset.circleHoleRadius = 3f
-        dataset.valueTextSize = 16f
-        dataset.color = this.context!!.getColor(R.color.colorDiaryDark)
-        dataset.setCircleColor(this.context!!.getColor(R.color.colorDiaryDark))
-
-        val data = LineData(dataset)
-        lineChart.data = data
-
-        // refresh
-        lineChart.invalidate()
+        // as we use dates as labels, the human rounding to nice readable numbers
+        // is not necessary
+        graph.gridLabelRenderer.setHumanRounding(false, true)
+        graph.gridLabelRenderer.isHighlightZeroLines = false
+        graph.gridLabelRenderer.labelsSpace = 20
     }
 }
