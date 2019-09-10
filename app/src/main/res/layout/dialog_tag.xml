@@ -13,61 +13,66 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/roboto_mono"
-            android:text="@{viewModel.currentDate}"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_date"
-            app:layout_constraintEnd_toStartOf="@+id/button_time"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_date"
-            app:layout_constraintTop_toTopOf="@+id/button_date"
-            tools:text="2019年8月31日" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list_of_tags"
-            listOfTags="@{viewModel.listOfTags}"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/outline_list_of_tags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            android:background="@drawable/border_corner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tag_category_button_group"
-            app:spanCount="5" />
+            app:layout_constraintTop_toBottomOf="@+id/tag_category_button_group">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_of_tags"
+                listOfTags="@{viewModel.listOfTags}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:spanCount="5" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <Button
             android:id="@+id/button_next_step"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:onClick="@{() -> viewModel.makeTagList()}"
             android:text="@string/text_next_step"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/button_quick_save"
-            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/list_of_tags" />
+            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags" />
 
         <Button
             android:id="@+id/button_quick_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/text_quick_save"
-            app:layout_constraintBaseline_toBaselineOf="@+id/button_next_step"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_next_step" />
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags" />
 
         <ImageView
             android:id="@+id/button_close"
@@ -80,59 +85,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close" />
 
-        <ImageView
-            android:id="@+id/button_date"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:onClick="@{() -> viewModel.showDatePickerDialog()}"
-            app:layout_constraintEnd_toStartOf="@+id/text_date"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/indicator_profile_pet_dialog_tag"
-            app:srcCompat="@drawable/nav_bottom_calendar" />
-
-        <ImageView
-            android:id="@+id/button_time"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:onClick="@{() -> viewModel.showTimePickerDialog()}"
-            app:layout_constraintBottom_toBottomOf="@+id/text_date"
-            app:layout_constraintEnd_toStartOf="@+id/text_time"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/text_date"
-            app:layout_constraintTop_toTopOf="@+id/text_date"
-            app:srcCompat="@drawable/nav_bottom_calendar" />
-
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_mono"
-            android:text="@{viewModel.currentTime}"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_time"
-            app:layout_constraintTop_toTopOf="@+id/button_time"
-            tools:text="10:40" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_of_profile"
+            listOfProfile="@{viewModel.listOfProfile}"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="horizontal"
-            tools:listitem="@layout/item_tag_dialog_pet"
-            listOfProfile="@{viewModel.listOfProfile}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_tag_dialog_pet" />
 
         <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
             android:id="@+id/indicator_profile_pet_dialog_tag"
@@ -147,14 +111,14 @@
             android:id="@+id/tag_category_button_group"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             app:borderColor="@color/colorDiary"
             app:borderWidth="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_date"
+            app:layout_constraintTop_toBottomOf="@+id/indicator_profile_pet_dialog_tag"
             app:position="0"
             app:radius="5dp"
             app:ripple="true"
@@ -201,6 +165,13 @@
                 app:textSize="18sp" />
 
         </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50121653" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
