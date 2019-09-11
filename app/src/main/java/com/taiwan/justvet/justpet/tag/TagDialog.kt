@@ -1,15 +1,10 @@
 package com.taiwan.justvet.justpet.tag
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TimePicker
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -19,9 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.MainActivity
-import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -123,7 +116,7 @@ class TagDialog : BottomSheetDialogFragment() {
                     .findFirstVisibleItemPosition()
 
                 if (lastPosition != newPosition) {
-                    viewModel.getProfilePosition(newPosition)
+                    viewModel.getProfileByPosition(newPosition)
                     lastPosition = newPosition
                 }
             }

@@ -46,5 +46,10 @@
 
     //  ChartFragment  //
     <string name="chart_date_format">MM/dd</string>
+    <string name="text_one_month">一個月</string>
+    <string name="text_six_month">六個月</string>
+    <string name="text_one_year">一年</string>
+    <string name="text_three_months">三個月</string>
+    <string name="text_vomit">嘔吐</string>
 
 </resources>

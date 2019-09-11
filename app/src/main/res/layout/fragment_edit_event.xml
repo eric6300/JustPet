@@ -143,6 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@string/title_spirite"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -177,6 +178,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_appetite"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_spirit" />
 
@@ -212,6 +214,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:text="@string/title_body_weight"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_appetite" />
 
@@ -221,6 +224,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_temperature"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_body_weight" />
 
@@ -230,6 +234,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_rr"
+                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_temperature" />
 
@@ -240,6 +245,7 @@
                         android:layout_marginTop="24dp"
                         android:layout_marginBottom="16dp"
                         android:text="@string/title_heart_rate"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_respiratory_rate" />
@@ -400,22 +406,8 @@
             app:fb_text="@string/text_complete"
             app:fb_textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

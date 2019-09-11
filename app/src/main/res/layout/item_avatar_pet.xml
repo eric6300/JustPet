@@ -10,6 +10,9 @@
         <variable
             name="profile"
             type="com.taiwan.justvet.justpet.data.PetProfile" />
+        <variable
+            name="chartViewModel"
+            type="com.taiwan.justvet.justpet.chart.ChartViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

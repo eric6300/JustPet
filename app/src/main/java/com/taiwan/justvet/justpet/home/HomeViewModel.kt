@@ -74,6 +74,7 @@ class HomeViewModel : ViewModel() {
                                 )
                             )
                         }
+                        petData.sortBy { it.profileId }
                         _petList.value = petData
                         Log.d(TAG, "getPetProfileData() succeeded")
                     }

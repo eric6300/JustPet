@@ -16,12 +16,9 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.TagType
 import com.taiwan.justvet.justpet.util.Util.getDrawable
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.timestampToDateString
-import com.taiwan.justvet.justpet.util.timestampToTimeString
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TagViewModel : ViewModel() {
 
@@ -85,14 +82,13 @@ class TagViewModel : ViewModel() {
 
         showDiaryTag()
 
-//        showCurrentTime()
     }
 
     val database = FirebaseFirestore.getInstance()
-    val pets = database.collection("pets")
+    val pets = database.collection(PETS)
 
-    fun getPetProfileData(UserProfile: UserProfile) {
-        UserProfile.pets?.let {
+    fun getPetProfileData(userProfile: UserProfile) {
+        userProfile.pets?.let {
             viewModelScope.launch {
                 for (petId in it) {
                     pets.document(petId).get()
@@ -108,6 +104,7 @@ class TagViewModel : ViewModel() {
                                 owner = document["owner"] as String?
                             )
                             petData.add(petProfile)
+                            petData.sortBy { it.profileId }
                             _listOfProfile.value = petData
                             Log.d(TAG, "TagViewModel getPetProfileData() succeeded")
                         }
@@ -119,17 +116,10 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun getProfilePosition(position: Int) {
+    fun getProfileByPosition(position: Int) {
         selectedPetProfile = petData[position]
     }
 
-//    private fun showCurrentTime() {
-//        val timeStamp = System.currentTimeMillis()
-//        timeStamp.let {
-//            _currentDate.value = it.timestampToDateString()
-//            _currentTime.value = it.timestampToTimeString()
-//        }
-//    }
 
     fun showDiaryTag() {
         _listOfTags.value = listTagDiary
@@ -183,39 +173,13 @@ class TagViewModel : ViewModel() {
         }
     }
 
-//    fun showDatePickerDialog() {
-//        _showDatePickerDialog.value = true
-//    }
-//
-//    fun showDateDialogCompleted() {
-//        _showDatePickerDialog.value = false
-//    }
-//
-//    fun showTimePickerDialog() {
-//        _showTimePickerDialog.value = true
-//    }
-//
-//    fun showTimeDialogCompleted() {
-//        _showTimePickerDialog.value = false
-//    }
-
     fun navigateToEditEvent() {
-//        // get selected time and date string list
-//        val timeList = SimpleDateFormat(
-//            getString(R.string.timelist_format),
-//            Locale.TAIWAN
-//        ).format(calendar.time).split("/")
 
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
                 petProfile = it,
                 petId = it.profileId,
                 petName = it.name,
-//                timestamp = calendar.timeInMillis,
-//                year = timeList[0].toLong(),
-//                month = timeList[1].toLong(),
-//                dayOfMonth = timeList[2].toLong(),
-//                time = timeList[3],
                 eventTags = eventTags
             )
             _navigateToEditEvent.value = true
@@ -245,20 +209,6 @@ class TagViewModel : ViewModel() {
             else -> getDrawable(R.drawable.ic_synrige)
         }
     }
-
-//    fun updateDate() {
-//        _currentDate.value = SimpleDateFormat(
-//            getString(R.string.date_format),
-//            Locale.TAIWAN
-//        ).format(calendar.time)
-//    }
-//
-//    fun updateTime() {
-//        _currentTime.value = SimpleDateFormat(
-//            getString(R.string.time_format),
-//            Locale.TAIWAN
-//        ).format(calendar.time)
-//    }
 
     fun makeTagList() {
         val arrayOfList = arrayListOf<List<EventTag>>()

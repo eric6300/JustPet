@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.taiwan.justvet.justpet.DateFormatter
@@ -21,6 +23,7 @@ import java.util.*
 class ChartFragment : Fragment() {
 
     private lateinit var binding: FragmentChartBinding
+    private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private val viewModel: ChartViewModel by lazy {
         ViewModelProviders.of(this).get(ChartViewModel::class.java)
     }
@@ -39,8 +42,38 @@ class ChartFragment : Fragment() {
         binding.viewModel = viewModel
 
         setupChart()
+        setupPetProfile()
 
         return binding.root
+    }
+
+    private fun setupPetProfile() {
+        var lastPosition: Int? = -1
+
+        val listOfProfile = binding.listOfProfileChart
+        avatarAdapterChart = ChartPetAvatarAdapter(viewModel)
+
+        listOfProfile.apply {
+            PagerSnapHelper().attachToRecyclerView(this)
+
+            this.adapter = avatarAdapterChart
+
+            this.setOnScrollChangeListener { _, _, _, _, _ ->
+                val newPosition = (listOfProfile.layoutManager as LinearLayoutManager)
+                    .findFirstVisibleItemPosition()
+
+                if (lastPosition != newPosition) {
+                    viewModel.getProfileByPosition(newPosition)
+                    lastPosition = newPosition
+                }
+            }
+        }
+
+        // set indicator of recyclerView
+        val recyclerIndicator = binding.indicatorListOfProfileChart
+        recyclerIndicator.apply {
+            this.attachToRecyclerView(listOfProfile)
+        }
     }
 
     fun setupChart() {
@@ -54,7 +87,7 @@ class ChartFragment : Fragment() {
         calendar.set(2019,8,17)
         val d4 = calendar.time
 
-        val graph = binding.graph
+        val graph = binding.graphWeight
 
         // you can directly pass Date objects to DataPoint-Constructor
         // this will convert the Date to double via Date#getTime()
@@ -81,7 +114,7 @@ class ChartFragment : Fragment() {
 
         // set date label formatter
         graph.gridLabelRenderer.labelFormatter = DateFormatter(JustPetApplication.appContext)
-        graph.gridLabelRenderer.numHorizontalLabels = 3 // only 4 because of the space
+        graph.gridLabelRenderer.numHorizontalLabels = 4 // only 4 because of the space
 
         // set manual x bounds to have nice steps
         graph.viewport.setMinX(d1.time.toDouble())

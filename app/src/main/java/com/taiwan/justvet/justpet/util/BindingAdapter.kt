@@ -11,6 +11,7 @@ import com.taiwan.justvet.justpet.GlideApp
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.calendar.CalendarEventAdapter
+import com.taiwan.justvet.justpet.chart.ChartPetAvatarAdapter
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
@@ -170,6 +171,13 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
         recyclerView.adapter?.apply {
             when (this) {
                 is PetAvatarAdapter -> {
+                    when (itemCount) {
+                        0 -> submitList(it)
+                        it.size -> notifyDataSetChanged()
+                        else -> submitList(it)
+                    }
+                }
+                is ChartPetAvatarAdapter -> {
                     when (itemCount) {
                         0 -> submitList(it)
                         it.size -> notifyDataSetChanged()

@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.tag
+package com.taiwan.justvet.justpet.chart
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,8 +12,8 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemAvatarPetBinding
 import com.taiwan.justvet.justpet.home.PetProfileAdapter
 
-class PetAvatarAdapter(val viewModel: TagViewModel) :
-    ListAdapter<PetProfile, PetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
+class ChartPetAvatarAdapter(val viewModel: ChartViewModel) :
+    ListAdapter<PetProfile, ChartPetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
 
     private lateinit var context: Context
 
@@ -24,7 +24,7 @@ class PetAvatarAdapter(val viewModel: TagViewModel) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return PetAvatarAdapter.ViewHolder(
+        return ChartPetAvatarAdapter.ViewHolder(
             ItemAvatarPetBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -33,17 +33,17 @@ class PetAvatarAdapter(val viewModel: TagViewModel) :
         )
     }
 
-    override fun onViewAttachedToWindow(holder: PetAvatarAdapter.ViewHolder) {
+    override fun onViewAttachedToWindow(holder: ChartPetAvatarAdapter.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: PetAvatarAdapter.ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: ChartPetAvatarAdapter.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemAvatarPetBinding, val viewModel: TagViewModel) :
+    class ViewHolder(val binding: ItemAvatarPetBinding, val viewModel: ChartViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
@@ -66,7 +66,7 @@ class PetAvatarAdapter(val viewModel: TagViewModel) :
 
         fun bind(profile: PetProfile) {
             binding.lifecycleOwner = this
-            binding.viewModel = viewModel
+            binding.chartViewModel = viewModel
             binding.profile = profile
             binding.executePendingBindings()
         }
