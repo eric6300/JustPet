@@ -65,7 +65,7 @@ class CalendarViewModel : ViewModel() {
                                             eventId = event.id,
                                             petId = event["petId"] as String?,
                                             petName = event["petName"] as String?,
-                                            timestamp = event["timestamp"] as Long,
+                                            timestamp = event["timestamp"] as Long?,
                                             year = event["year"] as Long,
                                             month = event["month"] as Long,
                                             dayOfMonth = event["dayOfMonth"] as Long,

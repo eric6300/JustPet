@@ -1,16 +1,20 @@
 package com.taiwan.justvet.justpet.event
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.icu.util.Calendar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TimePicker
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,6 +32,9 @@ class EditEventFragment : Fragment() {
     private lateinit var binding: FragmentEditEventBinding
     private lateinit var viewModel: EditEventViewModel
     private lateinit var currentEvent: PetEvent
+    private lateinit var datePickerDialog: DatePickerDialog
+    private lateinit var timePickerDialog: TimePickerDialog
+    private lateinit var calendar: Calendar
 //    lateinit var saveUri: Uri
 //    lateinit var eventPicture: ImageView
 
@@ -65,6 +72,24 @@ class EditEventFragment : Fragment() {
 //        binding.buttonGallery.setOnClickListener {
 //            startGallery()
 //        }
+
+        viewModel.showDatePickerDialog.observe(this, Observer {
+            if (it == true) {
+                datePickerDialog.show()
+                viewModel.showDateDialogCompleted()
+            }
+        })
+
+        viewModel.showTimePickerDialog.observe(this, Observer {
+            if (it == true) {
+                timePickerDialog.show()
+                viewModel.showTimeDialogCompleted()
+            }
+        })
+
+        calendar = viewModel.calendar
+        setupDatePickerDialog()
+        setupTimePickerDialog()
 
         setupTagRecyclerView()
 
@@ -172,5 +197,37 @@ class EditEventFragment : Fragment() {
         currentEvent.spirit?.let { seekBarSpirit.setProgress(it.toFloat()) }
         currentEvent.appetite?.let { seekBarAppetite.setProgress(it.toFloat()) }
 
+    }
+
+    private fun setupDatePickerDialog() {
+        val dateListener =
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                viewModel.showDateDialogCompleted()
+                calendar.set(year, month, dayOfMonth)
+                viewModel.showTimePickerDialog()
+            }
+        datePickerDialog = DatePickerDialog(
+            this.context!!,
+            dateListener,
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    private fun setupTimePickerDialog() {
+        val timeListener =
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
+                viewModel.showTimeDialogCompleted()
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+            }
+        timePickerDialog = TimePickerDialog(
+            this.context,
+            timeListener,
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        )
     }
 }

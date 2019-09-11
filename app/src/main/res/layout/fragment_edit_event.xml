@@ -170,6 +170,7 @@
                     android:fontFamily="@font/roboto_mono"
                     android:text="@{viewModel.dateAndTime}"
                     android:textSize="18sp"
+                    android:onClick="@{() -> viewModel.showDatePickerDialog()}"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/title_date_and_time"

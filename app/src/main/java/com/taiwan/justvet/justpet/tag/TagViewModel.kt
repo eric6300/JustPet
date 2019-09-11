@@ -200,11 +200,11 @@ class TagViewModel : ViewModel() {
 //    }
 
     fun navigateToEditEvent() {
-        // get selected time and date string list
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(calendar.time).split("/")
+//        // get selected time and date string list
+//        val timeList = SimpleDateFormat(
+//            getString(R.string.timelist_format),
+//            Locale.TAIWAN
+//        ).format(calendar.time).split("/")
 
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
@@ -212,10 +212,10 @@ class TagViewModel : ViewModel() {
                 petId = it.profileId,
                 petName = it.name,
                 timestamp = calendar.timeInMillis,
-                year = timeList[0].toLong(),
-                month = timeList[1].toLong(),
-                dayOfMonth = timeList[2].toLong(),
-                time = timeList[3],
+//                year = timeList[0].toLong(),
+//                month = timeList[1].toLong(),
+//                dayOfMonth = timeList[2].toLong(),
+//                time = timeList[3],
                 eventTags = eventTags
             )
             _navigateToEditEvent.value = true
