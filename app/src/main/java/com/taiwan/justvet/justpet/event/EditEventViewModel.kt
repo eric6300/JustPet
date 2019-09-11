@@ -12,6 +12,7 @@ import com.taiwan.justvet.justpet.TAGS
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.BarScore
+import okhttp3.internal.notify
 
 class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
@@ -91,6 +92,14 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         Log.d(TAG, "eventAppetite : ${eventAppetite}")
     }
 
+    fun checkEventId() {
+        if (petEvent.eventId == null) {
+            postEvent()
+        } else {
+            updateEvent()
+        }
+    }
+
     fun postEvent() {
         val finalEvent = petEvent.let {
             PetEvent(
@@ -138,6 +147,27 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                         }
                 }
                 navigateToCalendar()
+            }
+        }
+    }
+
+    fun updateEvent() {
+        val finalEvent =
+            mapOf(
+                "note" to eventNote.value,
+                "spirit" to eventSpirit,
+                "appetite" to eventAppetite,
+                "weight" to eventWeight.value,
+                "temperature" to eventTemper.value,
+                "respiratoryRate" to eventRR.value,
+                "heartRate" to eventHR.value
+            )
+
+        petEvent.eventId?.let {
+            eventDatabase?.document(it)?.update(finalEvent)?.addOnSuccessListener {
+                Log.d(TAG, "update succeeded")
+            }?.addOnFailureListener {
+                Log.d(TAG, "update failed")
             }
         }
     }

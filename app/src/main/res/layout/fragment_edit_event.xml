@@ -232,7 +232,8 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-
+                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
+                    android:background="@drawable/border_corner"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -357,7 +358,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
                         android:ems="10"
-                        android:inputType="number"
+                        android:inputType="number|numberDecimal"
                         android:text="@={viewModel.eventWeight}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_body_weight"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -371,7 +372,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:ems="10"
-                        android:inputType="number"
+                        android:inputType="number|numberDecimal"
                         android:text="@={viewModel.eventTemper}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -454,7 +455,8 @@
                     android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
                     app:layout_constraintBottom_toBottomOf="@+id/title_advance"
                     app:layout_constraintStart_toEndOf="@+id/title_advance"
-                    app:layout_constraintTop_toTopOf="@+id/title_advance" />
+                    app:layout_constraintTop_toTopOf="@+id/title_advance"
+                    app:srcCompat="@drawable/ic_expand_more" />
 
                 <ImageView
                     android:id="@+id/image_event"
@@ -476,7 +478,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:onClick="@{()-> viewModel.postEvent()}"
+            android:onClick="@{()-> viewModel.checkEventId()}"
             android:text="@string/text_complete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

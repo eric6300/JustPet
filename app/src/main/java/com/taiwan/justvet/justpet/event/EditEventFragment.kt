@@ -47,6 +47,8 @@ class EditEventFragment : Fragment() {
         binding.viewModel = viewModel
         binding.petProfile = currentEvent.petProfile
 
+        Log.d(TAG, "event Id : ${currentEvent.eventId}")
+
         viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
