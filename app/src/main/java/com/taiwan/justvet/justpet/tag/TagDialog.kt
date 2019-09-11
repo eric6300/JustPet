@@ -18,16 +18,19 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.NavGraphDirections
+import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
+import kotlinx.android.synthetic.main.activity_main.*
 
 class TagDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogTagBinding
-    private lateinit var datePickerDialog: DatePickerDialog
-    private lateinit var timePickerDialog: TimePickerDialog
-    private lateinit var calendar: Calendar
+    //    private lateinit var datePickerDialog: DatePickerDialog
+//    private lateinit var timePickerDialog: TimePickerDialog
+//    private lateinit var calendar: Calendar
     private lateinit var avatarAdapter: PetAvatarAdapter
     private val viewModel: TagViewModel by lazy {
         ViewModelProviders.of(this).get(TagViewModel::class.java)
@@ -72,26 +75,33 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
-        viewModel.showDatePickerDialog.observe(this, Observer {
+        viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {
-                datePickerDialog.show()
-                viewModel.showDateDialogCompleted()
+                (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
+                viewModel.navigateToCalendarCompleted()
             }
         })
 
-        viewModel.showTimePickerDialog.observe(this, Observer {
-            if (it == true) {
-                timePickerDialog.show()
-                viewModel.showTimeDialogCompleted()
-            }
-        })
+//        viewModel.showDatePickerDialog.observe(this, Observer {
+//            if (it == true) {
+//                datePickerDialog.show()
+//                viewModel.showDateDialogCompleted()
+//            }
+//        })
+
+//        viewModel.showTimePickerDialog.observe(this, Observer {
+//            if (it == true) {
+//                timePickerDialog.show()
+//                viewModel.showTimeDialogCompleted()
+//            }
+//        })
 
         setupPetProfile()
         setupListOfTags()
 
-        calendar = viewModel.calendar
-        setupDatePickerDialog()
-        setupTimePickerDialog()
+//        calendar = viewModel.calendar
+//        setupDatePickerDialog()
+//        setupTimePickerDialog()
         setupSegmentedButtonGroup()
 
         return binding.root
@@ -133,36 +143,36 @@ class TagDialog : BottomSheetDialogFragment() {
         listOfTags.adapter = tagAdapter
     }
 
-    private fun setupDatePickerDialog() {
-        val dateListener =
-            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                viewModel.updateDate()
-            }
-        datePickerDialog = DatePickerDialog(
-            this.context!!,
-            dateListener,
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-    }
+//    private fun setupDatePickerDialog() {
+//        val dateListener =
+//            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+//                calendar.set(year, month, dayOfMonth)
+//                viewModel.updateDate()
+//            }
+//        datePickerDialog = DatePickerDialog(
+//            this.context!!,
+//            dateListener,
+//            calendar.get(Calendar.YEAR),
+//            calendar.get(Calendar.MONTH),
+//            calendar.get(Calendar.DAY_OF_MONTH)
+//        )
+//    }
 
-    private fun setupTimePickerDialog() {
-        val timeListener =
-            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
-                viewModel.updateTime()
-            }
-        timePickerDialog = TimePickerDialog(
-            this.context,
-            timeListener,
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            true
-        )
-    }
+//    private fun setupTimePickerDialog() {
+//        val timeListener =
+//            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
+//                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+//                calendar.set(Calendar.MINUTE, minute)
+//                viewModel.updateTime()
+//            }
+//        timePickerDialog = TimePickerDialog(
+//            this.context,
+//            timeListener,
+//            calendar.get(Calendar.HOUR_OF_DAY),
+//            calendar.get(Calendar.MINUTE),
+//            true
+//        )
+//    }
 
     private fun setupSegmentedButtonGroup() {
         binding.tagCategoryButtonGroup.setOnPositionChangedListener {

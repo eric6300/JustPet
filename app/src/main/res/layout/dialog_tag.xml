@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -47,34 +48,49 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/button_next_step"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
+            android:clickable="true"
             android:onClick="@{() -> viewModel.makeTagList()}"
-            android:text="@string/text_next_step"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags" />
+            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags"
+            fancy:fb_defaultColor="#7ab800"
+            fancy:fb_focusColor="#9bd823"
+            fancy:fb_radius="5dp"
+            fancy:fb_text="@string/text_next_step"
+            fancy:fb_textColor="#FFFFFF" />
 
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/button_quick_save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/text_quick_save"
+            android:clickable="true"
+            android:onClick="@{() -> viewModel.quickSave()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags" />
+            app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags"
+            fancy:fb_defaultColor="#7ab800"
+            fancy:fb_focusColor="#9bd823"
+            fancy:fb_radius="5dp"
+            fancy:fb_text="@string/text_quick_save"
+            fancy:fb_textColor="#FFFFFF"/>
 
         <ImageView
             android:id="@+id/button_close"

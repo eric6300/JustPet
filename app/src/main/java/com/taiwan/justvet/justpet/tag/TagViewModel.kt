@@ -8,9 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.TAG
-import com.taiwan.justvet.justpet.UserManager
+import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
@@ -31,17 +29,21 @@ class TagViewModel : ViewModel() {
     val navigateToEditEvent: LiveData<Boolean>
         get() = _navigateToEditEvent
 
+    private val _navigateToCalendar = MutableLiveData<Boolean>()
+    val navigateToCalendar: LiveData<Boolean>
+        get() = _navigateToCalendar
+
     private val _leaveTagDialog = MutableLiveData<Boolean>()
     val leaveTagDialog: LiveData<Boolean>
         get() = _leaveTagDialog
 
-    private val _showDatePickerDialog = MutableLiveData<Boolean>()
-    val showDatePickerDialog: LiveData<Boolean>
-        get() = _showDatePickerDialog
-
-    private val _showTimePickerDialog = MutableLiveData<Boolean>()
-    val showTimePickerDialog: LiveData<Boolean>
-        get() = _showTimePickerDialog
+//    private val _showDatePickerDialog = MutableLiveData<Boolean>()
+//    val showDatePickerDialog: LiveData<Boolean>
+//        get() = _showDatePickerDialog
+//
+//    private val _showTimePickerDialog = MutableLiveData<Boolean>()
+//    val showTimePickerDialog: LiveData<Boolean>
+//        get() = _showTimePickerDialog
 
     private val _listOfTags = MutableLiveData<List<EventTag>>()
     val listOfTags: LiveData<List<EventTag>>
@@ -51,13 +53,13 @@ class TagViewModel : ViewModel() {
     val listOfProfile: LiveData<List<PetProfile>>
         get() = _listOfProfile
 
-    private val _currentDate = MutableLiveData<String>()
-    val currentDate: LiveData<String>
-        get() = _currentDate
+//    private val _currentDate = MutableLiveData<String>()
+//    val currentDate: LiveData<String>
+//        get() = _currentDate
 
-    private val _currentTime = MutableLiveData<String>()
-    val currentTime: LiveData<String>
-        get() = _currentTime
+//    private val _currentTime = MutableLiveData<String>()
+//    val currentTime: LiveData<String>
+//        get() = _currentTime
 
     private val _currentEvent = MutableLiveData<PetEvent>()
     val currentEvent: LiveData<PetEvent>
@@ -83,7 +85,7 @@ class TagViewModel : ViewModel() {
 
         showDiaryTag()
 
-        showCurrentTime()
+//        showCurrentTime()
     }
 
     val database = FirebaseFirestore.getInstance()
@@ -92,7 +94,7 @@ class TagViewModel : ViewModel() {
     fun getPetProfileData(UserProfile: UserProfile) {
         UserProfile.pets?.let {
             viewModelScope.launch {
-                for (petId in UserProfile.pets) {
+                for (petId in it) {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
                             val petProfile = PetProfile(
@@ -121,13 +123,13 @@ class TagViewModel : ViewModel() {
         selectedPetProfile = petData[position]
     }
 
-    private fun showCurrentTime() {
-        val timeStamp = System.currentTimeMillis()
-        timeStamp.let {
-            _currentDate.value = it.timestampToDateString()
-            _currentTime.value = it.timestampToTimeString()
-        }
-    }
+//    private fun showCurrentTime() {
+//        val timeStamp = System.currentTimeMillis()
+//        timeStamp.let {
+//            _currentDate.value = it.timestampToDateString()
+//            _currentTime.value = it.timestampToTimeString()
+//        }
+//    }
 
     fun showDiaryTag() {
         _listOfTags.value = listTagDiary
@@ -181,21 +183,21 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun showDatePickerDialog() {
-        _showDatePickerDialog.value = true
-    }
-
-    fun showDateDialogCompleted() {
-        _showDatePickerDialog.value = false
-    }
-
-    fun showTimePickerDialog() {
-        _showTimePickerDialog.value = true
-    }
-
-    fun showTimeDialogCompleted() {
-        _showTimePickerDialog.value = false
-    }
+//    fun showDatePickerDialog() {
+//        _showDatePickerDialog.value = true
+//    }
+//
+//    fun showDateDialogCompleted() {
+//        _showDatePickerDialog.value = false
+//    }
+//
+//    fun showTimePickerDialog() {
+//        _showTimePickerDialog.value = true
+//    }
+//
+//    fun showTimeDialogCompleted() {
+//        _showTimePickerDialog.value = false
+//    }
 
     fun navigateToEditEvent() {
         // get selected time and date string list
@@ -221,7 +223,11 @@ class TagViewModel : ViewModel() {
     }
 
     fun navigateToEditEventCompleted() {
-        _navigateToEditEvent.value = null
+        _navigateToEditEvent.value = false
+    }
+
+    fun navigateToCalendarCompleted() {
+        _navigateToCalendar.value = false
     }
 
     fun leaveTagDialog() {
@@ -240,19 +246,19 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun updateDate() {
-        _currentDate.value = SimpleDateFormat(
-            getString(R.string.date_format),
-            Locale.TAIWAN
-        ).format(calendar.time)
-    }
-
-    fun updateTime() {
-        _currentTime.value = SimpleDateFormat(
-            getString(R.string.time_format),
-            Locale.TAIWAN
-        ).format(calendar.time)
-    }
+//    fun updateDate() {
+//        _currentDate.value = SimpleDateFormat(
+//            getString(R.string.date_format),
+//            Locale.TAIWAN
+//        ).format(calendar.time)
+//    }
+//
+//    fun updateTime() {
+//        _currentTime.value = SimpleDateFormat(
+//            getString(R.string.time_format),
+//            Locale.TAIWAN
+//        ).format(calendar.time)
+//    }
 
     fun makeTagList() {
         val arrayOfList = arrayListOf<List<EventTag>>()
@@ -276,6 +282,71 @@ class TagViewModel : ViewModel() {
 
 
     fun quickSave() {
+        val arrayOfList = arrayListOf<List<EventTag>>()
+        arrayOfList.add(listTagDiary)
+        arrayOfList.add(listTagSyndrome)
+        arrayOfList.add(listTagTreatment)
+        viewModelScope.let {
+            for (list in arrayOfList) {
+                for (tag in list) {
+                    tag.title?.let {
+                        if (tag.isSelected == true) {
+                            eventTags.add(tag)
+                        }
+                    }
+                }
+            }
+            postEvent()
+        }
+    }
 
+    private fun postEvent() {
+        // get selected time and date string list
+        val timeList = SimpleDateFormat(
+            getString(R.string.timelist_format),
+            Locale.TAIWAN
+        ).format(calendar.time).split("/")
+
+        selectedPetProfile?.let {
+            it.profileId?.apply {
+                pets.document(this).collection(EVENTS).add(
+                    PetEvent(
+                        petProfile = it,
+                        petId = it.profileId,
+                        petName = it.name,
+                        timestamp = calendar.timeInMillis,
+                        year = timeList[0].toLong(),
+                        month = timeList[1].toLong(),
+                        dayOfMonth = timeList[2].toLong(),
+                        time = timeList[3],
+                        eventTags = eventTags
+                    )
+                ).addOnSuccessListener { documentReference ->
+                    postTags(documentReference.id)
+                    Log.d(TAG, "TagViewModel quickSave() succeeded")
+                }.addOnFailureListener { e ->
+                    Log.d(TAG, "TagViewModel quickSave() failed: $e")
+                }
+            }
+        }
+    }
+
+    private fun postTags(eventId: String) {
+        selectedPetProfile?.apply {
+            this.profileId?.let {
+                viewModelScope.launch {
+                    for (item in eventTags) {
+                        pets.document(it).collection(EVENTS)
+                            .document(eventId).collection(TAGS).add(item)
+                            .addOnSuccessListener {
+                                Log.d(TAG, "TagViewModel postTags() succeeded")
+                            }.addOnFailureListener { e ->
+                                Log.d(TAG, "TagViewModel postTags() failed: $e")
+                            }
+                    }
+                    _navigateToCalendar.value = true
+                }
+            }
+        }
     }
 }

@@ -21,5 +21,8 @@
     <color name="colorDiary">#A5D6A7</color>
     <color name="colorDiaryDark">#75A478</color>
 
+    <color name="colorDeleteRed">#EF3D56</color>
+    <color name="colorEditGreen">#7ab800</color>
+
 
 </resources>

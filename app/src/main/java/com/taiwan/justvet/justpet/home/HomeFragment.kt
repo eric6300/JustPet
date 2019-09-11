@@ -183,7 +183,7 @@ class HomeFragment : Fragment() {
 
                         colorDrawableBackground = ColorDrawable()
                         colorDrawableBackground.color =
-                            JustPetApplication.appContext.getColor(R.color.colorSyndromeDark)
+                            JustPetApplication.appContext.getColor(R.color.colorDeleteRed)
 
                         val itemView = viewHolder.itemView
                         val iconMarginVertical =
@@ -213,7 +213,7 @@ class HomeFragment : Fragment() {
 
                         colorDrawableBackground = ColorDrawable()
                         colorDrawableBackground.color =
-                            JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
+                            JustPetApplication.appContext.getColor(R.color.colorEditGreen)
 
                         val itemView = viewHolder.itemView
                         val iconMarginVertical =
