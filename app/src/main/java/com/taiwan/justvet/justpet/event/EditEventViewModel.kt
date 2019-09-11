@@ -11,9 +11,6 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.BarScore
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.timestampToDateString
-import com.taiwan.justvet.justpet.util.timestampToTimeString
-import okhttp3.internal.notify
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -65,7 +62,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     init {
         initialEvent()
         setEventTags()
-        setDateAndTime()
+        updateDateAndTime()
     }
 
     private fun initialEvent() {
@@ -85,9 +82,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         _eventTags.value = petEvent.eventTags
     }
 
-    private fun setDateAndTime() {
-        _dateAndTime.value =
-            "${petEvent.year} 年 ${petEvent.month} 月 ${petEvent.dayOfMonth} 日 ${petEvent.time}"
+    fun updateDateAndTime() {
+        _dateAndTime.value = SimpleDateFormat(
+            getString(R.string.date_time_format),
+            Locale.TAIWAN
+        ).format(calendar.time)
     }
 
     fun setSpiritScore(score: Float) {

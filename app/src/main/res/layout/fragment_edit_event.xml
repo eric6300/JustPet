@@ -35,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_mono"
-            android:textSize="24sp"
             android:text="@{petProfile.name}"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@+id/icon_species"
             app:layout_constraintStart_toStartOf="@+id/icon_species"
             app:layout_constraintTop_toBottomOf="@+id/icon_species" />
@@ -56,175 +56,70 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/title_memo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_note"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_note"
-                    app:layout_constraintStart_toEndOf="@+id/icon_note"
-                    app:layout_constraintTop_toTopOf="@+id/icon_note" />
-
-                <TextView
-                    android:id="@+id/title_date_and_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_time"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_date_and_time"
-                    app:layout_constraintStart_toEndOf="@+id/icon_date_and_time"
-                    app:layout_constraintTop_toTopOf="@+id/icon_date_and_time" />
-
-                <TextView
                     android:id="@+id/title_media"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/title_media"
                     android:textAlignment="center"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_media"
-                    app:layout_constraintStart_toEndOf="@+id/icon_media"
-                    app:layout_constraintTop_toTopOf="@+id/icon_media" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
                 <TextView
                     android:id="@+id/title_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/title_notification"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_notification"
-                    app:layout_constraintStart_toEndOf="@+id/icon_notification"
-                    app:layout_constraintTop_toTopOf="@+id/icon_notification" />
-
-                <ImageView
-                    android:id="@+id/icon_notification"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/image_event"
-                    app:srcCompat="@drawable/ic_edit" />
-
-                <ImageView
-                    android:id="@+id/icon_media"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editText"
-                    app:srcCompat="@drawable/ic_edit" />
-
-                <TextView
-                    android:id="@+id/title_tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/title_tag"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_tag"
-                    app:layout_constraintStart_toEndOf="@+id/icon_tag"
-                    app:layout_constraintTop_toTopOf="@+id/icon_tag" />
-
-                <ImageView
-                    android:id="@+id/icon_tag"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/icon_date_and_time"
-                    app:srcCompat="@drawable/ic_edit" />
-
-                <ImageView
-                    android:id="@+id/icon_date_and_time"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_edit" />
-
-                <ImageView
-                    android:id="@+id/icon_note"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/icon_tag"
-                    app:srcCompat="@drawable/ic_edit" />
+                    app:layout_constraintTop_toBottomOf="@+id/title_media" />
 
                 <TextView
                     android:id="@+id/text_date_and_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="@{viewModel.dateAndTime}"
-                    android:textSize="18sp"
                     android:onClick="@{() -> viewModel.showDatePickerDialog()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
+                    android:text="@{viewModel.dateAndTime}"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/title_date_and_time"
-                    app:layout_constraintTop_toTopOf="@+id/title_date_and_time" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_tags"
                     listOfTags="@{viewModel.eventTags}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="@+id/title_tag"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/title_tag"
-                    app:layout_constraintTop_toTopOf="@+id/title_tag"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_date_and_time"
                     tools:itemCount="4" />
 
-                <EditText
-                    android:id="@+id/editText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="16dp"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine"
-                    android:text="@={viewModel.eventNote}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/title_memo"
-                    app:layout_constraintTop_toTopOf="@+id/icon_note" />
-
-                <ImageView
-                    android:id="@+id/icon_advance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/icon_notification"
-                    app:srcCompat="@drawable/ic_edit" />
 
                 <TextView
                     android:id="@+id/title_advance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/title_advance"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_advance"
-                    app:layout_constraintStart_toEndOf="@+id/icon_advance"
-                    app:layout_constraintTop_toTopOf="@+id/icon_advance" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title_notification" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_advance"
@@ -233,20 +128,19 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                     android:background="@drawable/border_corner"
+                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/icon_advance"
+                    app:layout_constraintTop_toBottomOf="@+id/title_advance"
                     app:layout_constraintVertical_bias="0.0">
 
                     <TextView
                         android:id="@+id/check_spirit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/title_spirite"
                         app:layout_constraintStart_toStartOf="parent"
@@ -274,13 +168,13 @@
                         app:layout_constraintBottom_toBottomOf="@+id/check_spirit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
-                        app:layout_constraintTop_toTopOf="@+id/check_spirit" />
+                        app:layout_constraintTop_toTopOf="@+id/check_spirit"
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
                         android:id="@+id/check_appetite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_appetite"
                         app:layout_constraintStart_toStartOf="parent"
@@ -309,14 +203,14 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
-                        app:layout_constraintTop_toTopOf="@+id/check_appetite" />
+                        app:layout_constraintTop_toTopOf="@+id/check_appetite"
+                        app:layout_constraintVertical_bias="0.0" />
 
                     <TextView
                         android:id="@+id/check_body_weight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="32dp"
                         android:text="@string/title_body_weight"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_appetite" />
@@ -325,7 +219,6 @@
                         android:id="@+id/check_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_temperature"
                         app:layout_constraintStart_toStartOf="parent"
@@ -335,7 +228,6 @@
                         android:id="@+id/check_respiratory_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="24dp"
                         android:text="@string/title_rr"
                         app:layout_constraintStart_toStartOf="parent"
@@ -345,7 +237,6 @@
                         android:id="@+id/check_heart_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="24dp"
                         android:layout_marginBottom="16dp"
                         android:text="@string/title_heart_rate"
@@ -464,26 +355,67 @@
                     android:layout_width="90dp"
                     android:layout_height="160dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/icon_media"
+                    tools:layout_editor_absoluteY="196dp"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayout2"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/list_tags">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title_note"
+                        android:text="@={viewModel.eventNote}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
 
-        <Button
+        <mehdi.sakout.fancybuttons.FancyButton
             android:id="@+id/button_post_event"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:onClick="@{()-> viewModel.checkEventId()}"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            app:fb_defaultColor="#7ab800"
+            app:fb_focusColor="#9bd823"
+            app:fb_radius="5dp"
+            app:fb_text="@string/text_complete"
+            app:fb_textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline2" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:onClick="@{()-> viewModel.checkEventId()}"
-            android:text="@string/text_complete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.25" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.75" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -211,7 +211,7 @@ class TagViewModel : ViewModel() {
                 petProfile = it,
                 petId = it.profileId,
                 petName = it.name,
-                timestamp = calendar.timeInMillis,
+//                timestamp = calendar.timeInMillis,
 //                year = timeList[0].toLong(),
 //                month = timeList[1].toLong(),
 //                dayOfMonth = timeList[2].toLong(),
@@ -275,6 +275,9 @@ class TagViewModel : ViewModel() {
                         }
                     }
                 }
+            }
+            if (eventTags.size == 0) {
+                eventTags.add(EventTag(TagType.DIARY.value, -1, "日常"))
             }
             navigateToEditEvent()
         }

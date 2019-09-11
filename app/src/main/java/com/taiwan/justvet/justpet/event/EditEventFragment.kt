@@ -221,6 +221,7 @@ class EditEventFragment : Fragment() {
                 viewModel.showTimeDialogCompleted()
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
+                viewModel.updateDateAndTime()
             }
         timePickerDialog = TimePickerDialog(
             this.context,
