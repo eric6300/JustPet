@@ -17,6 +17,7 @@ data class PetEvent (
     val time: String = "",
     val eventType: Long? = 0,
     @get:Exclude val eventTags: List<EventTag>? = null,
+    val eventTagsIndex: List<Long>? = null,
     val note: String? = "",
     val spirit: Double? = null,
     val appetite: Double? = null,

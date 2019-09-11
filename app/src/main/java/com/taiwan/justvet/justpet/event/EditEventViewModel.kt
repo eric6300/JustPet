@@ -122,6 +122,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             Locale.TAIWAN
         ).format(calendar.time).split("/")
 
+        eventTimestamp.value = calendar.timeInMillis
+
         val finalEvent = petEvent.let {
             PetEvent(
                 petProfile = it.petProfile,
@@ -134,6 +136,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 time = timeList[3],
                 eventType = it.eventType,
                 eventTags = it.eventTags,
+                eventTagsIndex = it.eventTagsIndex,
                 note = eventNote.value,
                 spirit = eventSpirit,
                 appetite = eventAppetite,

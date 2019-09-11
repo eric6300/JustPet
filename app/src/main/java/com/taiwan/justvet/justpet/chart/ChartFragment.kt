@@ -18,6 +18,7 @@ import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
+import androidx.lifecycle.Observer
 
 
 class ChartFragment : Fragment() {
@@ -43,6 +44,15 @@ class ChartFragment : Fragment() {
 
         setupChart()
         setupPetProfile()
+
+        viewModel.selectedProfile.observe(this, Observer {
+            Log.d(TAG, "ChartFragment selected profile : $it")
+            viewModel.getChartData(it)
+        })
+
+        viewModel.eventData.observe(this, Observer {
+
+        })
 
         return binding.root
     }

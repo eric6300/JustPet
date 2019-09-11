@@ -66,6 +66,7 @@ class TagViewModel : ViewModel() {
     var selectedPetProfile: PetProfile? = null
     val petData = mutableListOf<PetProfile>()
     val eventTags = mutableListOf<EventTag>()
+    val eventTagsIndex = mutableListOf<Long>()
 
     private val listTagDiary = mutableListOf<EventTag>()
     private val listTagSyndrome = mutableListOf<EventTag>()
@@ -180,7 +181,8 @@ class TagViewModel : ViewModel() {
                 petProfile = it,
                 petId = it.profileId,
                 petName = it.name,
-                eventTags = eventTags
+                eventTags = eventTags,
+                eventTagsIndex = eventTagsIndex
             )
             _navigateToEditEvent.value = true
         }
@@ -221,6 +223,7 @@ class TagViewModel : ViewModel() {
                     tag.title?.let {
                         if (tag.isSelected == true) {
                             eventTags.add(tag)
+                            tag.index?.let { index -> eventTagsIndex.add(index) }
                             Log.d(TAG, "$tag")
                         }
                     }
