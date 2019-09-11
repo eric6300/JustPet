@@ -69,7 +69,14 @@ class CalendarViewModel : ViewModel() {
                                             year = event["year"] as Long,
                                             month = event["month"] as Long,
                                             dayOfMonth = event["dayOfMonth"] as Long,
-                                            time = event["time"] as String
+                                            time = event["time"] as String,
+                                            note = event["note"] as String?,
+                                            spirit = event["spirit"] as Double?,
+                                            appetite = event["appetite"] as Double?,
+                                            weight = event["weight"] as String?,
+                                            temperature = event["temperature"] as String?,
+                                            respiratoryRate = event["respiratoryRate"] as String?,
+                                            heartRate = event["heartRate"] as String?
                                         )
                                     )
                                 }
@@ -115,6 +122,12 @@ class CalendarViewModel : ViewModel() {
                                         month = event.month,
                                         dayOfMonth = event.dayOfMonth,
                                         time = event.time,
+                                        spirit = event.spirit,
+                                        appetite = event.appetite,
+                                        weight = event.weight,
+                                        temperature = event.temperature,
+                                        respiratoryRate = event.respiratoryRate,
+                                        heartRate = event.heartRate,
                                         eventTags = tagList
                                     )
                                 )

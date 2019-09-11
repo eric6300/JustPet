@@ -11,6 +11,7 @@ import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.TAGS
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.util.BarScore
 
 class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
@@ -32,14 +33,35 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     val eventNote = MutableLiveData<String>()
 
+    var eventSpirit: Double? = 0.0
+    var eventAppetite: Double? = 0.0
+
+    val eventWeight = MutableLiveData<String>()
+    val eventTemper = MutableLiveData<String>()
+    val eventRR = MutableLiveData<String>()
+    val eventHR = MutableLiveData<String>()
+
     val firebase = FirebaseFirestore.getInstance()
-    val eventDatabase = petEvent.petProfile?.profileId?.let { petId ->
+    val eventDatabase = petEvent.petId?.let { petId ->
         firebase.collection(PETS).document(petId).collection(EVENTS)
     }
 
     init {
+        initialEvent()
         setEventTags()
         setDateAndTime()
+    }
+
+    private fun initialEvent() {
+        petEvent.let {
+            eventNote.value = it.note
+            eventSpirit = it.spirit
+            eventAppetite = it.appetite
+            eventWeight.value = it.weight
+            eventTemper.value = it.temperature
+            eventRR.value = it.respiratoryRate
+            eventHR.value = it.heartRate
+        }
     }
 
     private fun setEventTags() {
@@ -49,6 +71,24 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     private fun setDateAndTime() {
         _dateAndTime.value =
             "${petEvent.year}年${petEvent.month}月${petEvent.dayOfMonth}日 ${petEvent.time}"
+    }
+
+    fun setSpiritScore(score: Float) {
+        for (item in BarScore.values()) {
+            if (score.toDouble() == item.score) {
+                eventSpirit = item.score
+            }
+        }
+        Log.d(TAG, "eventSpirit : ${eventSpirit}")
+    }
+
+    fun setAppetiteScore(score: Float) {
+        for (item in BarScore.values()) {
+            if (score.toDouble() == item.score) {
+                eventAppetite = item.score
+            }
+        }
+        Log.d(TAG, "eventAppetite : ${eventAppetite}")
     }
 
     fun postEvent() {
@@ -64,7 +104,13 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 time = it.time,
                 eventType = it.eventType,
                 eventTags = it.eventTags,
-                note = eventNote.value
+                note = eventNote.value,
+                spirit = eventSpirit,
+                appetite = eventAppetite,
+                weight = eventWeight.value,
+                temperature = eventTemper.value,
+                respiratoryRate = eventRR.value,
+                heartRate = eventHR.value
             )
         }
         eventDatabase?.let {

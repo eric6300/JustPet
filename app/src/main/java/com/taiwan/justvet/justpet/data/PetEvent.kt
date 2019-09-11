@@ -17,5 +17,11 @@ data class PetEvent (
     val time: String,
     val eventType: Long? = 0,
     @get:Exclude val eventTags: List<EventTag>? = null,
-    val note: String? = ""
+    val note: String? = "",
+    val spirit: Double? = null,
+    val appetite: Double? = null,
+    val weight: String? = null,
+    val temperature: String? = null,
+    val respiratoryRate: String? = null,
+    val heartRate: String? = null
 ): Parcelable

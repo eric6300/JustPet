@@ -61,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_note"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_note"
                     app:layout_constraintStart_toEndOf="@+id/icon_note"
                     app:layout_constraintTop_toTopOf="@+id/icon_note" />
@@ -71,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_time"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_date_and_time"
                     app:layout_constraintStart_toEndOf="@+id/icon_date_and_time"
                     app:layout_constraintTop_toTopOf="@+id/icon_date_and_time" />
@@ -81,6 +83,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_media"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_media"
                     app:layout_constraintStart_toEndOf="@+id/icon_media"
                     app:layout_constraintTop_toTopOf="@+id/icon_media" />
@@ -91,6 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_notification"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_notification"
                     app:layout_constraintStart_toEndOf="@+id/icon_notification"
                     app:layout_constraintTop_toTopOf="@+id/icon_notification" />
@@ -121,6 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_tag"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_tag"
                     app:layout_constraintStart_toEndOf="@+id/icon_tag"
                     app:layout_constraintTop_toTopOf="@+id/icon_tag" />
@@ -214,6 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/title_advance"
+                    android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/icon_advance"
                     app:layout_constraintStart_toEndOf="@+id/icon_advance"
                     app:layout_constraintTop_toTopOf="@+id/icon_advance" />
@@ -225,7 +232,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -351,6 +358,7 @@
                         android:layout_marginEnd="16dp"
                         android:ems="10"
                         android:inputType="number"
+                        android:text="@={viewModel.eventWeight}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_body_weight"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -364,6 +372,7 @@
                         android:layout_marginStart="16dp"
                         android:ems="10"
                         android:inputType="number"
+                        android:text="@={viewModel.eventTemper}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
                         app:layout_constraintTop_toTopOf="@+id/check_temperature" />
@@ -375,6 +384,7 @@
                         android:layout_marginStart="16dp"
                         android:ems="10"
                         android:inputType="number"
+                        android:text="@={viewModel.eventRR}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_respiratory_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -387,6 +397,7 @@
                         android:layout_marginStart="16dp"
                         android:ems="10"
                         android:inputType="number"
+                        android:text="@={viewModel.eventHR}"
                         app:layout_constraintBottom_toBottomOf="@+id/check_heart_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -455,18 +466,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/icon_media"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-                <ImageView
-                    android:id="@+id/buttonCamera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:clickable="true"
-                    android:focusable="auto"
-                    app:layout_constraintBottom_toBottomOf="@+id/icon_media"
-                    app:layout_constraintStart_toEndOf="@+id/title_media"
-                    app:layout_constraintTop_toTopOf="@+id/icon_media"
-                    app:srcCompat="@drawable/ic_camera" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

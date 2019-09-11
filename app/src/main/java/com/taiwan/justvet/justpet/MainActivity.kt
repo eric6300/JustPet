@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupDrawer()
         setupFAB()
 
-        requestPermission()
+//        requestPermission()
 
         setupFirebaseAuth()
 

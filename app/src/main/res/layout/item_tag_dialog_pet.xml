@@ -17,7 +17,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/avatar_pet"
             android:layout_width="100dp"
             android:layout_height="100dp"
             app:layout_constraintBottom_toTopOf="@+id/text_name"
@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_pet"
             android:text="@{profile.name}"
             tools:text="MeiMei" />
     </androidx.constraintlayout.widget.ConstraintLayout>

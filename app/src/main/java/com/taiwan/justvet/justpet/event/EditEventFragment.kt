@@ -17,7 +17,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
+import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
@@ -25,8 +27,9 @@ class EditEventFragment : Fragment() {
 
     private lateinit var binding: FragmentEditEventBinding
     private lateinit var viewModel: EditEventViewModel
-    lateinit var saveUri: Uri
-    lateinit var eventPicture: ImageView
+    private lateinit var currentEvent: PetEvent
+//    lateinit var saveUri: Uri
+//    lateinit var eventPicture: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +38,7 @@ class EditEventFragment : Fragment() {
     ): View? {
 
         binding = FragmentEditEventBinding.inflate(inflater, container, false)
-        val currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
+        currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
         val viewModelFactory = EditEventViewModelFactory(currentEvent)
         viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel::class.java)
@@ -51,14 +54,11 @@ class EditEventFragment : Fragment() {
             }
         })
 
-        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
-            binding.seekBarAppetite.correctOffsetWhenContainerOnScrolling()
-            binding.seekBarSpirit.correctOffsetWhenContainerOnScrolling()
-        }
+        setupSeekBar()
 
-        binding.buttonCamera.setOnClickListener {
-            startCamera()
-        }
+//        binding.buttonCamera.setOnClickListener {
+//            startCamera()
+//        }
 
 //        binding.buttonGallery.setOnClickListener {
 //            startGallery()
@@ -66,7 +66,7 @@ class EditEventFragment : Fragment() {
 
         setupTagRecyclerView()
 
-        eventPicture = binding.imageEvent
+//        eventPicture = binding.imageEvent
 
         return binding.root
     }
@@ -78,61 +78,97 @@ class EditEventFragment : Fragment() {
         listOfTag.adapter = adapter
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            PHOTO_FROM_GALLERY -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        val uri = data!!.data
-                        if (eventPicture.visibility == View.GONE) {
-                            eventPicture.visibility = View.VISIBLE
-                        }
-                        eventPicture.setImageURI(uri)
-                    }
-                    Activity.RESULT_CANCELED -> {
-                        Log.wtf("getImageResult", resultCode.toString())
-                    }
-                }
-            }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        when (requestCode) {
+//            PHOTO_FROM_GALLERY -> {
+//                when (resultCode) {
+//                    Activity.RESULT_OK -> {
+//                        val uri = data!!.data
+//                        if (eventPicture.visibility == View.GONE) {
+//                            eventPicture.visibility = View.VISIBLE
+//                        }
+//                        eventPicture.setImageURI(uri)
+//                    }
+//                    Activity.RESULT_CANCELED -> {
+//                        Log.wtf("getImageResult", resultCode.toString())
+//                    }
+//                }
+//            }
+//
+//            PHOTO_FROM_CAMERA -> {
+//                when (resultCode) {
+//                    Activity.RESULT_OK -> {
+//                        if (eventPicture.visibility == View.GONE) {
+//                            eventPicture.visibility = View.VISIBLE
+//                        }
+//                        Glide.with(this).load(saveUri).into(eventPicture)
+//                    }
+//                    Activity.RESULT_CANCELED -> {
+//                        Log.wtf("getImageResult", resultCode.toString())
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
 
-            PHOTO_FROM_CAMERA -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        if (eventPicture.visibility == View.GONE) {
-                            eventPicture.visibility = View.VISIBLE
-                        }
-                        Glide.with(this).load(saveUri).into(eventPicture)
-                    }
-                    Activity.RESULT_CANCELED -> {
-                        Log.wtf("getImageResult", resultCode.toString())
-                    }
-                }
+//    fun startCamera() {
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        val tmpFile = File(
+//            JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+//            System.currentTimeMillis().toString() + ".png"
+//        )
+//        val uriForCamera = FileProvider.getUriForFile(
+//            JustPetApplication.appContext,
+//            "com.taiwan.justvet.justpet.provider",
+//            tmpFile
+//        )
+//        saveUri = uriForCamera
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForCamera)
+//
+//        startActivityForResult(intent, PHOTO_FROM_CAMERA)
+//    }
+//
+//    fun startGallery() {
+//        val intent = Intent(Intent.ACTION_GET_CONTENT)
+//        intent.type = "image/*"
+//        startActivityForResult(intent, PHOTO_FROM_GALLERY)
+//    }
 
+    fun setupSeekBar() {
+        val seekBarSpirit = binding.seekBarSpirit
+        val seekBarAppetite = binding.seekBarAppetite
+
+        binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
+            seekBarSpirit.correctOffsetWhenContainerOnScrolling()
+            seekBarAppetite.correctOffsetWhenContainerOnScrolling()
+        }
+
+        seekBarSpirit.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+            override fun getProgressOnFinally(
+                bubbleSeekBar: BubbleSeekBar?,
+                progress: Int,
+                progressFloat: Float,
+                fromUser: Boolean
+            ) {
+                viewModel.setSpiritScore(progressFloat)
             }
         }
-    }
 
-    fun startCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val tmpFile = File(
-            JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            System.currentTimeMillis().toString() + ".png"
-        )
-        val uriForCamera = FileProvider.getUriForFile(
-            JustPetApplication.appContext,
-            "com.taiwan.justvet.justpet.provider",
-            tmpFile
-        )
-        saveUri = uriForCamera
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForCamera)
+        seekBarAppetite.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+            override fun getProgressOnFinally(
+                bubbleSeekBar: BubbleSeekBar?,
+                progress: Int,
+                progressFloat: Float,
+                fromUser: Boolean
+            ) {
+                viewModel.setAppetiteScore(progressFloat)
+            }
+        }
 
-        startActivityForResult(intent, PHOTO_FROM_CAMERA)
-    }
+        currentEvent.spirit?.let { seekBarSpirit.setProgress(it.toFloat()) }
+        currentEvent.appetite?.let { seekBarAppetite.setProgress(it.toFloat()) }
 
-    fun startGallery() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        startActivityForResult(intent, PHOTO_FROM_GALLERY)
     }
 }
