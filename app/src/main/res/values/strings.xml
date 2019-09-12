@@ -46,7 +46,8 @@
     <string name="title_calculate_rate">呼吸/脈搏計算</string>
 
     //  ChartFragment  //
-    <string name="chart_date_format">MM/dd</string>
+    <string name="chart_month_day_format">MM/dd</string>
+    <string name="chart_year_month_format">MMM</string>
     <string name="text_one_month">一個月</string>
     <string name="text_six_month">六個月</string>
     <string name="text_one_year">一年</string>

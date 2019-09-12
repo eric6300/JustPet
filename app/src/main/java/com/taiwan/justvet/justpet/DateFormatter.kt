@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet
 import android.content.Context
 import com.jjoe64.graphview.DefaultLabelFormatter
 import com.taiwan.justvet.justpet.util.Util
+import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,7 +40,7 @@ class DateFormatter : DefaultLabelFormatter {
      */
     constructor(context: Context) {
         mDateFormat = SimpleDateFormat(
-            Util.getString(R.string.chart_date_format),
+            getString(R.string.chart_year_month_format),
             Locale.TAIWAN
         )
         mCalendar = Calendar.getInstance()

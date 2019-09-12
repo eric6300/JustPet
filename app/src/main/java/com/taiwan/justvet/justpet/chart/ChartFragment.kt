@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.chart
 
+import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,9 @@ import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
 import androidx.lifecycle.Observer
+import com.jjoe64.graphview.series.BarGraphSeries
+import com.taiwan.justvet.justpet.data.PetEvent
+import kotlin.collections.ArrayList
 
 
 class ChartFragment : Fragment() {
@@ -47,11 +51,11 @@ class ChartFragment : Fragment() {
 
         viewModel.selectedProfile.observe(this, Observer {
             Log.d(TAG, "ChartFragment selected profile : $it")
-            viewModel.getChartData(it)
+            viewModel.getSyndromeData(it)
         })
 
-        viewModel.eventData.observe(this, Observer {
-
+        viewModel.syndromeData.observe(this, Observer {
+            showSyndromeChart(it)
         })
 
         return binding.root
@@ -94,7 +98,7 @@ class ChartFragment : Fragment() {
         val d2 = calendar.time
         calendar.add(Calendar.DATE, 1)
         val d3 = calendar.time
-        calendar.set(2019,8,17)
+        calendar.set(2019, 8, 17)
         val d4 = calendar.time
 
         val graph = binding.graphWeight
@@ -136,5 +140,38 @@ class ChartFragment : Fragment() {
         graph.gridLabelRenderer.setHumanRounding(false, true)
         graph.gridLabelRenderer.isHighlightZeroLines = false
         graph.gridLabelRenderer.labelsSpace = 20
+    }
+
+    fun showSyndromeChart(data: Map<Date, ArrayList<PetEvent>>) {
+        val syndromeGraph = binding.graphSyndrome
+
+        val list = ArrayList<DataPoint>()
+        for (item in data.keys) {
+            data[item]?.size?.toDouble()?.let {
+                list.add(DataPoint(item, it))
+            }
+        }
+
+        val array = arrayOfNulls<DataPoint>(list.size)
+        list.toArray(array)
+        val series = BarGraphSeries(array)
+
+        syndromeGraph.addSeries(series)
+        series.isDrawValuesOnTop = true
+        series.valuesOnTopColor = Color.BLUE
+        series.spacing = 60
+
+        syndromeGraph.viewport.isScalable = true
+        syndromeGraph.viewport.setScalableY(true)
+        syndromeGraph.viewport.isXAxisBoundsManual = true
+
+        // set date label formatter
+        syndromeGraph.gridLabelRenderer.labelFormatter = DateFormatter(JustPetApplication.appContext)
+
+
+
+        syndromeGraph.gridLabelRenderer.setHumanRounding(false, false)
+
+
     }
 }
