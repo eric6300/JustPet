@@ -64,8 +64,8 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags"
-            fancy:fb_defaultColor="#7ab800"
-            fancy:fb_focusColor="#9bd823"
+            fancy:fb_defaultColor="@color/colorDiaryDark"
+            fancy:fb_focusColor="@color/colorDiary"
             fancy:fb_radius="5dp"
             fancy:fb_text="@string/text_next_step"
             fancy:fb_textColor="#FFFFFF" />
@@ -86,8 +86,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/outline_list_of_tags"
-            fancy:fb_defaultColor="#7ab800"
-            fancy:fb_focusColor="#9bd823"
+            fancy:fb_defaultColor="@color/colorDiaryDark"
+            fancy:fb_focusColor="@color/colorDiary"
             fancy:fb_radius="5dp"
             fancy:fb_text="@string/text_quick_save"
             fancy:fb_textColor="#FFFFFF"/>

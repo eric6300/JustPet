@@ -189,6 +189,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
         petEvent.eventId?.let {
             eventDatabase?.document(it)?.update(finalEvent)?.addOnSuccessListener {
+                navigateToCalendar()
                 Log.d(TAG, "update succeeded")
             }?.addOnFailureListener {
                 Log.d(TAG, "update failed")

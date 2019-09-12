@@ -21,6 +21,7 @@
     <string name="time_format">HH:mm</string>
     <string name="date_time_format">yyyy年MM月dd日  HH:mm</string>
     <string name="timelist_format">yyyy/MM/dd/HH:mm</string>
+    <string name="year_month_format">yyyy/M</string>
     <string name="title_time">時間</string>
     <string name="title_tag">分類</string>
     <string name="title_note">備註</string>
