@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.chart
 
+import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -8,27 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.jjoe64.graphview.series.DataPoint
-import com.jjoe64.graphview.series.LineGraphSeries
-import com.taiwan.justvet.justpet.DateFormatter
-import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.TAG
-import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
-import java.util.*
-import androidx.lifecycle.Observer
+import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
-import com.taiwan.justvet.justpet.data.PetEvent
-import kotlin.collections.ArrayList
-import com.github.mikephil.charting.components.AxisBase
-import android.icu.text.SimpleDateFormat
-import android.icu.util.TimeZone
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ChartFragment : Fragment() {
@@ -46,23 +42,29 @@ class ChartFragment : Fragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(
-            inflater, com.taiwan.justvet.justpet.R.layout.fragment_chart, container, false
+            inflater, R.layout.fragment_chart, container, false
         )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        setupChart()
+//        setupChart()
         setupPetProfile()
 
         viewModel.selectedProfile.observe(this, Observer {
-            Log.d(TAG, "ChartFragment selected profile : $it")
+            Log.d(TAG, "ChartFragment selected profile : ${it.profileId}")
             viewModel.getSyndromeData(it)
+            viewModel.getYearData(it)
+        })
+
+        viewModel.yearData.observe(this, Observer {
+            showWeightData(it)
         })
 
         viewModel.syndromeData.observe(this, Observer {
-//            showSyndromeChart(it)
-            showSyndromeChart(it)
+            it?.let {
+                showSyndromeChart(it)
+            }
         })
 
         return binding.root
@@ -97,56 +99,66 @@ class ChartFragment : Fragment() {
         }
     }
 
-    fun setupChart() {
-        // generate Dates
-        val calendar = Calendar.getInstance()
-        val d1 = calendar.time
-        calendar.add(Calendar.DATE, 1)
-        val d2 = calendar.time
-        calendar.add(Calendar.DATE, 1)
-        val d3 = calendar.time
-        calendar.set(2019, 8, 17)
-        val d4 = calendar.time
+    fun showWeightData(yearData: List<PetEvent>) {
+        val lineChart = binding.graphWeight
+        lineChart.setExtraOffsets(10f, 0f, 10f, 10f)
+        // enable scaling and dragging
+        lineChart.isDragEnabled = true
+        lineChart.setScaleEnabled(true)
+        // disable grid background
+        lineChart.setDrawGridBackground(false)
+        lineChart.setPinchZoom(true)
+        // disable legend
+        lineChart.legend.isEnabled = false
 
-        val graph = binding.graphWeight
+        // set X axis
+        val xAxis = lineChart.xAxis
+        xAxis.textSize = 16f
+        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.labelCount = 4
+        xAxis.valueFormatter = WeightValueFormatter()
 
-        // you can directly pass Date objects to DataPoint-Constructor
-        // this will convert the Date to double via Date#getTime()
-        val series = LineGraphSeries(
-            arrayOf(
-                DataPoint(d1, 4.0),
-                DataPoint(d2, 6.0),
-                DataPoint(d2, 5.0),
-                DataPoint(d3, 3.0),
-                DataPoint(d4, 9.0)
-            )
-        )
+        // set Y axis
+        val yAxisRight = lineChart.axisRight
+        yAxisRight.isEnabled = false
+        val yAxisLeft = lineChart.axisLeft
+        yAxisLeft.isEnabled = false
 
-        series.isDrawDataPoints = true
-        series.setOnDataPointTapListener { series, dataPoint ->
-            val yyy = dataPoint.x
-            Log.d(TAG, "dataPoint : ${dataPoint.y}")
-            Log.d(TAG, "dataPoint : ${Date(yyy.toLong())}")
+        // disable description
+        val description = Description()
+        description.isEnabled = false
+        lineChart.description = description
+
+        // Setting Data
+        val weightData = yearData.filter {
+            it.weight != null
+        }
+        val entries = ArrayList<Entry>()
+        for (event in weightData) {
+            event.timestamp?.let { timestamp ->
+                event.weight?.let { weight ->
+                    entries.add(Entry(timestamp.toFloat(),weight.toFloat()))
+                }
+            }
         }
 
-        graph.addSeries(series)
+        // set DataSet
+        val dataset = LineDataSet(entries, "體重")
+        dataset.setDrawValues(true)
+        dataset.valueFormatter = CustomValueFormatter()
+        dataset.valueTextSize = 14f
+        dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
+        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
+        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.transparent))
 
-        graph.viewport.isScalable = true
+        val data = LineData(dataset)
+        lineChart.data = data
 
-        // set date label formatter
-        graph.gridLabelRenderer.labelFormatter = DateFormatter(JustPetApplication.appContext)
-        graph.gridLabelRenderer.numHorizontalLabels = 4 // only 4 because of the space
-
-        // set manual x bounds to have nice steps
-        graph.viewport.setMinX(d1.time.toDouble())
-        graph.viewport.setMaxX(d4.time.toDouble())
-        graph.viewport.isXAxisBoundsManual = true
-
-        // as we use dates as labels, the human rounding to nice readable numbers
-        // is not necessary
-        graph.gridLabelRenderer.setHumanRounding(false, true)
-        graph.gridLabelRenderer.isHighlightZeroLines = false
-        graph.gridLabelRenderer.labelsSpace = 20
+        // refresh
+        lineChart.invalidate()
     }
 
     fun showSyndromeChart(syndromeData: Map<Date, ArrayList<PetEvent>>) {
@@ -219,6 +231,26 @@ class CustomValueFormatter : ValueFormatter() {
         calendar.roll(Calendar.MONTH, value.toInt())
         val date = Date(calendar.timeInMillis)
         val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
+        return sdf.format(date)
+    }
+
+    override fun getBarLabel(barEntry: BarEntry?): String {
+        barEntry?.y?.let {
+            return if (it == 0f) {
+                ""
+            } else {
+                it.toInt().toString()
+            }
+        }
+        return barEntry?.y?.toInt().toString()
+    }
+}
+
+class WeightValueFormatter : ValueFormatter() {
+
+    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+        val date = Date(value.toLong())
+        val sdf = SimpleDateFormat("M/dd", Locale.TAIWAN)
         return sdf.format(date)
     }
 

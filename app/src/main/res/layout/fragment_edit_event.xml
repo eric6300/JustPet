@@ -19,41 +19,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/icon_species"
-            iconSpecies="@{petProfile.species}"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/text_name_pet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_mono"
-            android:text="@{petProfile.name}"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="@+id/icon_species"
-            app:layout_constraintStart_toStartOf="@+id/icon_species"
-            app:layout_constraintTop_toBottomOf="@+id/icon_species" />
-
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/button_post_event"
-            app:layout_constraintTop_toBottomOf="@+id/text_name_pet"
             tools:layout_editor_absoluteX="0dp">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/icon_species"
+                    iconSpecies="@{petProfile.species}"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/text_name_pet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_mono"
+                    android:text="@{petProfile.name}"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="@+id/icon_species"
+                    app:layout_constraintStart_toStartOf="@+id/icon_species"
+                    app:layout_constraintTop_toBottomOf="@+id/icon_species" />
 
                 <TextView
                     android:id="@+id/title_media"
@@ -92,7 +91,7 @@
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_name_pet" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_tags"

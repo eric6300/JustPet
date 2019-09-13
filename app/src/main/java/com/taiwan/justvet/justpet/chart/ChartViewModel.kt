@@ -28,6 +28,10 @@ class ChartViewModel : ViewModel() {
     val selectedProfile: LiveData<PetProfile>
         get() = _selectedProfile
 
+    private val _yearData = MutableLiveData<List<PetEvent>>()
+    val yearData: LiveData<List<PetEvent>>
+        get() = _yearData
+
     private val _eventData = MutableLiveData<List<PetEvent>>()
     val eventData: LiveData<List<PetEvent>>
         get() = _eventData
@@ -43,12 +47,13 @@ class ChartViewModel : ViewModel() {
     val petsRef = database.collection(PETS)
 
     val calendar = Calendar.getInstance()
-//    var oneMonthTimestamp: Long = 0
+    //    var oneMonthTimestamp: Long = 0
 //    var threeMonthsTimestamp: Long = 0
 //    var sixMonthsTimestamp: Long = 0
     var oneYearTimestamp: Long = 0
 
     var sortedSyndromeDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
+    var sortedWeightDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
 
     init {
         UserManager.userProfile.value?.let {
@@ -59,24 +64,9 @@ class ChartViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-//        calendar.add(Calendar.MONTH, -1)
-//        oneMonthTimestamp = calendar.timeInMillis
-//
-//        calendar.add(Calendar.MONTH, -2)
-//        threeMonthsTimestamp = calendar.timeInMillis
-//
-//        calendar.add(Calendar.MONTH, -3)
-//        sixMonthsTimestamp = calendar.timeInMillis
-
         calendar.add(Calendar.MONTH, -12)
         oneYearTimestamp = calendar.timeInMillis
-
-        // return to default date
         calendar.add(Calendar.MONTH, 12)
-        Log.d(TAG, "date (now) : ${calendar.time}")
-//        Log.d(TAG, "timestamp (1 mon ago) : $oneMonthTimestamp")
-//        Log.d(TAG, "timestamp (3 mon ago) : $threeMonthsTimestamp")
-//        Log.d(TAG, "timestamp (6 mon ago) : $sixMonthsTimestamp")
         Log.d(TAG, "timestamp (12 mon ago) : $oneYearTimestamp")
     }
 
@@ -103,7 +93,10 @@ class ChartViewModel : ViewModel() {
                             petProfileData.add(petProfile)
                             petProfileData.sortBy { it.profileId }
                             _listOfProfile.value = petProfileData
-                            Log.d(TAG, "ChartViewModel getPetProfileData() succeeded, petId : ${petProfile.profileId}")
+                            Log.d(
+                                TAG,
+                                "ChartViewModel getPetProfileData() succeeded, petId : ${petProfile.profileId}"
+                            )
                         }
                         .addOnFailureListener {
                             Log.d(TAG, "ChartViewModel getPetProfileData() failed : $it")
@@ -135,10 +128,13 @@ class ChartViewModel : ViewModel() {
                             }
 
                             _eventData.value = data
-
+                            // get 12 months sorted syndrome data
                             sortSyndromeData(12)
                         } else {
-                            Log.d(TAG, "${petProfile.name} doesn't have event contains tag of vomit")
+                            Log.d(
+                                TAG,
+                                "${petProfile.name} doesn't have event contains tag of vomit"
+                            )
                         }
                     }.addOnFailureListener {
                         Log.d(TAG, "getSyndromeData() failed : $it")
@@ -151,8 +147,7 @@ class ChartViewModel : ViewModel() {
         val dataMap = HashMap<Date, ArrayList<PetEvent>>()
 
         // create hashMap of last 12 months by year/month
-        for (i in 0..months.minus(1)) {
-//            Log.d(TAG, "${calendar.time}")
+        for (i in 1..months) {
             dataMap[calendar.time] = arrayListOf<PetEvent>()
             calendar.add(Calendar.MONTH, -1)
         }
@@ -176,7 +171,31 @@ class ChartViewModel : ViewModel() {
 
         // display syndrome data for Bar chart
         _syndromeData.value = sortedSyndromeDataMap
+    }
 
+    fun getYearData(petProfile: PetProfile) {
+        petProfile.profileId?.let {
+            petsRef.document(it).collection(EVENTS)
+                .whereGreaterThan("timestamp", oneYearTimestamp).get()
+                .addOnSuccessListener {
+                    if (it.size() > 0) {
+                        val data = mutableListOf<PetEvent>()
+
+                        for (item in it.documents) {
+                            val event = item.toObject(PetEvent::class.java)
+                            event?.let {
+                                data.add(event)
+                            }
+                        }
+
+                        _yearData.value = data
+                    } else {
+                        Log.d(TAG, "${petProfile.name} doesn't have event contains tag of vomit")
+                    }
+                }.addOnFailureListener {
+                    Log.d(TAG, "getSyndromeData() failed : $it")
+                }
+        }
     }
 
     fun getDateOfEvent(petEvent: PetEvent): Date? {
