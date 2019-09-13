@@ -26,6 +26,7 @@ import com.taiwan.justvet.justpet.data.PetEvent
 import kotlin.collections.ArrayList
 import com.github.mikephil.charting.components.AxisBase
 import android.icu.text.SimpleDateFormat
+import android.icu.util.TimeZone
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.taiwan.justvet.justpet.R
 
@@ -188,16 +189,16 @@ class ChartFragment : Fragment() {
 
         // Setting Data
         val entries = ArrayList<BarEntry>()
-
+        var i = 1f
         for (date in syndromeData.keys) {
             syndromeData[date]?.size?.let {
-                val smallTimestamp = date.time / 1000000000
-                entries.add(BarEntry(smallTimestamp.toFloat(), it.toFloat()))
+                entries.add(BarEntry(i, it.toFloat()))
+                i += 1
             }
         }
 
         // set DataSet
-        val dataset = BarDataSet(entries, "體重")
+        val dataset = BarDataSet(entries, "症狀")
         dataset.setDrawValues(true)
         dataset.valueFormatter = CustomValueFormatter()
         dataset.valueTextSize = 14f
@@ -214,9 +215,9 @@ class ChartFragment : Fragment() {
 class CustomValueFormatter : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        val defaultTimestamp = value * 1000000000
-        val date = Date(defaultTimestamp.toLong())
-        //Specify the format you'd like
+        val calendar = Calendar.getInstance()
+        calendar.roll(Calendar.MONTH, value.toInt())
+        val date = Date(calendar.timeInMillis)
         val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
         return sdf.format(date)
     }
