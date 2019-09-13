@@ -1,6 +1,5 @@
 package com.taiwan.justvet.justpet.chart
 
-import android.graphics.Color
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
@@ -20,9 +19,15 @@ import com.taiwan.justvet.justpet.TAG
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
 import androidx.lifecycle.Observer
-import com.jjoe64.graphview.series.BarGraphSeries
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import kotlin.collections.ArrayList
+import com.github.mikephil.charting.components.AxisBase
+import android.icu.text.SimpleDateFormat
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.taiwan.justvet.justpet.R
 
 
 class ChartFragment : Fragment() {
@@ -55,6 +60,7 @@ class ChartFragment : Fragment() {
         })
 
         viewModel.syndromeData.observe(this, Observer {
+//            showSyndromeChart(it)
             showSyndromeChart(it)
         })
 
@@ -142,36 +148,87 @@ class ChartFragment : Fragment() {
         graph.gridLabelRenderer.labelsSpace = 20
     }
 
-    fun showSyndromeChart(data: Map<Date, ArrayList<PetEvent>>) {
-        val syndromeGraph = binding.graphSyndrome
+    fun showSyndromeChart(syndromeData: Map<Date, ArrayList<PetEvent>>) {
+        val barChart = binding.graphSyndrome
 
-        val list = ArrayList<DataPoint>()
-        for (item in data.keys) {
-            data[item]?.size?.toDouble()?.let {
-                list.add(DataPoint(item, it))
+        barChart.setExtraOffsets(10f, 0f, 10f, 10f)
+
+        // enable scaling and dragging
+        barChart.isDragEnabled = true
+        barChart.setScaleEnabled(true)
+
+        // disable grid background
+        barChart.setDrawGridBackground(false)
+
+        barChart.setPinchZoom(true)
+
+        // disable legend
+        barChart.legend.isEnabled = false
+
+        // set X axis
+        val xAxis = barChart.xAxis
+        xAxis.textSize = 16f
+        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.valueFormatter = CustomValueFormatter()
+        xAxis.labelCount = 4
+
+        // set Y axis
+        val yAxisRight = barChart.axisRight
+        yAxisRight.isEnabled = false
+        val yAxisLeft = barChart.axisLeft
+        yAxisLeft.isEnabled = false
+
+        // disable description
+        val description = Description()
+        description.isEnabled = false
+        barChart.description = description
+
+        // Setting Data
+        val entries = ArrayList<BarEntry>()
+
+        for (date in syndromeData.keys) {
+            syndromeData[date]?.size?.let {
+                val smallTimestamp = date.time / 1000000000
+                entries.add(BarEntry(smallTimestamp.toFloat(), it.toFloat()))
             }
         }
 
-        val array = arrayOfNulls<DataPoint>(list.size)
-        list.toArray(array)
-        val series = BarGraphSeries(array)
+        // set DataSet
+        val dataset = BarDataSet(entries, "體重")
+        dataset.setDrawValues(true)
+        dataset.valueFormatter = CustomValueFormatter()
+        dataset.valueTextSize = 14f
+        dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiary)
 
-        syndromeGraph.addSeries(series)
-        series.isDrawValuesOnTop = true
-        series.valuesOnTopColor = Color.BLUE
-        series.spacing = 60
+        val data = BarData(dataset)
+        barChart.data = data
 
-        syndromeGraph.viewport.isScalable = true
-        syndromeGraph.viewport.setScalableY(true)
-        syndromeGraph.viewport.isXAxisBoundsManual = true
+        // refresh
+        barChart.invalidate()
+    }
+}
 
-        // set date label formatter
-        syndromeGraph.gridLabelRenderer.labelFormatter = DateFormatter(JustPetApplication.appContext)
+class CustomValueFormatter : ValueFormatter() {
 
+    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+        val defaultTimestamp = value * 1000000000
+        val date = Date(defaultTimestamp.toLong())
+        //Specify the format you'd like
+        val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
+        return sdf.format(date)
+    }
 
-
-        syndromeGraph.gridLabelRenderer.setHumanRounding(false, false)
-
-
+    override fun getBarLabel(barEntry: BarEntry?): String {
+        barEntry?.y?.let {
+            return if (it == 0f) {
+                ""
+            } else {
+                it.toInt().toString()
+            }
+        }
+        return barEntry?.y?.toInt().toString()
     }
 }

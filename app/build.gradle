@@ -118,4 +118,6 @@ dependencies {
 
     // FancyButton
     implementation 'com.github.medyo:fancybuttons:1.9.1'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

@@ -177,9 +177,6 @@ class ChartViewModel : ViewModel() {
         // display syndrome data for Bar chart
         _syndromeData.value = sortedSyndromeDataMap
 
-//        for (key in sortedMap.keys) {
-//            Log.d(TAG, "$key" + " : ${syndromeDataMap[key]?.size}")
-//        }
     }
 
     fun getDateOfEvent(petEvent: PetEvent): Date? {
