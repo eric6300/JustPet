@@ -35,6 +35,10 @@ class CalendarViewModel : ViewModel() {
     val navigateToDetail: LiveData<PetEvent>
         get() = _navigateToDetail
 
+    private val _showDeleteDialog = MutableLiveData<PetEvent>()
+    val showDeleteDialog: LiveData<PetEvent>
+        get() = _showDeleteDialog
+
     val localDate = LocalDate.now()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -57,9 +61,7 @@ class CalendarViewModel : ViewModel() {
                         .get()
                         .addOnSuccessListener { document ->
                             if (document.size() > 0) {
-                                Log.d(TAG, "=== pet profileId : $petId ===")
                                 for (event in document) {
-                                    Log.d(TAG, "event profileId : ${event.id}")
                                     data.add(
                                         PetEvent(
                                             eventId = event.id,
@@ -133,7 +135,10 @@ class CalendarViewModel : ViewModel() {
                                         eventTags = tagList
                                     )
                                 )
-                                _monthEventsData.value = finalMonthEventData
+                                val sortedList = finalMonthEventData.sortedBy {
+                                    it.timestamp
+                                }
+                                _monthEventsData.value = sortedList
                             }
                         }
                         .addOnFailureListener {
@@ -161,18 +166,12 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    private fun deleteEvent(petEvent: PetEvent) {
-        petEvent.petId?.let { petId ->
-            petEvent.eventId?.let { eventId ->
-                pets.document(petId).collection(EVENTS).document(eventId).delete()
-                    .addOnSuccessListener {
-                        refreshEventData()
-                    }
-                    .addOnFailureListener {
-                        Log.d(TAG, "deleteEvent() failed : $it")
-                    }
-            }
-        }
+    fun showDeleteDialog(petEvent: PetEvent) {
+        _showDeleteDialog.value = petEvent
+    }
+
+    fun showDeleteDialogCompleted() {
+        _showDeleteDialog.value = null
     }
 
     fun getEventTagsToDelete(petEvent: PetEvent) {
@@ -193,7 +192,21 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun deleteTags(petEvent: PetEvent, documentId: String) {
+    private fun deleteEvent(petEvent: PetEvent) {
+        petEvent.petId?.let { petId ->
+            petEvent.eventId?.let { eventId ->
+                pets.document(petId).collection(EVENTS).document(eventId).delete()
+                    .addOnSuccessListener {
+                        refreshEventData()
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "deleteEvent() failed : $it")
+                    }
+            }
+        }
+    }
+
+    private fun deleteTags(petEvent: PetEvent, documentId: String) {
         petEvent.petId?.let { petId ->
             petEvent.eventId?.let { eventId ->
                 pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)

@@ -26,6 +26,11 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
         holder.itemView.setOnClickListener {
             viewModel.navigateToDetail(petEvent)
         }
+
+        holder.binding.icDelete.setOnClickListener {
+            viewModel.showDeleteDialog(petEvent)
+        }
+
         holder.binding.listOfTags.let {
             val adapter = CalendarTagListAdapter(viewModel, CalendarTagListAdapter.OnClickListener {
             })
