@@ -73,20 +73,6 @@ class EditEventFragment : Fragment() {
 //            startGallery()
 //        }
 
-        viewModel.showDatePickerDialog.observe(this, Observer {
-            if (it == true) {
-                datePickerDialog.show()
-                viewModel.showDateDialogCompleted()
-            }
-        })
-
-        viewModel.showTimePickerDialog.observe(this, Observer {
-            if (it == true) {
-                timePickerDialog.show()
-                viewModel.showTimeDialogCompleted()
-            }
-        })
-
         calendar = viewModel.calendar
         setupDatePickerDialog()
         setupTimePickerDialog()
@@ -213,6 +199,12 @@ class EditEventFragment : Fragment() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+        viewModel.showDatePickerDialog.observe(this, Observer {
+            if (it == true) {
+                datePickerDialog.show()
+                viewModel.showDateDialogCompleted()
+            }
+        })
     }
 
     private fun setupTimePickerDialog() {
@@ -230,5 +222,11 @@ class EditEventFragment : Fragment() {
             calendar.get(Calendar.MINUTE),
             true
         )
+        viewModel.showTimePickerDialog.observe(this, Observer {
+            if (it == true) {
+                timePickerDialog.show()
+                viewModel.showTimeDialogCompleted()
+            }
+        })
     }
 }

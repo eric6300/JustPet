@@ -29,7 +29,6 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         get() = _eventTags
 
     private val _dateAndTime = MutableLiveData<String>()
-
     val dateAndTime: LiveData<String>
         get() = _dateAndTime
 
@@ -61,8 +60,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     init {
         initialEvent()
+        initialDateAndTime()
         setEventTags()
-        updateDateAndTime()
     }
 
     private fun initialEvent() {
@@ -74,7 +73,14 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             eventTemper.value = it.temperature
             eventRR.value = it.respiratoryRate
             eventHR.value = it.heartRate
-            eventTimestamp.value = it.timestamp
+
+            if (it.timestamp == 0L) {
+                // navigate from tag dialog for add an event
+                eventTimestamp.value = calendar.timeInMillis
+            } else {
+                // navigate from calendar fragment for edit the event
+                eventTimestamp.value = it.timestamp
+            }
         }
     }
 
@@ -82,11 +88,22 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         _eventTags.value = petEvent.eventTags
     }
 
+    fun initialDateAndTime() {
+        _dateAndTime.value = SimpleDateFormat(
+            getString(R.string.date_time_format),
+            Locale.TAIWAN
+        ).format(eventTimestamp.value?.let { Date(it) })
+
+        calendar.time = petEvent.timestamp?.let { Date(it) }
+    }
+
     fun updateDateAndTime() {
         _dateAndTime.value = SimpleDateFormat(
             getString(R.string.date_time_format),
             Locale.TAIWAN
         ).format(calendar.time)
+
+        eventTimestamp.value = calendar.timeInMillis
     }
 
     fun setSpiritScore(score: Float) {
@@ -121,8 +138,6 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             getString(R.string.timelist_format),
             Locale.TAIWAN
         ).format(calendar.time).split("/")
-
-        eventTimestamp.value = calendar.timeInMillis
 
         val finalEvent = petEvent.let {
             PetEvent(
@@ -176,8 +191,19 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun updateEvent() {
+        // get selected time and date string list
+        val timeList = SimpleDateFormat(
+            getString(R.string.timelist_format),
+            Locale.TAIWAN
+        ).format(calendar.time).split("/")
+
         val finalEvent =
             mapOf(
+                "year" to timeList[0].toLong(),
+                "month" to timeList[1].toLong(),
+                "dayOfMonth" to timeList[2].toLong(),
+                "time" to timeList[3],
+                "timestamp" to eventTimestamp.value,
                 "note" to eventNote.value,
                 "spirit" to eventSpirit,
                 "appetite" to eventAppetite,
