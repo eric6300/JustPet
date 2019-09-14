@@ -52,7 +52,7 @@
     <string name="text_six_month">六個月</string>
     <string name="text_one_year">一年</string>
     <string name="text_three_months">三個月</string>
-    <string name="text_vomit">嘔吐</string>
+    <string name="text_vomit">嘔吐次數</string>
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>

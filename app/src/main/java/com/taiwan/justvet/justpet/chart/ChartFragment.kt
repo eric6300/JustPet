@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,9 +18,12 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.TAG
@@ -107,13 +111,12 @@ class ChartFragment : Fragment() {
 
     private fun setupWeightChart() {
         weightChart = binding.graphWeight
-        weightChart.setExtraOffsets(10f, 0f, 10f, 10f)
+//        weightChart.setExtraOffsets(0f, 0f, 0f, 0f)
         // enable scaling and dragging
-        weightChart.isDragEnabled = true
-        weightChart.setScaleEnabled(true)
+        weightChart.isDragEnabled = false
+        weightChart.setScaleEnabled(false)
         // disable grid background
         weightChart.setDrawGridBackground(false)
-        weightChart.setPinchZoom(true)
         // disable legend
         weightChart.legend.isEnabled = false
 
@@ -122,10 +125,13 @@ class ChartFragment : Fragment() {
         xAxis.textSize = 16f
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
+        xAxis.setDrawLabels(false)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.labelCount = 4
-        xAxis.valueFormatter = WeightValueFormatter()
+//        xAxis.labelCount = 2
+//        xAxis.valueFormatter = WeightChartFormatter()
+        xAxis.granularity = 86400f
+        xAxis.axisMinimum = viewModel.threeMonthsAgoTimestamp.toFloat()
+        xAxis.axisMaximum = (viewModel.nowTimestamp).toFloat()
 
         // set Y axis
         val yAxisRight = weightChart.axisRight
@@ -162,7 +168,7 @@ class ChartFragment : Fragment() {
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(true)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.valueFormatter = CustomValueFormatter()
+        xAxis.valueFormatter = SyndromeFormatter()
         xAxis.granularity = 1f
 
         // set Y axis
@@ -185,8 +191,9 @@ class ChartFragment : Fragment() {
         val entries = ArrayList<Entry>()
         for (event in weightData) {
             event.timestamp?.let { timestamp ->
+
                 event.weight?.let { weight ->
-                    entries.add(Entry(timestamp.toFloat(),weight.toFloat()))
+                    entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
                 }
             }
         }
@@ -194,14 +201,19 @@ class ChartFragment : Fragment() {
         // set DataSet
         val dataset = LineDataSet(entries, "體重")
         dataset.setDrawValues(true)
-        dataset.valueFormatter = CustomValueFormatter()
-        dataset.valueTextSize = 14f
+        dataset.valueFormatter = SyndromeFormatter()
+        dataset.valueTextSize = 16f
         dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
         dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
-        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.transparent))
+        dataset.lineWidth = 2f
+        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.colorDiaryDark))
+        dataset.circleRadius = 4f
+        dataset.valueFormatter = WeightChartFormatter()
+        weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.05).toFloat()
 
-        val data = LineData(dataset)
-        weightChart.data = data
+        weightChart.data = LineData(dataset)
+        val markerView = WeightMarkerView()
+        weightChart.marker = markerView
 
         // refresh
         weightChart.invalidate()
@@ -221,12 +233,11 @@ class ChartFragment : Fragment() {
         // set DataSet
         val dataset = BarDataSet(entries, "症狀")
         dataset.setDrawValues(true)
-        dataset.valueFormatter = CustomValueFormatter()
+        dataset.valueFormatter = SyndromeFormatter()
         dataset.valueTextSize = 14f
         dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiary)
 
-        val data = BarData(dataset)
-        syndromeChart.data = data
+        syndromeChart.data = BarData(dataset)
         syndromeChart.moveViewToX(12f)
         syndromeChart.setVisibleXRangeMaximum(3f)
 
@@ -236,32 +247,41 @@ class ChartFragment : Fragment() {
     }
 
     private fun setupSegmentedButtonGroup() {
-        binding.filterChartGroup.setOnPositionChangedListener {
-            when (it) {
+        binding.filterChartGroup.setOnPositionChangedListener { index ->
+            when (index) {
                 0 -> {
-                    syndromeChart.fitScreen()
-                    syndromeChart.moveViewToX(12f)
-                    syndromeChart.setVisibleXRangeMaximum(3f)
-                    Log.d(TAG, "segmentedButton 0")
+                    weightChart.xAxis.axisMinimum = viewModel.threeMonthsAgoTimestamp.toFloat()
+                    weightChart.fitScreen()
+                    syndromeChart.let {
+                        it.fitScreen()
+                        it.moveViewToX(12f)
+                        it.setVisibleXRangeMaximum(3f)
+                    }
                 }
                 1 -> {
-                    syndromeChart.fitScreen()
-                    syndromeChart.moveViewToX(6.5f)
-                    syndromeChart.setVisibleXRangeMaximum(6f)
-                    Log.d(TAG, "segmentedButton 1")
+                    weightChart.xAxis.axisMinimum = viewModel.sixMonthsAgoTimestamp.toFloat()
+                    weightChart.fitScreen()
+                    syndromeChart.let {
+                        it.fitScreen()
+                        it.moveViewToX(6.5f)
+                        it.setVisibleXRangeMaximum(6f)
+                    }
                 }
                 2 -> {
-                    syndromeChart.fitScreen()
-                    syndromeChart.moveViewToX(0f)
-                    syndromeChart.setVisibleXRangeMaximum(12f)
-                    Log.d(TAG, "segmentedButton 2")
+                    weightChart.xAxis.axisMinimum = viewModel.oneYearAgoTimestamp.toFloat()
+                    weightChart.fitScreen()
+                    syndromeChart.let {
+                        it.fitScreen()
+                        it.moveViewToX(0f)
+                        it.setVisibleXRangeMaximum(12f)
+                    }
                 }
             }
         }
     }
 }
 
-class CustomValueFormatter : ValueFormatter() {
+class SyndromeFormatter : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         val calendar = Calendar.getInstance()
@@ -283,22 +303,37 @@ class CustomValueFormatter : ValueFormatter() {
     }
 }
 
-class WeightValueFormatter : ValueFormatter() {
+class WeightChartFormatter : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         val date = Date(value.toLong())
-        val sdf = SimpleDateFormat("M/dd", Locale.TAIWAN)
+        val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
         return sdf.format(date)
     }
 
-    override fun getBarLabel(barEntry: BarEntry?): String {
-        barEntry?.y?.let {
-            return if (it == 0f) {
-                ""
-            } else {
-                it.toInt().toString()
-            }
-        }
-        return barEntry?.y?.toInt().toString()
+    override fun getFormattedValue(value: Float): String {
+        return "$value kg"
     }
+}
+
+class WeightMarkerView :
+    MarkerView(JustPetApplication.appContext, R.layout.item_chart_marker_view) {
+
+    val text = findViewById<TextView>(R.id.text_marker_view)
+
+    override fun refreshContent(e: Entry?, highlight: Highlight?) {
+        e?.x?.toLong()?.let {
+            val date = Date(it)
+            val sdf = SimpleDateFormat("M月dd日", Locale.TAIWAN)
+            val displayString = sdf.format(date)
+            text.text = displayString
+        }
+        super.refreshContent(e, highlight)
+    }
+
+    override fun getOffsetForDrawingAtPoint(posX: Float, posY: Float): MPPointF {
+        return MPPointF(-(width / 2).toFloat(), -height.toFloat() * 2)
+    }
+
+
 }

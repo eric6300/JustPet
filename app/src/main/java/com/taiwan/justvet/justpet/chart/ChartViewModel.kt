@@ -47,13 +47,12 @@ class ChartViewModel : ViewModel() {
     val petsRef = database.collection(PETS)
 
     val calendar = Calendar.getInstance()
-    //    var oneMonthTimestamp: Long = 0
-//    var threeMonthsTimestamp: Long = 0
-//    var sixMonthsTimestamp: Long = 0
-    var oneYearTimestamp: Long = 0
+    var nowTimestamp: Long = 0
+    var threeMonthsAgoTimestamp: Long = 0
+    var sixMonthsAgoTimestamp: Long = 0
+    var oneYearAgoTimestamp: Long = 0
 
     var sortedSyndromeDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
-    var sortedWeightDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
 
     init {
         UserManager.userProfile.value?.let {
@@ -64,10 +63,14 @@ class ChartViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-        calendar.add(Calendar.MONTH, -12)
-        oneYearTimestamp = calendar.timeInMillis
+        nowTimestamp = calendar.timeInMillis
+        calendar.add(Calendar.MONTH, -3)
+        threeMonthsAgoTimestamp = calendar.timeInMillis
+        calendar.add(Calendar.MONTH, -3)
+        sixMonthsAgoTimestamp = calendar.timeInMillis
+        calendar.add(Calendar.MONTH, -6)
+        oneYearAgoTimestamp = calendar.timeInMillis
         calendar.add(Calendar.MONTH, 12)
-        Log.d(TAG, "timestamp (12 mon ago) : $oneYearTimestamp")
     }
 
     fun getProfileByPosition(position: Int) {
@@ -110,7 +113,7 @@ class ChartViewModel : ViewModel() {
         petProfile.profileId?.let {
             selectedEventTag?.index?.let { index ->
                 petsRef.document(it).collection(EVENTS).whereArrayContains("eventTagsIndex", index)
-                    .whereGreaterThan("timestamp", oneYearTimestamp).get()
+                    .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                     .addOnSuccessListener {
                         if (it.size() > 0) {
                             val data = mutableListOf<PetEvent>()
@@ -176,7 +179,7 @@ class ChartViewModel : ViewModel() {
     fun getYearData(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsRef.document(it).collection(EVENTS)
-                .whereGreaterThan("timestamp", oneYearTimestamp).get()
+                .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
                     if (it.size() > 0) {
                         val data = mutableListOf<PetEvent>()
