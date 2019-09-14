@@ -19,13 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/button_post_event"
-            tools:layout_editor_absoluteX="0dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +37,7 @@
 
                 <ImageView
                     android:id="@+id/icon_species"
-                    iconSpecies="@{petProfile.species}"
+                    iconSpecies="@{petProfile.species != null ? petProfile.species : viewModel.petEvent.petSpecies}"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="16dp"
@@ -47,78 +50,129 @@
                     android:id="@+id/text_name_pet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:text="@{petProfile.name}"
+                    android:text="@{petProfile.name != null ? petProfile.name : viewModel.petEvent.petName}"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="@+id/icon_species"
                     app:layout_constraintStart_toStartOf="@+id/icon_species"
                     app:layout_constraintTop_toBottomOf="@+id/icon_species" />
 
-                <TextView
-                    android:id="@+id/title_media"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/title_media"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
-
-                <TextView
-                    android:id="@+id/title_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/title_notification"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_media" />
-
-                <TextView
-                    android:id="@+id/text_date_and_time"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/roboto_mono"
-                    android:onClick="@{() -> viewModel.showDatePickerDialog()}"
-                    android:text="@{viewModel.dateAndTime}"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
+                    android:background="@drawable/border_corner"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_name_pet" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_name_pet">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list_tags"
-                    listOfTags="@{viewModel.eventTags}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_date_and_time"
-                    tools:itemCount="4" />
+                    <TextView
+                        android:id="@+id/title_date_and_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/title_time"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_date_and_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/roboto_mono"
+                        android:onClick="@{() -> viewModel.showDatePickerDialog()}"
+                        android:text="@{viewModel.dateAndTime}"
+                        android:textAlignment="textStart"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/title_date_and_time"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/title_date_and_time"
+                        app:layout_constraintTop_toTopOf="@+id/title_date_and_time" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_tags"
+                        listOfTags="@{viewModel.eventTags}"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView2"
+                        app:layout_constraintTop_toTopOf="@+id/textView2"
+                        tools:itemCount="4" />
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/title_tag"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/title_date_and_time" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/layout_text_note"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/text_note"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/title_note"
+                            android:inputType="text"
+                            android:text="@={viewModel.eventNote}"
+                            android:textAlignment="textStart" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <TextView
                     android:id="@+id/title_advance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/title_advance"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_notification" />
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout6" />
+
+                <ImageView
+                    android:id="@+id/icon_expand"
+                    expandIcon="@{viewModel.expandStatus}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/title_advance"
+                    app:layout_constraintStart_toEndOf="@+id/title_advance"
+                    app:layout_constraintTop_toTopOf="@+id/title_advance"
+                    app:srcCompat="@drawable/ic_expand_more" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_advance"
@@ -127,6 +181,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/border_corner"
                     android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -140,6 +195,7 @@
                         android:id="@+id/check_spirit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/title_spirite"
                         android:textSize="18sp"
@@ -168,14 +224,14 @@
                         app:layout_constraintBottom_toBottomOf="@+id/check_spirit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
-                        app:layout_constraintTop_toTopOf="@+id/check_spirit"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="@+id/check_spirit" />
 
                     <TextView
                         android:id="@+id/check_appetite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/title_appetite"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -202,16 +258,15 @@
                         app:bsb_track_color="@color/colorDiary"
                         app:layout_constraintBottom_toBottomOf="@+id/check_appetite"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
-                        app:layout_constraintTop_toTopOf="@+id/check_appetite"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="@+id/check_appetite" />
 
                     <TextView
                         android:id="@+id/check_body_weight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/title_body_weight"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -221,7 +276,8 @@
                         android:id="@+id/check_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/title_temperature"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -231,7 +287,8 @@
                         android:id="@+id/check_respiratory_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/title_rr"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -241,7 +298,8 @@
                         android:id="@+id/check_heart_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         android:text="@string/title_heart_rate"
                         android:textSize="18sp"
@@ -302,7 +360,7 @@
                         app:layout_constraintTop_toTopOf="@+id/check_heart_rate" />
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/text_unit_body_weight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -312,7 +370,7 @@
                         app:layout_constraintTop_toTopOf="@+id/text_body_weight" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/text_unit_temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -322,7 +380,7 @@
                         app:layout_constraintTop_toTopOf="@+id/text_temperature" />
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/text_unit_rr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -332,7 +390,7 @@
                         app:layout_constraintTop_toTopOf="@+id/text_respiratory_rate" />
 
                     <TextView
-                        android:id="@+id/textView9"
+                        android:id="@+id/text_unit_hr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -343,46 +401,30 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <ImageView
-                    android:id="@+id/icon_expand"
-                    expandIcon="@{viewModel.expandStatus}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/title_advance"
-                    app:layout_constraintStart_toEndOf="@+id/title_advance"
-                    app:layout_constraintTop_toTopOf="@+id/title_advance"
-                    app:srcCompat="@drawable/ic_expand_more" />
-
-                <ImageView
-                    android:id="@+id/image_event"
-                    android:layout_width="90dp"
-                    android:layout_height="160dp"
-                    android:layout_marginStart="32dp"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:layout_editor_absoluteY="196dp"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout2"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:background="@drawable/border_corner"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/list_tags">
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/title_note"
-                        android:text="@={viewModel.eventNote}" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <ImageView
+                        android:id="@+id/icon_media"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_camera" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -403,6 +445,7 @@
             app:fb_focusColor="@color/colorDiary"
             app:fb_radius="5dp"
             app:fb_text="@string/text_complete"
+            app:fb_textSize = "18sp"
             app:fb_textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

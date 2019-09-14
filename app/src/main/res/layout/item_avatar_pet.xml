@@ -35,14 +35,15 @@
             android:id="@+id/text_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/roboto_mono"
+            android:text="@{profile.name}"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/avatar_pet"
-            android:text="@{profile.name}"
             tools:text="MeiMei" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

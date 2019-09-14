@@ -34,13 +34,6 @@ class TagViewModel : ViewModel() {
     val leaveTagDialog: LiveData<Boolean>
         get() = _leaveTagDialog
 
-//    private val _showDatePickerDialog = MutableLiveData<Boolean>()
-//    val showDatePickerDialog: LiveData<Boolean>
-//        get() = _showDatePickerDialog
-//
-//    private val _showTimePickerDialog = MutableLiveData<Boolean>()
-//    val showTimePickerDialog: LiveData<Boolean>
-//        get() = _showTimePickerDialog
 
     private val _listOfTags = MutableLiveData<List<EventTag>>()
     val listOfTags: LiveData<List<EventTag>>
@@ -50,13 +43,6 @@ class TagViewModel : ViewModel() {
     val listOfProfile: LiveData<List<PetProfile>>
         get() = _listOfProfile
 
-//    private val _currentDate = MutableLiveData<String>()
-//    val currentDate: LiveData<String>
-//        get() = _currentDate
-
-//    private val _currentTime = MutableLiveData<String>()
-//    val currentTime: LiveData<String>
-//        get() = _currentTime
 
     private val _currentEvent = MutableLiveData<PetEvent>()
     val currentEvent: LiveData<PetEvent>
@@ -142,7 +128,6 @@ class TagViewModel : ViewModel() {
             it.add(EventTag(TagType.DIARY.value, 3, "剪指甲"))
             it.add(EventTag(TagType.DIARY.value, 4, "剃毛"))
             it.add(EventTag(TagType.DIARY.value, 5, "量體重"))
-            it.add(EventTag(TagType.DIARY.value, 6, "其他"))
         }
     }
 
@@ -156,7 +141,7 @@ class TagViewModel : ViewModel() {
             it.add(EventTag(TagType.SYNDROME.value, 105, "癲癇"))
             it.add(EventTag(TagType.SYNDROME.value, 106, "昏倒"))
             it.add(EventTag(TagType.SYNDROME.value, 107, "排尿異常"))
-            it.add(EventTag(TagType.SYNDROME.value, 108, "其他"))
+            it.add(EventTag(TagType.SYNDROME.value, 108, "其他症狀"))
         }
     }
 
@@ -164,13 +149,13 @@ class TagViewModel : ViewModel() {
         listTagTreatment.let {
             it.add(EventTag(TagType.TREATMENT.value, 200, "除蚤"))
             it.add(EventTag(TagType.TREATMENT.value, 201, "驅蟲"))
-            it.add(EventTag(TagType.TREATMENT.value, 202, "心絲蟲"))
+            it.add(EventTag(TagType.TREATMENT.value, 202, "心絲蟲藥"))
             it.add(EventTag(TagType.TREATMENT.value, 203, "皮下注射"))
             it.add(EventTag(TagType.TREATMENT.value, 204, "血糖紀錄"))
             it.add(EventTag(TagType.TREATMENT.value, 205, "口服藥"))
             it.add(EventTag(TagType.TREATMENT.value, 206, "外用藥"))
-            it.add(EventTag(TagType.TREATMENT.value, 207, "眼藥/耳藥"))
-            it.add(EventTag(TagType.TREATMENT.value, 208, "其他"))
+            it.add(EventTag(TagType.TREATMENT.value, 207, "滴劑"))
+            it.add(EventTag(TagType.TREATMENT.value, 208, "其他醫療"))
         }
     }
 
@@ -181,6 +166,7 @@ class TagViewModel : ViewModel() {
                 petProfile = it,
                 petId = it.profileId,
                 petName = it.name,
+                petSpecies = it.species,
                 eventTags = eventTags,
                 eventTagsIndex = eventTagsIndex
             )
@@ -208,7 +194,14 @@ class TagViewModel : ViewModel() {
             3L -> getDrawable(R.drawable.ic_nail_trimming)
             4L -> getDrawable(R.drawable.ic_grooming)
             5L -> getDrawable(R.drawable.ic_weighting)
-            else -> getDrawable(R.drawable.ic_synrige)
+            200L -> getDrawable(R.drawable.ic_tick)
+            201L -> getDrawable(R.drawable.ic_medicine)
+            202L -> getDrawable(R.drawable.ic_heart)
+            204L -> getDrawable(R.drawable.ic_blood_test)
+            205L -> getDrawable(R.drawable.ic_medicine)
+            206L -> getDrawable(R.drawable.ic_ointment)
+            207L -> getDrawable(R.drawable.ic_eye_drops)
+            else -> getDrawable(R.drawable.ic_others)
         }
     }
 
@@ -228,9 +221,6 @@ class TagViewModel : ViewModel() {
                         }
                     }
                 }
-            }
-            if (eventTags.size == 0) {
-                eventTags.add(EventTag(TagType.DIARY.value, -1, "日常"))
             }
             navigateToEditEvent()
         }
@@ -270,6 +260,7 @@ class TagViewModel : ViewModel() {
                         petProfile = it,
                         petId = it.profileId,
                         petName = it.name,
+                        petSpecies = it.species,
                         timestamp = calendar.timeInMillis,
                         year = timeList[0].toLong(),
                         month = timeList[1].toLong(),

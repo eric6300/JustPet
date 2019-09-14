@@ -161,6 +161,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 petProfile = it.petProfile,
                 petId = it.petId,
                 petName = it.petName,
+                petSpecies = it.petSpecies,
                 timestamp = eventTimestamp.value,
                 year = timeList[0].toLong(),
                 month = timeList[1].toLong(),
