@@ -13,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
@@ -31,6 +33,8 @@ class ChartFragment : Fragment() {
 
     private lateinit var binding: FragmentChartBinding
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
+    private lateinit var weightChart: LineChart
+    private lateinit var syndromeChart: BarChart
     private val viewModel: ChartViewModel by lazy {
         ViewModelProviders.of(this).get(ChartViewModel::class.java)
     }
@@ -48,8 +52,9 @@ class ChartFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-//        setupChart()
         setupPetProfile()
+        setupSyndromeChart()
+        setupWeightChart()
 
         viewModel.selectedProfile.observe(this, Observer {
             Log.d(TAG, "ChartFragment selected profile : ${it.profileId}")
@@ -63,9 +68,10 @@ class ChartFragment : Fragment() {
 
         viewModel.syndromeData.observe(this, Observer {
             it?.let {
-                showSyndromeChart(it)
+                showSyndromeData(it)
             }
         })
+
 
         return binding.root
     }
@@ -99,20 +105,20 @@ class ChartFragment : Fragment() {
         }
     }
 
-    fun showWeightData(yearData: List<PetEvent>) {
-        val lineChart = binding.graphWeight
-        lineChart.setExtraOffsets(10f, 0f, 10f, 10f)
+    private fun setupWeightChart() {
+        weightChart = binding.graphWeight
+        weightChart.setExtraOffsets(10f, 0f, 10f, 10f)
         // enable scaling and dragging
-        lineChart.isDragEnabled = true
-        lineChart.setScaleEnabled(true)
+        weightChart.isDragEnabled = true
+        weightChart.setScaleEnabled(true)
         // disable grid background
-        lineChart.setDrawGridBackground(false)
-        lineChart.setPinchZoom(true)
+        weightChart.setDrawGridBackground(false)
+        weightChart.setPinchZoom(true)
         // disable legend
-        lineChart.legend.isEnabled = false
+        weightChart.legend.isEnabled = false
 
         // set X axis
-        val xAxis = lineChart.xAxis
+        val xAxis = weightChart.xAxis
         xAxis.textSize = 16f
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(false)
@@ -122,16 +128,56 @@ class ChartFragment : Fragment() {
         xAxis.valueFormatter = WeightValueFormatter()
 
         // set Y axis
-        val yAxisRight = lineChart.axisRight
+        val yAxisRight = weightChart.axisRight
         yAxisRight.isEnabled = false
-        val yAxisLeft = lineChart.axisLeft
+        val yAxisLeft = weightChart.axisLeft
         yAxisLeft.isEnabled = false
 
         // disable description
         val description = Description()
         description.isEnabled = false
-        lineChart.description = description
+        weightChart.description = description
+    }
 
+    private fun setupSyndromeChart() {
+        syndromeChart = binding.graphSyndrome
+
+        syndromeChart.setExtraOffsets(10f, 0f, 10f, 10f)
+
+        // disable scaling, dragging and zooming
+        syndromeChart.isDragEnabled = false
+        syndromeChart.setScaleEnabled(false)
+        syndromeChart.setPinchZoom(false)
+
+        // disable grid background
+        syndromeChart.setDrawGridBackground(false)
+
+        // disable legend
+        syndromeChart.legend.isEnabled = false
+
+        // set X axis
+        val xAxis = syndromeChart.xAxis
+        xAxis.textSize = 16f
+        xAxis.setDrawAxisLine(true)
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.valueFormatter = CustomValueFormatter()
+        xAxis.granularity = 1f
+
+        // set Y axis
+        val yAxisRight = syndromeChart.axisRight
+        yAxisRight.isEnabled = false
+        val yAxisLeft = syndromeChart.axisLeft
+        yAxisLeft.isEnabled = false
+
+        // disable description
+        val description = Description()
+        description.isEnabled = false
+        syndromeChart.description = description
+    }
+
+    fun showWeightData(yearData: List<PetEvent>) {
         // Setting Data
         val weightData = yearData.filter {
             it.weight != null
@@ -155,50 +201,13 @@ class ChartFragment : Fragment() {
         dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.transparent))
 
         val data = LineData(dataset)
-        lineChart.data = data
+        weightChart.data = data
 
         // refresh
-        lineChart.invalidate()
+        weightChart.invalidate()
     }
 
-    fun showSyndromeChart(syndromeData: Map<Date, ArrayList<PetEvent>>) {
-        val barChart = binding.graphSyndrome
-
-        barChart.setExtraOffsets(10f, 0f, 10f, 10f)
-
-        // enable scaling and dragging
-        barChart.isDragEnabled = true
-        barChart.setScaleEnabled(true)
-
-        // disable grid background
-        barChart.setDrawGridBackground(false)
-
-        barChart.setPinchZoom(true)
-
-        // disable legend
-        barChart.legend.isEnabled = false
-
-        // set X axis
-        val xAxis = barChart.xAxis
-        xAxis.textSize = 16f
-        xAxis.setDrawAxisLine(true)
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.valueFormatter = CustomValueFormatter()
-        xAxis.labelCount = 4
-
-        // set Y axis
-        val yAxisRight = barChart.axisRight
-        yAxisRight.isEnabled = false
-        val yAxisLeft = barChart.axisLeft
-        yAxisLeft.isEnabled = false
-
-        // disable description
-        val description = Description()
-        description.isEnabled = false
-        barChart.description = description
-
+    fun showSyndromeData(syndromeData: Map<Date, ArrayList<PetEvent>>) {
         // Setting Data
         val entries = ArrayList<BarEntry>()
         var i = 1f
@@ -217,10 +226,38 @@ class ChartFragment : Fragment() {
         dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiary)
 
         val data = BarData(dataset)
-        barChart.data = data
+        syndromeChart.data = data
+        syndromeChart.moveViewToX(12f)
+        syndromeChart.setVisibleXRangeMaximum(3f)
 
         // refresh
-        barChart.invalidate()
+        syndromeChart.invalidate()
+        setupSegmentedButtonGroup()
+    }
+
+    private fun setupSegmentedButtonGroup() {
+        binding.filterChartGroup.setOnPositionChangedListener {
+            when (it) {
+                0 -> {
+                    syndromeChart.fitScreen()
+                    syndromeChart.moveViewToX(12f)
+                    syndromeChart.setVisibleXRangeMaximum(3f)
+                    Log.d(TAG, "segmentedButton 0")
+                }
+                1 -> {
+                    syndromeChart.fitScreen()
+                    syndromeChart.moveViewToX(6.5f)
+                    syndromeChart.setVisibleXRangeMaximum(6f)
+                    Log.d(TAG, "segmentedButton 1")
+                }
+                2 -> {
+                    syndromeChart.fitScreen()
+                    syndromeChart.moveViewToX(0f)
+                    syndromeChart.setVisibleXRangeMaximum(12f)
+                    Log.d(TAG, "segmentedButton 2")
+                }
+            }
+        }
     }
 }
 

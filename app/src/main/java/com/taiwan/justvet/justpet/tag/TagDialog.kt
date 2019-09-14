@@ -75,26 +75,9 @@ class TagDialog : BottomSheetDialogFragment() {
             }
         })
 
-//        viewModel.showDatePickerDialog.observe(this, Observer {
-//            if (it == true) {
-//                datePickerDialog.show()
-//                viewModel.showDateDialogCompleted()
-//            }
-//        })
-
-//        viewModel.showTimePickerDialog.observe(this, Observer {
-//            if (it == true) {
-//                timePickerDialog.show()
-//                viewModel.showTimeDialogCompleted()
-//            }
-//        })
-
         setupPetProfile()
         setupListOfTags()
 
-//        calendar = viewModel.calendar
-//        setupDatePickerDialog()
-//        setupTimePickerDialog()
         setupSegmentedButtonGroup()
 
         return binding.root
@@ -135,37 +118,6 @@ class TagDialog : BottomSheetDialogFragment() {
         })
         listOfTags.adapter = tagAdapter
     }
-
-//    private fun setupDatePickerDialog() {
-//        val dateListener =
-//            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-//                calendar.set(year, month, dayOfMonth)
-//                viewModel.updateDate()
-//            }
-//        datePickerDialog = DatePickerDialog(
-//            this.context!!,
-//            dateListener,
-//            calendar.get(Calendar.YEAR),
-//            calendar.get(Calendar.MONTH),
-//            calendar.get(Calendar.DAY_OF_MONTH)
-//        )
-//    }
-
-//    private fun setupTimePickerDialog() {
-//        val timeListener =
-//            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
-//                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-//                calendar.set(Calendar.MINUTE, minute)
-//                viewModel.updateTime()
-//            }
-//        timePickerDialog = TimePickerDialog(
-//            this.context,
-//            timeListener,
-//            calendar.get(Calendar.HOUR_OF_DAY),
-//            calendar.get(Calendar.MINUTE),
-//            true
-//        )
-//    }
 
     private fun setupSegmentedButtonGroup() {
         binding.tagCategoryButtonGroup.setOnPositionChangedListener {

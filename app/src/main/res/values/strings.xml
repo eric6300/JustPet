@@ -54,4 +54,7 @@
     <string name="text_three_months">三個月</string>
     <string name="text_vomit">嘔吐</string>
 
+    //  Login  //
+    <string name="text_google_sign_in">Google 登入</string>
+
 </resources>

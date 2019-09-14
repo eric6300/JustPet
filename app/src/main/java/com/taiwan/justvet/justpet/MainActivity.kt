@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -191,10 +192,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
-//        val customLayout = AuthMethodPickerLayout
-//            .Builder(R.layout.your_custom_layout_xml)
-//            .setGoogleButtonId(R.profileId.bar)
-//            .build()
+        val customLayout = AuthMethodPickerLayout
+            .Builder(R.layout.custom_login_layout)
+            .setGoogleButtonId(R.id.button_google_sign_in)
+            .build()
 
         val authListener: FirebaseAuth.AuthStateListener =
             FirebaseAuth.AuthStateListener { auth: FirebaseAuth ->
@@ -205,7 +206,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .setAvailableProviders(authProvider)
                         .setAlwaysShowSignInMethodScreen(true)
                         .setIsSmartLockEnabled(false)
-//                        .setAuthMethodPickerLayout(customLayout)
+                        .setAuthMethodPickerLayout(customLayout)
                         .build()
                     startActivityForResult(intent, RC_SIGN_IN)
                 } else {
