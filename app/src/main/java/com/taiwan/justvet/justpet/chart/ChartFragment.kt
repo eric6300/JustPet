@@ -26,7 +26,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.TAG
+import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
@@ -61,7 +61,7 @@ class ChartFragment : Fragment() {
         setupWeightChart()
 
         viewModel.selectedProfile.observe(this, Observer {
-            Log.d(TAG, "ChartFragment selected profile : ${it.profileId}")
+            Log.d(ERIC, "ChartFragment selected profile : ${it.profileId}")
             viewModel.getSyndromeData(it)
             viewModel.getYearData(it)
         })

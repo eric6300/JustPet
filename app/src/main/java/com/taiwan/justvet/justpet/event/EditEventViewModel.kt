@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.event
 
+import android.content.ContentValues.TAG
 import android.icu.util.Calendar
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -77,6 +78,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             if (it.timestamp == 0L) {
                 // navigate from tag dialog for add an event
                 eventTimestamp.value = calendar.timeInMillis
+                Log.d(ERIC, "timestamp :  ${eventTimestamp.value}")
             } else {
                 // navigate from calendar fragment for edit the event
                 eventTimestamp.value = it.timestamp
@@ -94,7 +96,22 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             Locale.TAIWAN
         ).format(eventTimestamp.value?.let { Date(it) })
 
-        calendar.time = petEvent.timestamp?.let { Date(it) }
+
+        val timeList = SimpleDateFormat(
+            getString(R.string.timelist_format),
+            Locale.TAIWAN
+        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
+
+        val hour = timeList[3].split(":")[0]
+        val minute = timeList[3].split(":")[1]
+
+        calendar.set(
+            timeList[0].toInt(),
+            timeList[1].toInt().minus(1),
+            timeList[2].toInt(),
+            hour.toInt(),
+            minute.toInt()
+        )
     }
 
     fun updateDateAndTime() {
@@ -112,7 +129,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 eventSpirit = item.score
             }
         }
-        Log.d(TAG, "eventSpirit : ${eventSpirit}")
+        Log.d(ERIC, "eventSpirit : ${eventSpirit}")
     }
 
     fun setAppetiteScore(score: Float) {
@@ -121,7 +138,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 eventAppetite = item.score
             }
         }
-        Log.d(TAG, "eventAppetite : ${eventAppetite}")
+        Log.d(ERIC, "eventAppetite : ${eventAppetite}")
     }
 
     fun checkEventId() {
@@ -137,7 +154,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
             Locale.TAIWAN
-        ).format(calendar.time).split("/")
+        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
 
         val finalEvent = petEvent.let {
             PetEvent(
@@ -164,11 +181,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         eventDatabase?.let {
             it.add(finalEvent)
                 .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "postEvent succeeded ID : ${documentReference.id}")
+                    Log.d(ERIC, "postEvent succeeded ID : ${documentReference.id}")
                     postTags(documentReference.id)
                 }
                 .addOnFailureListener { e ->
-                    Log.d(TAG, "postEvent failed : $e")
+                    Log.d(ERIC, "postEvent failed : $e")
                 }
         }
     }
@@ -179,10 +196,10 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 for (tag in this) {
                     it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
-                            Log.d(TAG, "postTags succeeded ID : ${it.id}")
+                            Log.d(ERIC, "postTags succeeded ID : ${it.id}")
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "postTags failed : $it")
+                            Log.d(ERIC, "postTags failed : $it")
                         }
                 }
                 navigateToCalendar()
@@ -195,7 +212,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
             Locale.TAIWAN
-        ).format(calendar.time).split("/")
+        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
 
         val finalEvent =
             mapOf(
@@ -216,9 +233,9 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         petEvent.eventId?.let {
             eventDatabase?.document(it)?.update(finalEvent)?.addOnSuccessListener {
                 navigateToCalendar()
-                Log.d(TAG, "update succeeded")
+                Log.d(ERIC, "update succeeded")
             }?.addOnFailureListener {
-                Log.d(TAG, "update failed")
+                Log.d(ERIC, "update failed")
             }
         }
     }

@@ -156,7 +156,7 @@ class HomeFragment : Fragment() {
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDirection: Int) {
                     if (swipeDirection == ItemTouchHelper.LEFT) {
-                        Log.d(TAG, "完成並詢問要不要設定推播")
+                        Log.d(ERIC, "完成並詢問要不要設定推播")
                         // TODO 推播詢問及設定
                     }
 //                    eventList.removeAt(viewHolder.adapterPosition)

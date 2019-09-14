@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.util.CurrentFragmentType
 
 class MainViewModel : ViewModel() {
 
@@ -22,6 +23,9 @@ class MainViewModel : ViewModel() {
     val userPhotoUrl: LiveData<Uri>
         get() = _userPhotoUrl
 
+    // Record current fragment to support data binding
+    val currentFragmentType = MutableLiveData<CurrentFragmentType>()
+
     val firebase = FirebaseFirestore.getInstance()
     val users = firebase.collection(USERS)
 
@@ -32,7 +36,7 @@ class MainViewModel : ViewModel() {
                     if (it.size() == 0) {
                         registerUserProfile(userProfile)
                     } else {
-                        Log.d(TAG, "user already registered")
+                        Log.d(ERIC, "user already registered")
                         for (item in it) {
                             UserManager.refreshUserProfile(
                                 UserProfile(
@@ -46,7 +50,7 @@ class MainViewModel : ViewModel() {
                     }
                 }
                 .addOnFailureListener {
-                    Log.d(TAG, "checkUserProfile() failed : $it")
+                    Log.d(ERIC, "checkUserProfile() failed : $it")
                 }
         }
     }
@@ -55,10 +59,10 @@ class MainViewModel : ViewModel() {
         userProfile.uid?.let {
             users.add(userProfile)
                 .addOnSuccessListener {
-                    Log.d(TAG, "registerUserProfile() succeeded")
+                    Log.d(ERIC, "registerUserProfile() succeeded")
                 }
                 .addOnFailureListener {
-                    Log.d(TAG, "registerUserProfile() failed : $it")
+                    Log.d(ERIC, "registerUserProfile() failed : $it")
                 }
         }
     }

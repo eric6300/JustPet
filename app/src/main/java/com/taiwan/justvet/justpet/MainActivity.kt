@@ -14,6 +14,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -26,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.databinding.NavDrawerHeaderBinding
+import com.taiwan.justvet.justpet.util.CurrentFragmentType
 
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
@@ -35,7 +38,7 @@ const val PETS = "pets"
 const val EVENTS = "events"
 const val TAGS = "tags"
 const val UID = "uid"
-const val TAG = "testEric"
+const val ERIC = "testEric"
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
 
-    val onNavigationItemSelectedListener =
+    private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_bottom_home -> {
@@ -76,6 +79,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.viewModel = viewModel
 
         setupBottomNav()
+        setupNavController()
         setupDrawer()
         setupFAB()
 
@@ -89,6 +93,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setupBottomNav() {
         binding.navBottomView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+    }
+
+    private fun setupNavController() {
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
+            viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
+                R.id.homeFragment -> CurrentFragmentType.HOME
+                R.id.calendarFragment -> CurrentFragmentType.CALENDAR
+                R.id.chartFragment -> CurrentFragmentType.CHART
+                R.id.toolFragment -> CurrentFragmentType.TOOL
+                R.id.eventDetailFragment -> CurrentFragmentType.EVENT
+                else -> viewModel.currentFragmentType.value
+            }
+        }
     }
 
     private fun setupDrawer() {

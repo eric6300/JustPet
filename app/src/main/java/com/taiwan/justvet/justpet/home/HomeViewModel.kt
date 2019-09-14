@@ -76,10 +76,10 @@ class HomeViewModel : ViewModel() {
                         }
                         petData.sortBy { it.profileId }
                         _petList.value = petData
-                        Log.d(TAG, "getPetProfileData() succeeded")
+                        Log.d(ERIC, "getPetProfileData() succeeded")
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "getPetProfileData() failed: $it")
+                        Log.d(ERIC, "getPetProfileData() failed: $it")
                     }
 
             }
@@ -113,13 +113,13 @@ class HomeViewModel : ViewModel() {
         petName.value = petProfile.name
         petIdChip.value = petProfile.idNumber
         _isModified.value = true
-        Log.d(TAG, "modified pet profile")
+        Log.d(ERIC, "modified pet profile")
     }
 
     fun modifyCompleted() {
         // update to firebase in the future
         Log.d(
-            TAG,
+            ERIC,
             "Pet Name : ${petName.value} Pet BirthDay : ${petBirthday.value} Pet IdChip : ${petIdChip.value}"
         )
         _isModified.value = false

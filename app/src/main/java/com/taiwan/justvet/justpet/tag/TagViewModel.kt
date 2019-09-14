@@ -107,10 +107,10 @@ class TagViewModel : ViewModel() {
                             petData.add(petProfile)
                             petData.sortBy { it.profileId }
                             _listOfProfile.value = petData
-                            Log.d(TAG, "TagViewModel getPetProfileData() succeeded")
+                            Log.d(ERIC, "TagViewModel getPetProfileData() succeeded")
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "TagViewModel getPetProfileData() failed : $it")
+                            Log.d(ERIC, "TagViewModel getPetProfileData() failed : $it")
                         }
                 }
             }
@@ -224,7 +224,7 @@ class TagViewModel : ViewModel() {
                         if (tag.isSelected == true) {
                             eventTags.add(tag)
                             tag.index?.let { index -> eventTagsIndex.add(index) }
-                            Log.d(TAG, "$tag")
+                            Log.d(ERIC, "$tag")
                         }
                     }
                 }
@@ -279,9 +279,9 @@ class TagViewModel : ViewModel() {
                     )
                 ).addOnSuccessListener { documentReference ->
                     postTags(documentReference.id)
-                    Log.d(TAG, "TagViewModel quickSave() succeeded")
+                    Log.d(ERIC, "TagViewModel quickSave() succeeded")
                 }.addOnFailureListener { e ->
-                    Log.d(TAG, "TagViewModel quickSave() failed: $e")
+                    Log.d(ERIC, "TagViewModel quickSave() failed: $e")
                 }
             }
         }
@@ -295,9 +295,9 @@ class TagViewModel : ViewModel() {
                         pets.document(it).collection(EVENTS)
                             .document(eventId).collection(TAGS).add(item)
                             .addOnSuccessListener {
-                                Log.d(TAG, "TagViewModel postTags() succeeded")
+                                Log.d(ERIC, "TagViewModel postTags() succeeded")
                             }.addOnFailureListener { e ->
-                                Log.d(TAG, "TagViewModel postTags() failed: $e")
+                                Log.d(ERIC, "TagViewModel postTags() failed: $e")
                             }
                     }
                     _navigateToCalendar.value = true

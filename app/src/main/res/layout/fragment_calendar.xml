@@ -38,9 +38,9 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:mcv_calendarMode="month"
                     app:mcv_headerTextAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:mcv_selectionColor="@color/colorDiary"
+                    app:mcv_selectionColor="@color/colorPrimary"
                     app:mcv_selectionMode="single"
-                    app:mcv_showOtherDates="all"
+                    app:mcv_showOtherDates="defaults"
                     app:mcv_weekDayTextAppearance="@style/TextAppearance.AppCompat.Medium">
 
                 </com.prolificinteractive.materialcalendarview.MaterialCalendarView>

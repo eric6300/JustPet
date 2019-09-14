@@ -28,12 +28,12 @@ class PetProfileViewModel : ViewModel() {
 
     fun selectSpecies(species: Long) {
         petSpecies.value = species
-        Log.d(TAG, "selected species : $species")
+        Log.d(ERIC, "selected species : $species")
     }
 
     fun selectGender(gender: Long) {
         petGender.value = gender
-        Log.d(TAG, "selected species : $gender")
+        Log.d(ERIC, "selected species : $gender")
     }
 
     fun newPetProfile() {
@@ -47,11 +47,11 @@ class PetProfileViewModel : ViewModel() {
                 )
             )
                 .addOnSuccessListener {
-                    Log.d(TAG, "newPetProfile() succeeded")
+                    Log.d(ERIC, "newPetProfile() succeeded")
                     updatePetsOfUser(it.id)
                 }
                 .addOnFailureListener {
-                    Log.d(TAG, "newPetProfile() failed : $it")
+                    Log.d(ERIC, "newPetProfile() failed : $it")
                 }
         }
     }
@@ -77,10 +77,10 @@ class PetProfileViewModel : ViewModel() {
                             )
                         )
                         _navigateToHomeFragment.value = true
-                        Log.d(TAG, "updatePetsOfUser() succeeded")
+                        Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "updatePetsOfUser() failed : $it")
+                        Log.d(ERIC, "updatePetsOfUser() failed : $it")
                     }
             }
         }

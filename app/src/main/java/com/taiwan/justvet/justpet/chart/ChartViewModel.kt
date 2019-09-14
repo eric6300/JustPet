@@ -97,12 +97,12 @@ class ChartViewModel : ViewModel() {
                             petProfileData.sortBy { it.profileId }
                             _listOfProfile.value = petProfileData
                             Log.d(
-                                TAG,
+                                ERIC,
                                 "ChartViewModel getPetProfileData() succeeded, petId : ${petProfile.profileId}"
                             )
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "ChartViewModel getPetProfileData() failed : $it")
+                            Log.d(ERIC, "ChartViewModel getPetProfileData() failed : $it")
                         }
                 }
             }
@@ -119,7 +119,7 @@ class ChartViewModel : ViewModel() {
                             val data = mutableListOf<PetEvent>()
 
                             Log.d(
-                                TAG,
+                                ERIC,
                                 "${petProfile.name} has ${it.size()} event(s) containing tag of ${selectedEventTag?.title}"
                             )
 
@@ -135,12 +135,12 @@ class ChartViewModel : ViewModel() {
                             sortSyndromeData(12)
                         } else {
                             Log.d(
-                                TAG,
+                                ERIC,
                                 "${petProfile.name} doesn't have event contains tag of vomit"
                             )
                         }
                     }.addOnFailureListener {
-                        Log.d(TAG, "getSyndromeData() failed : $it")
+                        Log.d(ERIC, "getSyndromeData() failed : $it")
                     }
             }
         }
@@ -193,10 +193,10 @@ class ChartViewModel : ViewModel() {
 
                         _yearData.value = data
                     } else {
-                        Log.d(TAG, "${petProfile.name} doesn't have event contains tag of vomit")
+                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of vomit")
                     }
                 }.addOnFailureListener {
-                    Log.d(TAG, "getSyndromeData() failed : $it")
+                    Log.d(ERIC, "getSyndromeData() failed : $it")
                 }
         }
     }

@@ -87,7 +87,7 @@ class CalendarViewModel : ViewModel() {
                             }
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "getMonthEventsData() failed : $it")
+                            Log.d(ERIC, "getMonthEventsData() failed : $it")
                         }
                 }
             }
@@ -142,7 +142,7 @@ class CalendarViewModel : ViewModel() {
                             }
                         }
                         .addOnFailureListener {
-                            Log.d(TAG, "getEventWithTags() failed : $it")
+                            Log.d(ERIC, "getEventWithTags() failed : $it")
                         }
                 }
             }
@@ -186,7 +186,7 @@ class CalendarViewModel : ViewModel() {
                         deleteEvent(petEvent)
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "deleteEvent() failed : $it")
+                        Log.d(ERIC, "deleteEvent() failed : $it")
                     }
             }
         }
@@ -200,7 +200,7 @@ class CalendarViewModel : ViewModel() {
                         refreshEventData()
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "deleteEvent() failed : $it")
+                        Log.d(ERIC, "deleteEvent() failed : $it")
                     }
             }
         }
@@ -212,10 +212,10 @@ class CalendarViewModel : ViewModel() {
                 pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
                     .document(documentId).delete()
                     .addOnSuccessListener {
-                        Log.d(TAG, "deleteTags() succeeded")
+                        Log.d(ERIC, "deleteTags() succeeded")
                     }
                     .addOnFailureListener {
-                        Log.d(TAG, "deleteTags() failed : $it")
+                        Log.d(ERIC, "deleteTags() failed : $it")
                     }
             }
         }
@@ -236,7 +236,7 @@ class CalendarViewModel : ViewModel() {
 
     fun navigateToDetail(petEvent: PetEvent) {
         _navigateToDetail.value = petEvent
-        Log.d(TAG, "navigateToDetail")
+        Log.d(ERIC, "navigateToDetail")
     }
 
     fun navigateToDetailCompleted() {
