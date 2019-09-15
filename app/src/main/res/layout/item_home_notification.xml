@@ -20,16 +20,16 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_pet_event"
             style="@style/Widget.MaterialComponents.CardView"
+            eventBackground="@{notification.type}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:clickable="true"
             app:cardCornerRadius="12dp"
             app:cardElevation="3dp"
-            eventBackground="@{notification.type}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,36 +39,33 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_pet_event"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/icon_tag"
+                    notificationType="@{notification.type}"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    notificationType="@{notification.type}" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/text_home_event"
-                    android:text="@{notification.title}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/roboto_mono"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text="@{notification.title}"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/icon_tag"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/icon_tag"
-                    app:layout_constraintTop_toTopOf="@+id/icon_tag"
-                    app:layout_constraintVertical_bias="0.0"
-                     />
+                    app:layout_constraintTop_toTopOf="@+id/icon_tag" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 

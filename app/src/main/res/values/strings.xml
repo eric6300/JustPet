@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     //  HomeFragment  //
-    <string name="text_id_number">晶片號碼 共 15 碼</string>
+    <string name="text_id_number">晶片號碼</string>
     <string name="text_name">名字</string>
     <string name="text_birthday">出生日期</string>
     <string name="text_gender">性別</string>
@@ -56,5 +56,9 @@
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>
+    <string name="text_species">物種</string>
+    <string name="text_modify">確認修改</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_tody_notification">今日提醒</string>
 
 </resources>
