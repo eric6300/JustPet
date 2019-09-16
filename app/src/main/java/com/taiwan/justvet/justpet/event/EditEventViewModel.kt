@@ -93,6 +93,10 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 // navigate from calendar fragment for edit the event
                 eventTimestamp.value = it.timestamp
             }
+
+            if (it.eventId != null) {
+                _expandStatus.value = true
+            }
         }
     }
 
