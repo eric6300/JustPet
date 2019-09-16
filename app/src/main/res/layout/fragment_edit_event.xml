@@ -151,29 +151,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <TextView
-                    android:id="@+id/title_advance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/title_advance"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_media" />
-
-                <ImageView
-                    android:id="@+id/icon_expand"
-                    expandIcon="@{viewModel.expandStatus}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/title_advance"
-                    app:layout_constraintStart_toEndOf="@+id/title_advance"
-                    app:layout_constraintTop_toTopOf="@+id/title_advance"
-                    app:srcCompat="@drawable/ic_expand_more" />
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_advance"
                     android:layout_width="match_parent"
@@ -183,12 +160,11 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/border_corner"
-                    android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/title_advance"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_basic"
                     app:layout_constraintVertical_bias="0.0">
 
                     <TextView
@@ -197,10 +173,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_spirite"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/title_advance" />
 
                     <com.xw.repo.BubbleSeekBar
                         android:id="@+id/seek_bar_spirit"
@@ -208,6 +185,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
                         app:bsb_bubble_color="@color/colorDiary"
                         app:bsb_bubble_text_color="@color/colorDiaryDark"
@@ -232,6 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_appetite"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -243,6 +222,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
                         app:bsb_bubble_color="@color/colorDiary"
                         app:bsb_bubble_text_color="@color/colorDiaryDark"
@@ -267,6 +247,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_body_weight"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -278,6 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_temperature"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -289,6 +271,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_rr"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -301,6 +284,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/title_heart_rate"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -312,6 +296,7 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:ems="10"
                         android:inputType="number|numberDecimal"
                         android:text="@={viewModel.eventWeight}"
@@ -326,6 +311,7 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:ems="10"
                         android:inputType="number|numberDecimal"
                         android:text="@={viewModel.eventTemper}"
@@ -338,6 +324,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:ems="10"
                         android:inputType="number"
                         android:text="@={viewModel.eventRR}"
@@ -351,6 +338,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:ems="10"
                         android:inputType="number"
                         android:text="@={viewModel.eventHR}"
@@ -364,6 +352,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/unit_body_weight"
                         app:layout_constraintBottom_toBottomOf="@+id/text_body_weight"
                         app:layout_constraintStart_toEndOf="@+id/text_body_weight"
@@ -374,6 +363,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/unit_temperature"
                         app:layout_constraintBottom_toBottomOf="@+id/text_temperature"
                         app:layout_constraintStart_toEndOf="@+id/text_temperature"
@@ -384,6 +374,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/unit_respiratory_rate"
                         app:layout_constraintBottom_toBottomOf="@+id/text_respiratory_rate"
                         app:layout_constraintStart_toEndOf="@+id/text_respiratory_rate"
@@ -394,10 +385,37 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         android:text="@string/unit_respiratory_rate"
                         app:layout_constraintBottom_toBottomOf="@+id/text_heart_rate"
                         app:layout_constraintStart_toEndOf="@+id/text_heart_rate"
                         app:layout_constraintTop_toTopOf="@+id/text_heart_rate" />
+
+                    <ImageView
+                        android:id="@+id/icon_expand"
+                        expandIcon="@{viewModel.expandStatus}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
+                        app:layout_constraintBottom_toBottomOf="@+id/title_advance"
+                        app:layout_constraintStart_toEndOf="@+id/title_advance"
+                        app:layout_constraintTop_toTopOf="@+id/title_advance"
+                        app:srcCompat="@drawable/ic_expand_more" />
+
+                    <TextView
+                        android:id="@+id/title_advance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="@string/title_advance"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -408,10 +426,12 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/border_corner"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_basic">
+                    app:layout_constraintTop_toBottomOf="@+id/layout_advance">
 
                     <ImageView
                         android:id="@+id/icon_media"
@@ -424,6 +444,23 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_camera" />
+
+                    <ImageView
+                        android:id="@+id/image_media"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1.78:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@tools:sample/backgrounds/scenic" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

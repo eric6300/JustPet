@@ -117,7 +117,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun modifyCompleted() {
-        // update to firebase in the future
+        // update to firestore in the future
         Log.d(
             ERIC,
             "Pet Name : ${petName.value} Pet BirthDay : ${petBirthday.value} Pet IdChip : ${petIdChip.value}"

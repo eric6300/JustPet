@@ -1,12 +1,12 @@
 package com.taiwan.justvet.justpet.event
 
-import android.content.ContentValues.TAG
 import android.icu.util.Calendar
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
@@ -54,10 +54,13 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     val calendar = Calendar.getInstance()
 
-    val firebase = FirebaseFirestore.getInstance()
-    val eventDatabase = petEvent.petId?.let { petId ->
-        firebase.collection(PETS).document(petId).collection(EVENTS)
+    val firestore = FirebaseFirestore.getInstance()
+    val eventsReference = petEvent.petId?.let { petId ->
+        firestore.collection(PETS).document(petId).collection(EVENTS)
     }
+
+    val storage = FirebaseStorage.getInstance()
+    val storageReference = storage.reference
 
     init {
         initialEvent()
@@ -149,7 +152,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    fun postEvent() {
+    private fun postEvent() {
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -179,7 +182,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 heartRate = eventHR.value
             )
         }
-        eventDatabase?.let {
+        eventsReference?.let {
             it.add(finalEvent)
                 .addOnSuccessListener { documentReference ->
                     Log.d(ERIC, "postEvent succeeded ID : ${documentReference.id}")
@@ -193,7 +196,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun postTags(eventId: String) {
         petEvent.eventTags?.apply {
-            eventDatabase?.let {
+            eventsReference?.let {
                 for (tag in this) {
                     it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
@@ -232,7 +235,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             )
 
         petEvent.eventId?.let {
-            eventDatabase?.document(it)?.update(finalEvent)?.addOnSuccessListener {
+            eventsReference?.document(it)?.update(finalEvent)?.addOnSuccessListener {
                 navigateToCalendar()
                 Log.d(ERIC, "update succeeded")
             }?.addOnFailureListener {

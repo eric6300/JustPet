@@ -1,7 +1,10 @@
 package com.taiwan.justvet.justpet.event
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentResolver
+import android.content.Intent
 import android.os.Bundle
 import android.icu.util.Calendar
 import android.util.Log
@@ -17,6 +20,14 @@ import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
+import android.graphics.BitmapFactory
+import android.graphics.Outline
+import androidx.room.util.CursorUtil.getColumnIndex
+import android.provider.MediaStore
+import android.view.ViewOutlineProvider
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+
 
 class EditEventFragment : Fragment() {
 
@@ -27,7 +38,7 @@ class EditEventFragment : Fragment() {
     private lateinit var timePickerDialog: TimePickerDialog
     private lateinit var calendar: Calendar
 //    lateinit var saveUri: Uri
-//    lateinit var eventPicture: ImageView
+    lateinit var eventPicture: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,9 +67,9 @@ class EditEventFragment : Fragment() {
 
         setupSeekBar()
 
-//        binding.buttonCamera.setOnClickListener {
-//            startCamera()
-//        }
+        binding.layoutMedia.setOnClickListener {
+            startGallery()
+        }
 
 //        binding.buttonGallery.setOnClickListener {
 //            startGallery()
@@ -70,7 +81,13 @@ class EditEventFragment : Fragment() {
 
         setupTagRecyclerView()
 
-//        eventPicture = binding.imageEvent
+        eventPicture = binding.imageMedia
+        eventPicture.clipToOutline = true
+        eventPicture.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline?) {
+                outline?.setRoundRect(0, 0, view.width, view.height, 12F)
+            }
+        }
 
         return binding.root
     }
@@ -82,24 +99,28 @@ class EditEventFragment : Fragment() {
         listOfTag.adapter = adapter
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        when (requestCode) {
-//            PHOTO_FROM_GALLERY -> {
-//                when (resultCode) {
-//                    Activity.RESULT_OK -> {
-//                        val uri = data!!.data
-//                        if (eventPicture.visibility == View.GONE) {
-//                            eventPicture.visibility = View.VISIBLE
-//                        }
-//                        eventPicture.setImageURI(uri)
-//                    }
-//                    Activity.RESULT_CANCELED -> {
-//                        Log.wtf("getImageResult", resultCode.toString())
-//                    }
-//                }
-//            }
-//
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            PHOTO_FROM_GALLERY -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        data?.let { data ->
+                            data.data?.let {
+                                if (eventPicture.visibility == View.GONE) {
+                                    eventPicture.visibility = View.VISIBLE
+                                }
+                                Glide.with(this).load(it).into(eventPicture)
+                                Log.d(ERIC, it.path)
+                            }
+                        }
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        Log.wtf("getImageResult", resultCode.toString())
+                    }
+                }
+            }
+
 //            PHOTO_FROM_CAMERA -> {
 //                when (resultCode) {
 //                    Activity.RESULT_OK -> {
@@ -114,10 +135,10 @@ class EditEventFragment : Fragment() {
 //                }
 //
 //            }
-//        }
-//    }
+        }
+    }
 
-//    fun startCamera() {
+    //    fun startCamera() {
 //        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //        val tmpFile = File(
 //            JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -134,11 +155,11 @@ class EditEventFragment : Fragment() {
 //        startActivityForResult(intent, PHOTO_FROM_CAMERA)
 //    }
 //
-//    fun startGallery() {
-//        val intent = Intent(Intent.ACTION_GET_CONTENT)
-//        intent.type = "image/*"
-//        startActivityForResult(intent, PHOTO_FROM_GALLERY)
-//    }
+    fun startGallery() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
 
     fun setupSeekBar() {
         val seekBarSpirit = binding.seekBarSpirit
@@ -149,27 +170,29 @@ class EditEventFragment : Fragment() {
             seekBarAppetite.correctOffsetWhenContainerOnScrolling()
         }
 
-        seekBarSpirit.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            override fun getProgressOnFinally(
-                bubbleSeekBar: BubbleSeekBar?,
-                progress: Int,
-                progressFloat: Float,
-                fromUser: Boolean
-            ) {
-                viewModel.setSpiritScore(progressFloat)
+        seekBarSpirit.onProgressChangedListener =
+            object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+                override fun getProgressOnFinally(
+                    bubbleSeekBar: BubbleSeekBar?,
+                    progress: Int,
+                    progressFloat: Float,
+                    fromUser: Boolean
+                ) {
+                    viewModel.setSpiritScore(progressFloat)
+                }
             }
-        }
 
-        seekBarAppetite.onProgressChangedListener = object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            override fun getProgressOnFinally(
-                bubbleSeekBar: BubbleSeekBar?,
-                progress: Int,
-                progressFloat: Float,
-                fromUser: Boolean
-            ) {
-                viewModel.setAppetiteScore(progressFloat)
+        seekBarAppetite.onProgressChangedListener =
+            object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
+                override fun getProgressOnFinally(
+                    bubbleSeekBar: BubbleSeekBar?,
+                    progress: Int,
+                    progressFloat: Float,
+                    fromUser: Boolean
+                ) {
+                    viewModel.setAppetiteScore(progressFloat)
+                }
             }
-        }
 
         currentEvent.spirit?.let { seekBarSpirit.setProgress(it.toFloat()) }
         currentEvent.appetite?.let { seekBarAppetite.setProgress(it.toFloat()) }
@@ -220,4 +243,28 @@ class EditEventFragment : Fragment() {
             }
         })
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        // Result code is RESULT_OK only if the user selects an Image
+//        if (resultCode == Activity.RESULT_OK)
+//            when (requestCode) {
+//                GALLERY_REQUEST_CODE -> {
+//                    //data.getData return the content URI for the selected Image
+//                    val selectedImage = data!!.data
+//                    val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+//                    // Get the cursor
+//                    val cursor =
+//                        getContentResolver().query(selectedImage, filePathColumn, null, null, null)
+//                    // Move to first row
+//                    cursor.moveToFirst()
+//                    //Get the column index of MediaStore.Images.Media.DATA
+//                    val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+//                    //Gets the String value in the column
+//                    val imgDecodableString = cursor.getString(columnIndex)
+//                    cursor.close()
+//                    // Set the Image in ImageView after decoding the String
+//                    imageView.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString))
+//                }
+//            }
+//    }
 }
