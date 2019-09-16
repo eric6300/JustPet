@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.event
 import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -55,7 +56,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventHR = MutableLiveData<String>()
     val eventTimestamp = MutableLiveData<Long>()
 
-    val eventImage = MutableLiveData<Uri>()
+    val eventImage = MutableLiveData<String>()
 
     val calendar = Calendar.getInstance()
 
@@ -82,6 +83,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             eventTemper.value = it.temperature
             eventRR.value = it.respiratoryRate
             eventHR.value = it.heartRate
+            eventImage.value = it.imageUrl
 
             if (it.timestamp == 0L) {
                 // navigate from tag dialog for add an event
@@ -222,14 +224,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         } else {
             eventImage.value?.let {
                 val imageRef = storageReference.child("images/$eventId")
-//                imageRef.putFile(it)
-//                    .addOnSuccessListener {
-//                        Log.d(ERIC, "uploadImage() succeeded")
-//                    }.addOnFailureListener {
-//                        Log.d(ERIC, "uploadImage() failed : $it")
-//                    }
-
-                imageRef.putFile(it)
+                imageRef.putFile(it.toUri())
                     .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                         if (!task.isSuccessful) {
                             task.exception?.let {

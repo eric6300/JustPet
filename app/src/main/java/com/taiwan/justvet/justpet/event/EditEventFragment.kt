@@ -107,12 +107,11 @@ class EditEventFragment : Fragment() {
                     Activity.RESULT_OK -> {
                         data?.let { data ->
                             data.data?.let {
-                                viewModel.eventImage.value = it
                                 if (eventPicture.visibility == View.GONE) {
                                     eventPicture.visibility = View.VISIBLE
                                 }
+                                viewModel.eventImage.value = it.toString()
                                 Glide.with(this).load(it).into(eventPicture)
-                                Log.d(ERIC, it.path)
                             }
                         }
                     }

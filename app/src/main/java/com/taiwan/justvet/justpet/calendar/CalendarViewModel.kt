@@ -80,7 +80,8 @@ class CalendarViewModel : ViewModel() {
                                             weight = event["weight"] as String?,
                                             temperature = event["temperature"] as String?,
                                             respiratoryRate = event["respiratoryRate"] as String?,
-                                            heartRate = event["heartRate"] as String?
+                                            heartRate = event["heartRate"] as String?,
+                                            imageUrl = event["imageUrl"] as String?
                                         )
                                     )
                                 }
@@ -134,6 +135,7 @@ class CalendarViewModel : ViewModel() {
                                         temperature = event.temperature,
                                         respiratoryRate = event.respiratoryRate,
                                         heartRate = event.heartRate,
+                                        imageUrl = event.imageUrl,
                                         eventTags = tagList
                                     )
                                 )

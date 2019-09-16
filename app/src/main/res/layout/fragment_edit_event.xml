@@ -443,6 +443,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        android:visibility='@{viewModel.petEvent.imageUrl != null ? View.GONE : View.VISIBLE }'
                         app:srcCompat="@drawable/ic_camera" />
 
                     <ImageView
@@ -454,7 +455,8 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:scaleType="centerCrop"
-                        android:visibility="gone"
+                        android:visibility='@{viewModel.petEvent.imageUrl != null ? View.VISIBLE : View.GONE }'
+                        imageUrl="@{viewModel.petEvent.imageUrl}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintDimensionRatio="1.78:1"
                         app:layout_constraintEnd_toEndOf="parent"

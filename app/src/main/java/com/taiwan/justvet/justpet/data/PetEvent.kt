@@ -26,5 +26,5 @@ data class PetEvent (
     val temperature: String? = null,
     val respiratoryRate: String? = null,
     val heartRate: String? = null,
-    val imageUrl: String? = ""
+    val imageUrl: String? = null
 ): Parcelable

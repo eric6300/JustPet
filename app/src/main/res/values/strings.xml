@@ -57,7 +57,7 @@
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>
     <string name="text_species">物種</string>
-    <string name="text_modify">確認修改</string>
+    <string name="text_modify">修改</string>
     <string name="text_cancel">取消</string>
     <string name="text_tody_notification">今日提醒</string>
 

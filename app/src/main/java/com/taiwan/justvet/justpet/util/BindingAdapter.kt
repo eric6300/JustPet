@@ -207,3 +207,13 @@ fun bindImage(imgView: ImageView, imgUrl: Uri?) {
             .into(imgView)
     }
 }
+
+@BindingAdapter("imageUrl")
+fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
+    imgUrl?.let {
+        val imgUri = it.toUri().buildUpon().build()
+        GlideApp.with(imgView.context)
+            .load(imgUri)
+            .into(imgView)
+    }
+}
