@@ -281,7 +281,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 "weight" to eventWeight.value,
                 "temperature" to eventTemper.value,
                 "respiratoryRate" to eventRR.value,
-                "heartRate" to eventHR.value
+                "heartRate" to eventHR.value,
+                "imageUrl" to eventImage.value
             )
 
         petEvent.eventId?.let {
