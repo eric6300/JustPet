@@ -17,11 +17,10 @@
     <string name="text_treatment">醫療</string>
     <string name="text_next_step">下一步</string>
     <string name="text_quick_save">快速紀錄</string>
-    <string name="date_format">yyyy年MMMdd日</string>
+    <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format">HH:mm</string>
     <string name="date_time_format">yyyy/MM/dd  HH:mm</string>
     <string name="timelist_format">yyyy/MM/dd/HH:mm</string>
-    <string name="year_month_format">yyyy/M</string>
     <string name="title_time">時間</string>
     <string name="title_tag">分類</string>
     <string name="title_note">備註</string>

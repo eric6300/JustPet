@@ -113,7 +113,6 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         adapter = CalendarEventAdapter(viewModel, CalendarEventAdapter.OnClickListener {
         })
         listOfEvents.adapter = adapter
-//        enableSwipe(listOfEvents)
     }
 
     private fun monthChangedListener() {

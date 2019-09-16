@@ -91,7 +91,7 @@
                     android:layout_height="18dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="12dp"
-                    android:onClick="@{() -> viewModel.modifyPetProfile(petProfile)}"
+                    android:onClick="@{() -> viewModel.modifyPetProfile()}"
                     android:visibility="@{viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
@@ -183,7 +183,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_mono"
                             android:hint="@string/text_id_number"
-                            android:text="@={viewModel.petIdChip}"
+                            android:text="@={viewModel.petIdNumber}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -212,7 +212,7 @@
                             android:inputType="none"
                             android:onClick="@{ (view) -> viewModel.datePicker(view) }"
                             android:singleLine="true"
-                            android:text="@={viewModel.petBirthday}"
+                            android:text="@{viewModel.petBirthday}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -277,7 +277,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="16dp"
                         android:clickable="true"
-                        android:onClick="@{() -> viewModel.modifyCompleted()}"
+                        android:onClick="@{() -> viewModel.updatePetProfile()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         app:fb_defaultColor="@color/colorDiaryDark"

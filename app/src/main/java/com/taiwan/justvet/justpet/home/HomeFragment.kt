@@ -78,6 +78,12 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.selectedPet.observe(this, Observer {
+            it?.let {
+                viewModel.showPetProfile(it)
+            }
+        })
+
         return binding.root
     }
 

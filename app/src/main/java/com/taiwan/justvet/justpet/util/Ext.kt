@@ -8,13 +8,13 @@ import java.util.*
 fun Long.timestampToDateString(): String {
     return DateFormat.format(
         JustPetApplication.appContext.getString(R.string.date_format),
-        Calendar.getInstance().apply { timeInMillis = this@timestampToDateString }
+        Calendar.getInstance().apply { timeInMillis = this@timestampToDateString * 1000 }
     ).toString()
 }
 
 fun Long.timestampToTimeString(): String {
     return DateFormat.format(
         JustPetApplication.appContext.getString(R.string.time_format),
-        Calendar.getInstance().apply { timeInMillis = this@timestampToTimeString }
+        Calendar.getInstance().apply { timeInMillis = this@timestampToTimeString * 1000 }
     ).toString()
 }
