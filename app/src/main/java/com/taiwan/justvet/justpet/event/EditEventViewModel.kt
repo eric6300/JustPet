@@ -1,12 +1,16 @@
 package com.taiwan.justvet.justpet.event
 
 import android.icu.util.Calendar
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
@@ -45,12 +49,13 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
-
     val eventWeight = MutableLiveData<String>()
     val eventTemper = MutableLiveData<String>()
     val eventRR = MutableLiveData<String>()
     val eventHR = MutableLiveData<String>()
     val eventTimestamp = MutableLiveData<Long>()
+
+    val eventImage = MutableLiveData<Uri>()
 
     val calendar = Calendar.getInstance()
 
@@ -194,24 +199,70 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    fun postTags(eventId: String) {
+    private fun postTags(eventId: String) {
         petEvent.eventTags?.apply {
             eventsReference?.let {
                 for (tag in this) {
                     it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
+                            uploadImage(eventId)
                         }
                         .addOnFailureListener {
                             Log.d(ERIC, "postTags failed : $it")
                         }
                 }
-                navigateToCalendar()
             }
         }
     }
 
-    fun updateEvent() {
+    private fun uploadImage(eventId: String) {
+        if (eventImage.value == null) {
+            navigateToCalendar()
+        } else {
+            eventImage.value?.let {
+                val imageRef = storageReference.child("images/$eventId")
+//                imageRef.putFile(it)
+//                    .addOnSuccessListener {
+//                        Log.d(ERIC, "uploadImage() succeeded")
+//                    }.addOnFailureListener {
+//                        Log.d(ERIC, "uploadImage() failed : $it")
+//                    }
+
+                imageRef.putFile(it)
+                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
+                        }
+                        return@Continuation imageRef.downloadUrl
+                    }).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val downloadUri = task.result
+                            Log.d(ERIC, "downloadUri : $downloadUri")
+                            updateEventImageUrl(eventId, downloadUri)
+                        }
+                    }.addOnFailureListener {
+                        Log.d(ERIC, "uploadImage failed : $it")
+                    }
+            }
+        }
+    }
+
+    private fun updateEventImageUrl(eventId: String, downloadUri: Uri?) {
+        eventsReference?.let {
+            it.document(eventId).update("imageUrl", downloadUri.toString())
+                .addOnSuccessListener {
+                    navigateToCalendar()
+                    Log.d(ERIC, "updateEventImageUrl succeed")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updateEventImageUrl failed : $it")
+                }
+        }
+    }
+
+    private fun updateEvent() {
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
