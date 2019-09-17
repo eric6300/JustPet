@@ -57,7 +57,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    imageUrl="@{viewModel.petImage}"
+                    imageUrl="@{viewModel.petImage == null ? petProfile.image : viewModel.petImage }"
                     tools:srcCompat="@drawable/image_cat" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout

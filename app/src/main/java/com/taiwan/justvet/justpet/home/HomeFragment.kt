@@ -19,9 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -89,6 +87,7 @@ class HomeFragment : Fragment() {
             it?.let {
                 profileAdapter.submitList(it)
                 profileAdapter.notifyDataSetChanged()
+                //TODO: Notification
             }
         })
 
@@ -141,8 +140,9 @@ class HomeFragment : Fragment() {
                 (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
 
             if (lastPosition != newPosition) {
-                viewModel.getPetEventData(newPosition)
+                viewModel.getPetProfile(newPosition)
                 lastPosition = newPosition
+                Log.d(ERIC, "position changed")
             }
         }
 
@@ -306,7 +306,6 @@ class HomeFragment : Fragment() {
                             data.data?.let {
                                 viewModel.petImage.value = it.toString()
                                 profileAdapter.notifyDataSetChanged()
-//                                Glide.with(this).load(it).into(eventPicture)
                             }
                         }
                     }

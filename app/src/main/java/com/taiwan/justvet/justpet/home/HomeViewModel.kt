@@ -113,7 +113,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getPetEventData(index: Int) {
+    fun getPetProfile(index: Int) {
         _selectedPet.value = _petList.value?.let {
             Log.d(ERIC, "selected pet profile id : ${it[index].profileId}")
             it[index]
@@ -132,7 +132,7 @@ class HomeViewModel : ViewModel() {
         petBirthday.value = petProfile.birthday?.timestampToDateString()
         petSpecies.value = petProfile.species
         petGender.value = petProfile.gender
-        petImage.value = petProfile.image
+        petImage.value = null
 
         petProfile.birthday?.let {
             calendar.timeInMillis = it * 1000
@@ -179,7 +179,12 @@ class HomeViewModel : ViewModel() {
         selectedPet.value?.profileId?.let { profileId ->
             petsReference.document(profileId).update(finalProfile)
                 .addOnSuccessListener {
-                    uploadImage(profileId)
+                    if (petImage.value != null) {
+                        uploadImage(profileId)
+                    } else {
+                        modifyCompleted()
+                        refreshPetProfile()
+                    }
                     Log.d(ERIC, "updatePetProfile() succeeded ")
                 }.addOnFailureListener {
                     Log.d(ERIC, "updatePetProfile() failed : $it")

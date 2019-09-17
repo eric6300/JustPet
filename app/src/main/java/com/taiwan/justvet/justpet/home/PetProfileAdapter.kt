@@ -41,10 +41,8 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
                 viewModel.isModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
-                        Log.d(ERIC, "true")
                     } else {
                         outline?.setRoundRect(0, 0, view.width, view.height, 24F)
-                        Log.d(ERIC, "false")
                     }
                 }
             }
@@ -57,10 +55,8 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
                 viewModel.isModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
-                        Log.d(ERIC, "true")
                     } else{
                         outline?.setRoundRect(0, 0, view.width, view.height, 24F)
-                        Log.d(ERIC, "false")
                     }
                 }
             }

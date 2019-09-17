@@ -179,12 +179,12 @@ fun bindImage(imgView: ImageView, imgUrl: Uri?) {
         val imgUri = it.buildUpon().build()
         GlideApp.with(imgView.context)
             .load(imgUri)
-            .circleCrop()
-            .apply(
-                RequestOptions()
-                    .placeholder(R.drawable.ic_account)
-                    .error(R.drawable.ic_account)
-            )
+//            .circleCrop()
+//            .apply(
+//                RequestOptions()
+//                    .placeholder(R.drawable.ic_account)
+//                    .error(R.drawable.ic_account)
+//            )
             .into(imgView)
     }
 }
