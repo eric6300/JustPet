@@ -60,6 +60,7 @@ class HomeViewModel : ViewModel() {
     val petImage = MutableLiveData<String>()
 
     val calendar = Calendar.getInstance()
+    var oneYearTimestamp: Long = 0
 
     var year: Int = 0
     var month: Int = 0
@@ -78,6 +79,9 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
+        calendar.add(Calendar.MONTH, -12)
+        oneYearTimestamp = calendar.timeInMillis
+        Log.d(ERIC, "one year ago timestamp : $oneYearTimestamp")
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
@@ -119,11 +123,11 @@ class HomeViewModel : ViewModel() {
             it[index]
         }
 
-        when (index) {
-            0 -> dataOne()
-            1 -> dataTwo()
-            2 -> dataThree()
-        }
+//        when (index) {
+//            0 -> dataOne()
+//            1 -> dataTwo()
+//            2 -> dataThree()
+//        }
     }
 
     fun showPetProfile(petProfile: PetProfile) {
@@ -138,6 +142,21 @@ class HomeViewModel : ViewModel() {
             calendar.timeInMillis = it * 1000
         }
 
+        getPetEvents(petProfile)
+    }
+
+    fun getPetEvents(petProfile: PetProfile) {
+        petProfile.profileId?.let {
+            petsReference.document(it).collection(EVENTS)
+                .whereGreaterThan("timestamp", oneYearTimestamp).get()
+                .addOnSuccessListener {
+                    if (it.size() > 0) {
+                        Log.d(ERIC, "events size = ${it.size()}")
+                    }
+                }.addOnFailureListener {
+
+                }
+        }
     }
 
     fun datePicker(view: View) {
@@ -157,7 +176,7 @@ class HomeViewModel : ViewModel() {
             view.context,
             DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 petBirthday.value = "$year/${month.plus(1)}/$dayOfMonth"
-                calendar.set(year, month, dayOfMonth, 0, 0,0)
+                calendar.set(year, month, dayOfMonth, 0, 0, 0)
                 birthdayChange()
             }, year, month, dayOfMonth
         ).show()

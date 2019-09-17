@@ -155,7 +155,9 @@ class TagViewModel : ViewModel() {
             it.add(EventTag(TagType.TREATMENT.value, 205, "口服藥"))
             it.add(EventTag(TagType.TREATMENT.value, 206, "外用藥"))
             it.add(EventTag(TagType.TREATMENT.value, 207, "滴劑"))
-            it.add(EventTag(TagType.TREATMENT.value, 208, "其他醫療"))
+            it.add(EventTag(TagType.TREATMENT.value, 208, "疫苗注射"))
+            it.add(EventTag(TagType.TREATMENT.value, 209, "健康檢查"))
+            it.add(EventTag(TagType.TREATMENT.value, 210, "其他醫療"))
         }
     }
 
