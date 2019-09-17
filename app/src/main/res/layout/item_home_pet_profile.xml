@@ -75,8 +75,8 @@
 
                 <ImageView
                     android:id="@+id/icon_media"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_camera"
@@ -105,7 +105,6 @@
                     android:visibility="@{ viewModel.isModified() != true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/image_pet">
 
@@ -113,23 +112,23 @@
                         android:id="@+id/icon_cat"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:onClick="@{() -> viewModel.changeSpecies(0)}"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintEnd_toStartOf="@+id/icon_dog"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/textView"
                         app:layout_constraintTop_toTopOf="@+id/textView"
-                        android:onClick="@{() -> viewModel.changeSpecies(0)}"
                         app:srcCompat="@drawable/ic_cat" />
 
                     <ImageView
                         android:id="@+id/icon_dog"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
+                        android:onClick="@{() -> viewModel.changeSpecies(1)}"
                         app:layout_constraintBottom_toBottomOf="@+id/icon_cat"
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintStart_toEndOf="@+id/icon_cat"
                         app:layout_constraintTop_toTopOf="@+id/icon_cat"
-                        android:onClick="@{() -> viewModel.changeSpecies(1)}"
                         app:srcCompat="@drawable/ic_dog" />
 
                     <ImageView
@@ -145,7 +144,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_text_name"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
@@ -167,7 +166,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_text_id_number"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
@@ -177,7 +176,7 @@
                         app:counterMaxLength="15"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+                        app:layout_constraintTop_toBottomOf="@+id/edit_text_birthday">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
@@ -189,8 +188,8 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:id="@+id/edit_text_birthday"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
@@ -250,7 +249,7 @@
                         android:id="@+id/button_cancel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="4dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
@@ -275,7 +274,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="4dp"
                         android:layout_marginBottom="16dp"
                         android:clickable="true"
                         android:onClick="@{() -> viewModel.updatePetProfile()}"
@@ -298,6 +297,7 @@
                         android:layout_height="36dp"
                         android:layout_marginEnd="16dp"
                         android:onClick="@{() -> viewModel.changeGender(1)}"
+                        android:padding="3dp"
                         app:layout_constraintBottom_toBottomOf="@+id/icon_female"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/icon_female"

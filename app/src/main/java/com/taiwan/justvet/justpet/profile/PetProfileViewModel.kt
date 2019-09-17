@@ -17,9 +17,7 @@ class PetProfileViewModel : ViewModel() {
         get() = _navigateToHomeFragment
 
     val petName = MutableLiveData<String>()
-
     val petSpecies = MutableLiveData<Long>()
-
     val petGender = MutableLiveData<Long>()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -59,7 +57,7 @@ class PetProfileViewModel : ViewModel() {
     fun updatePetsOfUser(petId: String) {
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
-                users.document(profileId).update("petsRef", FieldValue.arrayUnion(petId))
+                users.document(profileId).update("pets", FieldValue.arrayUnion(petId))
                     .addOnSuccessListener {
 
                         val newPets = arrayListOf<String>()
