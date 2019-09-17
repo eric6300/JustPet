@@ -1,5 +1,7 @@
 package com.taiwan.justvet.justpet.home
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
@@ -28,7 +31,6 @@ class HomeFragment : Fragment() {
     private lateinit var notificationAdapter: EventNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
-    private lateinit var eventList: MutableList<EventNotification>
 
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
@@ -64,6 +66,18 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.petSpecies.observe(this, Observer {
+            it?.let {
+                profileAdapter.notifyDataSetChanged()
+            }
+        })
+
+        viewModel.petGender.observe(this, Observer {
+            it?.let {
+                profileAdapter.notifyDataSetChanged()
+            }
+        })
+
         viewModel.navigateToAchievement.observe(this, Observer {
             if (it == true) {
                 findNavController().navigate(NavGraphDirections.navigateToAchievementDialog())
@@ -81,6 +95,16 @@ class HomeFragment : Fragment() {
         viewModel.selectedPet.observe(this, Observer {
             it?.let {
                 viewModel.showPetProfile(it)
+                profileAdapter.notifyDataSetChanged()
+            }
+        })
+
+        viewModel.startGallery.observe(this, Observer {
+            if (it) {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "image/*"
+                startActivityForResult(intent, PHOTO_FROM_GALLERY)
+                viewModel.startGalleryCompleted()
             }
         })
 
@@ -270,5 +294,42 @@ class HomeFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            PHOTO_FROM_GALLERY -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        data?.let { data ->
+                            data.data?.let {
+                                viewModel.petImage.value = it.toString()
+                                profileAdapter.notifyDataSetChanged()
+//                                Glide.with(this).load(it).into(eventPicture)
+                            }
+                        }
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        Log.wtf("getImageResult", resultCode.toString())
+                    }
+                }
+            }
+
+//            PHOTO_FROM_CAMERA -> {
+//                when (resultCode) {
+//                    Activity.RESULT_OK -> {
+//                        if (eventPicture.visibility == View.GONE) {
+//                            eventPicture.visibility = View.VISIBLE
+//                        }
+//                        Glide.with(this).load(saveUri).into(eventPicture)
+//                    }
+//                    Activity.RESULT_CANCELED -> {
+//                        Log.wtf("getImageResult", resultCode.toString())
+//                    }
+//                }
+//
+//            }
+        }
     }
 }

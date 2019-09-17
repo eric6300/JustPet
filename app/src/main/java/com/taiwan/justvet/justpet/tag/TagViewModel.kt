@@ -86,7 +86,7 @@ class TagViewModel : ViewModel() {
                                 species = document["species"] as Long?,
                                 gender = document["gender"] as Long?,
                                 neutered = document["neutered"] as Boolean?,
-                                birthDay = document["birthDay"] as Long?,
+                                birthday = document["birthday"] as Long?,
                                 idNumber = document["idNumber"] as String?,
                                 owner = document["owner"] as String?
                             )

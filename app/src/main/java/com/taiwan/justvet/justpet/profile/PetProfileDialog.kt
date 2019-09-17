@@ -14,7 +14,6 @@ import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogNewProfileBinding
 import com.taiwan.justvet.justpet.home.HomeViewModel
-import com.taiwan.justvet.justpet.util.bindGenderIcon
 import kotlinx.android.synthetic.main.activity_main.*
 
 class PetProfileDialog : BottomSheetDialogFragment() {

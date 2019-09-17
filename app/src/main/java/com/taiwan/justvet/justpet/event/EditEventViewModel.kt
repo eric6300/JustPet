@@ -65,8 +65,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         firestore.collection(PETS).document(petId).collection(EVENTS)
     }
 
-    val storage = FirebaseStorage.getInstance()
-    val storageReference = storage.reference
+    val storageReference = FirebaseStorage.getInstance().reference
 
     init {
         initialEvent()
@@ -212,7 +211,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                     it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
-                            uploadImage(eventId)
+                            if (eventImage.value == null) {
+                                navigateToCalendar()
+                            } else {
+                                uploadImage(eventId)
+                            }
                         }
                         .addOnFailureListener {
                             Log.d(ERIC, "postTags failed : $it")
@@ -223,29 +226,25 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun uploadImage(eventId: String) {
-        if (eventImage.value == null) {
-            navigateToCalendar()
-        } else {
-            eventImage.value?.let {
-                val imageRef = storageReference.child("images/$eventId")
-                imageRef.putFile(it.toUri())
-                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
+        eventImage.value?.let {
+            val imageRef = storageReference.child("images/$eventId")
+            imageRef.putFile(it.toUri())
+                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
                         }
-                        return@Continuation imageRef.downloadUrl
-                    }).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val downloadUri = task.result
-                            Log.d(ERIC, "downloadUri : $downloadUri")
-                            updateEventImageUrl(eventId, downloadUri)
-                        }
-                    }.addOnFailureListener {
-                        Log.d(ERIC, "uploadImage failed : $it")
                     }
-            }
+                    return@Continuation imageRef.downloadUrl
+                }).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        Log.d(ERIC, "downloadUri : $downloadUri")
+                        updateEventImageUrl(eventId, downloadUri)
+                    }
+                }.addOnFailureListener {
+                    Log.d(ERIC, "uploadImage failed : $it")
+                }
         }
     }
 

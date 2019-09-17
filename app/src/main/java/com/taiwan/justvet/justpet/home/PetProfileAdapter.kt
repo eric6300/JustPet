@@ -13,9 +13,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
@@ -30,18 +33,56 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         val petProfile = getItem(position)
 
         val petImage = holder.binding.imagePet
+        val filter = holder.binding.filterImage
+
         petImage.clipToOutline = true
         petImage.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                viewModel.isModified.value.let {
+                    if (it == true) {
+                        outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
+                        Log.d(ERIC, "true")
+                    } else{
+                        outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                        Log.d(ERIC, "false")
+                    }
+                }
             }
         }
 
-        val filter = holder.binding.filterImage
+
         filter.clipToOutline = true
         filter.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                viewModel.isModified.value.let {
+                    if (it == true) {
+                        outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
+                        Log.d(ERIC, "true")
+                    } else{
+                        outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                        Log.d(ERIC, "false")
+                    }
+                }
+            }
+        }
+
+        viewModel.petSpecies.value?.let {
+            if (it == 0L) {
+                holder.binding.iconCat.alpha = 1.0F
+                holder.binding.iconDog.alpha = 0.2F
+            } else if (it == 1L) {
+                holder.binding.iconCat.alpha = 0.2F
+                holder.binding.iconDog.alpha = 1.0F
+            }
+        }
+
+        viewModel.petGender.value?.let {
+            if (it == 0L) {
+                holder.binding.iconMale.alpha = 0.2F
+                holder.binding.iconFemale.alpha = 1.0F
+            } else if (it == 1L) {
+                holder.binding.iconMale.alpha = 1.0F
+                holder.binding.iconFemale.alpha = 0.2F
             }
         }
 
@@ -105,7 +146,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         }
 
         override fun areContentsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
-            return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthDay == newItem.birthDay)
+            return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthday == newItem.birthday)
         }
     }
 

@@ -41,25 +41,6 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
     }
 }
 
-@BindingAdapter("iconGender")
-fun bindGenderIcon(imageView: ImageView, gender: Long) {
-    gender.let {
-        when (it) {
-            0L -> {
-                imageView.setImageDrawable(
-                    JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_female
-                    ))
-            }
-            1L -> {
-                imageView.setImageDrawable(
-                    JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_male
-                    ))
-            }
-        }
-    }
-}
 
 @BindingAdapter("eventBackground")
 fun bindEventBackground (cardView: CardView, eventType: Int) {
@@ -192,7 +173,7 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
 /**
  * Uses the Glide library to load an image by URL into an [ImageView]
  */
-@BindingAdapter("imageUrl")
+@BindingAdapter("userPhotoUrl")
 fun bindImage(imgView: ImageView, imgUrl: Uri?) {
     imgUrl?.let {
         val imgUri = it.buildUpon().build()

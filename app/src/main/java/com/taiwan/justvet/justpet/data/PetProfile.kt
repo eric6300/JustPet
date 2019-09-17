@@ -11,7 +11,8 @@ data class PetProfile(
     val species: Long?,
     val gender: Long?,
     val neutered: Boolean? = false,
-    val birthDay: Long? = 0,
+    val birthday: Long? = 0,
     val idNumber: String? = "",
-    val owner: String?
+    val owner: String?,
+    val image: String? = null
 ) : Parcelable

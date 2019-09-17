@@ -57,7 +57,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/image_cat" />
+                    imageUrl="@{viewModel.petImage}"
+                    tools:srcCompat="@drawable/image_cat" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/filter_image"
@@ -77,10 +78,10 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_camera"
                     android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel}"
+                    android:onClick="@{() -> viewModel.startGallery()}"
                     android:visibility="@{viewModel.isModified() == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet" />
@@ -90,7 +91,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="16dp"
                     android:onClick="@{() -> viewModel.modifyPetProfile()}"
                     android:visibility="@{viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
@@ -110,15 +111,15 @@
 
                     <ImageView
                         android:id="@+id/icon_cat"
-                        iconSpecies="@{petProfile.species}"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintEnd_toStartOf="@+id/icon_dog"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/textView"
-                        app:layout_constraintTop_toTopOf="@+id/textView" />
+                        app:layout_constraintTop_toTopOf="@+id/textView"
+                        android:onClick="@{() -> viewModel.changeSpecies(0)}"
+                        app:srcCompat="@drawable/ic_cat" />
 
                     <ImageView
                         android:id="@+id/icon_dog"
@@ -128,28 +129,28 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline5"
                         app:layout_constraintStart_toEndOf="@+id/icon_cat"
                         app:layout_constraintTop_toTopOf="@+id/icon_cat"
+                        android:onClick="@{() -> viewModel.changeSpecies(1)}"
                         app:srcCompat="@drawable/ic_dog" />
 
                     <ImageView
-                        android:id="@+id/icon_gender"
-                        iconGender="@{petProfile.gender}"
+                        android:id="@+id/icon_female"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:scaleType="centerCrop"
+                        android:onClick="@{() -> viewModel.changeGender(0)}"
                         app:layout_constraintBottom_toBottomOf="@+id/text_gender"
-                        app:layout_constraintEnd_toStartOf="@+id/imageView2"
-                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintEnd_toStartOf="@+id/icon_male"
                         app:layout_constraintStart_toEndOf="@+id/text_gender"
-                        app:layout_constraintTop_toTopOf="@+id/text_gender" />
+                        app:layout_constraintTop_toTopOf="@+id/text_gender"
+                        app:srcCompat="@drawable/ic_female" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/edit_text_name"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="15dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -169,9 +170,9 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="15dp"
                         app:counterEnabled="true"
                         app:counterMaxLength="15"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -192,9 +193,9 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="15dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="15dp"
                         android:onClick="@{ (view) -> viewModel.datePicker(view) }"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -220,7 +221,7 @@
                         android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="@string/text_species"
                         android:textSize="18sp"
@@ -251,14 +252,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="9dp"
+                        android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:clickable="true"
                         android:onClick="@{() -> viewModel.modifyCancelled()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        app:fb_defaultColor="@color/colorDiaryDark"
-                        app:fb_focusColor="@color/colorDiary"
+                        app:fb_defaultColor="@color/colorPrimary"
+                        app:fb_focusColor="@color/colorDiaryLight"
                         app:fb_radius="5dp"
                         app:fb_text="@string/text_cancel"
                         app:fb_textColor="#FFFFFF"
@@ -272,7 +273,7 @@
                         android:id="@+id/button_confirm"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="9dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="16dp"
@@ -280,8 +281,8 @@
                         android:onClick="@{() -> viewModel.updatePetProfile()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        app:fb_defaultColor="@color/colorDiaryDark"
-                        app:fb_focusColor="@color/colorDiary"
+                        app:fb_defaultColor="@color/colorPrimary"
+                        app:fb_focusColor="@color/colorPrimaryLight"
                         app:fb_radius="5dp"
                         app:fb_text="@string/text_modify"
                         app:fb_textColor="#FFFFFF"
@@ -292,14 +293,15 @@
                         app:layout_constraintTop_toBottomOf="@+id/edit_text_id_number" />
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/icon_male"
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/icon_gender"
+                        android:layout_marginEnd="16dp"
+                        android:onClick="@{() -> viewModel.changeGender(1)}"
+                        app:layout_constraintBottom_toBottomOf="@+id/icon_female"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/icon_gender"
-                        app:layout_constraintTop_toTopOf="@+id/icon_gender"
+                        app:layout_constraintStart_toEndOf="@+id/icon_female"
+                        app:layout_constraintTop_toTopOf="@+id/icon_female"
                         app:srcCompat="@drawable/ic_male" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -308,8 +310,8 @@
                     android:id="@+id/text_name_pet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="12dp"
                     android:fontFamily="@font/roboto_mono"
                     android:gravity="bottom"
                     android:text="@{petProfile.name}"
