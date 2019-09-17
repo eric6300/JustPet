@@ -14,15 +14,16 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/button_female"
+            android:id="@+id/icon_female"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:alpha="0.2"
             android:onClick="@{() -> viewModel.selectGender(0)}"
-            app:layout_constraintBottom_toBottomOf="@+id/button_dog"
-            app:layout_constraintEnd_toStartOf="@+id/button_male"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_dog"
+            app:layout_constraintEnd_toStartOf="@+id/icon_male"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView6"
-            app:layout_constraintTop_toTopOf="@+id/button_dog"
+            app:layout_constraintTop_toTopOf="@+id/icon_dog"
             app:srcCompat="@drawable/ic_female" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -35,38 +36,42 @@
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_dog">
+            app:layout_constraintTop_toBottomOf="@+id/icon_dog">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/text_name"
-                android:text="@={viewModel.petName}" />
+                android:singleLine="true"
+                android:text="@={viewModel.petName}"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:id="@+id/button_cat"
+            android:id="@+id/icon_cat"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="16dp"
+            android:alpha="0.2"
             android:onClick="@{() -> viewModel.selectSpecies(0)}"
             android:padding="@dimen/cardview_compat_inset_shadow"
-            app:layout_constraintEnd_toStartOf="@+id/button_dog"
+            app:layout_constraintEnd_toStartOf="@+id/icon_dog"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4"
+            app:layout_constraintTop_toBottomOf="@+id/layout_image"
             app:srcCompat="@drawable/ic_cat" />
 
         <ImageView
-            android:id="@+id/button_dog"
+            android:id="@+id/icon_dog"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:alpha="0.2"
             android:onClick="@{() -> viewModel.selectSpecies(1)}"
-            app:layout_constraintBottom_toBottomOf="@+id/button_cat"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_cat"
             app:layout_constraintEnd_toStartOf="@+id/guideline7"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_cat"
-            app:layout_constraintTop_toTopOf="@+id/button_cat"
+            app:layout_constraintStart_toEndOf="@+id/icon_cat"
+            app:layout_constraintTop_toTopOf="@+id/icon_cat"
             app:srcCompat="@drawable/ic_dog" />
 
         <mehdi.sakout.fancybuttons.FancyButton
@@ -113,16 +118,17 @@
             app:layout_constraintTop_toBottomOf="@+id/edit_text_id_number_new" />
 
         <ImageView
-            android:id="@+id/button_male"
+            android:id="@+id/icon_male"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:alpha="0.2"
             android:onClick="@{() -> viewModel.selectGender(1)}"
             android:padding="3dp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_female"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_female"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/button_female"
-            app:layout_constraintTop_toTopOf="@+id/button_female"
+            app:layout_constraintStart_toEndOf="@+id/icon_female"
+            app:layout_constraintTop_toTopOf="@+id/icon_female"
             app:srcCompat="@drawable/ic_male" />
 
         <androidx.constraintlayout.widget.Guideline
@@ -139,9 +145,9 @@
             android:layout_marginStart="16dp"
             android:text="@string/text_species"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_cat"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_cat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_cat" />
+            app:layout_constraintTop_toTopOf="@+id/icon_cat" />
 
         <TextView
             android:id="@+id/textView6"
@@ -150,12 +156,12 @@
             android:layout_marginStart="16dp"
             android:text="@string/text_gender"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_female"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_female"
             app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="@+id/button_female" />
+            app:layout_constraintTop_toTopOf="@+id/icon_female" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout4"
+            android:id="@+id/layout_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
@@ -168,7 +174,7 @@
             app:layout_constraintTop_toBottomOf="@+id/title_new_pet_profile">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/icon_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
@@ -189,6 +195,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
+            android:onClick="@{ (view) -> viewModel.datePicker(view) }"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_name_new">
@@ -196,7 +203,16 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_birthday" />
+                android:clickable="true"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/text_birthday"
+                android:inputType="none"
+                android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+                android:singleLine="true"
+                android:text="@{viewModel.petBirthday}"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -216,7 +232,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/text_id_number" />
+                android:hint="@string/text_id_number"
+                android:singleLine="true"
+                android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -231,7 +249,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/button_close"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
