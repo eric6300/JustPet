@@ -1,16 +1,24 @@
 package com.taiwan.justvet.justpet.profile
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Outline
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.MainActivity
+import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogNewProfileBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class PetProfileDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogNewProfileBinding
+    private lateinit var petImage: ImageView
     private val viewModel: PetProfileViewModel by lazy {
         ViewModelProviders.of(this).get(PetProfileViewModel::class.java)
     }
@@ -31,6 +40,14 @@ class PetProfileDialog : BottomSheetDialogFragment() {
         binding = DialogNewProfileBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        petImage = binding.imagePet
+        petImage.clipToOutline = true
+        petImage.outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline?) {
+                outline?.setRoundRect(0, 0, view.width, view.height, 36f)
+            }
+        }
 
         val iconCat = binding.iconCat
         val iconDog = binding.iconDog
@@ -79,7 +96,38 @@ class PetProfileDialog : BottomSheetDialogFragment() {
             }
         })
 
+        binding.layoutImage.setOnClickListener {
+            startGallery()
+        }
+
         return binding.root
+    }
+
+    fun startGallery() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            PHOTO_FROM_GALLERY -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        data?.let { data ->
+                            data.data?.let {
+                                viewModel.petImage.value = it.toString()
+                                Glide.with(this).load(it).into(petImage)
+                            }
+                        }
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        Log.wtf("getImageResult", resultCode.toString())
+                    }
+                }
+            }
+        }
     }
 
 }

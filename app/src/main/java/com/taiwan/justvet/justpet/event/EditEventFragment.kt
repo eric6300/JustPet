@@ -71,10 +71,6 @@ class EditEventFragment : Fragment() {
             startGallery()
         }
 
-//        binding.buttonGallery.setOnClickListener {
-//            startGallery()
-//        }
-
         calendar = viewModel.calendar
         setupDatePickerDialog()
         setupTimePickerDialog()

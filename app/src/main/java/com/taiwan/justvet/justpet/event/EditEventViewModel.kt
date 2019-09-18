@@ -107,13 +107,13 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         _dateAndTime.value = SimpleDateFormat(
             getString(R.string.date_time_format),
             Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it) })
+        ).format(eventTimestamp.value?.let { Date(it * 1000) })
 
 
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
             Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
+        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 
         val hour = timeList[3].split(":")[0]
         val minute = timeList[3].split(":")[1]
@@ -142,7 +142,6 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 eventSpirit = item.score
             }
         }
-        Log.d(ERIC, "eventSpirit : ${eventSpirit}")
     }
 
     fun setAppetiteScore(score: Float) {
@@ -151,7 +150,6 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 eventAppetite = item.score
             }
         }
-        Log.d(ERIC, "eventAppetite : ${eventAppetite}")
     }
 
     fun checkEventId() {
@@ -167,7 +165,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
             Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
+        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 
         val finalEvent = petEvent.let {
             PetEvent(
@@ -265,7 +263,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
             Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it) }).split("/")
+        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 
         val finalEvent =
             mapOf(

@@ -2,13 +2,19 @@ package com.taiwan.justvet.justpet.profile
 
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
+import android.net.Uri
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
@@ -33,7 +39,9 @@ class PetProfileViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val users = firebase.collection(USERS)
-    val pets = firebase.collection(PETS)
+    val petsReference = firebase.collection(PETS)
+    val eventsReference = firebase.collection(EVENTS)
+    val storageReference = FirebaseStorage.getInstance().reference
 
     fun selectSpecies(species: Long) {
         petSpecies.value = species
@@ -48,7 +56,7 @@ class PetProfileViewModel : ViewModel() {
             view.context,
             DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 petBirthday.value = "$year/${month.plus(1)}/$dayOfMonth"
-                calendar.set(year, month, dayOfMonth, 0, 0,0)
+                calendar.set(year, month, dayOfMonth, 0, 0, 0)
             }, year, month, dayOfMonth
         ).show()
     }
@@ -60,7 +68,7 @@ class PetProfileViewModel : ViewModel() {
                 calendar.set(timeList[0].toInt(), timeList[1].toInt().minus(1), timeList[2].toInt())
             }
 
-            pets.add(
+            petsReference.add(
                 PetProfile(
                     name = petName.value,
                     species = petSpecies.value,
@@ -80,7 +88,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun updatePetsOfUser(petId: String) {
+    private fun updatePetsOfUser(petId: String) {
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
                 users.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
@@ -100,7 +108,7 @@ class PetProfileViewModel : ViewModel() {
                                 pets = newPets
                             )
                         )
-                        _navigateToHomeFragment.value = true
+                        uploadPetImage(petId)
                         Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {
@@ -108,6 +116,45 @@ class PetProfileViewModel : ViewModel() {
                     }
             }
         }
+    }
+
+    private fun uploadPetImage(petId: String) {
+        petImage.value?.let {
+            val imageRef = storageReference.child("profile/$petId")
+            imageRef.putFile(it.toUri())
+                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+                    return@Continuation imageRef.downloadUrl
+                }).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        Log.d(ERIC, "downloadUri : $downloadUri")
+                        updateProfileImageUrl(petId, downloadUri)
+                    }
+                }.addOnFailureListener {
+                    Log.d(ERIC, "uploadImage failed : $it")
+                }
+        }
+    }
+
+    fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
+        petsReference.let {
+            it.document(petId).update("image", downloadUri.toString())
+                .addOnSuccessListener {
+                    navigateToHomeFragment()
+                    Log.d(ERIC, "updateEventImageUrl succeed")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updateEventImageUrl failed : $it")
+                }
+        }
+    }
+
+    fun navigateToHomeFragment() {
+        _navigateToHomeFragment.value = true
     }
 
     fun navigateToHomeFragmentCompleted() {

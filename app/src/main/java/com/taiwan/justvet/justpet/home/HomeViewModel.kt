@@ -58,7 +58,6 @@ class HomeViewModel : ViewModel() {
         get() = _eventsList
 
 
-
     val petName = MutableLiveData<String>()
     val petBirthday = MutableLiveData<String>()
     val petIdNumber = MutableLiveData<String>()
@@ -82,10 +81,11 @@ class HomeViewModel : ViewModel() {
     val storageReference = FirebaseStorage.getInstance().reference
 
     init {
+        calculateTimestamp()
+
         userProfile.value?.let { userProfile ->
             userProfile.pets?.apply {
                 if (this.isNotEmpty()) {
-                    calculateTimestamp()
                     getPetProfileData(userProfile)
                 }
             }
@@ -163,11 +163,14 @@ class HomeViewModel : ViewModel() {
             petsReference.document(it).collection(EVENTS)
                 .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
+                    val list = mutableListOf<PetEvent>()
+
+                    // return to default
+                    _eventsList.value = list
+
                     if (it.size() > 0) {
-                        val list = mutableListOf<PetEvent>()
                         it.documents.forEach {
                             val event = it.toObject(PetEvent::class.java)
-                            Log.d(ERIC, "event: $event")
                             event?.let { event ->
                                 list.add(event)
                             }
@@ -182,10 +185,16 @@ class HomeViewModel : ViewModel() {
 
     fun filterForNotification(eventList: List<PetEvent>) {
         val notificationList = mutableListOf<EventNotification>()
+
         val vomit = mutableListOf<PetEvent>()
         val vaccine = mutableListOf<PetEvent>()
+        val weight = mutableListOf<PetEvent>()
+
+
         eventList.forEach { event ->
             event.timestamp?.let { timestamp ->
+
+                // filter for syndrome tags
                 event.eventTagsIndex?.let { tags ->
                     if ((timestamp > oneMonthAgoTimestamp) && tags.contains(100)) {
                         vomit.add(event)
@@ -194,15 +203,27 @@ class HomeViewModel : ViewModel() {
                         vaccine.add(event)
                     }
                 }
+
+                // filter for weight measurement
+                event.weight?.let {
+                    if (timestamp > threeMonthsAgoTimestamp ) {
+                        weight.add(event)
+                    }
+                }
             }
         }
-        if (vomit.size > 0) {
-            notificationList.add(EventNotification(2, "這一個月已經嘔吐${vomit.size}次囉！"))
+        if (vomit.size > 1) {
+            notificationList.add(EventNotification(2, "這個月已經嘔吐 ${vomit.size} 次囉"))
         }
         if (vaccine.size == 0) {
             notificationList.add(EventNotification(1, "今年都還沒有打疫苗喔！"))
         }
-        _notificationList.value = notificationList
+        if (weight.size == 0) {
+            notificationList.add(EventNotification(0, "該幫 ${selectedPet.value?.name} 量體重囉！"))
+        }
+        _notificationList.value = notificationList.sortedBy {
+            it.type
+        }
     }
 
     fun datePicker(view: View) {
@@ -354,25 +375,5 @@ class HomeViewModel : ViewModel() {
     fun startGalleryCompleted() {
         _startGallery.value = false
     }
-
-//    fun dataOne() {
-//        val eventList = mutableListOf<EventNotification>()
-//        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天", timeStamp = null))
-//        eventList.add(EventNotification(type = 1, title = "除蚤滴劑要記得點喔!", timeStamp = null))
-//        eventList.add(EventNotification(type = 2, title = "這四週內已經吐了三次喔!", timeStamp = null))
-//        _notificationList.value = eventList
-//    }
-//
-//    fun dataTwo() {
-//        val eventList = mutableListOf<EventNotification>()
-//        eventList.add(EventNotification(type = 1, title = "要記得吃心絲蟲預防藥喔!", timeStamp = null))
-//        _notificationList.value = eventList
-//    }
-//
-//    fun dataThree() {
-//        val eventList = mutableListOf<EventNotification>()
-//        eventList.add(EventNotification(type = 1, title = "今天要記得回診、拿藥喔!", timeStamp = null))
-//        _notificationList.value = eventList
-//    }
 
 }
