@@ -61,13 +61,18 @@ class ChartFragment : Fragment() {
         setupWeightChart()
 
         viewModel.selectedProfile.observe(this, Observer {
-            Log.d(ERIC, "ChartFragment selected profile : ${it.profileId}")
+            weightChart.data = LineData()
+            weightChart.invalidate()
+            syndromeChart.data = BarData()
+            syndromeChart.invalidate()
             viewModel.getSyndromeData(it)
             viewModel.getYearData(it)
         })
 
         viewModel.yearData.observe(this, Observer {
-            showWeightData(it)
+            it?.let {
+                showWeightData(it)
+            }
         })
 
         viewModel.syndromeData.observe(this, Observer {
@@ -216,6 +221,7 @@ class ChartFragment : Fragment() {
         weightChart.marker = markerView
 
         // refresh
+        weightChart.notifyDataSetChanged()
         weightChart.invalidate()
     }
 
@@ -238,10 +244,11 @@ class ChartFragment : Fragment() {
         dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiary)
 
         syndromeChart.data = BarData(dataset)
-        syndromeChart.moveViewToX(12f)
+        syndromeChart.moveViewToX(9.5f)
         syndromeChart.setVisibleXRangeMaximum(3f)
 
         // refresh
+        syndromeChart.notifyDataSetChanged()
         syndromeChart.invalidate()
         setupSegmentedButtonGroup()
     }
@@ -254,7 +261,7 @@ class ChartFragment : Fragment() {
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
-                        it.moveViewToX(12f)
+                        it.moveViewToX(9.5f)
                         it.setVisibleXRangeMaximum(3f)
                     }
                 }
@@ -306,7 +313,7 @@ class SyndromeFormatter : ValueFormatter() {
 class WeightChartFormatter : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        val date = Date(value.toLong())
+        val date = Date(value.toLong()*1000)
         val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
         return sdf.format(date)
     }

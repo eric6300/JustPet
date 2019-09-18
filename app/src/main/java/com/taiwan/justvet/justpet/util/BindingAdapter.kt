@@ -191,8 +191,8 @@ fun bindImage(imgView: ImageView, imgUrl: Uri?) {
 
 @BindingAdapter("imageUrl")
 fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
-    imgUrl?.let {
-        val imgUri = it.toUri().buildUpon().build()
+    if (imgUrl != null) {
+        val imgUri = imgUrl.toUri().buildUpon().build()
         GlideApp.with(imgView.context)
             .load(imgUri)
             .apply(
@@ -200,5 +200,8 @@ fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
                     .placeholder(R.drawable.image_cat)
             )
             .into(imgView)
+    } else {
+        GlideApp.with(imgView.context)
+            .clear(imgView)
     }
 }

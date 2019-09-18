@@ -46,7 +46,7 @@ class ChartViewModel : ViewModel() {
     val database = FirebaseFirestore.getInstance()
     val petsRef = database.collection(PETS)
 
-    val calendar = Calendar.getInstance()
+
     var nowTimestamp: Long = 0
     var threeMonthsAgoTimestamp: Long = 0
     var sixMonthsAgoTimestamp: Long = 0
@@ -63,14 +63,19 @@ class ChartViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-        nowTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -3)
-        threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -3)
-        sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -6)
-        oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, 12)
+        val calendar = Calendar.getInstance()
+        calendar.apply {
+            nowTimestamp = (calendar.timeInMillis / 1000)
+
+            this.add(Calendar.MONTH, -3)
+            threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+
+            this.add(Calendar.MONTH, -3)
+            sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+
+            this.add(Calendar.MONTH, -6)
+            oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
+        }
     }
 
     fun getProfileByPosition(position: Int) {
@@ -147,6 +152,8 @@ class ChartViewModel : ViewModel() {
     }
 
     fun sortSyndromeData(months: Int) {
+        val calendar = Calendar.getInstance()
+
         val dataMap = HashMap<Date, ArrayList<PetEvent>>()
 
         // create hashMap of last 12 months by year/month
@@ -156,16 +163,15 @@ class ChartViewModel : ViewModel() {
         }
 
         // sort data into hashMap
-        eventData.value?.forEach {
-            val dateOfEvent = getDateOfEvent(it)
+        eventData.value?.forEach { petEvent ->
+            val dateOfEvent = getDateOfEvent(petEvent, calendar)
+
             if (dataMap.contains(dateOfEvent)) {
-                (dataMap[dateOfEvent] as ArrayList<PetEvent>).add(it)
+                (dataMap[dateOfEvent] as ArrayList<PetEvent>).add(petEvent)
             } else {
                 val newList = ArrayList<PetEvent>()
-                newList.add(it)
-                dateOfEvent?.let {
-                    dataMap[dateOfEvent] = newList
-                }
+                newList.add(petEvent)
+                dateOfEvent?.let { dataMap[dateOfEvent] = newList }
             }
         }
 
@@ -174,6 +180,16 @@ class ChartViewModel : ViewModel() {
 
         // display syndrome data for Bar chart
         _syndromeData.value = sortedSyndromeDataMap
+    }
+
+    fun getDateOfEvent(
+        petEvent: PetEvent,
+        calendar: Calendar
+    ): Date? {
+        val calendar2 = calendar.clone() as Calendar
+        calendar2.set(Calendar.YEAR, petEvent.year.toInt())
+        calendar2.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
+        return calendar2.time
     }
 
     fun getYearData(petProfile: PetProfile) {
@@ -199,11 +215,5 @@ class ChartViewModel : ViewModel() {
                     Log.d(ERIC, "getSyndromeData() failed : $it")
                 }
         }
-    }
-
-    fun getDateOfEvent(petEvent: PetEvent): Date? {
-        calendar.set(Calendar.YEAR, petEvent.year.toInt())
-        calendar.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
-        return calendar.time
     }
 }
