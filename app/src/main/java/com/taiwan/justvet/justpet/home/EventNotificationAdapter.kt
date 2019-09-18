@@ -81,7 +81,7 @@ class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener
         }
 
         override fun areContentsTheSame(oldItem: EventNotification, newItem: EventNotification): Boolean {
-            return oldItem.timeStamp == newItem.timeStamp
+            return oldItem.title == newItem.title
         }
     }
 

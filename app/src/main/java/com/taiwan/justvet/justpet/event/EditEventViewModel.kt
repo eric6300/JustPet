@@ -86,7 +86,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
             if (it.timestamp == 0L) {
                 // navigate from tag dialog for add an event
-                eventTimestamp.value = calendar.timeInMillis
+                eventTimestamp.value = (calendar.timeInMillis / 1000)
                 Log.d(ERIC, "timestamp :  ${eventTimestamp.value}")
             } else {
                 // navigate from calendar fragment for edit the event
@@ -133,7 +133,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
             Locale.TAIWAN
         ).format(calendar.time)
 
-        eventTimestamp.value = calendar.timeInMillis
+        eventTimestamp.value = (calendar.timeInMillis / 1000)
     }
 
     fun setSpiritScore(score: Float) {

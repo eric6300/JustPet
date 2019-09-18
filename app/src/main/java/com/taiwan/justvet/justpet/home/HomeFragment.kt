@@ -94,7 +94,14 @@ class HomeFragment : Fragment() {
         viewModel.selectedPet.observe(this, Observer {
             it?.let {
                 viewModel.showPetProfile(it)
+                viewModel.getPetEvents(it)
                 profileAdapter.notifyDataSetChanged()
+            }
+        })
+
+        viewModel.eventsList.observe(this, Observer {
+            it?.let {
+                viewModel.filterForNotification(it)
             }
         })
 
@@ -140,7 +147,7 @@ class HomeFragment : Fragment() {
                 (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
 
             if (lastPosition != newPosition) {
-                viewModel.getPetProfile(newPosition)
+                viewModel.selectPetProfile(newPosition)
                 lastPosition = newPosition
                 Log.d(ERIC, "position changed")
             }

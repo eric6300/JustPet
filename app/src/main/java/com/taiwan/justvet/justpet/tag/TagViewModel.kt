@@ -263,7 +263,7 @@ class TagViewModel : ViewModel() {
                         petId = it.profileId,
                         petName = it.name,
                         petSpecies = it.species,
-                        timestamp = calendar.timeInMillis,
+                        timestamp = (calendar.timeInMillis / 1000),
                         year = timeList[0].toLong(),
                         month = timeList[1].toLong(),
                         dayOfMonth = timeList[2].toLong(),

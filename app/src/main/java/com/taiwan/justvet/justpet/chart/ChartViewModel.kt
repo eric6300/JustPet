@@ -63,13 +63,13 @@ class ChartViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-        nowTimestamp = calendar.timeInMillis
+        nowTimestamp = (calendar.timeInMillis / 1000)
         calendar.add(Calendar.MONTH, -3)
-        threeMonthsAgoTimestamp = calendar.timeInMillis
+        threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
         calendar.add(Calendar.MONTH, -3)
-        sixMonthsAgoTimestamp = calendar.timeInMillis
+        sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
         calendar.add(Calendar.MONTH, -6)
-        oneYearAgoTimestamp = calendar.timeInMillis
+        oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
         calendar.add(Calendar.MONTH, 12)
     }
 

@@ -18,6 +18,7 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.EventNotification
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
@@ -52,6 +53,12 @@ class HomeViewModel : ViewModel() {
     val startGallery: LiveData<Boolean>
         get() = _startGallery
 
+    private val _eventsList = MutableLiveData<List<PetEvent>>()
+    val eventsList: LiveData<List<PetEvent>>
+        get() = _eventsList
+
+
+
     val petName = MutableLiveData<String>()
     val petBirthday = MutableLiveData<String>()
     val petIdNumber = MutableLiveData<String>()
@@ -60,7 +67,10 @@ class HomeViewModel : ViewModel() {
     val petImage = MutableLiveData<String>()
 
     val calendar = Calendar.getInstance()
-    var oneYearTimestamp: Long = 0
+    var oneMonthAgoTimestamp: Long = 0
+    var threeMonthsAgoTimestamp: Long = 0
+    var sixMonthsAgoTimestamp: Long = 0
+    var oneYearAgoTimestamp: Long = 0
 
     var year: Int = 0
     var month: Int = 0
@@ -75,13 +85,23 @@ class HomeViewModel : ViewModel() {
         userProfile.value?.let { userProfile ->
             userProfile.pets?.apply {
                 if (this.isNotEmpty()) {
+                    calculateTimestamp()
                     getPetProfileData(userProfile)
                 }
             }
         }
-        calendar.add(Calendar.MONTH, -12)
-        oneYearTimestamp = calendar.timeInMillis
-        Log.d(ERIC, "one year ago timestamp : $oneYearTimestamp")
+    }
+
+    fun calculateTimestamp() {
+        calendar.add(Calendar.MONTH, -1)
+        oneMonthAgoTimestamp = (calendar.timeInMillis / 1000)
+        calendar.add(Calendar.MONTH, -2)
+        threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+        calendar.add(Calendar.MONTH, -3)
+        sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+        calendar.add(Calendar.MONTH, -6)
+        oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
+        calendar.add(Calendar.MONTH, 12)
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
@@ -117,17 +137,11 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getPetProfile(index: Int) {
+    fun selectPetProfile(index: Int) {
         _selectedPet.value = _petList.value?.let {
             Log.d(ERIC, "selected pet profile id : ${it[index].profileId}")
             it[index]
         }
-
-//        when (index) {
-//            0 -> dataOne()
-//            1 -> dataTwo()
-//            2 -> dataThree()
-//        }
     }
 
     fun showPetProfile(petProfile: PetProfile) {
@@ -142,21 +156,53 @@ class HomeViewModel : ViewModel() {
             calendar.timeInMillis = it * 1000
         }
 
-        getPetEvents(petProfile)
     }
 
     fun getPetEvents(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan("timestamp", oneYearTimestamp).get()
+                .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
                     if (it.size() > 0) {
-                        Log.d(ERIC, "events size = ${it.size()}")
+                        val list = mutableListOf<PetEvent>()
+                        it.documents.forEach {
+                            val event = it.toObject(PetEvent::class.java)
+                            Log.d(ERIC, "event: $event")
+                            event?.let { event ->
+                                list.add(event)
+                            }
+                            _eventsList.value = list
+                        }
                     }
                 }.addOnFailureListener {
-
+                    Log.d(ERIC, "getPetEvents() failed : $it")
                 }
         }
+    }
+
+    fun filterForNotification(eventList: List<PetEvent>) {
+        val notificationList = mutableListOf<EventNotification>()
+        val vomit = mutableListOf<PetEvent>()
+        val vaccine = mutableListOf<PetEvent>()
+        eventList.forEach { event ->
+            event.timestamp?.let { timestamp ->
+                event.eventTagsIndex?.let { tags ->
+                    if ((timestamp > oneMonthAgoTimestamp) && tags.contains(100)) {
+                        vomit.add(event)
+                    }
+                    if ((timestamp > oneYearAgoTimestamp) && tags.contains(208)) {
+                        vaccine.add(event)
+                    }
+                }
+            }
+        }
+        if (vomit.size > 0) {
+            notificationList.add(EventNotification(2, "這一個月已經嘔吐${vomit.size}次囉！"))
+        }
+        if (vaccine.size == 0) {
+            notificationList.add(EventNotification(1, "今年都還沒有打疫苗喔！"))
+        }
+        _notificationList.value = notificationList
     }
 
     fun datePicker(view: View) {
@@ -309,24 +355,24 @@ class HomeViewModel : ViewModel() {
         _startGallery.value = false
     }
 
-    fun dataOne() {
-        val eventList = mutableListOf<EventNotification>()
-        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天", timeStamp = null))
-        eventList.add(EventNotification(type = 1, title = "除蚤滴劑要記得點喔!", timeStamp = null))
-        eventList.add(EventNotification(type = 2, title = "這四週內已經吐了三次喔!", timeStamp = null))
-        _notificationList.value = eventList
-    }
-
-    fun dataTwo() {
-        val eventList = mutableListOf<EventNotification>()
-        eventList.add(EventNotification(type = 1, title = "要記得吃心絲蟲預防藥喔!", timeStamp = null))
-        _notificationList.value = eventList
-    }
-
-    fun dataThree() {
-        val eventList = mutableListOf<EventNotification>()
-        eventList.add(EventNotification(type = 1, title = "今天要記得回診、拿藥喔!", timeStamp = null))
-        _notificationList.value = eventList
-    }
+//    fun dataOne() {
+//        val eventList = mutableListOf<EventNotification>()
+//        eventList.add(EventNotification(type = 0, title = "年度健康檢查還剩 15 天", timeStamp = null))
+//        eventList.add(EventNotification(type = 1, title = "除蚤滴劑要記得點喔!", timeStamp = null))
+//        eventList.add(EventNotification(type = 2, title = "這四週內已經吐了三次喔!", timeStamp = null))
+//        _notificationList.value = eventList
+//    }
+//
+//    fun dataTwo() {
+//        val eventList = mutableListOf<EventNotification>()
+//        eventList.add(EventNotification(type = 1, title = "要記得吃心絲蟲預防藥喔!", timeStamp = null))
+//        _notificationList.value = eventList
+//    }
+//
+//    fun dataThree() {
+//        val eventList = mutableListOf<EventNotification>()
+//        eventList.add(EventNotification(type = 1, title = "今天要記得回診、拿藥喔!", timeStamp = null))
+//        _notificationList.value = eventList
+//    }
 
 }
