@@ -59,12 +59,16 @@ class ChartFragment : Fragment() {
         setupPetProfile()
         setupSyndromeChart()
         setupWeightChart()
+        setupSegmentedButtonGroup()
 
         viewModel.selectedProfile.observe(this, Observer {
             weightChart.data = LineData()
             weightChart.invalidate()
             syndromeChart.data = BarData()
             syndromeChart.invalidate()
+            if (binding.filterChartGroup.position != 0) {
+                binding.filterChartGroup.setPosition(0, true)
+            }
             viewModel.getSyndromeData(it)
             viewModel.getYearData(it)
         })
@@ -250,7 +254,6 @@ class ChartFragment : Fragment() {
         // refresh
         syndromeChart.notifyDataSetChanged()
         syndromeChart.invalidate()
-        setupSegmentedButtonGroup()
     }
 
     private fun setupSegmentedButtonGroup() {

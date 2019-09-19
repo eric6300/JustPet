@@ -52,6 +52,7 @@ class HomeFragment : Fragment() {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.getPetProfileData(userProfile)
+                    viewModel.checkInvite()
                     UserManager.refreshUserProfileCompleted()
                 }
             }
@@ -78,7 +79,7 @@ class HomeFragment : Fragment() {
 
         viewModel.navigateToAchievement.observe(this, Observer {
             if (it == true) {
-                findNavController().navigate(NavGraphDirections.navigateToAchievementDialog())
+                findNavController().navigate(NavGraphDirections.navigateToFamilyDialog())
                 viewModel.navigateToAchievementCompleted()
             }
         })
@@ -87,7 +88,6 @@ class HomeFragment : Fragment() {
             it?.let {
                 profileAdapter.submitList(it)
                 profileAdapter.notifyDataSetChanged()
-                //TODO: Notification
             }
         })
 

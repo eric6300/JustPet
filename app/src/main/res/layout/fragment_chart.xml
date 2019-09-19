@@ -56,7 +56,7 @@
                 app:rippleColor="@color/colorDiary"
                 app:selectedBackground="@color/colorDiary"
                 app:selectedButtonRadius="5dp"
-                app:selectionAnimationDuration="500"
+                app:selectionAnimationDuration="@android:integer/config_shortAnimTime"
                 app:selectionAnimationInterpolator="fastOutSlowIn">
 
                 <com.addisonelliott.segmentedbutton.SegmentedButton

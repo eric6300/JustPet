@@ -24,10 +24,6 @@ object UserManager {
     val userName: LiveData<String>
         get() = _userName
 
-    private val _userPhotoUrl = MutableLiveData<Uri>()
-    val userPhotoUrl: LiveData<Uri>
-        get() = _userPhotoUrl
-
     fun getFirebaseUser(firebaseUser: FirebaseUser) {
         firebaseUser.apply {
             _userProfile.value = UserProfile(
@@ -37,6 +33,7 @@ object UserManager {
                 displayName = this.displayName,
                 photoUrl = this.photoUrl
             )
+            _userName.value = this.displayName
         }
         _getFirebaseUserCompleted.value = true
     }
@@ -60,7 +57,6 @@ object UserManager {
     fun clear() {
         _userProfile.value = null
         _userName.value = null
-        _userPhotoUrl.value = null
         _getFirebaseUserCompleted.value = null
         _refreshUserProfileCompleted.value = null
     }

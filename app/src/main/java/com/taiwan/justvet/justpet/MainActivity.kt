@@ -149,11 +149,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_home -> {
+            R.id.nav_new_pet -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
-            R.id.nav_gallery -> {
-
+            R.id.new_family_member -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_familyDialog)
             }
             R.id.nav_slideshow -> {
 

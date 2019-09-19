@@ -58,7 +58,7 @@
     <string name="text_species">物種</string>
     <string name="text_modify">修改</string>
     <string name="text_cancel">取消</string>
-    <string name="text_tody_notification">今日提醒</string>
+    <string name="text_tody_notification">每日提醒</string>
     <string name="text_confirm">確認</string>
     <string name="text_new_pet_profile">新增寵物</string>
     <string name="title_pet_profile">寵物檔案</string>

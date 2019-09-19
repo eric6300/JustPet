@@ -24,9 +24,9 @@
             android:name="com.taiwan.justvet.justpet.chart.ChartFragment"
             android:label="ChartFragment" />
     <dialog
-            android:id="@+id/achievementDialog"
-            android:name="com.taiwan.justvet.justpet.achievement.AchievementDialog"
-            android:label="AchievementDialog" />
+        android:id="@+id/familyDialog"
+        android:name="com.taiwan.justvet.justpet.family.FamilyDialog"
+        android:label="FamilyDialog" />
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
@@ -64,7 +64,7 @@
         android:id="@+id/navigate_to_chartFragment"
         app:destination="@id/chartFragment"
         app:popUpTo="@+id/nav_graph" />
-    <action android:id="@+id/navigate_to_achievementDialog" app:destination="@id/achievementDialog" />
+    <action android:id="@+id/navigate_to_familyDialog" app:destination="@id/familyDialog" />
     <action android:id="@+id/navigate_to_tagDialog" app:destination="@id/tagDialog" />
     <action
         android:id="@+id/navigate_to_petProfileDialogFragment"

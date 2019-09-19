@@ -77,18 +77,15 @@ class HomeViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
+    val inviteReference = firebase.collection("invite")
 
     val storageReference = FirebaseStorage.getInstance().reference
 
     init {
         calculateTimestamp()
-
+        checkInvite()
         userProfile.value?.let { userProfile ->
-            userProfile.pets?.apply {
-                if (this.isNotEmpty()) {
-                    getPetProfileData(userProfile)
-                }
-            }
+            getPetProfileData(userProfile)
         }
     }
 
@@ -104,37 +101,53 @@ class HomeViewModel : ViewModel() {
         calendar.add(Calendar.MONTH, 12)
     }
 
-    fun getPetProfileData(userProfile: UserProfile) {
-        userProfile.pets?.let {
-            if (it.isNotEmpty()) {
-                petsReference.whereEqualTo("owner", userProfile.profileId).get()
-                    .addOnSuccessListener { list ->
-                        val petData = mutableListOf<PetProfile>()
-                        for (item in list) {
-                            petData.add(
-                                PetProfile(
-                                    profileId = item.id,
-                                    name = item["name"] as String?,
-                                    species = item["species"] as Long?,
-                                    gender = item["gender"] as Long?,
-                                    neutered = item["neutered"] as Boolean?,
-                                    birthday = item["birthday"] as Long?,
-                                    idNumber = item["idNumber"] as String?,
-                                    owner = item["owner"] as String?,
-                                    image = item["image"] as String?
-                                )
-                            )
-                        }
-                        petData.sortBy { it.profileId }
-                        _petList.value = petData
-                        Log.d(ERIC, "getPetProfileData() succeeded")
+    fun checkInvite() {
+        userProfile.value?.let { userProfile ->
+            inviteReference
+                .whereEqualTo("inviteeEmail", userProfile.email)
+                .get()
+                .addOnSuccessListener {
+                    if (it.isEmpty) {
+                        Log.d(ERIC, "no invite")
+                    } else {
+                        Log.d(ERIC, "${it.documents}")
                     }
-                    .addOnFailureListener {
-                        Log.d(ERIC, "getPetProfileData() failed: $it")
-                    }
-
-            }
+                }.addOnFailureListener {
+                    Log.d(ERIC, "checkInvite() failed : $it")
+                }
         }
+    }
+
+    fun getPetProfileData(userProfile: UserProfile) {
+        if (userProfile.pets != null) {
+            petsReference.whereEqualTo("owner", userProfile.profileId).get()
+                .addOnSuccessListener { list ->
+                    val petData = mutableListOf<PetProfile>()
+                    for (item in list) {
+                        petData.add(
+                            PetProfile(
+                                profileId = item.id,
+                                name = item["name"] as String?,
+                                species = item["species"] as Long?,
+                                gender = item["gender"] as Long?,
+                                neutered = item["neutered"] as Boolean?,
+                                birthday = item["birthday"] as Long?,
+                                idNumber = item["idNumber"] as String?,
+                                owner = item["owner"] as String?,
+                                image = item["image"] as String?
+                            )
+                        )
+                    }
+                    petData.sortBy { it.profileId }
+                    _petList.value = petData
+                    Log.d(ERIC, "getPetProfileData() succeeded")
+                }
+                .addOnFailureListener {
+                    Log.d(ERIC, "getPetProfileData() failed: $it")
+                }
+
+        }
+
     }
 
     fun selectPetProfile(index: Int) {
@@ -206,7 +219,7 @@ class HomeViewModel : ViewModel() {
 
                 // filter for weight measurement
                 event.weight?.let {
-                    if (timestamp > threeMonthsAgoTimestamp ) {
+                    if (timestamp > threeMonthsAgoTimestamp) {
                         weight.add(event)
                     }
                 }
@@ -352,11 +365,7 @@ class HomeViewModel : ViewModel() {
 
     fun refreshPetProfile() {
         userProfile.value?.let { userProfile ->
-            userProfile.pets?.apply {
-                if (this.isNotEmpty()) {
-                    getPetProfileData(userProfile)
-                }
-            }
+            getPetProfileData(userProfile)
         }
     }
 
