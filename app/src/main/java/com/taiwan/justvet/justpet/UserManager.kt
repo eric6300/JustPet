@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
+import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 
 object UserManager {
@@ -29,7 +30,7 @@ object UserManager {
             _userProfile.value = UserProfile(
                 uid = this.uid,
                 email = this.email,
-                pets = null,
+                pets = mutableListOf(),
                 displayName = this.displayName,
                 photoUrl = this.photoUrl
             )

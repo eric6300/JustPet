@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -54,8 +55,8 @@ class PetProfileViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
-    private val _inviteList = MutableLiveData<List<FamilyInvite>>()
-    val inviteList: LiveData<List<FamilyInvite>>
+    private val _inviteList = MutableLiveData<List<Invite>>()
+    val inviteList: LiveData<List<Invite>>
         get() = _inviteList
 
 
@@ -112,11 +113,18 @@ class PetProfileViewModel : ViewModel() {
                     if (it.isEmpty) {
                         Log.d(ERIC, "no invite")
                     } else {
-                        val list = mutableListOf<FamilyInvite>()
+                        val list = mutableListOf<Invite>()
                         it.documents.forEach {
-                            it.toObject(FamilyInvite::class.java)?.let { invite ->
-                                list.add(invite)
-                            }
+                            list.add(
+                                Invite(
+                                    inviteId = it.id,
+                                    petId = it["petId"] as String?,
+                                    petName = it["petName"] as String?,
+                                    inviteeEmail = it["inviteeEmail"] as String?,
+                                    inviterName = it["inviterName"] as String?,
+                                    inviterEmail = it["inviterEmail"] as String?
+                                )
+                            )
                         }
                         _inviteList.value = list
                         Log.d(ERIC, "invite list : $list")
@@ -127,7 +135,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun showInvite(inviteList: MutableList<FamilyInvite>) {
+    fun showInvite(inviteList: MutableList<Invite>) {
         if (inviteList.isNotEmpty()) {
             _inviteList.value = inviteList
         } else {
@@ -136,7 +144,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun confirmInvite(invite: FamilyInvite) {
+    fun confirmInvite(invite: Invite) {
         UserManager.userProfile.value?.let { userProfile ->
             userReference.whereEqualTo("uid", userProfile.uid).get()
                 .addOnSuccessListener {
@@ -154,19 +162,50 @@ class PetProfileViewModel : ViewModel() {
                         photoUrl = userProfile.photoUrl
                     )
 
-                    UserManager.refreshUserProfile(newUserProfile)
-                    UserManager.refreshUserProfileCompleted()
+                    updateUserProfile(invite)
+                    updatePetProfileFamily(invite.petId)
 
-                    Log.d(ERIC, "$newUserProfile")
+                    UserManager.refreshUserProfile(newUserProfile)
 
                 }.addOnFailureListener {
-
+                    Log.d(ERIC, "confirmInvite() failed : $it")
                 }
         }
     }
 
-    fun updatePetFamily() {
+    fun updatePetProfileFamily(petId: String?) {
+        petId?.let {
+            petsReference.document(it)
+                .update("family", FieldValue.arrayUnion(userProfile.value?.profileId))
+                .addOnSuccessListener {
+                    Log.d(ERIC, "updatePetProfileFamily succeeded")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
+                }
+        }
+    }
 
+    fun updateUserProfile(invite: Invite) {
+        userProfile.value?.profileId?.let {
+            userReference.document(it)
+                .update("pets", FieldValue.arrayUnion(invite.petId))
+                .addOnSuccessListener {
+                    deleteInvite(invite)
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updateUserProfile() failed")
+                }
+        }
+    }
+
+    fun deleteInvite(invite: Invite) {
+        invite.inviteId?.let {
+            inviteReference.document(it).delete()
+                .addOnSuccessListener {
+                    Log.d(ERIC, "deleteInvite() succeeded")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "deleteInvite() failed")
+                }
+        }
     }
 
     fun getPetProfileData(userProfile: UserProfile) {

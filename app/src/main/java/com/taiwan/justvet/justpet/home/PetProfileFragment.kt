@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.FamilyInvite
+import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.databinding.FragmentPetProfileBinding
 
 class PetProfileFragment : Fragment() {
@@ -128,7 +128,7 @@ class PetProfileFragment : Fragment() {
 
                             viewModel.confirmInvite(invite)
 
-                            val newList = mutableListOf<FamilyInvite>()
+                            val newList = mutableListOf<Invite>()
                             newList.addAll(inviteList)
                             newList.removeAt(0)
                             viewModel.showInvite(newList)

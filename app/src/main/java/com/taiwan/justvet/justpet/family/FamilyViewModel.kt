@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.UserManager
-import com.taiwan.justvet.justpet.data.FamilyInvite
+import com.taiwan.justvet.justpet.data.Invite
 
 class FamilyViewModel : ViewModel() {
 
@@ -63,7 +63,7 @@ class FamilyViewModel : ViewModel() {
             inviteeEmail.value?.let { inviteeEmail ->
                 Log.d(ERIC, "$userProfile")
                 inviteReference.add(
-                    FamilyInvite(
+                    Invite(
                         petId = "5DjrhdAlZka29LSmOe12",
                         petName = "MeiMei",
                         inviteeEmail = inviteeEmail,
