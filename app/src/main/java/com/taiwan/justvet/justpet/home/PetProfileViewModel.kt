@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.taiwan.justvet.justpet.data.PetProfile
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.net.Uri
@@ -17,13 +16,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
-import com.taiwan.justvet.justpet.data.EventNotification
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 
-class HomeViewModel : ViewModel() {
+class PetProfileViewModel : ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
@@ -57,6 +54,10 @@ class HomeViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
+    private val _inviteList = MutableLiveData<List<FamilyInvite>>()
+    val inviteList: LiveData<List<FamilyInvite>>
+        get() = _inviteList
+
 
     val petName = MutableLiveData<String>()
     val petBirthday = MutableLiveData<String>()
@@ -77,6 +78,7 @@ class HomeViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
+    val userReference = firebase.collection(USERS)
     val inviteReference = firebase.collection("invite")
 
     val storageReference = FirebaseStorage.getInstance().reference
@@ -106,11 +108,18 @@ class HomeViewModel : ViewModel() {
             inviteReference
                 .whereEqualTo("inviteeEmail", userProfile.email)
                 .get()
-                .addOnSuccessListener {
+                .addOnSuccessListener { it ->
                     if (it.isEmpty) {
                         Log.d(ERIC, "no invite")
                     } else {
-                        Log.d(ERIC, "${it.documents}")
+                        val list = mutableListOf<FamilyInvite>()
+                        it.documents.forEach {
+                            it.toObject(FamilyInvite::class.java)?.let { invite ->
+                                list.add(invite)
+                            }
+                        }
+                        _inviteList.value = list
+                        Log.d(ERIC, "invite list : $list")
                     }
                 }.addOnFailureListener {
                     Log.d(ERIC, "checkInvite() failed : $it")
@@ -118,36 +127,75 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    fun showInvite(inviteList: MutableList<FamilyInvite>) {
+        if (inviteList.isNotEmpty()) {
+            _inviteList.value = inviteList
+        } else {
+            _inviteList.value = null
+            Log.d(ERIC, "inviteList is empty")
+        }
+    }
+
+    fun confirmInvite(invite: FamilyInvite) {
+        UserManager.userProfile.value?.let { userProfile ->
+            userReference.whereEqualTo("uid", userProfile.uid).get()
+                .addOnSuccessListener {
+
+                    val newPetList = mutableListOf<String>()
+                    userProfile.pets?.let { newPetList.addAll(it) }
+                    invite.petId?.let { newPetList.add(it) }
+
+                    val newUserProfile = UserProfile(
+                        profileId = userProfile.profileId,
+                        uid = userProfile.uid,
+                        email = userProfile.email,
+                        pets = newPetList,
+                        displayName = userProfile.displayName,
+                        photoUrl = userProfile.photoUrl
+                    )
+
+                    UserManager.refreshUserProfile(newUserProfile)
+                    UserManager.refreshUserProfileCompleted()
+
+                    Log.d(ERIC, "$newUserProfile")
+
+                }.addOnFailureListener {
+
+                }
+        }
+    }
+
+    fun updatePetFamily() {
+
+    }
+
     fun getPetProfileData(userProfile: UserProfile) {
-        if (userProfile.pets != null) {
-            petsReference.whereEqualTo("owner", userProfile.profileId).get()
-                .addOnSuccessListener { list ->
-                    val petData = mutableListOf<PetProfile>()
-                    for (item in list) {
-                        petData.add(
-                            PetProfile(
-                                profileId = item.id,
-                                name = item["name"] as String?,
-                                species = item["species"] as Long?,
-                                gender = item["gender"] as Long?,
-                                neutered = item["neutered"] as Boolean?,
-                                birthday = item["birthday"] as Long?,
-                                idNumber = item["idNumber"] as String?,
-                                owner = item["owner"] as String?,
-                                image = item["image"] as String?
-                            )
+        val petData = mutableListOf<PetProfile>()
+        userProfile.pets?.forEach {
+            petsReference.document(it).get()
+                .addOnSuccessListener { profile ->
+                    petData.add(
+                        PetProfile(
+                            profileId = profile.id,
+                            name = profile["name"] as String?,
+                            species = profile["species"] as Long?,
+                            gender = profile["gender"] as Long?,
+                            neutered = profile["neutered"] as Boolean?,
+                            birthday = profile["birthday"] as Long?,
+                            idNumber = profile["idNumber"] as String?,
+                            owner = profile["owner"] as String?,
+                            image = profile["image"] as String?
                         )
-                    }
+                    )
                     petData.sortBy { it.profileId }
                     _petList.value = petData
                     Log.d(ERIC, "getPetProfileData() succeeded")
+                    Log.d(ERIC, "getPetProfileData : $petData")
                 }
                 .addOnFailureListener {
                     Log.d(ERIC, "getPetProfileData() failed: $it")
                 }
-
         }
-
     }
 
     fun selectPetProfile(index: Int) {

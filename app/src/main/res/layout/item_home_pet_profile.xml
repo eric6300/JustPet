@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.taiwan.justvet.justpet.home.HomeViewModel" />
+            type="com.taiwan.justvet.justpet.home.PetProfileViewModel" />
 
         <variable
             name="converter"

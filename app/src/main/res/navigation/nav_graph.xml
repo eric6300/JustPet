@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
-        app:startDestination="@id/homeFragment">
+        app:startDestination="@id/petProfileFragment">
 
     <fragment
-            android:id="@+id/homeFragment"
-            android:name="com.taiwan.justvet.justpet.home.HomeFragment"
-            android:label="HomeFragment" />
+            android:id="@+id/petProfileFragment"
+            android:name="com.taiwan.justvet.justpet.home.PetProfileFragment"
+            android:label="PetProfileFragment" />
     <fragment
             android:id="@+id/calendarFragment"
             android:name="com.taiwan.justvet.justpet.calendar.CalendarFragment"
@@ -70,5 +70,6 @@
         android:id="@+id/navigate_to_petProfileDialogFragment"
         app:destination="@id/petProfileDialogFragment"
         app:popUpTo="@+id/homeFragment" />
+    <action android:id="@+id/navigate_to_petProfileFragment" app:destination="@id/petProfileFragment" />
 
 </navigation>

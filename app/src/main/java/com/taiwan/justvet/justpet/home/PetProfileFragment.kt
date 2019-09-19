@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,18 +21,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
+import com.taiwan.justvet.justpet.data.FamilyInvite
+import com.taiwan.justvet.justpet.databinding.FragmentPetProfileBinding
 
-class HomeFragment : Fragment() {
+class PetProfileFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentPetProfileBinding
     private lateinit var profileAdapter: PetProfileAdapter
     private lateinit var notificationAdapter: EventNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
 
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this).get(HomeViewModel::class.java)
+    private val viewModel: PetProfileViewModel by lazy {
+        ViewModelProviders.of(this).get(PetProfileViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -40,7 +42,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentPetProfileBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -52,7 +54,7 @@ class HomeFragment : Fragment() {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.getPetProfileData(userProfile)
-                    viewModel.checkInvite()
+//                    viewModel.checkInvite()
                     UserManager.refreshUserProfileCompleted()
                 }
             }
@@ -111,6 +113,34 @@ class HomeFragment : Fragment() {
                 intent.type = "image/*"
                 startActivityForResult(intent, PHOTO_FROM_GALLERY)
                 viewModel.startGalleryCompleted()
+            }
+        })
+
+        viewModel.inviteList.observe(this, Observer { inviteList ->
+            inviteList?.let {
+                val invite = inviteList[0]
+
+                val dialog = this.context?.let {
+                    AlertDialog.Builder(it)
+                        .setTitle("邀請")
+                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你成為 ${invite.petName} 的家人")
+                        .setPositiveButton("確認") { _, _ ->
+
+                            viewModel.confirmInvite(invite)
+
+                            val newList = mutableListOf<FamilyInvite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
+                        }.setNegativeButton("拒絕") { _, _ ->
+
+                        }.setNeutralButton("再考慮") { _, _ ->
+
+                        }.create()
+
+                }
+
+                dialog?.show()
             }
         })
 

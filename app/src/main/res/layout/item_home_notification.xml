@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="com.taiwan.justvet.justpet.home.HomeViewModel" />
+            type="com.taiwan.justvet.justpet.home.PetProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -2,29 +2,21 @@ package com.taiwan.justvet.justpet.home
 
 import android.content.Context
 import android.graphics.Outline
-import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
-import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.ERIC
-import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
 
-class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
+class PetProfileAdapter(val viewModel: PetProfileViewModel, val onClickListener: OnClickListener) :
     ListAdapter<PetProfile, PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     private lateinit var context: Context
@@ -106,7 +98,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomePetProfileBinding, val viewModel: HomeViewModel) :
+    class ViewHolder(val binding: ItemHomePetProfileBinding, val viewModel: PetProfileViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
