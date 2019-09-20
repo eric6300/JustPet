@@ -16,7 +16,7 @@ import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
 
-class PetProfileAdapter(val viewModel: PetProfileViewModel, val onClickListener: OnClickListener) :
+class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
     ListAdapter<PetProfile, PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     private lateinit var context: Context
@@ -98,7 +98,7 @@ class PetProfileAdapter(val viewModel: PetProfileViewModel, val onClickListener:
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomePetProfileBinding, val viewModel: PetProfileViewModel) :
+    class ViewHolder(val binding: ItemHomePetProfileBinding, val viewModel: HomeViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)

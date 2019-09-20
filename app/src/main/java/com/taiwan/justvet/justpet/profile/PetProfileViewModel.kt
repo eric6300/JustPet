@@ -75,7 +75,8 @@ class PetProfileViewModel : ViewModel() {
                     gender = petGender.value,
                     idNumber = petIdNumber.value,
                     birthday = (calendar.timeInMillis / 1000),
-                    owner = userProfile.profileId
+                    owner = userProfile.profileId,
+                    ownerEmail = userProfile.email
                 )
             )
                 .addOnSuccessListener {

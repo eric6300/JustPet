@@ -21,7 +21,7 @@ import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 
-class PetProfileViewModel() : ViewModel() {
+class HomeViewModel() : ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
@@ -176,7 +176,7 @@ class PetProfileViewModel() : ViewModel() {
     private fun updatePetProfileFamily(petId: String?) {
         petId?.let {
             petsReference.document(it)
-                .update("family", FieldValue.arrayUnion(userProfile.value?.profileId))
+                .update("family", FieldValue.arrayUnion(userProfile.value?.email))
                 .addOnSuccessListener {
                     Log.d(ERIC, "updatePetProfileFamily succeeded")
                 }.addOnFailureListener {
@@ -223,6 +223,8 @@ class PetProfileViewModel() : ViewModel() {
                             birthday = profile["birthday"] as Long?,
                             idNumber = profile["idNumber"] as String?,
                             owner = profile["owner"] as String?,
+                            ownerEmail = profile["ownerEmail"] as String?,
+                            family = profile["family"] as List<String>?,
                             image = profile["image"] as String?
                         )
                     )

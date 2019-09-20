@@ -22,18 +22,18 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.Invite
-import com.taiwan.justvet.justpet.databinding.FragmentPetProfileBinding
+import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
-class PetProfileFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentPetProfileBinding
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
     private lateinit var notificationAdapter: EventNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
 
-    private val viewModel: PetProfileViewModel by lazy {
-        ViewModelProviders.of(this).get(PetProfileViewModel::class.java)
+    private val viewModel: HomeViewModel by lazy {
+        ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -42,7 +42,7 @@ class PetProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentPetProfileBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -118,13 +118,13 @@ class PetProfileFragment : Fragment() {
 
         viewModel.inviteList.observe(this, Observer { inviteList ->
             inviteList?.let {
-                val invite = inviteList[0]
+                val invite = it[0]
 
-                val dialog = this.context?.let {
-                    AlertDialog.Builder(it)
-                        .setTitle("邀請")
-                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你成為 ${invite.petName} 的家人")
-                        .setPositiveButton("確認") { _, _ ->
+                val dialog = this.context?.let { context ->
+                    AlertDialog.Builder(context)
+                        .setTitle("邀請通知")
+                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
+                        .setPositiveButton("接受") { _, _ ->
 
                             viewModel.confirmInvite(invite)
 
@@ -132,10 +132,12 @@ class PetProfileFragment : Fragment() {
                             newList.addAll(inviteList)
                             newList.removeAt(0)
                             viewModel.showInvite(newList)
-                        }.setNegativeButton("拒絕") { _, _ ->
-
-                        }.setNeutralButton("再考慮") { _, _ ->
-
+                        }
+                        .setNeutralButton("再想想") { _, _ ->
+                            val newList = mutableListOf<Invite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
                         }.create()
 
                 }

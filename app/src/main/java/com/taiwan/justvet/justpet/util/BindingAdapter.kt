@@ -17,6 +17,7 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
+import com.taiwan.justvet.justpet.family.FamilyAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
 import com.taiwan.justvet.justpet.tag.PetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
@@ -164,6 +165,19 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
                         it.size -> notifyDataSetChanged()
                         else -> submitList(it)
                     }
+                }
+            }
+        }
+    }
+}
+
+@BindingAdapter("listOfFamily")
+fun bindRecyclerViewWithFamily(recyclerView: RecyclerView, list: List<String>?) {
+    list?.let {
+        recyclerView.adapter?.apply {
+            when (this) {
+                is FamilyAdapter -> {
+                    submitList(it)
                 }
             }
         }

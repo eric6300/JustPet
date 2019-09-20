@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.databinding.ItemHomeNotificationBinding
 
-class EventNotificationAdapter(val viewModel: PetProfileViewModel, val onClickListener: OnClickListener) :
+class EventNotificationAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
     ListAdapter<EventNotification, EventNotificationAdapter.ViewHolder>(EventDiffCallback()) {
 
     private lateinit var context: Context
@@ -46,7 +46,7 @@ class EventNotificationAdapter(val viewModel: PetProfileViewModel, val onClickLi
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemHomeNotificationBinding, val viewModel: PetProfileViewModel) :
+    class ViewHolder(val binding: ItemHomeNotificationBinding, val viewModel: HomeViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)

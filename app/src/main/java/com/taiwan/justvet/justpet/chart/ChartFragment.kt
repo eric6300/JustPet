@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.chart
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,6 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
@@ -212,13 +210,13 @@ class ChartFragment : Fragment() {
         dataset.setDrawValues(true)
         dataset.valueFormatter = SyndromeFormatter()
         dataset.valueTextSize = 16f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
-        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.colorDiaryDark)
+        dataset.color = JustPetApplication.appContext.getColor(R.color.colorGrey)
+        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.colorGrey)
         dataset.lineWidth = 2f
-        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.colorDiaryDark))
+        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.colorGrey))
         dataset.circleRadius = 4f
         dataset.valueFormatter = WeightChartFormatter()
-        weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.05).toFloat()
+        weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.005).toFloat()
 
         weightChart.data = LineData(dataset)
         val markerView = WeightMarkerView()
@@ -245,7 +243,7 @@ class ChartFragment : Fragment() {
         dataset.setDrawValues(true)
         dataset.valueFormatter = SyndromeFormatter()
         dataset.valueTextSize = 14f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.colorDiary)
+        dataset.color = JustPetApplication.appContext.getColor(R.color.colorGrey)
 
         syndromeChart.data = BarData(dataset)
         syndromeChart.moveViewToX(9.5f)

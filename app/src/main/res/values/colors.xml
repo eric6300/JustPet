@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryLight">#d3b8ae</color>
-    <color name="colorPrimary">#a1887f</color>
-    <color name="colorPrimaryDark">#725b53</color>
+    <color name="colorPrimaryLight">#be9c91</color>
+    <color name="colorPrimary">#8d6e63</color>
+    <color name="colorPrimaryDark">#5f4339</color>
     <color name="colorAccent">#63828D</color>
 
 
@@ -24,6 +24,9 @@
 
     <color name="colorDeleteRed">#EF3D56</color>
     <color name="colorEditGreen">#7ab800</color>
+
+    <color name="colorGrey">#bdbdbd</color>
+    <color name="colorBlack424242">#9e9e9e</color>
 
 
 </resources>

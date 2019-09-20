@@ -19,6 +19,8 @@ import com.taiwan.justvet.justpet.event.EditEventViewModel
 
 class FamilyDialog : AppCompatDialogFragment() {
 
+    private lateinit var binding: DialogFamilyBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog_MinWidth)
@@ -30,20 +32,22 @@ class FamilyDialog : AppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding: DialogFamilyBinding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             inflater, R.layout.dialog_family, container, false
         )
-        binding.lifecycleOwner = this
+
         val petProfile = FamilyDialogArgs.fromBundle(arguments!!).petProfile
         val viewModel =
             ViewModelProviders.of(this, FamilyViewModelFactory(petProfile))
                 .get(FamilyViewModel::class.java)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.listFamily.adapter = FamilyAdapter(viewModel)
 
-        viewModel.sendInviteCompleted.observe(this, Observer {
+        viewModel.leaveDialog.observe(this, Observer {
             if (it) {
-                findNavController().navigate(R.id.navigate_to_petProfileFragment)
-                viewModel.sendInviteCompleted()
+                findNavController().popBackStack()
+                viewModel.leaveDialogComplete()
             }
         })
 

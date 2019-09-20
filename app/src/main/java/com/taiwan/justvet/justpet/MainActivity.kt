@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_bottom_home -> {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileFragment)
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
                     return@OnNavigationItemSelectedListener true
                 }
                 R.id.nav_bottom_calendar -> {
@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun setupNavController() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
-                R.id.petProfileFragment -> CurrentFragmentType.HOME
+                R.id.homeFragment -> CurrentFragmentType.HOME
                 R.id.calendarFragment -> CurrentFragmentType.CALENDAR
                 R.id.chartFragment -> CurrentFragmentType.CHART
                 R.id.toolFragment -> CurrentFragmentType.TOOL

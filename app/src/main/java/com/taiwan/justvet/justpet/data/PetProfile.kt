@@ -14,6 +14,8 @@ data class PetProfile(
     val birthday: Long? = 0,
     val idNumber: String? = "",
     val owner: String?,
+    val ownerEmail: String?,
+    val family: List<String>? = mutableListOf(),
     val image: String? = null,
-    val notifications: List<EventNotification>? = null
+    @get:Exclude val notifications: List<EventNotification>? = null
 ) : Parcelable

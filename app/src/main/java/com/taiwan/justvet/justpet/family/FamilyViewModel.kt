@@ -9,14 +9,24 @@ import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.data.UserProfile
 
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
-    val inviteeEmail = MutableLiveData<String>()
+    private val _leaveDialog = MutableLiveData<Boolean>()
+    val leaveDialog: LiveData<Boolean>
+        get() = _leaveDialog
 
-    private val _sendInviteCompleted = MutableLiveData<Boolean>()
-    val sendInviteCompleted: LiveData<Boolean>
-        get() = _sendInviteCompleted
+    private val _expandStatus = MutableLiveData<Boolean>()
+    val expandStatus: LiveData<Boolean>
+        get() = _expandStatus
+
+    val inviteeEmail = MutableLiveData<String>()
+    val ownerEmail = petProfile.ownerEmail
+    val userEmail: String?
+        get() = UserManager.userEmail.value
+
+    val isOwner = ownerEmail.equals(userEmail)
 
     val firebase = FirebaseFirestore.getInstance()
     val usersReference = firebase.collection("users")
@@ -65,15 +75,15 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                 Log.d(ERIC, "$userProfile")
                 inviteReference.add(
                     Invite(
-                        petId = "5DjrhdAlZka29LSmOe12",
-                        petName = "MeiMei",
+                        petId = petProfile.profileId,
+                        petName = petProfile.name,
                         inviteeEmail = inviteeEmail,
                         inviterName = UserManager.userName.value,
                         inviterEmail = userProfile.email
                     )
                 ).addOnSuccessListener {
                     Log.d(ERIC, "sendInvite() succeeded , ID : ${it.id}")
-                    _sendInviteCompleted.value = true
+                    leaveDialog()
                 }.addOnFailureListener {
                     Log.d(ERIC, "sendInvite() failed : $it")
                 }
@@ -81,8 +91,20 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         }
     }
 
-    fun sendInviteCompleted() {
-        _sendInviteCompleted.value = false
+    fun leaveDialog() {
+        _leaveDialog.value = true
+    }
+
+    fun leaveDialogComplete() {
+        _leaveDialog.value = false
+    }
+
+    fun expandDialog() {
+        if (_expandStatus.value != true) {
+            _expandStatus.value = true
+        } else {
+            _expandStatus.value = null
+        }
     }
 
 }

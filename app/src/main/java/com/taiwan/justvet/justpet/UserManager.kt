@@ -25,6 +25,10 @@ object UserManager {
     val userName: LiveData<String>
         get() = _userName
 
+    private val _userEmail = MutableLiveData<String>()
+    val userEmail: LiveData<String>
+        get() = _userEmail
+
     fun getFirebaseUser(firebaseUser: FirebaseUser) {
         firebaseUser.apply {
             _userProfile.value = UserProfile(
@@ -35,6 +39,7 @@ object UserManager {
                 photoUrl = this.photoUrl
             )
             _userName.value = this.displayName
+            _userEmail.value = this.email
         }
         _getFirebaseUserCompleted.value = true
     }

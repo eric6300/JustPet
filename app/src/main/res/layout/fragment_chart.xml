@@ -45,7 +45,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:borderColor="@color/colorDiary"
+                app:borderColor="@color/colorBlack424242"
                 app:borderWidth="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +53,8 @@
                 app:position="0"
                 app:radius="5dp"
                 app:ripple="true"
-                app:rippleColor="@color/colorDiary"
-                app:selectedBackground="@color/colorDiary"
+                app:rippleColor="@color/colorBlack424242"
+                app:selectedBackground="@color/colorBlack424242"
                 app:selectedButtonRadius="5dp"
                 app:selectionAnimationDuration="@android:integer/config_shortAnimTime"
                 app:selectionAnimationInterpolator="fastOutSlowIn">
@@ -68,7 +68,6 @@
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
                     app:text="@string/text_three_months"
-                    app:textColor="@android:color/background_dark"
                     app:textSize="18sp" />
 
                 <com.addisonelliott.segmentedbutton.SegmentedButton
@@ -80,7 +79,6 @@
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
                     app:text="@string/text_six_month"
-                    app:textColor="@android:color/background_dark"
                     app:textSize="18sp" />
 
                 <com.addisonelliott.segmentedbutton.SegmentedButton
@@ -92,7 +90,6 @@
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
                     app:text="@string/text_one_year"
-                    app:textColor="@android:color/background_dark"
                     app:textSize="18sp" />
 
             </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>

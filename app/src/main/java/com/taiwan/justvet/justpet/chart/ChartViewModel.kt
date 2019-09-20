@@ -96,7 +96,10 @@ class ChartViewModel : ViewModel() {
                                 neutered = document["neutered"] as Boolean?,
                                 birthday = document["birthday"] as Long?,
                                 idNumber = document["idNumber"] as String?,
-                                owner = document["owner"] as String?
+                                owner = document["owner"] as String?,
+                                ownerEmail = document["ownerEmail"] as String?,
+                                family = document["family"] as List<String>?,
+                                image = document["image"] as String?
                             )
                             petProfileData.add(petProfile)
                             petProfileData.sortBy { it.profileId }

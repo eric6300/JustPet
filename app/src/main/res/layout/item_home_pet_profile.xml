@@ -11,7 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.taiwan.justvet.justpet.home.PetProfileViewModel" />
+            type="com.taiwan.justvet.justpet.home.HomeViewModel" />
 
         <variable
             name="converter"
@@ -87,15 +87,28 @@
                     app:layout_constraintEnd_toEndOf="@+id/image_pet" />
 
                 <ImageView
+                    android:id="@+id/icon_family"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_achievement"
+                    android:backgroundTint="@android:color/background_light"
+                    android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toEndOf="@+id/text_name_pet"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
                     android:id="@+id/icon_edit"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:onClick="@{() -> viewModel.modifyPetProfile()}"
                     android:visibility="@{viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_edit_white" />
 
                 <TextView
@@ -113,19 +126,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/filter_image"
                     tools:text="MeiMei" />
-
-                <ImageView
-                    android:id="@+id/icon_achievement"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/ic_achievement"
-                    android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
-                    android:visibility="visible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_name_pet" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/detail_pet_profile"
