@@ -54,7 +54,7 @@ class PetProfileFragment : Fragment() {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.getPetProfileData(userProfile)
-//                    viewModel.checkInvite()
+                    viewModel.checkInvite()
                     UserManager.refreshUserProfileCompleted()
                 }
             }
@@ -80,8 +80,8 @@ class PetProfileFragment : Fragment() {
         })
 
         viewModel.navigateToAchievement.observe(this, Observer {
-            if (it == true) {
-                findNavController().navigate(NavGraphDirections.navigateToFamilyDialog())
+            it?.let {
+                findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
                 viewModel.navigateToAchievementCompleted()
             }
         })

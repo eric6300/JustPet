@@ -8,8 +8,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.PetProfile
 
-class FamilyViewModel : ViewModel() {
+class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     val inviteeEmail = MutableLiveData<String>()
 

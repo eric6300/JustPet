@@ -26,7 +26,11 @@
     <dialog
         android:id="@+id/familyDialog"
         android:name="com.taiwan.justvet.justpet.family.FamilyDialog"
-        android:label="FamilyDialog" />
+        android:label="FamilyDialog" >
+        <argument
+            android:name="petProfile"
+            app:argType="com.taiwan.justvet.justpet.data.PetProfile" />
+    </dialog>
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
@@ -49,10 +53,6 @@
         android:label="PetProfileDialogFragment" />
 
     <action
-        android:id="@+id/navigate_to_homeFragment"
-        app:destination="@id/homeFragment"
-        app:popUpTo="@+id/nav_graph" />
-    <action
         android:id="@+id/navigate_to_calendarFragment"
         app:destination="@id/calendarFragment"
         app:popUpTo="@+id/nav_graph" />
@@ -69,7 +69,10 @@
     <action
         android:id="@+id/navigate_to_petProfileDialogFragment"
         app:destination="@id/petProfileDialogFragment"
-        app:popUpTo="@+id/homeFragment" />
-    <action android:id="@+id/navigate_to_petProfileFragment" app:destination="@id/petProfileFragment" />
+        app:popUpTo="@+id/petProfileFragment" />
+    <action
+        android:id="@+id/navigate_to_petProfileFragment"
+        app:destination="@id/petProfileFragment"
+        app:popUpTo="@+id/nav_graph" />
 
 </navigation>

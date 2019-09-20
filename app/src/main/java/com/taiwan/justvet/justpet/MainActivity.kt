@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
             R.id.new_family_member -> {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_familyDialog)
+
             }
             R.id.nav_slideshow -> {
 

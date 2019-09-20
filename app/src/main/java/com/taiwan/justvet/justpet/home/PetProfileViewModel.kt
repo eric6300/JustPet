@@ -21,7 +21,7 @@ import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 
-class PetProfileViewModel : ViewModel() {
+class PetProfileViewModel() : ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
@@ -43,8 +43,8 @@ class PetProfileViewModel : ViewModel() {
     val birthdayChange: LiveData<Boolean>
         get() = _birthdayChange
 
-    private val _navigateToAchievement = MutableLiveData<Boolean>()
-    val navigateToAchievement: LiveData<Boolean>
+    private val _navigateToAchievement = MutableLiveData<PetProfile>()
+    val navigateToAchievement: LiveData<PetProfile>
         get() = _navigateToAchievement
 
     private val _startGallery = MutableLiveData<Boolean>()
@@ -86,7 +86,7 @@ class PetProfileViewModel : ViewModel() {
 
     init {
         calculateTimestamp()
-        checkInvite()
+//        checkInvite()
         userProfile.value?.let { userProfile ->
             getPetProfileData(userProfile)
         }
@@ -173,7 +173,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun updatePetProfileFamily(petId: String?) {
+    private fun updatePetProfileFamily(petId: String?) {
         petId?.let {
             petsReference.document(it)
                 .update("family", FieldValue.arrayUnion(userProfile.value?.profileId))
@@ -185,7 +185,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun updateUserProfile(invite: Invite) {
+    private fun updateUserProfile(invite: Invite) {
         userProfile.value?.profileId?.let {
             userReference.document(it)
                 .update("pets", FieldValue.arrayUnion(invite.petId))
@@ -197,7 +197,7 @@ class PetProfileViewModel : ViewModel() {
         }
     }
 
-    fun deleteInvite(invite: Invite) {
+    private fun deleteInvite(invite: Invite) {
         invite.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
@@ -442,8 +442,8 @@ class PetProfileViewModel : ViewModel() {
         _birthdayChange.value = false
     }
 
-    fun navigateToAchievement() {
-        _navigateToAchievement.value = true
+    fun navigateToAchievement(petProfile: PetProfile) {
+        _navigateToAchievement.value = petProfile
     }
 
     fun navigateToAchievementCompleted() {

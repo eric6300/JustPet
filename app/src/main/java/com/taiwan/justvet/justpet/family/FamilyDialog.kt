@@ -15,12 +15,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogFamilyBinding
+import com.taiwan.justvet.justpet.event.EditEventViewModel
 
 class FamilyDialog : AppCompatDialogFragment() {
-
-    private val viewModel: FamilyViewModel by lazy {
-        ViewModelProviders.of(this).get(FamilyViewModel::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +34,15 @@ class FamilyDialog : AppCompatDialogFragment() {
             inflater, R.layout.dialog_family, container, false
         )
         binding.lifecycleOwner = this
+        val petProfile = FamilyDialogArgs.fromBundle(arguments!!).petProfile
+        val viewModel =
+            ViewModelProviders.of(this, FamilyViewModelFactory(petProfile))
+                .get(FamilyViewModel::class.java)
         binding.viewModel = viewModel
 
         viewModel.sendInviteCompleted.observe(this, Observer {
             if (it) {
-                findNavController().navigate(R.id.navigate_to_homeFragment)
+                findNavController().navigate(R.id.navigate_to_petProfileFragment)
                 viewModel.sendInviteCompleted()
             }
         })
