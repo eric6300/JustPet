@@ -86,7 +86,6 @@ class HomeViewModel() : ViewModel() {
 
     init {
         calculateTimestamp()
-//        checkInvite()
         userProfile.value?.let { userProfile ->
             getPetProfileData(userProfile)
         }

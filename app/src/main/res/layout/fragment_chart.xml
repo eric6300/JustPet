@@ -15,19 +15,20 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/background_color">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_of_profile_chart"
+                listOfProfile="@{viewModel.listOfProfile}"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="16dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                listOfProfile="@{viewModel.listOfProfile}"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ru.tinkoff.scrollingpagerindicator.ScrollingPagerIndicator
                 android:id="@+id/indicator_list_of_profile_chart"
@@ -45,7 +46,8 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                app:borderColor="@color/colorBlack424242"
+                android:background="@android:color/background_light"
+                app:borderColor="@color/colorPrimary"
                 app:borderWidth="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +55,8 @@
                 app:position="0"
                 app:radius="5dp"
                 app:ripple="true"
-                app:rippleColor="@color/colorBlack424242"
-                app:selectedBackground="@color/colorBlack424242"
+                app:rippleColor="@color/colorPrimary"
+                app:selectedBackground="@color/colorPrimary"
                 app:selectedButtonRadius="5dp"
                 app:selectionAnimationDuration="@android:integer/config_shortAnimTime"
                 app:selectionAnimationInterpolator="fastOutSlowIn">
@@ -67,6 +69,7 @@
                     android:padding="8dp"
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
+
                     app:text="@string/text_three_months"
                     app:textSize="18sp" />
 

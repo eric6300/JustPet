@@ -207,7 +207,7 @@ class HomeFragment : Fragment() {
         listEventNotification.apply {
             this.adapter = notificationAdapter
             PagerSnapHelper().attachToRecyclerView(this)
-            enableSwipe(this)
+//            enableSwipe(this)
         }
     }
 
@@ -228,9 +228,6 @@ class HomeFragment : Fragment() {
                         Log.d(ERIC, "完成並詢問要不要設定推播")
                         // TODO 推播詢問及設定
                     }
-//                    eventList.removeAt(viewHolder.adapterPosition)
-//                    notificationAdapter.submitList(eventList)
-//                    notificationAdapter.notifyDataSetChanged()
                     // TODO deleted
                 }
 
@@ -353,21 +350,6 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
-
-//            PHOTO_FROM_CAMERA -> {
-//                when (resultCode) {
-//                    Activity.RESULT_OK -> {
-//                        if (eventPicture.visibility == View.GONE) {
-//                            eventPicture.visibility = View.VISIBLE
-//                        }
-//                        Glide.with(this).load(saveUri).into(eventPicture)
-//                    }
-//                    Activity.RESULT_CANCELED -> {
-//                        Log.wtf("getImageResult", resultCode.toString())
-//                    }
-//                }
-//
-//            }
         }
     }
 }

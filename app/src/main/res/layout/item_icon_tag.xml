@@ -16,7 +16,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/background_light">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_tag_background"
@@ -63,6 +64,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="@{eventTag.title}"
                 android:textAlignment="center"
+                android:textColor="@{eventTag.isSelected != true ? @android:color/secondary_text_light : @android:color/background_light}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

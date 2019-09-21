@@ -14,7 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/background_color">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_pet_event"
@@ -43,20 +44,23 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/roboto_mono"
                     android:text="@{event.petName}"
-                    android:textSize="18sp"
+                    android:textSize="24sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="MeiMei" />
 
                 <TextView
                     android:id="@+id/text_event_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/roboto_mono"
                     android:text="@{event.time}"
-                    app:layout_constraintBottom_toBottomOf="@+id/list_of_tags"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/list_of_tags" />
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_calendar_pet_name"
+                    app:layout_constraintStart_toEndOf="@+id/text_calendar_pet_name"
+                    app:layout_constraintTop_toTopOf="@+id/text_calendar_pet_name"
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_of_tags"
@@ -64,12 +68,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ic_delete"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_calendar_pet_name" />
 
@@ -78,11 +82,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
-                    android:background="@android:drawable/ic_menu_delete"
+                    android:background="@drawable/ic_close"
                     android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="@+id/text_calendar_pet_name"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/text_calendar_pet_name" />
+                    app:layout_constraintTop_toTopOf="@+id/text_calendar_pet_name"
+                    app:layout_constraintVertical_bias="0.0" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

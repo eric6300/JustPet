@@ -67,7 +67,6 @@
                 android:id="@+id/nav_bottom_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/windowBackground"
                 android:visibility="@{viewModel.currentFragmentType == CurrentFragmentType.EVENT ? View.GONE : View.VISIBLE }"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

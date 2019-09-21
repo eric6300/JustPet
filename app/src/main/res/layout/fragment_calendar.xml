@@ -10,8 +10,9 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -37,12 +38,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:mcv_calendarMode="month"
+                    app:mcv_dateTextAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:mcv_headerTextAppearance="@style/TextAppearance.AppCompat.Large"
-                    app:mcv_selectionColor="@color/colorPrimary"
+                    app:mcv_selectionColor="@color/grey_bdbdbd"
                     app:mcv_selectionMode="single"
                     app:mcv_showOtherDates="defaults"
-                    app:mcv_weekDayTextAppearance="@style/TextAppearance.AppCompat.Medium"
-                    app:mcv_dateTextAppearance="@style/TextAppearance.AppCompat.Medium">
+                    app:mcv_weekDayTextAppearance="@style/TextAppearance.AppCompat.Medium">
 
                 </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
 

@@ -210,10 +210,10 @@ class ChartFragment : Fragment() {
         dataset.setDrawValues(true)
         dataset.valueFormatter = SyndromeFormatter()
         dataset.valueTextSize = 16f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.colorGrey)
-        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.colorGrey)
+        dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
+        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
         dataset.lineWidth = 2f
-        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.colorGrey))
+        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.grey_bdbdbd))
         dataset.circleRadius = 4f
         dataset.valueFormatter = WeightChartFormatter()
         weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.005).toFloat()
@@ -243,7 +243,7 @@ class ChartFragment : Fragment() {
         dataset.setDrawValues(true)
         dataset.valueFormatter = SyndromeFormatter()
         dataset.valueTextSize = 14f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.colorGrey)
+        dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
 
         syndromeChart.data = BarData(dataset)
         syndromeChart.moveViewToX(9.5f)

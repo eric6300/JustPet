@@ -64,7 +64,7 @@
                     android:id="@+id/filter_image"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:background="@color/translucent_40"
+                    android:background="@drawable/filter_image"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
@@ -91,13 +91,13 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
                     android:background="@drawable/ic_achievement"
                     android:backgroundTint="@android:color/background_light"
                     android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
                     android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_name_pet"
                     app:layout_constraintStart_toEndOf="@+id/text_name_pet"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/text_name_pet" />
 
                 <ImageView
                     android:id="@+id/icon_edit"
@@ -116,15 +116,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:fontFamily="@font/roboto_mono"
                     android:gravity="bottom"
                     android:text="@{petProfile.name}"
                     android:textColor="@android:color/background_light"
                     android:textSize="24sp"
                     android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/filter_image"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
+                    app:layout_constraintStart_toStartOf="@id/image_pet"
                     tools:text="MeiMei" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
