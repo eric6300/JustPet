@@ -94,7 +94,7 @@
                     android:background="@drawable/ic_achievement"
                     android:backgroundTint="@android:color/background_light"
                     android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
-                    android:visibility="visible"
+                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/text_name_pet"
                     app:layout_constraintStart_toEndOf="@+id/text_name_pet"
                     app:layout_constraintTop_toTopOf="@+id/text_name_pet" />

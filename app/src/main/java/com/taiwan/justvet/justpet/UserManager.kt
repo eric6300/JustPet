@@ -34,7 +34,7 @@ object UserManager {
             _userProfile.value = UserProfile(
                 uid = this.uid,
                 email = this.email,
-                pets = mutableListOf(),
+                pets = emptyList(),
                 displayName = this.displayName,
                 photoUrl = this.photoUrl
             )

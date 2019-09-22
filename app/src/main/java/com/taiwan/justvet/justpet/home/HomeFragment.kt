@@ -88,8 +88,12 @@ class HomeFragment : Fragment() {
 
         viewModel.petList.observe(this, Observer {
             it?.let {
-                profileAdapter.submitList(it)
-                profileAdapter.notifyDataSetChanged()
+                if (it.isNotEmpty()) {
+                    profileAdapter.submitList(it)
+                    profileAdapter.notifyDataSetChanged()
+                } else {
+                    binding.cardAddNewPet.visibility = View.VISIBLE
+                }
             }
         })
 
@@ -143,6 +147,13 @@ class HomeFragment : Fragment() {
                 }
 
                 dialog?.show()
+            }
+        })
+
+        viewModel.navigateToNewPet.observe(this, Observer {
+            if (it) {
+                findNavController().navigate(NavGraphDirections.navigateToPetProfileDialogFragment())
+                viewModel.navigateToNewPetCompleted()
             }
         })
 

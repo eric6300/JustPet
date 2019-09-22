@@ -32,9 +32,9 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
             override fun getOutline(view: View, outline: Outline?) {
                 viewModel.isModified.value.let {
                     if (it == true) {
-                        outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
+                        outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else {
-                        outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                        outline?.setRoundRect(0, 0, view.width, view.height, 36F)
                     }
                 }
             }
@@ -46,9 +46,9 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
             override fun getOutline(view: View, outline: Outline?) {
                 viewModel.isModified.value.let {
                     if (it == true) {
-                        outline?.setRoundRect(0, 0, view.width, view.height + 24, 24F)
+                        outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else{
-                        outline?.setRoundRect(0, 0, view.width, view.height, 24F)
+                        outline?.setRoundRect(0, 0, view.width, view.height, 36F)
                     }
                 }
             }

@@ -41,11 +41,11 @@ const val EVENTS = "events"
 const val TAGS = "tags"
 const val UID = "uid"
 const val ERIC = "testEric"
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private var user: FirebaseUser? = null
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -174,16 +174,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-//        val drawerLayout = binding.drawerLayout
-//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//            drawerLayout.closeDrawer(GravityCompat.START)
-//        } else {
-//            super.onBackPressed()
-//        }
-
-        if (user == null) {
-            this.finishAndRemoveTask()
-            Log.d(ERIC, "finishAndRemoveTask()")
+        val drawerLayout = binding.drawerLayout
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -227,7 +220,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val authListener: FirebaseAuth.AuthStateListener =
             FirebaseAuth.AuthStateListener { auth: FirebaseAuth ->
-                user = auth.currentUser
+                val user = auth.currentUser
                 if (user == null) {
                     val intent = AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -239,9 +232,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .build()
                     startActivityForResult(intent, RC_SIGN_IN)
                 } else {
-                    user?.let {
-                        UserManager.getFirebaseUser(it)
-                    }
+                    UserManager.getFirebaseUser(user)
                 }
             }
 

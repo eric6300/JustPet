@@ -120,25 +120,29 @@ class PetProfileViewModel : ViewModel() {
     }
 
     private fun uploadPetImage(petId: String) {
-        petImage.value?.let {
-            val imageRef = storageReference.child("profile/$petId")
-            imageRef.putFile(it.toUri())
-                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            throw it
+        if (petImage.value != null) {
+            petImage.value?.let {
+                val imageRef = storageReference.child("profile/$petId")
+                imageRef.putFile(it.toUri())
+                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                        if (!task.isSuccessful) {
+                            task.exception?.let {
+                                throw it
+                            }
                         }
+                        return@Continuation imageRef.downloadUrl
+                    }).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            val downloadUri = task.result
+                            Log.d(ERIC, "downloadUri : $downloadUri")
+                            updateProfileImageUrl(petId, downloadUri)
+                        }
+                    }.addOnFailureListener {
+                        Log.d(ERIC, "uploadImage failed : $it")
                     }
-                    return@Continuation imageRef.downloadUrl
-                }).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val downloadUri = task.result
-                        Log.d(ERIC, "downloadUri : $downloadUri")
-                        updateProfileImageUrl(petId, downloadUri)
-                    }
-                }.addOnFailureListener {
-                    Log.d(ERIC, "uploadImage failed : $it")
-                }
+            }
+        } else {
+            navigateToHomeFragment()
         }
     }
 

@@ -47,6 +47,10 @@ class HomeViewModel() : ViewModel() {
     val navigateToAchievement: LiveData<PetProfile>
         get() = _navigateToAchievement
 
+    private val _navigateToNewPet = MutableLiveData<Boolean>()
+    val navigateToNewPet: LiveData<Boolean>
+        get() = _navigateToNewPet
+
     private val _startGallery = MutableLiveData<Boolean>()
     val startGallery: LiveData<Boolean>
         get() = _startGallery
@@ -86,8 +90,9 @@ class HomeViewModel() : ViewModel() {
 
     init {
         calculateTimestamp()
-        userProfile.value?.let { userProfile ->
+        UserManager.userProfile.value?.let { userProfile ->
             getPetProfileData(userProfile)
+            Log.d(ERIC, "initial")
         }
     }
 
@@ -209,32 +214,37 @@ class HomeViewModel() : ViewModel() {
 
     fun getPetProfileData(userProfile: UserProfile) {
         val petData = mutableListOf<PetProfile>()
-        userProfile.pets?.forEach {
-            petsReference.document(it).get()
-                .addOnSuccessListener { profile ->
-                    petData.add(
-                        PetProfile(
-                            profileId = profile.id,
-                            name = profile["name"] as String?,
-                            species = profile["species"] as Long?,
-                            gender = profile["gender"] as Long?,
-                            neutered = profile["neutered"] as Boolean?,
-                            birthday = profile["birthday"] as Long?,
-                            idNumber = profile["idNumber"] as String?,
-                            owner = profile["owner"] as String?,
-                            ownerEmail = profile["ownerEmail"] as String?,
-                            family = profile["family"] as List<String>?,
-                            image = profile["image"] as String?
+        if (userProfile.pets?.size != 0) {
+            userProfile.pets?.forEach {
+                petsReference.document(it).get()
+                    .addOnSuccessListener { profile ->
+                        petData.add(
+                            PetProfile(
+                                profileId = profile.id,
+                                name = profile["name"] as String?,
+                                species = profile["species"] as Long?,
+                                gender = profile["gender"] as Long?,
+                                neutered = profile["neutered"] as Boolean?,
+                                birthday = profile["birthday"] as Long?,
+                                idNumber = profile["idNumber"] as String?,
+                                owner = profile["owner"] as String?,
+                                ownerEmail = profile["ownerEmail"] as String?,
+                                family = profile["family"] as List<String>?,
+                                image = profile["image"] as String?
+                            )
                         )
-                    )
-                    petData.sortBy { it.profileId }
-                    _petList.value = petData
-                    Log.d(ERIC, "getPetProfileData() succeeded")
-                    Log.d(ERIC, "getPetProfileData : $petData")
-                }
-                .addOnFailureListener {
-                    Log.d(ERIC, "getPetProfileData() failed: $it")
-                }
+                        petData.sortBy { it.profileId }
+                        _petList.value = petData
+                        Log.d(ERIC, "getPetProfileData() succeeded")
+                        Log.d(ERIC, "getPetProfileData : $petData")
+                    }
+                    .addOnFailureListener {
+                        Log.d(ERIC, "getPetProfileData() failed: $it")
+                    }
+            }
+        } else {
+            _petList.value = petData
+            Log.d(ERIC, "viewModel petList = zero")
         }
     }
 
@@ -451,7 +461,7 @@ class HomeViewModel() : ViewModel() {
         _navigateToAchievement.value = null
     }
 
-    fun refreshPetProfile() {
+    private fun refreshPetProfile() {
         userProfile.value?.let { userProfile ->
             getPetProfileData(userProfile)
         }
@@ -471,6 +481,14 @@ class HomeViewModel() : ViewModel() {
 
     fun startGalleryCompleted() {
         _startGallery.value = false
+    }
+
+    fun navigateToNewPet() {
+        _navigateToNewPet.value = true
+    }
+
+    fun navigateToNewPetCompleted() {
+        _navigateToNewPet.value = false
     }
 
 }

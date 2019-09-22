@@ -10,7 +10,7 @@ data class UserProfile(
     @get:Exclude val profileId: String? = null,
     val uid: String?,
     val email: String?,
-    @get:Exclude val pets: List<String>? = null,
+    val pets: List<String>? = null,
     @get:Exclude val displayName: String? = null,
     @get:Exclude val photoUrl: Uri? = null
 ) : Parcelable

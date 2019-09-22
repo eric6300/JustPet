@@ -23,15 +23,19 @@ class MainViewModel : ViewModel() {
     val userPhotoUrl: LiveData<Uri>
         get() = _userPhotoUrl
 
+    private val _navigateToHome = MutableLiveData<Boolean>()
+    val navigateToHome: LiveData<Boolean>
+        get() = _navigateToHome
+
     // Record current fragment to support data binding
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val users = firebase.collection(USERS)
+    val usersReference = firebase.collection(USERS)
 
     fun checkUserProfile(userProfile: UserProfile) {
         userProfile.uid?.let { uid ->
-            users.whereEqualTo(UID, uid).get()
+            usersReference.whereEqualTo(UID, uid).get()
                 .addOnSuccessListener {
                     if (it.size() == 0) {
                         registerUserProfile(userProfile)
@@ -55,11 +59,12 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun registerUserProfile(userProfile: UserProfile) {
+    private fun registerUserProfile(userProfile: UserProfile) {
         userProfile.uid?.let {
-            users.add(userProfile)
+            usersReference.add(userProfile)
                 .addOnSuccessListener {
                     Log.d(ERIC, "registerUserProfile() succeeded")
+                    checkUserProfile(userProfile)
                 }
                 .addOnFailureListener {
                     Log.d(ERIC, "registerUserProfile() failed : $it")
