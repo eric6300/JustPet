@@ -7,6 +7,7 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.home.HomeViewModel" />
+        <import type="android.view.View"/>
     </data>
 
     <ScrollView
@@ -45,17 +46,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/title_notification"
                 tools:listitem="@layout/item_home_notification" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/title_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/text_tody_notification"
                 android:textSize="18sp"
+                android:visibility="@{viewModel.petList.size() > 0 ? View.VISIBLE : View.GONE }"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/indicator_profile_pet" />
 
