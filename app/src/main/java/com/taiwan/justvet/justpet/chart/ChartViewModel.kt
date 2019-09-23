@@ -147,6 +147,7 @@ class ChartViewModel : ViewModel() {
                                 ERIC,
                                 "${petProfile.name} doesn't have event contains tag of vomit"
                             )
+                            sortSyndromeData(12)
                         }
                     }.addOnFailureListener {
                         Log.d(ERIC, "getSyndromeData() failed : $it")

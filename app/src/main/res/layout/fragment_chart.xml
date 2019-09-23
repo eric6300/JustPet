@@ -128,7 +128,9 @@
                         app:layout_constraintDimensionRatio="1.77:1"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/title_weight" />
+                        app:layout_constraintTop_toBottomOf="@+id/title_weight" >
+
+                    </com.github.mikephil.charting.charts.LineChart>
 
                     <TextView
                         android:id="@+id/title_weight"
@@ -141,6 +143,20 @@
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_no_weight_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="目前沒有足夠數據繪製圖表\n趕緊量體重吧"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/graph_weight"
+                        app:layout_constraintEnd_toEndOf="@+id/graph_weight"
+                        app:layout_constraintStart_toStartOf="@+id/graph_weight"
+                        app:layout_constraintTop_toTopOf="@+id/graph_weight"
+                        tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
@@ -150,7 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="5dp"
@@ -191,6 +207,20 @@
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/text_no_syndrome_data"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="這段期間沒有症狀"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/graph_syndrome"
+                        app:layout_constraintEnd_toEndOf="@+id/graph_syndrome"
+                        app:layout_constraintStart_toStartOf="@+id/graph_syndrome"
+                        app:layout_constraintTop_toTopOf="@+id/graph_syndrome"
+                        tools:visibility="visible" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

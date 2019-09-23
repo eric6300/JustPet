@@ -38,6 +38,9 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
+    private var threeMonthsDataSize = 0
+    private var sixMonthsDataSize = 0
+    private var oneYearDataSize = 0
     private val viewModel: ChartViewModel by lazy {
         ViewModelProviders.of(this).get(ChartViewModel::class.java)
     }
@@ -129,6 +132,7 @@ class ChartFragment : Fragment() {
         weightChart.setDrawGridBackground(false)
         // disable legend
         weightChart.legend.isEnabled = false
+        weightChart.setNoDataText("")
 
         // set X axis
         val xAxis = weightChart.xAxis
@@ -157,19 +161,16 @@ class ChartFragment : Fragment() {
 
     private fun setupSyndromeChart() {
         syndromeChart = binding.graphSyndrome
-
         syndromeChart.setExtraOffsets(10f, 30f, 10f, 10f)
-
         // disable scaling, dragging and zooming
         syndromeChart.isDragEnabled = false
         syndromeChart.setScaleEnabled(false)
         syndromeChart.setPinchZoom(false)
-
         // disable grid background
         syndromeChart.setDrawGridBackground(false)
-
         // disable legend
         syndromeChart.legend.isEnabled = false
+        syndromeChart.setNoDataText("")
 
         // set X axis
         val xAxis = syndromeChart.xAxis
@@ -201,7 +202,6 @@ class ChartFragment : Fragment() {
         val entries = ArrayList<Entry>()
         for (event in weightData) {
             event.timestamp?.let { timestamp ->
-
                 event.weight?.let { weight ->
                     entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
                 }
@@ -235,10 +235,31 @@ class ChartFragment : Fragment() {
         val entries = ArrayList<BarEntry>()
         var i = 1f
         for (date in syndromeData.keys) {
-            syndromeData[date]?.size?.let {
-                entries.add(BarEntry(i, it.toFloat()))
-                i += 1
+            syndromeData[date]?.let {
+
             }
+
+            syndromeData[date]?.size?.let {
+                if (i in 1f..12f) {
+                    oneYearDataSize += it
+                }
+                if (i in 7f..12f) {
+                    sixMonthsDataSize += it
+                }
+                if (i in 10f..12f) {
+                    threeMonthsDataSize += it
+                }
+                entries.add(BarEntry(i, it.toFloat()))
+                i += 1f
+            }
+        }
+
+        Log.d(ERIC, "three month : $threeMonthsDataSize")
+        Log.d(ERIC, "six month : $sixMonthsDataSize")
+        Log.d(ERIC, "one year : $oneYearDataSize")
+
+        if (threeMonthsDataSize == 0) {
+            binding.textNoSyndromeData.visibility = View.VISIBLE
         }
 
         // set DataSet
@@ -258,6 +279,7 @@ class ChartFragment : Fragment() {
     }
 
     private fun setupSegmentedButtonGroup() {
+        val noSyndromeDataText = binding.textNoSyndromeData
         binding.filterChartGroup.setOnPositionChangedListener { index ->
             when (index) {
                 0 -> {
@@ -268,6 +290,13 @@ class ChartFragment : Fragment() {
                         it.moveViewToX(9.5f)
                         it.setVisibleXRangeMaximum(3f)
                     }
+
+                    if (threeMonthsDataSize > 0) {
+                        noSyndromeDataText.visibility = View.GONE
+                    } else if (threeMonthsDataSize == 0) {
+                        noSyndromeDataText.visibility = View.VISIBLE
+                    }
+
                 }
                 1 -> {
                     weightChart.xAxis.axisMinimum = viewModel.sixMonthsAgoTimestamp.toFloat()
@@ -277,6 +306,13 @@ class ChartFragment : Fragment() {
                         it.moveViewToX(6.5f)
                         it.setVisibleXRangeMaximum(6f)
                     }
+
+                    if (sixMonthsDataSize > 0) {
+                        noSyndromeDataText.visibility = View.GONE
+                    } else if (sixMonthsDataSize == 0) {
+                        noSyndromeDataText.visibility = View.VISIBLE
+                    }
+
                 }
                 2 -> {
                     weightChart.xAxis.axisMinimum = viewModel.oneYearAgoTimestamp.toFloat()
@@ -285,6 +321,12 @@ class ChartFragment : Fragment() {
                         it.fitScreen()
                         it.moveViewToX(0f)
                         it.setVisibleXRangeMaximum(12f)
+                    }
+
+                    if (oneYearDataSize > 0) {
+                        noSyndromeDataText.visibility = View.GONE
+                    } else if (oneYearDataSize == 0) {
+                        noSyndromeDataText.visibility = View.VISIBLE
                     }
                 }
             }
@@ -317,7 +359,7 @@ class SyndromeFormatter : ValueFormatter() {
 class WeightChartFormatter : ValueFormatter() {
 
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        val date = Date(value.toLong()*1000)
+        val date = Date(value.toLong() * 1000)
         val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
         return sdf.format(date)
     }
@@ -334,7 +376,7 @@ class WeightMarkerView :
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         e?.x?.toLong()?.let {
-            val date = Date(it*1000)
+            val date = Date(it * 1000)
             val sdf = SimpleDateFormat("M月dd日", Locale.TAIWAN)
             val displayString = sdf.format(date)
             text.text = displayString
