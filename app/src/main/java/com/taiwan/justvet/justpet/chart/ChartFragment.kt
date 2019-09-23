@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.chart
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,13 +24,13 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class ChartFragment : Fragment() {
 
@@ -60,15 +61,17 @@ class ChartFragment : Fragment() {
         setupSegmentedButtonGroup()
 
         viewModel.selectedProfile.observe(this, Observer {
-            weightChart.data = LineData()
-            weightChart.invalidate()
-            syndromeChart.data = BarData()
-            syndromeChart.invalidate()
-            if (binding.filterChartGroup.position != 0) {
-                binding.filterChartGroup.setPosition(0, true)
+            it?.let {
+                weightChart.data = LineData()
+                weightChart.invalidate()
+                syndromeChart.data = BarData()
+                syndromeChart.invalidate()
+                if (binding.filterChartGroup.position != 0) {
+                    binding.filterChartGroup.setPosition(0, true)
+                }
+                viewModel.getSyndromeData(it)
+                viewModel.getYearData(it)
             }
-            viewModel.getSyndromeData(it)
-            viewModel.getYearData(it)
         })
 
         viewModel.yearData.observe(this, Observer {
@@ -118,7 +121,7 @@ class ChartFragment : Fragment() {
 
     private fun setupWeightChart() {
         weightChart = binding.graphWeight
-//        weightChart.setExtraOffsets(0f, 0f, 0f, 0f)
+        weightChart.setExtraOffsets(10f, 30f, 10f, 10f)
         // enable scaling and dragging
         weightChart.isDragEnabled = false
         weightChart.setScaleEnabled(false)
@@ -138,7 +141,7 @@ class ChartFragment : Fragment() {
 //        xAxis.valueFormatter = WeightChartFormatter()
         xAxis.granularity = 86400f
         xAxis.axisMinimum = viewModel.threeMonthsAgoTimestamp.toFloat()
-        xAxis.axisMaximum = (viewModel.nowTimestamp).toFloat()
+        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0007).toFloat()
 
         // set Y axis
         val yAxisRight = weightChart.axisRight
@@ -155,7 +158,7 @@ class ChartFragment : Fragment() {
     private fun setupSyndromeChart() {
         syndromeChart = binding.graphSyndrome
 
-        syndromeChart.setExtraOffsets(10f, 0f, 10f, 10f)
+        syndromeChart.setExtraOffsets(10f, 30f, 10f, 10f)
 
         // disable scaling, dragging and zooming
         syndromeChart.isDragEnabled = false
@@ -209,14 +212,14 @@ class ChartFragment : Fragment() {
         val dataset = LineDataSet(entries, "體重")
         dataset.setDrawValues(true)
         dataset.valueFormatter = SyndromeFormatter()
-        dataset.valueTextSize = 16f
+        dataset.valueTextSize = 20f
         dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
         dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
         dataset.lineWidth = 2f
         dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.grey_bdbdbd))
         dataset.circleRadius = 4f
         dataset.valueFormatter = WeightChartFormatter()
-        weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.005).toFloat()
+        weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.05).toFloat()
 
         weightChart.data = LineData(dataset)
         val markerView = WeightMarkerView()
@@ -331,7 +334,7 @@ class WeightMarkerView :
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         e?.x?.toLong()?.let {
-            val date = Date(it)
+            val date = Date(it*1000)
             val sdf = SimpleDateFormat("M月dd日", Locale.TAIWAN)
             val displayString = sdf.format(date)
             text.text = displayString

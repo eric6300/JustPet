@@ -21,6 +21,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
+    val petName = "${petProfile.name} 的家人"
     val inviteeEmail = MutableLiveData<String>()
     val ownerEmail = petProfile.ownerEmail
     val userEmail: String?

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -93,6 +94,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setUserManager()
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
     private fun setupBottomNav() {
         binding.navBottomView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)

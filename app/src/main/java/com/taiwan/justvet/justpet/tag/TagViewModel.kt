@@ -131,6 +131,7 @@ class TagViewModel : ViewModel() {
             it.add(EventTag(TagType.DIARY.value, 3, "剪指甲"))
             it.add(EventTag(TagType.DIARY.value, 4, "剃毛"))
             it.add(EventTag(TagType.DIARY.value, 5, "量體重"))
+            it.add(EventTag(TagType.DIARY.value, 6, "其他日常"))
         }
     }
 
@@ -202,10 +203,13 @@ class TagViewModel : ViewModel() {
             200L -> getDrawable(R.drawable.ic_tick)
             201L -> getDrawable(R.drawable.ic_medicine)
             202L -> getDrawable(R.drawable.ic_heart)
+            203L -> getDrawable(R.drawable.ic_synrige)
             204L -> getDrawable(R.drawable.ic_blood_test)
             205L -> getDrawable(R.drawable.ic_medicine)
             206L -> getDrawable(R.drawable.ic_ointment)
             207L -> getDrawable(R.drawable.ic_eye_drops)
+            208L -> getDrawable(R.drawable.ic_synrige)
+            209L -> getDrawable(R.drawable.ic_blood_test)
             else -> getDrawable(R.drawable.ic_others)
         }
     }

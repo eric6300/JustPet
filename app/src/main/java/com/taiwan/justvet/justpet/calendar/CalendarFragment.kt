@@ -30,8 +30,6 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
     private lateinit var userProfile: UserProfile
     private lateinit var localDate: LocalDate
     private lateinit var adapter: CalendarEventAdapter
-    private lateinit var colorDrawableBackground: ColorDrawable
-    private lateinit var swipeIcon: Drawable
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
     }
@@ -60,7 +58,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         monthChangedListener()
         decorationObserver()
 
-        showThisMonthEvents()
+//        showThisMonthEvents()
 
         viewModel.navigateToDetail.observe(this, Observer {
             it?.let {
@@ -97,6 +95,11 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        showThisMonthEvents()
     }
 
     private fun setupCalendarView() {

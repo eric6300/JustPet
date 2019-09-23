@@ -49,6 +49,7 @@
 
                 <ImageView
                     android:id="@+id/image_pet"
+                    imageUrl="@{viewModel.petImage == null ? petProfile.image : viewModel.petImage }"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:scaleType="centerCrop"
@@ -57,7 +58,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    imageUrl="@{viewModel.petImage == null ? petProfile.image : viewModel.petImage }"
                     tools:srcCompat="@drawable/image_cat" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -84,20 +84,8 @@
                     android:onClick="@{() -> viewModel.startGallery()}"
                     android:visibility="@{viewModel.isModified() == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
-                    app:layout_constraintEnd_toEndOf="@+id/image_pet" />
-
-                <ImageView
-                    android:id="@+id/icon_family"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/ic_achievement"
-                    android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
-                    app:layout_constraintBottom_toBottomOf="@+id/text_name_pet"
-                    app:layout_constraintStart_toEndOf="@+id/text_name_pet"
-                    app:layout_constraintTop_toTopOf="@+id/text_name_pet" />
+                    app:layout_constraintEnd_toEndOf="@+id/image_pet"
+                    tools:visibility="invisible" />
 
                 <ImageView
                     android:id="@+id/icon_edit"
@@ -111,20 +99,37 @@
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     app:srcCompat="@drawable/ic_edit_white" />
 
+                <ImageView
+                    android:id="@+id/icon_family"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/ic_house"
+                    android:backgroundTint="@android:color/background_light"
+                    android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
+                    android:padding="2dp"
+                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_pet"
+                    app:layout_constraintStart_toStartOf="parent" />
+
                 <TextView
                     android:id="@+id/text_name_pet"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="8dp"
+                    android:ellipsize="end"
                     android:fontFamily="@font/roboto_mono"
                     android:gravity="bottom"
+                    android:singleLine="true"
                     android:text="@{petProfile.name}"
                     android:textColor="@android:color/background_light"
                     android:textSize="24sp"
                     android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
-                    app:layout_constraintStart_toStartOf="@id/image_pet"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                    app:layout_constraintStart_toEndOf="@+id/icon_family"
                     tools:text="MeiMei" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -186,9 +191,11 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:ellipsize="end"
                             android:fontFamily="@font/roboto_mono"
                             android:hint="@string/text_name"
                             android:inputType="textNoSuggestions"
+                            android:singleLine="true"
                             android:text="@={viewModel.petName}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -212,6 +219,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_mono"
                             android:hint="@string/text_id_number"
+                            android:singleLine="true"
                             android:text="@={viewModel.petIdNumber}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -242,7 +250,8 @@
                             android:onClick="@{ (view) -> viewModel.datePicker(view) }"
                             android:singleLine="true"
                             android:text="@{viewModel.petBirthday}"
-                            android:textAlignment="center" />
+                            android:textAlignment="center"
+                            android:textSize="16sp" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -278,7 +287,7 @@
                         android:id="@+id/button_cancel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
@@ -303,7 +312,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_marginBottom="16dp"
                         android:clickable="true"
                         android:onClick="@{() -> viewModel.updatePetProfile()}"
@@ -334,6 +343,13 @@
                         app:srcCompat="@drawable/ic_male" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

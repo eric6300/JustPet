@@ -142,6 +142,7 @@ class ChartViewModel : ViewModel() {
                             // get 12 months sorted syndrome data
                             sortSyndromeData(12)
                         } else {
+                            _eventData.value = emptyList()
                             Log.d(
                                 ERIC,
                                 "${petProfile.name} doesn't have event contains tag of vomit"
@@ -154,7 +155,7 @@ class ChartViewModel : ViewModel() {
         }
     }
 
-    fun sortSyndromeData(months: Int) {
+    private fun sortSyndromeData(months: Int) {
         val calendar = Calendar.getInstance()
 
         val dataMap = HashMap<Date, ArrayList<PetEvent>>()
@@ -212,6 +213,7 @@ class ChartViewModel : ViewModel() {
 
                         _yearData.value = data
                     } else {
+                        _yearData.value = emptyList()
                         Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of vomit")
                     }
                 }.addOnFailureListener {

@@ -68,6 +68,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.currentFragmentType == CurrentFragmentType.EVENT ? View.GONE : View.VISIBLE }"
+                app:itemHorizontalTranslationEnabled="false"
+                app:labelVisibilityMode="auto"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
