@@ -43,10 +43,10 @@ const val TAGS = "tags"
 const val UID = "uid"
 const val ERIC = "testEric"
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var appBarConfiguration: AppBarConfiguration
+//    private lateinit var appBarConfiguration: AppBarConfiguration
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -82,9 +82,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = null
+
         setupBottomNav()
         setupNavController()
-        setupDrawer()
+//        setupDrawer()
         setupFAB()
 
         requestPermission()
@@ -97,10 +100,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.new_pet -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
+            }
+            R.id.check_invite -> {
+
+            }
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -123,37 +135,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun setupDrawer() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = null
-
-        val navController = this.findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
-        NavigationUI.setupWithNavController(binding.drawerNavView, navController)
-
-        val toggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-
-        binding.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        // Set drawer Navigation itemSelectedListener
-        binding.drawerNavView.setNavigationItemSelectedListener(this)
-
-        // Set up header of drawer ui using data binding
-        val bindingNavHeader = NavDrawerHeaderBinding.inflate(
-            LayoutInflater.from(this), binding.drawerNavView, false
-        )
-
-        bindingNavHeader.lifecycleOwner = this
-        bindingNavHeader.viewModel = viewModel
-        binding.drawerNavView.addHeaderView(bindingNavHeader.root)
-    }
+//    private fun setupDrawer() {
+//        setSupportActionBar(binding.toolbar)
+//        supportActionBar?.title = null
+//
+//        val navController = this.findNavController(R.id.nav_host_fragment)
+//        appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
+//        NavigationUI.setupWithNavController(binding.drawerNavView, navController)
+//
+//        val toggle = ActionBarDrawerToggle(
+//            this,
+//            binding.drawerLayout,
+//            binding.toolbar,
+//            R.string.navigation_drawer_open,
+//            R.string.navigation_drawer_close
+//        )
+//
+//        binding.drawerLayout.addDrawerListener(toggle)
+//        toggle.syncState()
+//
+//        // Set drawer Navigation itemSelectedListener
+//        binding.drawerNavView.setNavigationItemSelectedListener(this)
+//
+//        // Set up header of drawer ui using data binding
+//        val bindingNavHeader = NavDrawerHeaderBinding.inflate(
+//            LayoutInflater.from(this), binding.drawerNavView, false
+//        )
+//
+//        bindingNavHeader.lifecycleOwner = this
+//        bindingNavHeader.viewModel = viewModel
+//        binding.drawerNavView.addHeaderView(bindingNavHeader.root)
+//    }
 
     private fun setupFAB() {
         binding.floatingActionButton.setOnClickListener {
@@ -161,38 +173,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_new_pet -> {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
-            }
-            R.id.new_family_member -> {
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        // Handle navigation view item clicks here.
+//        when (item.itemId) {
+//            R.id.nav_new_pet -> {
+//                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
+//            }
+//            R.id.new_family_member -> {
+//
+//            }
+//            R.id.nav_slideshow -> {
+//
+//            }
+//            R.id.nav_tools -> {
+//
+//            }
+//            R.id.nav_sign_out -> {
+//                signOut()
+//            }
+//        }
+//        return true
+//    }
 
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_tools -> {
-
-            }
-            R.id.nav_sign_out -> {
-                signOut()
-            }
-        }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    override fun onBackPressed() {
-        val drawerLayout = binding.drawerLayout
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
+//    override fun onBackPressed() {
+//        val drawerLayout = binding.drawerLayout
+//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+//            drawerLayout.closeDrawer(GravityCompat.START)
+//        } else {
+//            super.onBackPressed()
+//        }
+//    }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(

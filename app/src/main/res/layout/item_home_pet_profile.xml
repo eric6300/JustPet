@@ -101,8 +101,8 @@
 
                 <ImageView
                     android:id="@+id/icon_family"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_house"
@@ -210,6 +210,7 @@
                         android:layout_marginEnd="15dp"
                         app:counterEnabled="true"
                         app:counterMaxLength="15"
+                        app:errorEnabled="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_text_birthday">

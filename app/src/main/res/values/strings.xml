@@ -27,7 +27,8 @@
     <string name="title_media">照片</string>
     <string name="title_notification">提醒</string>
     <string name="title_advance">進階選項</string>
-    <string name="text_complete">完成</string>
+    <string name="text_new_event">新增記錄</string>
+    <string name="text_modify_event">修改記錄</string>
     <string name="title_rr">呼吸次數</string>
     <string name="title_spirite">精神</string>
     <string name="title_appetite">食慾</string>
@@ -62,5 +63,13 @@
     <string name="text_confirm">確認</string>
     <string name="text_new_pet_profile">新增寵物</string>
     <string name="title_pet_profile">寵物檔案</string>
+    <string name="text_check_invite">確認邀請</string>
+
+    //  App  //
+    <string name="home">首頁</string>
+    <string name="calendar">月曆</string>
+    <string name="chart">圖表</string>
+    <string name="tool">工具</string>
+    <string name="event">記錄詳情</string>
 
 </resources>

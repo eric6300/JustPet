@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title="Home"
+    <item android:title="首頁"
             android:id="@+id/nav_bottom_home" android:icon="@drawable/nav_bottom_home"/>
 
-    <item android:title="Calendar"
+    <item android:title="月曆"
             android:id="@+id/nav_bottom_calendar" android:icon="@drawable/nav_bottom_calendar"/>
 
     <item android:title="" android:enabled="false"/>
 
-    <item android:title="Chart"
+    <item android:title="圖表"
             android:id="@+id/nav_bottom_chart" android:icon="@drawable/nav_bottom_chart"/>
 
-    <item android:title="Tool"
+    <item android:title="工具"
             android:id="@+id/nav_bottom_tool" android:icon="@drawable/nav_bottom_tool"/>
 
 </menu>
