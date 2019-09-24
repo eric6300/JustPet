@@ -21,15 +21,15 @@
 
         <ImageView
             android:id="@+id/avatar_pet"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            iconSpecies="@{profile.species}"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             app:layout_constraintBottom_toTopOf="@+id/text_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            iconSpecies="@{profile.species}" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/text_name"

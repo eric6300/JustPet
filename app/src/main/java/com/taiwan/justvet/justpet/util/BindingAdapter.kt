@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.util
 import android.net.Uri
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -216,5 +217,25 @@ fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
     } else {
         GlideApp.with(imgView.context)
             .clear(imgView)
+    }
+}
+
+@BindingAdapter("isSelected")
+fun bindTagBackground(layout: ConstraintLayout, eventTag: EventTag) {
+    if (eventTag.isSelected != true) {
+        layout.background = JustPetApplication.appContext.getDrawable(R.drawable.background_white)
+    } else {
+        when (eventTag.type) {
+            TagType.DIARY.value -> {
+                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
+            }
+            TagType.SYNDROME.value -> {
+                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
+            }
+            TagType.TREATMENT.value -> {
+                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
+            }
+
+        }
     }
 }

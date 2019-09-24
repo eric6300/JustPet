@@ -126,11 +126,6 @@ class ChartViewModel : ViewModel() {
                         if (it.size() > 0) {
                             val data = mutableListOf<PetEvent>()
 
-                            Log.d(
-                                ERIC,
-                                "${petProfile.name} has ${it.size()} event(s) containing tag of ${selectedEventTag?.title}"
-                            )
-
                             for (item in it.documents) {
                                 val event = item.toObject(PetEvent::class.java)
                                 event?.let {
@@ -143,13 +138,11 @@ class ChartViewModel : ViewModel() {
                             sortSyndromeData(12)
                         } else {
                             _eventData.value = emptyList()
-                            Log.d(
-                                ERIC,
-                                "${petProfile.name} doesn't have event contains tag of vomit"
-                            )
                             sortSyndromeData(12)
                         }
                     }.addOnFailureListener {
+                        _eventData.value = emptyList()
+                        sortSyndromeData(12)
                         Log.d(ERIC, "getSyndromeData() failed : $it")
                     }
             }
