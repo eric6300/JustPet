@@ -6,7 +6,11 @@
     <fragment
             android:id="@+id/homeFragment"
             android:name="com.taiwan.justvet.justpet.home.HomeFragment"
-            android:label="HomeFragment" />
+            android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+    </fragment>
     <fragment
             android:id="@+id/calendarFragment"
             android:name="com.taiwan.justvet.justpet.calendar.CalendarFragment"

@@ -424,8 +424,8 @@ class HomeViewModel : ViewModel() {
     fun uploadImage(profileId: String) {
         petImage.value?.let {
             if (it.startsWith("https")) {
-                modifyCompleted()
                 refreshPetProfile()
+                modifyCompleted()
             } else {
                 val imageRef = storageReference.child("profile/$profileId")
                 Log.d(ERIC, "uri : ${it.toUri()}")
@@ -453,8 +453,8 @@ class HomeViewModel : ViewModel() {
     fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
         petsReference.document(profileId).update("image", downloadUri.toString())
             .addOnSuccessListener {
-                modifyCompleted()
                 refreshPetProfile()
+                modifyCompleted()
                 Log.d(ERIC, "updateProfileImageUrl succeed")
             }.addOnFailureListener {
                 Log.d(ERIC, "updateProfileImageUrl failed : $it")

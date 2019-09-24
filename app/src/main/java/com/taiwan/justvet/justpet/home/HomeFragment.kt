@@ -27,6 +27,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOption
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -219,7 +220,18 @@ class HomeFragment : Fragment() {
     private fun setupEventNotification() {
         notificationAdapter =
             EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
-                Log.d(ERIC, "notification pet profile : ${it.petProfile} ")
+                if (it.type != 2) {
+                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(
+                        PetEvent(
+                            petProfile = it.petProfile,
+                            petName = it.petProfile.name,
+                            petId = it.petProfile.profileId,
+                            petSpecies = it.petProfile.species,
+                            eventTags = it.eventTags,
+                            eventTagsIndex = it.eventTagsIndex
+                        )
+                    ))
+                }
             })
 
         val listEventNotification = binding.homeListEventNotification
