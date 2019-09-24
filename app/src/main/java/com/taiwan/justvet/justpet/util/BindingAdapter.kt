@@ -100,13 +100,13 @@ fun bindExpandIcon (imageView: ImageView, status: Boolean) {
             true -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_expand_more
+                        R.drawable.ic_expand_less
                     ))
             }
             else -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
-                        R.drawable.ic_expand_less
+                        R.drawable.ic_expand_more
                     ))
             }
         }

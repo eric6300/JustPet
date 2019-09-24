@@ -219,7 +219,7 @@
                         android:textSize="18sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/title_advance" />
+                        app:layout_constraintTop_toBottomOf="@+id/check_heart_rate" />
 
                     <com.xw.repo.BubbleSeekBar
                         android:id="@+id/seek_bar_spirit"
@@ -229,18 +229,18 @@
                         android:layout_marginEnd="16dp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
-                        app:bsb_bubble_color="@color/colorDiary"
-                        app:bsb_bubble_text_color="@color/colorDiaryDark"
+                        app:bsb_bubble_color="@color/colorPrimary"
+                        app:bsb_bubble_text_color="@android:color/white"
                         app:bsb_max="5"
                         app:bsb_min="0"
-                        app:bsb_second_track_color="@color/colorDiaryDark"
+                        app:bsb_second_track_color="@color/colorPrimary"
                         app:bsb_section_count="5"
                         app:bsb_section_text_position="bottom_sides"
                         app:bsb_show_section_mark="true"
                         app:bsb_show_section_text="true"
                         app:bsb_show_thumb_text="true"
                         app:bsb_touch_to_seek="true"
-                        app:bsb_track_color="@color/colorDiary"
+                        app:bsb_track_color="@color/colorPrimaryLight"
                         app:layout_constraintBottom_toBottomOf="@+id/check_spirit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -252,9 +252,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:text="@string/title_appetite"
                         android:textSize="18sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_spirit" />
 
@@ -266,18 +268,18 @@
                         android:layout_marginEnd="16dp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
-                        app:bsb_bubble_color="@color/colorDiary"
-                        app:bsb_bubble_text_color="@color/colorDiaryDark"
+                        app:bsb_bubble_color="@color/colorPrimary"
+                        app:bsb_bubble_text_color="@android:color/white"
                         app:bsb_max="5"
                         app:bsb_min="0"
-                        app:bsb_second_track_color="@color/colorDiaryDark"
+                        app:bsb_second_track_color="@color/colorPrimary"
                         app:bsb_section_count="5"
                         app:bsb_section_text_position="bottom_sides"
                         app:bsb_show_section_mark="true"
                         app:bsb_show_section_text="true"
                         app:bsb_show_thumb_text="true"
                         app:bsb_touch_to_seek="true"
-                        app:bsb_track_color="@color/colorDiary"
+                        app:bsb_track_color="@color/colorPrimaryLight"
                         app:layout_constraintBottom_toBottomOf="@+id/check_appetite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -293,7 +295,7 @@
                         android:textSize="18sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/check_appetite" />
+                        app:layout_constraintTop_toBottomOf="@+id/title_advance" />
 
                     <TextView
                         android:id="@+id/check_temperature"
@@ -325,11 +327,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
                         android:text="@string/title_heart_rate"
                         android:textSize="18sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/check_respiratory_rate" />
 
@@ -343,6 +343,8 @@
                         android:inputType="number|numberDecimal"
                         android:singleLine="true"
                         android:text="@={viewModel.eventWeight}"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_body_weight"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -360,6 +362,8 @@
                         android:inputType="number|numberDecimal"
                         android:singleLine="true"
                         android:text="@={viewModel.eventTemper}"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -375,6 +379,8 @@
                         android:inputType="number"
                         android:singleLine="true"
                         android:text="@={viewModel.eventRR}"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_respiratory_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
@@ -391,6 +397,8 @@
                         android:inputType="number"
                         android:singleLine="true"
                         android:text="@={viewModel.eventHR}"
+                        android:textAlignment="center"
+                        android:textSize="16sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_heart_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
@@ -451,7 +459,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/title_advance"
                         app:layout_constraintStart_toEndOf="@+id/title_advance"
                         app:layout_constraintTop_toTopOf="@+id/title_advance"
-                        app:srcCompat="@drawable/ic_expand_more" />
+                        app:srcCompat="@drawable/ic_expand_less" />
 
                     <TextView
                         android:id="@+id/title_advance"

@@ -61,6 +61,8 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:orientation="vertical"
+                android:overScrollMode="never"
+                android:visibility="@{viewModel.petProfile.family.size() == 0 ? View.GONE : View.VISIBLE }"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/layout_send_invite"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +70,7 @@
                 app:layout_constraintTop_toTopOf="@+id/title_family"
                 app:layout_constraintVertical_bias="0.0"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_family_email"
-                android:visibility="@{viewModel.petProfile.family.size() == 0 ? View.GONE : View.VISIBLE }"/>
+                tools:listitem="@layout/item_family_email" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_send_invite"
@@ -170,7 +171,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/title_invite"
                     app:layout_constraintStart_toEndOf="@+id/title_invite"
                     app:layout_constraintTop_toTopOf="@+id/title_invite"
-                    android:background="@{viewModel.expandStatus != true ? @drawable/ic_expand_less : @drawable/ic_expand_more}"
+                    android:background="@{viewModel.expandStatus != true ? @drawable/ic_expand_more : @drawable/ic_expand_less}"
                     android:onClick="@{() -> viewModel.expandDialog()}"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -245,6 +245,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@={viewModel.petIdNumber}"
                 android:hint="@string/text_id_number"
                 android:singleLine="true"
                 android:textAlignment="center" />

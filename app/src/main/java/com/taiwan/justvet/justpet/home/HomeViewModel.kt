@@ -21,7 +21,7 @@ import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 
-class HomeViewModel() : ViewModel() {
+class HomeViewModel : ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -225,129 +226,7 @@ class HomeFragment : Fragment() {
         listEventNotification.apply {
             this.adapter = notificationAdapter
             PagerSnapHelper().attachToRecyclerView(this)
-//            enableSwipe(this)
         }
-    }
-
-    private fun enableSwipe(recyclerView: RecyclerView) {
-        val itemTouchHelperCallback =
-            object :
-                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-                    return false
-                }
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDirection: Int) {
-                    if (swipeDirection == ItemTouchHelper.LEFT) {
-                        Log.d(ERIC, "完成並詢問要不要設定推播")
-                        // TODO 推播詢問及設定
-                    }
-                    // TODO deleted
-                }
-
-
-                override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-                ) {
-                    if (dX > 0) {
-                        swipeIcon = ContextCompat.getDrawable(
-                            JustPetApplication.appContext,
-                            R.drawable.ic_delete
-                        )!!
-
-                        colorDrawableBackground = ColorDrawable()
-                        colorDrawableBackground.color =
-                            JustPetApplication.appContext.getColor(R.color.colorDeleteRed)
-
-                        val itemView = viewHolder.itemView
-                        val iconMarginVertical =
-                            (viewHolder.itemView.height - swipeIcon.intrinsicHeight) / 2
-
-                        colorDrawableBackground.setBounds(
-                            itemView.left,
-                            itemView.top,
-                            dX.toInt(),
-                            itemView.bottom
-                        )
-
-                        swipeIcon.setBounds(
-                            itemView.left + iconMarginVertical,
-                            itemView.top + iconMarginVertical,
-                            itemView.left + iconMarginVertical + swipeIcon.intrinsicWidth,
-                            itemView.bottom - iconMarginVertical
-                        )
-
-                        c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
-
-                    } else {
-                        swipeIcon = ContextCompat.getDrawable(
-                            JustPetApplication.appContext,
-                            R.drawable.ic_edit_white
-                        )!!
-
-                        colorDrawableBackground = ColorDrawable()
-                        colorDrawableBackground.color =
-                            JustPetApplication.appContext.getColor(R.color.colorEditGreen)
-
-                        val itemView = viewHolder.itemView
-                        val iconMarginVertical =
-                            (viewHolder.itemView.height - swipeIcon.intrinsicHeight) / 2
-
-                        colorDrawableBackground.setBounds(
-                            itemView.right + dX.toInt(),
-                            itemView.top,
-                            itemView.right,
-                            itemView.bottom
-                        )
-
-                        swipeIcon.setBounds(
-                            itemView.right - iconMarginVertical - swipeIcon.intrinsicWidth,
-                            itemView.top + iconMarginVertical,
-                            itemView.right - iconMarginVertical,
-                            itemView.bottom - iconMarginVertical
-                        )
-
-                        c.clipRect(
-                            itemView.right + dX.toInt(),
-                            itemView.top,
-                            itemView.right,
-                            itemView.bottom
-                        )
-                    }
-
-                    colorDrawableBackground.draw(c)
-                    swipeIcon.draw(c)
-//                    c.save()
-//                    if (dX > 0)
-//                        c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
-//                    else
-//                        c.clipRect(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
-//                    c.restore()
-
-                    super.onChildDraw(
-                        c,
-                        recyclerView,
-                        viewHolder,
-                        dX,
-                        dY,
-                        actionState,
-                        isCurrentlyActive
-                    )
-                }
-            }
-
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -371,7 +250,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun startGallery() = runWithPermissions(
+    private fun startGallery() = runWithPermissions(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         options = quickPermissionsOption

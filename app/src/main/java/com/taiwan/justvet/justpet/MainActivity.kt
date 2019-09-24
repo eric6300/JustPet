@@ -262,14 +262,14 @@ class MainActivity : AppCompatActivity() {
             .addAuthStateListener(authListener)
     }
 
-    private fun signOut() {
-        AuthUI.getInstance()
-            .signOut(this)
-            .addOnSuccessListener {
-                Toast.makeText(applicationContext, "已登出", Toast.LENGTH_SHORT).show()
-                UserManager.clear()
-            }
-    }
+//    private fun signOut() {
+//        AuthUI.getInstance()
+//            .signOut(this)
+//            .addOnSuccessListener {
+//                Toast.makeText(applicationContext, "已登出", Toast.LENGTH_SHORT).show()
+//                UserManager.clear()
+//            }
+//    }
 
     private fun setUserManager() {
         UserManager.getFirebaseUserCompleted.observe(this, Observer {
