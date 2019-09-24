@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 //        setupDrawer()
         setupFAB()
 
-        requestPermission()
+//        requestPermission()
 
         setupFirebaseAuth()
 

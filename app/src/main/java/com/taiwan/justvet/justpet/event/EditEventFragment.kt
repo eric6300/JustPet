@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.event
 
+import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -26,7 +27,11 @@ import androidx.room.util.CursorUtil.getColumnIndex
 import android.provider.MediaStore
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 
 
 class EditEventFragment : Fragment() {
@@ -37,8 +42,12 @@ class EditEventFragment : Fragment() {
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var timePickerDialog: TimePickerDialog
     private lateinit var calendar: Calendar
-//    lateinit var saveUri: Uri
     lateinit var eventPicture: ImageView
+
+    private val quickPermissionsOption = QuickPermissionsOptions(
+        handleRationale = false,
+        permanentDeniedMethod = { permissionsPermanentlyDenied(it) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +97,20 @@ class EditEventFragment : Fragment() {
         return binding.root
     }
 
+    private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
+        // this will be called when some/all permissions required by the method are permanently
+        // denied. Handle it your way.
+        this.context?.let {
+            AlertDialog.Builder(it)
+//                .setTitle("Permissions Denied")
+                .setMessage("開啟「設定」，點選「權限」，並開啟「儲存」")
+                .setPositiveButton("開啟「設定」") { _, _ -> req.openAppSettings() }
+                .setNegativeButton("取消") { _, _ -> req.cancel() }
+                .setCancelable(true)
+                .show()
+        }
+    }
+
     private fun setupTagRecyclerView() {
         val listOfTag = binding.listTags
         val adapter = EditEventTagAdapter(viewModel, EditEventTagAdapter.OnClickListener {
@@ -116,42 +139,14 @@ class EditEventFragment : Fragment() {
                     }
                 }
             }
-
-//            PHOTO_FROM_CAMERA -> {
-//                when (resultCode) {
-//                    Activity.RESULT_OK -> {
-//                        if (eventPicture.visibility == View.GONE) {
-//                            eventPicture.visibility = View.VISIBLE
-//                        }
-//                        Glide.with(this).load(saveUri).into(eventPicture)
-//                    }
-//                    Activity.RESULT_CANCELED -> {
-//                        Log.wtf("getImageResult", resultCode.toString())
-//                    }
-//                }
-//
-//            }
         }
     }
 
-    //    fun startCamera() {
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//        val tmpFile = File(
-//            JustPetApplication.appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-//            System.currentTimeMillis().toString() + ".png"
-//        )
-//        val uriForCamera = FileProvider.getUriForFile(
-//            JustPetApplication.appContext,
-//            "com.taiwan.justvet.justpet.provider",
-//            tmpFile
-//        )
-//        saveUri = uriForCamera
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForCamera)
-//
-//        startActivityForResult(intent, PHOTO_FROM_CAMERA)
-//    }
-//
-    fun startGallery() {
+    fun startGallery() = runWithPermissions(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        options = quickPermissionsOption
+    ) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, PHOTO_FROM_GALLERY)
@@ -239,28 +234,4 @@ class EditEventFragment : Fragment() {
             }
         })
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        // Result code is RESULT_OK only if the user selects an Image
-//        if (resultCode == Activity.RESULT_OK)
-//            when (requestCode) {
-//                GALLERY_REQUEST_CODE -> {
-//                    //data.getData return the content URI for the selected Image
-//                    val selectedImage = data!!.data
-//                    val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-//                    // Get the cursor
-//                    val cursor =
-//                        getContentResolver().query(selectedImage, filePathColumn, null, null, null)
-//                    // Move to first row
-//                    cursor.moveToFirst()
-//                    //Get the column index of MediaStore.Images.Media.DATA
-//                    val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-//                    //Gets the String value in the column
-//                    val imgDecodableString = cursor.getString(columnIndex)
-//                    cursor.close()
-//                    // Set the Image in ImageView after decoding the String
-//                    imageView.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString))
-//                }
-//            }
-//    }
 }

@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.home
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -20,6 +21,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
@@ -31,6 +35,11 @@ class HomeFragment : Fragment() {
     private lateinit var notificationAdapter: EventNotificationAdapter
     private lateinit var colorDrawableBackground: ColorDrawable
     private lateinit var swipeIcon: Drawable
+
+    private val quickPermissionsOption = QuickPermissionsOptions(
+        handleRationale = false,
+        permanentDeniedMethod = { permissionsPermanentlyDenied(it) }
+    )
 
     private val viewModel: HomeViewModel by lazy {
         ViewModelProviders.of(this).get(HomeViewModel::class.java)
@@ -113,9 +122,7 @@ class HomeFragment : Fragment() {
 
         viewModel.startGallery.observe(this, Observer {
             if (it) {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.type = "image/*"
-                startActivityForResult(intent, PHOTO_FROM_GALLERY)
+                startGallery()
                 viewModel.startGalleryCompleted()
             }
         })
@@ -361,6 +368,29 @@ class HomeFragment : Fragment() {
                     }
                 }
             }
+        }
+    }
+
+    fun startGallery() = runWithPermissions(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        options = quickPermissionsOption
+    ) {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
+
+    private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
+        // this will be called when some/all permissions required by the method are permanently
+        // denied. Handle it your way.
+        this.context?.let {
+            AlertDialog.Builder(it)
+                .setMessage("開啟「設定」，點選「權限」，並開啟「儲存」")
+                .setPositiveButton("開啟「設定」") { _, _ -> req.openAppSettings() }
+                .setNegativeButton("取消") { _, _ -> req.cancel() }
+                .setCancelable(true)
+                .show()
         }
     }
 }

@@ -123,4 +123,6 @@ dependencies {
 
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+
+    implementation 'com.github.quickpermissions:quickpermissions-kotlin:0.4.1'
 }
