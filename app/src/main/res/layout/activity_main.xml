@@ -28,16 +28,19 @@
                 android:theme="?attr/actionBarTheme"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                app:layout_constraintTop_toTopOf="parent"
+                app:popupTheme="@style/Theme.AppCompat.Light">
 
                 <TextView
                     android:id="@+id/title_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="@android:color/background_light"
-                    android:textSize="20sp"
                     android:text="@{viewModel.currentFragmentType.value}"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="24sp"
+                    tools:layout_editor_absoluteX="186dp"
+                    tools:layout_editor_absoluteY="14dp"
                     tools:text="首頁" />
 
             </androidx.appcompat.widget.Toolbar>
