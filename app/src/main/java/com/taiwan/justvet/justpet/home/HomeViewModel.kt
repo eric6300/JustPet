@@ -18,6 +18,7 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.*
+import com.taiwan.justvet.justpet.util.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 
@@ -63,6 +64,9 @@ class HomeViewModel : ViewModel() {
     val inviteList: LiveData<List<Invite>>
         get() = _inviteList
 
+    val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
+    val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
+    val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")
 
     val petName = MutableLiveData<String>()
     val petBirthday = MutableLiveData<String>()
@@ -235,8 +239,6 @@ class HomeViewModel : ViewModel() {
                         )
                         petData.sortBy { it.profileId }
                         _petList.value = petData
-                        Log.d(ERIC, "getPetProfileData() succeeded")
-                        Log.d(ERIC, "getPetProfileData : $petData")
                     }
                     .addOnFailureListener {
                         Log.d(ERIC, "getPetProfileData() failed: $it")
@@ -301,15 +303,16 @@ class HomeViewModel : ViewModel() {
         val vaccine = mutableListOf<PetEvent>()
         val weight = mutableListOf<PetEvent>()
 
-
         eventList.forEach { event ->
             event.timestamp?.let { timestamp ->
 
                 // filter for syndrome tags
                 event.eventTagsIndex?.let { tags ->
+                    // vomit
                     if ((timestamp > oneMonthAgoTimestamp) && tags.contains(100)) {
                         vomit.add(event)
                     }
+                    // vaccine
                     if ((timestamp > oneYearAgoTimestamp) && tags.contains(208)) {
                         vaccine.add(event)
                     }
@@ -323,15 +326,44 @@ class HomeViewModel : ViewModel() {
                 }
             }
         }
+
+        // Vomiting
         if (vomit.size > 1) {
-            notificationList.add(EventNotification(2, "這個月已經嘔吐 ${vomit.size} 次囉"))
+            val tags = arrayListOf<EventTag>()
+            val tagsIndex = arrayListOf<Long>()
+            tags.add(tagVomit)
+            tagVomit.index?.let { tagsIndex.add(it) }
+            _selectedPet.value?.let {
+                EventNotification(type = 2, title = "這個月已經嘔吐 ${vomit.size} 次囉",eventTags = tags,
+                    eventTagsIndex = tagsIndex, petProfile = it
+                )
+            }?.let { notificationList.add(it) }
         }
+        // Vaccine
         if (vaccine.size == 0) {
-            notificationList.add(EventNotification(1, "今年都還沒有打疫苗喔！"))
+            val tags = arrayListOf<EventTag>()
+            val tagsIndex = arrayListOf<Long>()
+            tags.add(tagVaccine)
+            tagVaccine.index?.let { tagsIndex.add(it) }
+            _selectedPet.value?.let {
+                EventNotification(type = 1, title = "今年都還沒有打疫苗喔！",eventTags = tags,
+                    eventTagsIndex = tagsIndex, petProfile = it
+                )
+            }?.let { notificationList.add(it) }
         }
+        // Weight measure
         if (weight.size == 0) {
-            notificationList.add(EventNotification(0, "該幫 ${selectedPet.value?.name} 量體重囉！"))
+            val tags = arrayListOf<EventTag>()
+            val tagsIndex = arrayListOf<Long>()
+            tags.add(tagWeight)
+            tagWeight.index?.let { tagsIndex.add(it) }
+            _selectedPet.value?.let {
+                EventNotification(type = 0, title = "該幫 ${it.name} 量體重囉！",eventTags = tags,
+                    eventTagsIndex = tagsIndex, petProfile = it
+                )
+            }?.let { notificationList.add(it) }
         }
+
         _notificationList.value = notificationList.sortedBy {
             it.type
         }
