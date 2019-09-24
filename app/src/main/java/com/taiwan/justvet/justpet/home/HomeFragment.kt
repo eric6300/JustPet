@@ -219,7 +219,7 @@ class HomeFragment : Fragment() {
     private fun setupEventNotification() {
         notificationAdapter =
             EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
-
+                Log.d(ERIC, "notification type : ${it.type} ")
             })
 
         val listEventNotification = binding.homeListEventNotification

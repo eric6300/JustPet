@@ -165,7 +165,7 @@ class TagViewModel : ViewModel() {
         }
     }
 
-    fun navigateToEditEvent() {
+    private fun navigateToEditEvent() {
 
         selectedPetProfile?.let {
             _currentEvent.value = PetEvent(
@@ -226,7 +226,6 @@ class TagViewModel : ViewModel() {
                         if (tag.isSelected == true) {
                             eventTags.add(tag)
                             tag.index?.let { index -> eventTagsIndex.add(index) }
-                            Log.d(ERIC, "$tag")
                         }
                     }
                 }
@@ -247,6 +246,7 @@ class TagViewModel : ViewModel() {
                     tag.title?.let {
                         if (tag.isSelected == true) {
                             eventTags.add(tag)
+                            tag.index?.let { index -> eventTagsIndex.add(index) }
                         }
                     }
                 }
@@ -275,7 +275,8 @@ class TagViewModel : ViewModel() {
                         month = timeList[1].toLong(),
                         dayOfMonth = timeList[2].toLong(),
                         time = timeList[3],
-                        eventTags = eventTags
+                        eventTags = eventTags,
+                        eventTagsIndex = eventTagsIndex
                     )
                 ).addOnSuccessListener { documentReference ->
                     postTags(documentReference.id)

@@ -43,7 +43,7 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
 }
 
 
-@BindingAdapter("eventBackground")
+@BindingAdapter("notificationBackground")
 fun bindEventBackground (cardView: CardView, eventType: Int) {
     eventType.let {
         when (it) {
@@ -76,7 +76,7 @@ fun bindEventTagIcon (imageView: ImageView, type: Int) {
             // normal
             0 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_walking))
+                    Util.getDrawable(R.drawable.ic_others))
             }
             // medicine
             1 -> {
@@ -88,7 +88,6 @@ fun bindEventTagIcon (imageView: ImageView, type: Int) {
                 imageView.setImageDrawable(
                     Util.getDrawable(R.drawable.ic_warning))
             }
-            // TODO : birthday
         }
     }
 }
