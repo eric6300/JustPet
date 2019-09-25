@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
@@ -37,9 +38,9 @@ class ChartViewModel : ViewModel() {
     val eventData: LiveData<List<PetEvent>>
         get() = _eventData
 
-    private val _syndromeData = MutableLiveData<Map<Date, ArrayList<PetEvent>>>()
-    val syndromeData: LiveData<Map<Date, ArrayList<PetEvent>>>
-        get() = _syndromeData
+    private val _syndromeEntries = MutableLiveData<List<BarEntry>>()
+    val syndromeEntries: LiveData<List<BarEntry>>
+        get() = _syndromeEntries
 
     val petProfileData = mutableListOf<PetProfile>()
     var selectedEventTag: EventTag? = null
@@ -53,11 +54,9 @@ class ChartViewModel : ViewModel() {
     var sixMonthsAgoTimestamp: Long = 0
     var oneYearAgoTimestamp: Long = 0
 
-    var sortedSyndromeDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
-
-    private var threeMonthsSyndrome = 0
-    private var sixMonthsSyndrome = 0
-    private var oneYearSyndrome = 0
+    val threeMonthsSyndrome = MutableLiveData<Int>()
+    val sixMonthsSyndrome = MutableLiveData<Int>()
+    val oneYearSyndrome = MutableLiveData<Int>()
     val threeMonthsWeight = MutableLiveData<Int>()
     val sixMonthsWeight = MutableLiveData<Int>()
     val oneYearWeight = MutableLiveData<Int>()
@@ -142,49 +141,50 @@ class ChartViewModel : ViewModel() {
 
                             _eventData.value = data
                             // get 12 months sorted syndrome data
-                            sortSyndromeData(12)
+                            sortSyndromeData(12, data)
                         } else {
-                            _eventData.value = emptyList()
-                            sortSyndromeData(12)
+//                            _eventData.value = emptyList()
+                            sortSyndromeData(12, emptyList())
                         }
                     }.addOnFailureListener {
-                        _eventData.value = emptyList()
-                        sortSyndromeData(12)
-                        Log.d(ERIC, "getSyndromeData() failed : $it")
+//                        _eventData.value = emptyList()
+                        sortSyndromeData(12, emptyList())
+                        Log.d(ERIC, "getSyndromeEntries() failed : $it")
                     }
             }
         }
     }
 
-    private fun sortSyndromeData(months: Int) {
+    private fun sortSyndromeData(
+        months: Int,
+        data: List<PetEvent>
+    ) {
         val calendar = Calendar.getInstance()
 
-        val dataMap = HashMap<Date, ArrayList<PetEvent>>()
+        val dataMap = HashMap<Date, List<PetEvent>>()
 
         // create hashMap of last 12 months by year/month
         for (i in 1..months) {
-            dataMap[calendar.time] = arrayListOf<PetEvent>()
+            dataMap[calendar.time] = mutableListOf()
             calendar.add(Calendar.MONTH, -1)
         }
 
-        // sort data into hashMap
-        eventData.value?.forEach { petEvent ->
-            val dateOfEvent = getDateOfEvent(petEvent, calendar)
+        if (data.size > 0) {
+            // sort data into hashMap
+            data.forEach { petEvent ->
+                val dateOfEvent = getDateOfEvent(petEvent, calendar)
 
-            if (dataMap.contains(dateOfEvent)) {
-                (dataMap[dateOfEvent] as ArrayList<PetEvent>).add(petEvent)
-            } else {
-                val newList = ArrayList<PetEvent>()
-                newList.add(petEvent)
-                dateOfEvent?.let { dataMap[dateOfEvent] = newList }
+                if (dataMap.contains(dateOfEvent)) {
+                    (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
+                } else {
+                    val newList = ArrayList<PetEvent>()
+                    newList.add(petEvent)
+                    dateOfEvent?.let { dataMap[dateOfEvent] = newList }
+                }
             }
         }
 
-        // save sorted data for filter usage
-        sortedSyndromeDataMap = dataMap.toSortedMap()
-
-        // display syndrome data for Bar chart
-        _syndromeData.value = sortedSyndromeDataMap
+        setEntriesForSyndrome(dataMap.toSortedMap())
     }
 
     fun getDateOfEvent(
@@ -195,6 +195,41 @@ class ChartViewModel : ViewModel() {
         calendar2.set(Calendar.YEAR, petEvent.year.toInt())
         calendar2.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
         return calendar2.time
+    }
+
+    fun setEntriesForSyndrome(syndromeData: Map<Date, List<PetEvent>>) {
+        viewModelScope.launch {
+            // Setting Data
+            val entries = mutableListOf<BarEntry>()
+
+            var threeMonths = 0
+            var sixMonths = 0
+            var oneYear = 0
+            var index = 1f
+
+            for (date in syndromeData.keys) {
+
+                syndromeData[date]?.size?.let {
+                    if (index in 1f..12f) {
+                        oneYear += it
+                    }
+                    if (index in 7f..12f) {
+                        sixMonths += it
+                    }
+                    if (index in 10f..12f) {
+                        threeMonths += it
+                    }
+                    entries.add(BarEntry(index, it.toFloat()))
+                    index += 1f
+                }
+            }
+
+            oneYearSyndrome.value = oneYear
+            sixMonthsSyndrome.value = sixMonths
+            threeMonthsSyndrome.value = threeMonths
+
+            _syndromeEntries.value = entries
+        }
     }
 
     fun getWeightData(petProfile: PetProfile) {

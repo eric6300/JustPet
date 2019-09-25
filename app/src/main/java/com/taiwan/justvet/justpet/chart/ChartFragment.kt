@@ -25,10 +25,8 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ChartFragment : Fragment() {
 
@@ -79,7 +77,7 @@ class ChartFragment : Fragment() {
             }
         })
 
-        viewModel.syndromeData.observe(this, Observer {
+        viewModel.syndromeEntries.observe(this, Observer {
             it?.let {
                 showSyndromeData(it)
             }
@@ -220,35 +218,13 @@ class ChartFragment : Fragment() {
         weightChart.invalidate()
     }
 
-    private fun showSyndromeData(syndromeData: Map<Date, ArrayList<PetEvent>>) {
-        // Setting Data
-        val entries = ArrayList<BarEntry>()
-        var i = 1f
+    private fun showSyndromeData(entries: List<BarEntry>) {
 
-//        threeMonthsSyndrome = 0
-//        sixMonthsSyndrome = 0
-//        oneYearSyndrome = 0
-//
-//        for (date in syndromeData.keys) {
-//
-//            syndromeData[date]?.size?.let {
-//                if (i in 1f..12f) {
-//                    oneYearSyndrome += it
-//                }
-//                if (i in 7f..12f) {
-//                    sixMonthsSyndrome += it
-//                }
-//                if (i in 10f..12f) {
-//                    threeMonthsSyndrome += it
-//                }
-//                entries.add(BarEntry(i, it.toFloat()))
-//                i += 1f
-//            }
-//        }
-//
-//        if (threeMonthsSyndrome == 0) {
-//            binding.textNoSyndromeData.visibility = View.VISIBLE
-//        }
+        if (viewModel.threeMonthsSyndrome.value == 0 || viewModel.threeMonthsSyndrome.value == null) {
+            binding.textNoSyndromeData.visibility = View.VISIBLE
+        } else {
+            binding.textNoSyndromeData.visibility = View.GONE
+        }
 
         // set DataSet
         val dataset = BarDataSet(entries, "症狀")
@@ -286,11 +262,11 @@ class ChartFragment : Fragment() {
                         noWeightDataText.visibility = View.GONE
                     }
 
-//                    if (threeMonthsSyndrome > 0) {
-//                        noSyndromeDataText.visibility = View.GONE
-//                    } else if (threeMonthsSyndrome == 0) {
-//                        noSyndromeDataText.visibility = View.VISIBLE
-//                    }
+                    if (viewModel.threeMonthsSyndrome.value == 0 || viewModel.threeMonthsSyndrome.value == null) {
+                        noSyndromeDataText.visibility = View.VISIBLE
+                    } else {
+                        noSyndromeDataText.visibility = View.GONE
+                    }
 
                 }
                 1 -> {
@@ -308,11 +284,11 @@ class ChartFragment : Fragment() {
                         noWeightDataText.visibility = View.GONE
                     }
 
-//                    if (sixMonthsSyndrome > 0) {
-//                        noSyndromeDataText.visibility = View.GONE
-//                    } else if (sixMonthsSyndrome == 0) {
-//                        noSyndromeDataText.visibility = View.VISIBLE
-//                    }
+                    if (viewModel.sixMonthsWeight.value == 0 || viewModel.sixMonthsWeight.value == null) {
+                        noSyndromeDataText.visibility = View.VISIBLE
+                    } else {
+                        noSyndromeDataText.visibility = View.GONE
+                    }
 
                 }
                 2 -> {
@@ -325,16 +301,16 @@ class ChartFragment : Fragment() {
                     }
 
                     if (viewModel.oneYearWeight.value == 0 || viewModel.oneYearWeight.value == null) {
-                        binding.textNoWeightData.visibility = View.VISIBLE
+                        noWeightDataText.visibility = View.VISIBLE
                     } else {
-                        binding.textNoWeightData.visibility = View.GONE
+                        noWeightDataText.visibility = View.GONE
                     }
 
-//                    if (oneYearSyndrome > 0) {
-//                        noSyndromeDataText.visibility = View.GONE
-//                    } else if (oneYearSyndrome == 0) {
-//                        noSyndromeDataText.visibility = View.VISIBLE
-//                    }
+                    if (viewModel.oneYearWeight.value == 0 || viewModel.oneYearWeight.value == null) {
+                        noSyndromeDataText.visibility = View.VISIBLE
+                    } else {
+                        noSyndromeDataText.visibility = View.GONE
+                    }
                 }
             }
         }
