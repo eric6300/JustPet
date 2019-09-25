@@ -98,6 +98,7 @@ class CalendarViewModel : ViewModel() {
 
     fun getEventWithTags(data: List<PetEvent>) {
         val finalMonthEventData = mutableListOf<PetEvent>()
+        var index = 0
         for (event in data) {
             event.petId?.let {
                 event.eventId?.let {
@@ -139,10 +140,12 @@ class CalendarViewModel : ViewModel() {
                                         eventTags = tagList
                                     )
                                 )
-                                val sortedList = finalMonthEventData.sortedBy {
-                                    it.timestamp
+                                index++
+                                if (index == data.size) {
+                                    _monthEventsData.value = finalMonthEventData.sortedBy {
+                                        it.timestamp
+                                    }
                                 }
-                                _monthEventsData.value = sortedList
                             }
                         }
                         .addOnFailureListener {

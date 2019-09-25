@@ -53,9 +53,9 @@
                     <ImageView
                         android:id="@+id/icon_cat"
                         iconSpecies="@{petProfile.species != null ? petProfile.species : viewModel.petEvent.petSpecies}"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -226,6 +226,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
@@ -241,7 +242,6 @@
                         app:bsb_show_thumb_text="true"
                         app:bsb_touch_to_seek="true"
                         app:bsb_track_color="@color/colorPrimaryLight"
-                        app:layout_constraintBottom_toBottomOf="@+id/check_spirit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
                         app:layout_constraintTop_toTopOf="@+id/check_spirit" />
@@ -252,7 +252,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="32dp"
                         android:text="@string/title_appetite"
                         android:textSize="18sp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
@@ -265,6 +265,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
@@ -280,7 +281,6 @@
                         app:bsb_show_thumb_text="true"
                         app:bsb_touch_to_seek="true"
                         app:bsb_track_color="@color/colorPrimaryLight"
-                        app:layout_constraintBottom_toBottomOf="@+id/check_appetite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
                         app:layout_constraintTop_toTopOf="@+id/check_appetite" />

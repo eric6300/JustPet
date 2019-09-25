@@ -7,9 +7,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PetProfile(
     @get:Exclude val profileId: String? = null,
-    val name: String?,
-    val species: Long?,
-    val gender: Long?,
+    val name: String? = "",
+    val species: Long? = 0,
+    val gender: Long? = 0,
     val neutered: Boolean? = false,
     val birthday: Long? = 0,
     val idNumber: String? = "",

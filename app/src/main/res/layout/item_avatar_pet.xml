@@ -16,14 +16,15 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="150dp"
+        android:layout_height="150dp">
 
         <ImageView
             android:id="@+id/avatar_pet"
             iconSpecies="@{profile.species}"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toTopOf="@+id/text_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

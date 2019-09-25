@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.chart
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,6 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
-import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetEvent
@@ -38,9 +36,7 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
-    private var threeMonthsDataSize = 0
-    private var sixMonthsDataSize = 0
-    private var oneYearDataSize = 0
+
     private val viewModel: ChartViewModel by lazy {
         ViewModelProviders.of(this).get(ChartViewModel::class.java)
     }
@@ -73,11 +69,11 @@ class ChartFragment : Fragment() {
                     binding.filterChartGroup.setPosition(0, true)
                 }
                 viewModel.getSyndromeData(it)
-                viewModel.getYearData(it)
+                viewModel.getWeightData(it)
             }
         })
 
-        viewModel.yearData.observe(this, Observer {
+        viewModel.weightEntries.observe(this, Observer {
             it?.let {
                 showWeightData(it)
             }
@@ -194,18 +190,12 @@ class ChartFragment : Fragment() {
         syndromeChart.description = description
     }
 
-    fun showWeightData(yearData: List<PetEvent>) {
-        // Setting Data
-        val weightData = yearData.filter {
-            it.weight != null
-        }
-        val entries = ArrayList<Entry>()
-        for (event in weightData) {
-            event.timestamp?.let { timestamp ->
-                event.weight?.let { weight ->
-                    entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
-                }
-            }
+    private fun showWeightData(entries: List<Entry>) {
+
+        if (viewModel.threeMonthsWeight.value == 0 || viewModel.oneYearWeight.value == null) {
+            binding.textNoWeightData.visibility = View.VISIBLE
+        } else {
+            binding.textNoWeightData.visibility = View.GONE
         }
 
         // set DataSet
@@ -230,37 +220,35 @@ class ChartFragment : Fragment() {
         weightChart.invalidate()
     }
 
-    fun showSyndromeData(syndromeData: Map<Date, ArrayList<PetEvent>>) {
+    private fun showSyndromeData(syndromeData: Map<Date, ArrayList<PetEvent>>) {
         // Setting Data
         val entries = ArrayList<BarEntry>()
         var i = 1f
-        for (date in syndromeData.keys) {
-            syndromeData[date]?.let {
 
-            }
-
-            syndromeData[date]?.size?.let {
-                if (i in 1f..12f) {
-                    oneYearDataSize += it
-                }
-                if (i in 7f..12f) {
-                    sixMonthsDataSize += it
-                }
-                if (i in 10f..12f) {
-                    threeMonthsDataSize += it
-                }
-                entries.add(BarEntry(i, it.toFloat()))
-                i += 1f
-            }
-        }
-
-        Log.d(ERIC, "three month : $threeMonthsDataSize")
-        Log.d(ERIC, "six month : $sixMonthsDataSize")
-        Log.d(ERIC, "one year : $oneYearDataSize")
-
-        if (threeMonthsDataSize == 0) {
-            binding.textNoSyndromeData.visibility = View.VISIBLE
-        }
+//        threeMonthsSyndrome = 0
+//        sixMonthsSyndrome = 0
+//        oneYearSyndrome = 0
+//
+//        for (date in syndromeData.keys) {
+//
+//            syndromeData[date]?.size?.let {
+//                if (i in 1f..12f) {
+//                    oneYearSyndrome += it
+//                }
+//                if (i in 7f..12f) {
+//                    sixMonthsSyndrome += it
+//                }
+//                if (i in 10f..12f) {
+//                    threeMonthsSyndrome += it
+//                }
+//                entries.add(BarEntry(i, it.toFloat()))
+//                i += 1f
+//            }
+//        }
+//
+//        if (threeMonthsSyndrome == 0) {
+//            binding.textNoSyndromeData.visibility = View.VISIBLE
+//        }
 
         // set DataSet
         val dataset = BarDataSet(entries, "症狀")
@@ -280,6 +268,7 @@ class ChartFragment : Fragment() {
 
     private fun setupSegmentedButtonGroup() {
         val noSyndromeDataText = binding.textNoSyndromeData
+        val noWeightDataText = binding.textNoWeightData
         binding.filterChartGroup.setOnPositionChangedListener { index ->
             when (index) {
                 0 -> {
@@ -291,11 +280,17 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(3f)
                     }
 
-                    if (threeMonthsDataSize > 0) {
-                        noSyndromeDataText.visibility = View.GONE
-                    } else if (threeMonthsDataSize == 0) {
-                        noSyndromeDataText.visibility = View.VISIBLE
+                    if (viewModel.threeMonthsWeight.value == 0 || viewModel.threeMonthsWeight.value == null) {
+                        noWeightDataText.visibility = View.VISIBLE
+                    } else {
+                        noWeightDataText.visibility = View.GONE
                     }
+
+//                    if (threeMonthsSyndrome > 0) {
+//                        noSyndromeDataText.visibility = View.GONE
+//                    } else if (threeMonthsSyndrome == 0) {
+//                        noSyndromeDataText.visibility = View.VISIBLE
+//                    }
 
                 }
                 1 -> {
@@ -307,11 +302,17 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(6f)
                     }
 
-                    if (sixMonthsDataSize > 0) {
-                        noSyndromeDataText.visibility = View.GONE
-                    } else if (sixMonthsDataSize == 0) {
-                        noSyndromeDataText.visibility = View.VISIBLE
+                    if (viewModel.sixMonthsWeight.value == 0 || viewModel.sixMonthsWeight.value == null) {
+                        noWeightDataText.visibility = View.VISIBLE
+                    } else {
+                        noWeightDataText.visibility = View.GONE
                     }
+
+//                    if (sixMonthsSyndrome > 0) {
+//                        noSyndromeDataText.visibility = View.GONE
+//                    } else if (sixMonthsSyndrome == 0) {
+//                        noSyndromeDataText.visibility = View.VISIBLE
+//                    }
 
                 }
                 2 -> {
@@ -323,11 +324,17 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(12f)
                     }
 
-                    if (oneYearDataSize > 0) {
-                        noSyndromeDataText.visibility = View.GONE
-                    } else if (oneYearDataSize == 0) {
-                        noSyndromeDataText.visibility = View.VISIBLE
+                    if (viewModel.oneYearWeight.value == 0 || viewModel.oneYearWeight.value == null) {
+                        binding.textNoWeightData.visibility = View.VISIBLE
+                    } else {
+                        binding.textNoWeightData.visibility = View.GONE
                     }
+
+//                    if (oneYearSyndrome > 0) {
+//                        noSyndromeDataText.visibility = View.GONE
+//                    } else if (oneYearSyndrome == 0) {
+//                        noSyndromeDataText.visibility = View.VISIBLE
+//                    }
                 }
             }
         }

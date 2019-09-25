@@ -88,7 +88,7 @@ class HomeViewModel : ViewModel() {
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
     val userReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection("invite")
+    val inviteReference = firebase.collection("invites")
 
     val storageReference = FirebaseStorage.getInstance().reference
 
@@ -96,7 +96,6 @@ class HomeViewModel : ViewModel() {
         calculateTimestamp()
         UserManager.userProfile.value?.let { userProfile ->
             getPetProfileData(userProfile)
-            Log.d(ERIC, "initial")
         }
     }
 
@@ -219,30 +218,37 @@ class HomeViewModel : ViewModel() {
     fun getPetProfileData(userProfile: UserProfile) {
         val petData = mutableListOf<PetProfile>()
         if (userProfile.pets?.size != 0) {
-            userProfile.pets?.forEach {
-                petsReference.document(it).get()
-                    .addOnSuccessListener { profile ->
-                        petData.add(
-                            PetProfile(
-                                profileId = profile.id,
-                                name = profile["name"] as String?,
-                                species = profile["species"] as Long?,
-                                gender = profile["gender"] as Long?,
-                                neutered = profile["neutered"] as Boolean?,
-                                birthday = profile["birthday"] as Long?,
-                                idNumber = profile["idNumber"] as String?,
-                                owner = profile["owner"] as String?,
-                                ownerEmail = profile["ownerEmail"] as String?,
-                                family = profile["family"] as List<String>?,
-                                image = profile["image"] as String?
+            userProfile.pets?.let {
+                var index = 0
+                for (petId in it) {
+                    petsReference.document(petId).get()
+                        .addOnSuccessListener { profile ->
+                            petData.add(
+                                PetProfile(
+                                    profileId = profile.id,
+                                    name = profile["name"] as String?,
+                                    species = profile["species"] as Long?,
+                                    gender = profile["gender"] as Long?,
+                                    neutered = profile["neutered"] as Boolean?,
+                                    birthday = profile["birthday"] as Long?,
+                                    idNumber = profile["idNumber"] as String?,
+                                    owner = profile["owner"] as String?,
+                                    ownerEmail = profile["ownerEmail"] as String?,
+                                    family = profile["family"] as List<String>?,
+                                    image = profile["image"] as String?
+                                )
                             )
-                        )
-                        petData.sortBy { it.profileId }
-                        _petList.value = petData
-                    }
-                    .addOnFailureListener {
-                        Log.d(ERIC, "getPetProfileData() failed: $it")
-                    }
+
+                            index++
+
+                            if (index == it.size) {
+                                _petList.value = petData.sortedBy { it.profileId }
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.d(ERIC, "getPetProfileData() failed: $it")
+                        }
+                }
             }
         } else {
             _petList.value = petData

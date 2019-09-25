@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.data.Entry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
@@ -28,9 +29,9 @@ class ChartViewModel : ViewModel() {
     val selectedProfile: LiveData<PetProfile>
         get() = _selectedProfile
 
-    private val _yearData = MutableLiveData<List<PetEvent>>()
-    val yearData: LiveData<List<PetEvent>>
-        get() = _yearData
+    private val _weightEntries = MutableLiveData<List<Entry>>()
+    val weightEntries: LiveData<List<Entry>>
+        get() = _weightEntries
 
     private val _eventData = MutableLiveData<List<PetEvent>>()
     val eventData: LiveData<List<PetEvent>>
@@ -53,6 +54,13 @@ class ChartViewModel : ViewModel() {
     var oneYearAgoTimestamp: Long = 0
 
     var sortedSyndromeDataMap: SortedMap<Date, ArrayList<PetEvent>>? = null
+
+    private var threeMonthsSyndrome = 0
+    private var sixMonthsSyndrome = 0
+    private var oneYearSyndrome = 0
+    val threeMonthsWeight = MutableLiveData<Int>()
+    val sixMonthsWeight = MutableLiveData<Int>()
+    val oneYearWeight = MutableLiveData<Int>()
 
     init {
         UserManager.userProfile.value?.let {
@@ -79,12 +87,13 @@ class ChartViewModel : ViewModel() {
     }
 
     fun getProfileByPosition(position: Int) {
-        _selectedProfile.value = petProfileData[position]
+        _selectedProfile.value = _listOfProfile.value?.get(position)
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {
             viewModelScope.launch {
+                var index = 0
                 for (petId in it) {
                     petsRef.document(petId).get()
                         .addOnSuccessListener { document ->
@@ -102,12 +111,10 @@ class ChartViewModel : ViewModel() {
                                 image = document["image"] as String?
                             )
                             petProfileData.add(petProfile)
-                            petProfileData.sortBy { it.profileId }
-                            _listOfProfile.value = petProfileData
-                            Log.d(
-                                ERIC,
-                                "ChartViewModel getPetProfileData() succeeded, petId : ${petProfile.profileId}"
-                            )
+                            index++
+                            if (index == it.size) {
+                                _listOfProfile.value = petProfileData.sortedBy { it.profileId }
+                            }
                         }
                         .addOnFailureListener {
                             Log.d(ERIC, "ChartViewModel getPetProfileData() failed : $it")
@@ -190,7 +197,7 @@ class ChartViewModel : ViewModel() {
         return calendar2.time
     }
 
-    fun getYearData(petProfile: PetProfile) {
+    fun getWeightData(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsRef.document(it).collection(EVENTS)
                 .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
@@ -205,14 +212,66 @@ class ChartViewModel : ViewModel() {
                             }
                         }
 
-                        _yearData.value = data
+                        // Setting Data
+                        val weightData = data.filter {
+                            it.weight != null
+                        }
+
+                        setEntriesForWeight(weightData)
+
                     } else {
-                        _yearData.value = emptyList()
-                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of vomit")
+                        setEntriesForWeight(emptyList())
+                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of weight")
                     }
                 }.addOnFailureListener {
-                    Log.d(ERIC, "getSyndromeData() failed : $it")
+                    setEntriesForWeight(emptyList())
+                    Log.d(ERIC, "getWeightData() failed : $it")
                 }
         }
+    }
+
+    private fun setEntriesForWeight(weightData: List<PetEvent>) {
+
+        filterWeightDataSize(weightData)
+
+        val entries = ArrayList<Entry>()
+        for (event in weightData) {
+            event.timestamp?.let { timestamp ->
+                event.weight?.let { weight ->
+                    entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
+                }
+            }
+        }
+
+        _weightEntries.value = entries
+    }
+
+    private fun filterWeightDataSize(weightData: List<PetEvent>) {
+        var threeMonths = 0
+        var sixMonths = 0
+        var oneYear = 0
+
+        weightData.forEach {
+            it.timestamp?.let { timestamp ->
+                if (timestamp >= threeMonthsAgoTimestamp) {
+                    threeMonths += 1
+                }
+                if (timestamp >= sixMonthsAgoTimestamp) {
+                    sixMonths += 1
+                }
+                if (timestamp >= oneYearAgoTimestamp) {
+                    oneYear += 1
+                }
+            }
+        }
+
+        Log.d(ERIC, "3 : $threeMonths")
+        Log.d(ERIC, "6 : $sixMonths")
+        Log.d(ERIC, "12 : $oneYear")
+
+        oneYearWeight.value = oneYear
+        sixMonthsWeight.value = sixMonths
+        threeMonthsWeight.value = threeMonths
+
     }
 }

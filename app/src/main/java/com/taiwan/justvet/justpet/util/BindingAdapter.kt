@@ -2,6 +2,7 @@ package com.taiwan.justvet.justpet.util
 
 import android.net.Uri
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
