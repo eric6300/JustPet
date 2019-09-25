@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -29,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.databinding.NavDrawerHeaderBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
@@ -87,17 +89,43 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNav()
         setupNavController()
-//        setupDrawer()
         setupFAB()
-
-//        requestPermission()
 
         setupFirebaseAuth()
 
         setUserManager()
 
-    }
+        viewModel.inviteList.observe(this, Observer { inviteList ->
+            inviteList?.let {
+                val invite = it[0]
 
+                val dialog = this.let {
+                    AlertDialog.Builder(it)
+                        .setTitle("邀請通知")
+                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
+                        .setPositiveButton("接受") { _, _ ->
+
+                            viewModel.confirmInvite(invite)
+
+                            val newList = mutableListOf<Invite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
+                        }
+                        .setNeutralButton("再想想") { _, _ ->
+                            val newList = mutableListOf<Invite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
+                        }.create()
+
+                }
+
+                dialog?.show()
+            }
+        })
+
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.options_menu, menu)
@@ -110,13 +138,11 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
             R.id.check_invite -> {
-
+                viewModel.checkInvite()
             }
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 
     private fun setupBottomNav() {
         binding.navBottomView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
@@ -135,83 +161,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    private fun setupDrawer() {
-//        setSupportActionBar(binding.toolbar)
-//        supportActionBar?.title = null
-//
-//        val navController = this.findNavController(R.id.nav_host_fragment)
-//        appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
-//        NavigationUI.setupWithNavController(binding.drawerNavView, navController)
-//
-//        val toggle = ActionBarDrawerToggle(
-//            this,
-//            binding.drawerLayout,
-//            binding.toolbar,
-//            R.string.navigation_drawer_open,
-//            R.string.navigation_drawer_close
-//        )
-//
-//        binding.drawerLayout.addDrawerListener(toggle)
-//        toggle.syncState()
-//
-//        // Set drawer Navigation itemSelectedListener
-//        binding.drawerNavView.setNavigationItemSelectedListener(this)
-//
-//        // Set up header of drawer ui using data binding
-//        val bindingNavHeader = NavDrawerHeaderBinding.inflate(
-//            LayoutInflater.from(this), binding.drawerNavView, false
-//        )
-//
-//        bindingNavHeader.lifecycleOwner = this
-//        bindingNavHeader.viewModel = viewModel
-//        binding.drawerNavView.addHeaderView(bindingNavHeader.root)
-//    }
-
     private fun setupFAB() {
         binding.floatingActionButton.setOnClickListener {
             findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_tagDialog)
         }
-    }
-
-//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        // Handle navigation view item clicks here.
-//        when (item.itemId) {
-//            R.id.nav_new_pet -> {
-//                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
-//            }
-//            R.id.new_family_member -> {
-//
-//            }
-//            R.id.nav_slideshow -> {
-//
-//            }
-//            R.id.nav_tools -> {
-//
-//            }
-//            R.id.nav_sign_out -> {
-//                signOut()
-//            }
-//        }
-//        return true
-//    }
-
-//    override fun onBackPressed() {
-//        val drawerLayout = binding.drawerLayout
-//        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//            drawerLayout.closeDrawer(GravityCompat.START)
-//        } else {
-//            super.onBackPressed()
-//        }
-//    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            this, arrayOf(
-                android.Manifest.permission.CAMERA,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE
-            ), 0
-        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -219,13 +172,7 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode != Activity.RESULT_OK) {
-                val response = IdpResponse.fromResultIntent(data)
                 finishAndRemoveTask()
-//                Toast.makeText(
-//                    applicationContext,
-//                    response?.error?.errorCode.toString(),
-//                    Toast.LENGTH_SHORT
-//                ).show()
             }
         }
     }
@@ -261,15 +208,6 @@ class MainActivity : AppCompatActivity() {
         FirebaseAuth.getInstance()
             .addAuthStateListener(authListener)
     }
-
-//    private fun signOut() {
-//        AuthUI.getInstance()
-//            .signOut(this)
-//            .addOnSuccessListener {
-//                Toast.makeText(applicationContext, "已登出", Toast.LENGTH_SHORT).show()
-//                UserManager.clear()
-//            }
-//    }
 
     private fun setUserManager() {
         UserManager.getFirebaseUserCompleted.observe(this, Observer {

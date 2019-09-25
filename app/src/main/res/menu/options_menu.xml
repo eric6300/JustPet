@@ -4,8 +4,10 @@
 
     <item
         android:id="@+id/new_pet"
+        android:icon="@drawable/nav_bottom_home"
         android:title="@string/text_new_pet_profile" />
     <item
         android:id="@+id/check_invite"
+        android:icon="@drawable/ic_house"
         android:title="@string/text_check_invite" />
 </menu>

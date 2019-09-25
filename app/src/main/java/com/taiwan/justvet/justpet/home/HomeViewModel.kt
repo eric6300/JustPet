@@ -111,109 +111,109 @@ class HomeViewModel : ViewModel() {
         calendar.add(Calendar.MONTH, 12)
     }
 
-    fun checkInvite() {
-        userProfile.value?.let { userProfile ->
-            inviteReference
-                .whereEqualTo("inviteeEmail", userProfile.email)
-                .get()
-                .addOnSuccessListener { it ->
-                    if (it.isEmpty) {
-                        Log.d(ERIC, "no invite")
-                    } else {
-                        val list = mutableListOf<Invite>()
-                        it.documents.forEach {
-                            list.add(
-                                Invite(
-                                    inviteId = it.id,
-                                    petId = it["petId"] as String?,
-                                    petName = it["petName"] as String?,
-                                    inviteeEmail = it["inviteeEmail"] as String?,
-                                    inviterName = it["inviterName"] as String?,
-                                    inviterEmail = it["inviterEmail"] as String?
-                                )
-                            )
-                        }
-                        _inviteList.value = list
-                        Log.d(ERIC, "invite list : $list")
-                    }
-                }.addOnFailureListener {
-                    Log.d(ERIC, "checkInvite() failed : $it")
-                }
-        }
-    }
-
-    fun showInvite(inviteList: MutableList<Invite>) {
-        if (inviteList.isNotEmpty()) {
-            _inviteList.value = inviteList
-        } else {
-            _inviteList.value = null
-            Log.d(ERIC, "inviteList is empty")
-        }
-    }
-
-    fun confirmInvite(invite: Invite) {
-        UserManager.userProfile.value?.let { userProfile ->
-            userReference.whereEqualTo("uid", userProfile.uid).get()
-                .addOnSuccessListener {
-
-                    val newPetList = mutableListOf<String>()
-                    userProfile.pets?.let { newPetList.addAll(it) }
-                    invite.petId?.let { newPetList.add(it) }
-
-                    val newUserProfile = UserProfile(
-                        profileId = userProfile.profileId,
-                        uid = userProfile.uid,
-                        email = userProfile.email,
-                        pets = newPetList,
-                        displayName = userProfile.displayName,
-                        photoUrl = userProfile.photoUrl
-                    )
-
-                    updateUserProfile(invite)
-                    updatePetProfileFamily(invite.petId)
-
-                    UserManager.refreshUserProfile(newUserProfile)
-
-                }.addOnFailureListener {
-                    Log.d(ERIC, "confirmInvite() failed : $it")
-                }
-        }
-    }
-
-    private fun updatePetProfileFamily(petId: String?) {
-        petId?.let {
-            petsReference.document(it)
-                .update("family", FieldValue.arrayUnion(userProfile.value?.email))
-                .addOnSuccessListener {
-                    Log.d(ERIC, "updatePetProfileFamily succeeded")
-                }.addOnFailureListener {
-                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
-                }
-        }
-    }
-
-    private fun updateUserProfile(invite: Invite) {
-        userProfile.value?.profileId?.let {
-            userReference.document(it)
-                .update("pets", FieldValue.arrayUnion(invite.petId))
-                .addOnSuccessListener {
-                    deleteInvite(invite)
-                }.addOnFailureListener {
-                    Log.d(ERIC, "updateUserProfile() failed")
-                }
-        }
-    }
-
-    private fun deleteInvite(invite: Invite) {
-        invite.inviteId?.let {
-            inviteReference.document(it).delete()
-                .addOnSuccessListener {
-                    Log.d(ERIC, "deleteInvite() succeeded")
-                }.addOnFailureListener {
-                    Log.d(ERIC, "deleteInvite() failed")
-                }
-        }
-    }
+//    fun checkInvite() {
+//        userProfile.value?.let { userProfile ->
+//            inviteReference
+//                .whereEqualTo("inviteeEmail", userProfile.email)
+//                .get()
+//                .addOnSuccessListener { it ->
+//                    if (it.isEmpty) {
+//                        Log.d(ERIC, "no invite")
+//                    } else {
+//                        val list = mutableListOf<Invite>()
+//                        it.documents.forEach {
+//                            list.add(
+//                                Invite(
+//                                    inviteId = it.id,
+//                                    petId = it["petId"] as String?,
+//                                    petName = it["petName"] as String?,
+//                                    inviteeEmail = it["inviteeEmail"] as String?,
+//                                    inviterName = it["inviterName"] as String?,
+//                                    inviterEmail = it["inviterEmail"] as String?
+//                                )
+//                            )
+//                        }
+//                        _inviteList.value = list
+//                        Log.d(ERIC, "invite list : $list")
+//                    }
+//                }.addOnFailureListener {
+//                    Log.d(ERIC, "checkInvite() failed : $it")
+//                }
+//        }
+//    }
+//
+//    fun showInvite(inviteList: MutableList<Invite>) {
+//        if (inviteList.isNotEmpty()) {
+//            _inviteList.value = inviteList
+//        } else {
+//            _inviteList.value = null
+//            Log.d(ERIC, "inviteList is empty")
+//        }
+//    }
+//
+//    fun confirmInvite(invite: Invite) {
+//        UserManager.userProfile.value?.let { userProfile ->
+//            userReference.whereEqualTo("uid", userProfile.uid).get()
+//                .addOnSuccessListener {
+//
+//                    val newPetList = mutableListOf<String>()
+//                    userProfile.pets?.let { newPetList.addAll(it) }
+//                    invite.petId?.let { newPetList.add(it) }
+//
+//                    val newUserProfile = UserProfile(
+//                        profileId = userProfile.profileId,
+//                        uid = userProfile.uid,
+//                        email = userProfile.email,
+//                        pets = newPetList,
+//                        displayName = userProfile.displayName,
+//                        photoUrl = userProfile.photoUrl
+//                    )
+//
+//                    updateUserProfile(invite)
+//                    updatePetProfileFamily(invite.petId)
+//
+//                    UserManager.refreshUserProfile(newUserProfile)
+//
+//                }.addOnFailureListener {
+//                    Log.d(ERIC, "confirmInvite() failed : $it")
+//                }
+//        }
+//    }
+//
+//    private fun updatePetProfileFamily(petId: String?) {
+//        petId?.let {
+//            petsReference.document(it)
+//                .update("family", FieldValue.arrayUnion(userProfile.value?.email))
+//                .addOnSuccessListener {
+//                    Log.d(ERIC, "updatePetProfileFamily succeeded")
+//                }.addOnFailureListener {
+//                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
+//                }
+//        }
+//    }
+//
+//    private fun updateUserProfile(invite: Invite) {
+//        userProfile.value?.profileId?.let {
+//            userReference.document(it)
+//                .update("pets", FieldValue.arrayUnion(invite.petId))
+//                .addOnSuccessListener {
+//                    deleteInvite(invite)
+//                }.addOnFailureListener {
+//                    Log.d(ERIC, "updateUserProfile() failed")
+//                }
+//        }
+//    }
+//
+//    private fun deleteInvite(invite: Invite) {
+//        invite.inviteId?.let {
+//            inviteReference.document(it).delete()
+//                .addOnSuccessListener {
+//                    Log.d(ERIC, "deleteInvite() succeeded")
+//                }.addOnFailureListener {
+//                    Log.d(ERIC, "deleteInvite() failed")
+//                }
+//        }
+//    }
 
     fun getPetProfileData(userProfile: UserProfile) {
         val petData = mutableListOf<PetProfile>()

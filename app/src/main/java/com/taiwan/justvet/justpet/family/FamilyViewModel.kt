@@ -31,7 +31,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val usersReference = firebase.collection("users")
-    val inviteReference = firebase.collection("invite")
+    val inviteReference = firebase.collection("invites")
 
     fun checkUser() {
         UserManager.userProfile.value?.let {

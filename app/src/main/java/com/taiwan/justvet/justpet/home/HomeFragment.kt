@@ -65,7 +65,7 @@ class HomeFragment : Fragment() {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
                     viewModel.getPetProfileData(userProfile)
-                    viewModel.checkInvite()
+//                    viewModel.checkInvite()
                     UserManager.refreshUserProfileCompleted()
                 }
             }
@@ -129,35 +129,35 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.inviteList.observe(this, Observer { inviteList ->
-            inviteList?.let {
-                val invite = it[0]
-
-                val dialog = this.context?.let { context ->
-                    AlertDialog.Builder(context)
-                        .setTitle("邀請通知")
-                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
-                        .setPositiveButton("接受") { _, _ ->
-
-                            viewModel.confirmInvite(invite)
-
-                            val newList = mutableListOf<Invite>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
-                        }
-                        .setNeutralButton("再想想") { _, _ ->
-                            val newList = mutableListOf<Invite>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
-                        }.create()
-
-                }
-
-                dialog?.show()
-            }
-        })
+//        viewModel.inviteList.observe(this, Observer { inviteList ->
+//            inviteList?.let {
+//                val invite = it[0]
+//
+//                val dialog = this.context?.let { context ->
+//                    AlertDialog.Builder(context)
+//                        .setTitle("邀請通知")
+//                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
+//                        .setPositiveButton("接受") { _, _ ->
+//
+//                            viewModel.confirmInvite(invite)
+//
+//                            val newList = mutableListOf<Invite>()
+//                            newList.addAll(inviteList)
+//                            newList.removeAt(0)
+//                            viewModel.showInvite(newList)
+//                        }
+//                        .setNeutralButton("再想想") { _, _ ->
+//                            val newList = mutableListOf<Invite>()
+//                            newList.addAll(inviteList)
+//                            newList.removeAt(0)
+//                            viewModel.showInvite(newList)
+//                        }.create()
+//
+//                }
+//
+//                dialog?.show()
+//            }
+//        })
 
         viewModel.navigateToNewPet.observe(this, Observer {
             if (it) {
