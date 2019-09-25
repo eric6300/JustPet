@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimaryLight">#aab6fe</color>
-    <color name="colorPrimary">#7986cb</color>
+    <color name="colorPrimary">#7986CB</color>
     <color name="colorPrimaryDark">#49599a</color>
     <color name="colorAccent">#63828D</color>
 
     <color name="background_color">#E6EDF5</color>
 
     <color name="translucent_40">#66000000</color>
+    <color name="translucent_50">#80000000</color>
     <color name="translucent_70">#B3000000</color>
     <color name="transparent">#00000000</color>
 
@@ -22,6 +23,7 @@
     <color name="colorDiaryLight">#d7ffd9</color>
     <color name="colorDiary">#A5D6A7</color>
     <color name="colorDiaryDark">#75A478</color>
+    <color name="colorDiaryTag">#7EBD97</color>
 
     <color name="colorDeleteRed">#EF3D56</color>
     <color name="colorEditGreen">#7ab800</color>

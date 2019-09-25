@@ -148,7 +148,7 @@
                         android:id="@+id/text_no_weight_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="目前沒有足夠數據繪製圖表\n趕緊量體重吧"
+                        android:text="目前沒有足夠數據繪製圖表\n記得量體重喔！"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:visibility="gone"

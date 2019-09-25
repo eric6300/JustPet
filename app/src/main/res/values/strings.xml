@@ -43,7 +43,7 @@
     <string name="title_tool">小工具</string>
     <string name="title_calculate_food">基礎攝取熱量</string>
     <string name="title_water_intake">基礎飲水量</string>
-    <string name="title_calculate_rate">呼吸/脈搏計算</string>
+    <string name="title_calculate_rate">呼吸次數計算</string>
 
     //  ChartFragment  //
     <string name="chart_month_day_format">MM/dd</string>

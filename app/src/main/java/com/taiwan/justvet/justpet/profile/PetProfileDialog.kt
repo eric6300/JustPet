@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Outline
 import android.os.Bundle
+import android.renderscript.Allocation
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -100,6 +101,15 @@ class PetProfileDialog : BottomSheetDialogFragment() {
         binding.layoutImage.setOnClickListener {
             startGallery()
         }
+
+        viewModel.leaveDialog.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    dismiss()
+                    viewModel.leaveDialogCompleted()
+                }
+            }
+        })
 
         return binding.root
     }

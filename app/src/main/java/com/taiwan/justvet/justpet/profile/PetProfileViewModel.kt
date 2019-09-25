@@ -25,6 +25,10 @@ class PetProfileViewModel : ViewModel() {
     val navigateToHomeFragment: LiveData<Boolean>
         get() = _navigateToHomeFragment
 
+    private val _leaveDialog = MutableLiveData<Boolean>()
+    val leaveDialog: LiveData<Boolean>
+        get() = _leaveDialog
+
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
@@ -164,6 +168,14 @@ class PetProfileViewModel : ViewModel() {
 
     fun navigateToHomeFragmentCompleted() {
         _navigateToHomeFragment.value = false
+    }
+
+    fun leaveDialog() {
+        _leaveDialog.value = true
+    }
+
+    fun leaveDialogCompleted() {
+        _leaveDialog.value = false
     }
 
 }

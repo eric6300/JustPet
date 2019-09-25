@@ -20,7 +20,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/border_corner"
+            android:background="@drawable/border_corner_tag"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tag_category_button_group">
@@ -98,6 +98,8 @@
             android:id="@+id/button_close"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
             android:onClick="@{() -> viewModel.leaveTagDialog()}"
             android:padding="6dp"
             app:layout_constraintEnd_toEndOf="parent"

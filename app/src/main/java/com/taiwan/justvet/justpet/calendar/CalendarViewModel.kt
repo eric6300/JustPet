@@ -60,6 +60,7 @@ class CalendarViewModel : ViewModel() {
                         .whereEqualTo("month", month)
                         .get()
                         .addOnSuccessListener { document ->
+                            Log.d(ERIC, "get months data success, data size = ${document.size()}")
                             if (document.size() > 0) {
                                 for (event in document) {
                                     data.add(
@@ -98,7 +99,7 @@ class CalendarViewModel : ViewModel() {
 
     fun getEventWithTags(data: List<PetEvent>) {
         val finalMonthEventData = mutableListOf<PetEvent>()
-        var index = 0
+        var index = 1
         for (event in data) {
             event.petId?.let {
                 event.eventId?.let {
@@ -243,7 +244,6 @@ class CalendarViewModel : ViewModel() {
 
     fun navigateToDetail(petEvent: PetEvent) {
         _navigateToDetail.value = petEvent
-        Log.d(ERIC, "navigateToDetail")
     }
 
     fun navigateToDetailCompleted() {
