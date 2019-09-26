@@ -8,6 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.family.FamilyViewModel" />
         <import type="android.view.View" />
+        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
     </data>
 
     <ScrollView
@@ -95,6 +96,7 @@
                     android:paddingBottom="10dp"
                     android:text="送出邀請"
                     android:visibility="@{viewModel.expandStatus != true ? View.GONE : View.VISIBLE}"
+                    android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                     app:fb_defaultColor="@color/colorPrimaryDark"
                     app:fb_focusColor="@color/colorPrimary"
                     app:fb_radius="5dp"
@@ -103,7 +105,9 @@
                     app:layout_constraintEnd_toStartOf="@+id/guideline"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_invite" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_error_message">
+
+                </mehdi.sakout.fancybuttons.FancyButton>
 
                 <mehdi.sakout.fancybuttons.FancyButton
                     android:id="@+id/button_cancel"
@@ -125,7 +129,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline"
-                    app:layout_constraintTop_toBottomOf="@+id/text_invite" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_error_message" />
 
                 <TextView
                     android:id="@+id/title_invite"
@@ -145,15 +149,16 @@
                     android:id="@+id/text_invite"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="14dp"
                     android:ems="10"
-                    android:hint="用戶 Email"
+                    android:hint="用戶 E-mail"
                     android:inputType="textEmailAddress"
                     android:text="@={viewModel.inviteeEmail}"
                     android:visibility="@{viewModel.expandStatus != true ? View.GONE : View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/title_invite"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/title_invite" />
 
                 <androidx.constraintlayout.widget.Guideline
@@ -164,7 +169,7 @@
                     app:layout_constraintGuide_percent="0.5" />
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/icon_expand_invite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -173,6 +178,21 @@
                     app:layout_constraintTop_toTopOf="@+id/title_invite"
                     android:background="@{viewModel.expandStatus != true ? @drawable/ic_expand_more : @drawable/ic_expand_less}"
                     android:onClick="@{() -> viewModel.expandDialog()}"/>
+
+                <TextView
+                    android:id="@+id/text_error_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="@{viewModel.errorMessage}"
+                    android:textColor="@color/colorDeleteRed"
+                    android:visibility="@{viewModel.expandStatus != true ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_invite" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -187,6 +207,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
