@@ -29,6 +29,18 @@ class PetProfileViewModel : ViewModel() {
     val leaveDialog: LiveData<Boolean>
         get() = _leaveDialog
 
+    private val _loadStatus = MutableLiveData<LoadApiStatus>()
+    val loadStatus: LiveData<LoadApiStatus>
+        get() = _loadStatus
+
+    private val _errorName = MutableLiveData<String>()
+    val errorName: LiveData<String>
+        get() = _errorName
+
+    private val _errorBirthday = MutableLiveData<String>()
+    val errorBirthday: LiveData<String>
+        get() = _errorBirthday
+
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
@@ -46,6 +58,11 @@ class PetProfileViewModel : ViewModel() {
     val petsReference = firebase.collection(PETS)
     val eventsReference = firebase.collection(EVENTS)
     val storageReference = FirebaseStorage.getInstance().reference
+
+    init {
+        petSpecies.value = 0
+        petGender.value = 0
+    }
 
     fun selectSpecies(species: Long) {
         petSpecies.value = species
@@ -65,7 +82,23 @@ class PetProfileViewModel : ViewModel() {
         ).show()
     }
 
-    fun newPetProfile() {
+    fun checkProfileText() {
+        var index = 0
+        if (petName.value.isNullOrEmpty()) {
+            _errorName.value = "請輸入名字"
+            index++
+        }
+        if (petBirthday.value.isNullOrEmpty()) {
+            _errorBirthday.value = "請輸入出生日期"
+            index++
+        }
+        if (index == 0) {
+            newPetProfile()
+        }
+    }
+
+    private fun newPetProfile() {
+        _loadStatus.value = LoadApiStatus.LOADING
         UserManager.userProfile.value?.let { userProfile ->
             petBirthday.value?.let {
                 val timeList = it.split("/")
@@ -88,6 +121,7 @@ class PetProfileViewModel : ViewModel() {
                     updatePetsOfUser(it.id)
                 }
                 .addOnFailureListener {
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "newPetProfile() failed : $it")
                 }
         }
@@ -117,6 +151,7 @@ class PetProfileViewModel : ViewModel() {
                         Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {
+                        _loadStatus.value = LoadApiStatus.ERROR
                         Log.d(ERIC, "updatePetsOfUser() failed : $it")
                     }
             }
@@ -142,10 +177,12 @@ class PetProfileViewModel : ViewModel() {
                             updateProfileImageUrl(petId, downloadUri)
                         }
                     }.addOnFailureListener {
+                        _loadStatus.value = LoadApiStatus.ERROR
                         Log.d(ERIC, "uploadImage failed : $it")
                     }
             }
         } else {
+            _loadStatus.value = LoadApiStatus.DONE
             navigateToHomeFragment()
         }
     }
@@ -154,9 +191,11 @@ class PetProfileViewModel : ViewModel() {
         petsReference.let {
             it.document(petId).update("image", downloadUri.toString())
                 .addOnSuccessListener {
+                    _loadStatus.value = LoadApiStatus.DONE
                     navigateToHomeFragment()
                     Log.d(ERIC, "updateEventImageUrl succeed")
                 }.addOnFailureListener {
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "updateEventImageUrl failed : $it")
                 }
         }

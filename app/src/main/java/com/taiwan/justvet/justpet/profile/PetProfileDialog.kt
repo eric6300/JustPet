@@ -76,10 +76,10 @@ class PetProfileDialog : BottomSheetDialogFragment() {
             when (it) {
                 0L -> {
                     iconCat.alpha = 1.0f
-                    iconDog.alpha = 0.2f
+                    iconDog.alpha = 0.15f
                 }
                 1L -> {
-                    iconCat.alpha = 0.2f
+                    iconCat.alpha = 0.15f
                     iconDog.alpha = 1.0f
                 }
             }
@@ -89,10 +89,10 @@ class PetProfileDialog : BottomSheetDialogFragment() {
             when (it) {
                 0L -> {
                     iconFemale.alpha = 1.0f
-                    iconMale.alpha = 0.2f
+                    iconMale.alpha = 0.15f
                 }
                 1L -> {
-                    iconFemale.alpha = 0.2f
+                    iconFemale.alpha = 0.15f
                     iconMale.alpha = 1.0f
                 }
             }
@@ -108,6 +108,30 @@ class PetProfileDialog : BottomSheetDialogFragment() {
                     dismiss()
                     viewModel.leaveDialogCompleted()
                 }
+            }
+        })
+
+        viewModel.petName.observe(this, Observer {
+            it?.let {
+                binding.editTextNameNew.error = ""
+            }
+        })
+
+        viewModel.errorName.observe(this, Observer {
+            it?.let {
+                binding.editTextNameNew.error = it
+            }
+        })
+
+        viewModel.petBirthday.observe(this, Observer {
+            it?.let {
+                binding.editTextBirthdayNew.error = ""
+            }
+        })
+
+        viewModel.errorBirthday.observe(this, Observer {
+            it?.let {
+                binding.editTextBirthdayNew.error = it
             }
         })
 

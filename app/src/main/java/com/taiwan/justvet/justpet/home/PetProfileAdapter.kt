@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.taiwan.justvet.justpet.LoadApiStatus
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
@@ -75,11 +76,18 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
             }
         }
 
-        viewModel.errorMessage.observe(holder, Observer {
-            it?.let {
-                holder.binding.editTextName.error = it
+        viewModel.loadStatus.value?.let {
+            when (it) {
+                LoadApiStatus.LOADING -> {
+                    holder.binding.buttonConfirm.isClickable = false
+                    holder.binding.buttonCancel.isClickable = false
+                }
+                else -> {
+                    holder.binding.buttonConfirm.isClickable = true
+                    holder.binding.buttonCancel.isClickable = true
+                }
             }
-        })
+        }
 
         holder.bind(petProfile)
     }

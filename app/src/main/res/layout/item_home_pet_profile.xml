@@ -250,8 +250,7 @@
                             android:onClick="@{ (view) -> viewModel.datePicker(view) }"
                             android:singleLine="true"
                             android:text="@{viewModel.petBirthday}"
-                            android:textAlignment="center"
-                            android:textSize="16sp" />
+                            android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <TextView
@@ -291,7 +290,6 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:clickable="true"
                         android:onClick="@{() -> viewModel.modifyCancelled()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
@@ -314,7 +312,6 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="16dp"
-                        android:clickable="true"
                         android:onClick="@{() -> viewModel.updatePetProfile()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"

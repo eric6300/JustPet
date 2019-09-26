@@ -90,6 +90,12 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.loadStatus.observe(this, Observer {
+            it?.let {
+                profileAdapter.notifyDataSetChanged()
+            }
+        })
+
         viewModel.navigateToAchievement.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))

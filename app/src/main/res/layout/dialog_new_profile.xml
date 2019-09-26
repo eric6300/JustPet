@@ -17,7 +17,7 @@
             android:id="@+id/icon_female"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:alpha="0.2"
+            android:alpha="0.15"
             android:onClick="@{() -> viewModel.selectGender(0)}"
             app:layout_constraintBottom_toBottomOf="@+id/icon_dog"
             app:layout_constraintEnd_toStartOf="@+id/icon_male"
@@ -34,6 +34,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="15dp"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/icon_dog">
@@ -52,7 +53,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginTop="16dp"
-            android:alpha="0.2"
+            android:alpha="0.15"
             android:onClick="@{() -> viewModel.selectSpecies(0)}"
             android:padding="@dimen/cardview_compat_inset_shadow"
             app:layout_constraintEnd_toStartOf="@+id/icon_dog"
@@ -65,7 +66,7 @@
             android:id="@+id/icon_dog"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:alpha="0.2"
+            android:alpha="0.15"
             android:onClick="@{() -> viewModel.selectSpecies(1)}"
             app:layout_constraintBottom_toBottomOf="@+id/icon_cat"
             app:layout_constraintEnd_toStartOf="@+id/guideline7"
@@ -82,7 +83,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:onClick="@{() -> viewModel.newPetProfile()}"
+            android:onClick="@{() -> viewModel.checkProfileText()}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/text_confirm"
@@ -122,7 +123,7 @@
             android:id="@+id/icon_male"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:alpha="0.2"
+            android:alpha="0.15"
             android:onClick="@{() -> viewModel.selectGender(1)}"
             android:padding="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/icon_female"
@@ -210,6 +211,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
             android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_name_new">
@@ -237,8 +239,6 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_birthday_new">
@@ -246,9 +246,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.petIdNumber}"
                 android:hint="@string/text_id_number"
                 android:singleLine="true"
+                android:text="@={viewModel.petIdNumber}"
                 android:textAlignment="center" />
         </com.google.android.material.textfield.TextInputLayout>
 
