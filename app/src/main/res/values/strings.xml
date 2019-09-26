@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     //  HomeFragment  //
-    <string name="text_id_number">晶片號碼</string>
+    <string name="text_id_number">晶片號碼 ( 選填 )</string>
     <string name="text_name">名字</string>
     <string name="text_birthday">出生日期</string>
     <string name="text_gender">性別</string>

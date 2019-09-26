@@ -9,6 +9,7 @@ import android.view.ViewOutlineProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +48,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
                 viewModel.isModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
-                    } else{
+                    } else {
                         outline?.setRoundRect(0, 0, view.width, view.height, 36F)
                     }
                 }
@@ -73,6 +74,12 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
                 holder.binding.iconFemale.alpha = 0.2F
             }
         }
+
+        viewModel.errorMessage.observe(holder, Observer {
+            it?.let {
+                holder.binding.editTextName.error = it
+            }
+        })
 
         holder.bind(petProfile)
     }
@@ -134,7 +141,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         }
 
         override fun areContentsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
-            return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthday == newItem.birthday)
+            return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthday == newItem.birthday) && (oldItem.idNumber == newItem.idNumber)
         }
     }
 

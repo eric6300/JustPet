@@ -97,6 +97,15 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.navigateToHome.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                    viewModel.navigateToHomeCompleted()
+                }
+            }
+        })
+
         viewModel.petList.observe(this, Observer {
             it?.let {
                 if (it.isNotEmpty()) {

@@ -8,10 +8,10 @@ import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -48,6 +48,10 @@ class HomeViewModel : ViewModel() {
     val navigateToAchievement: LiveData<PetProfile>
         get() = _navigateToAchievement
 
+    private val _navigateToHome = MutableLiveData<Boolean>()
+    val navigateToHome: LiveData<Boolean>
+        get() = _navigateToHome
+
     private val _navigateToNewPet = MutableLiveData<Boolean>()
     val navigateToNewPet: LiveData<Boolean>
         get() = _navigateToNewPet
@@ -60,9 +64,13 @@ class HomeViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
-    private val _inviteList = MutableLiveData<List<Invite>>()
-    val inviteList: LiveData<List<Invite>>
-        get() = _inviteList
+    private val _loadStatus = MutableLiveData<LoadApiStatus>()
+    val loadStatus: LiveData<LoadApiStatus>
+        get() = _loadStatus
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
 
     val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
     val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
@@ -87,8 +95,8 @@ class HomeViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
-    val userReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection("invites")
+//    val userReference = firebase.collection(USERS)
+//    val inviteReference = firebase.collection("invites")
 
     val storageReference = FirebaseStorage.getInstance().reference
 
@@ -299,35 +307,43 @@ class HomeViewModel : ViewModel() {
     }
 
     fun updatePetProfile() {
-        val finalProfile = mapOf(
-            "name" to petName.value,
-            "birthday" to (calendar.timeInMillis / 1000),
-            "idNumber" to petIdNumber.value,
-            "species" to petSpecies.value,
-            "gender" to petGender.value
-        )
+        if (petName.value.isNullOrEmpty()) {
+            Toast.makeText(JustPetApplication.appContext, "名字不可為空白", Toast.LENGTH_SHORT).show()
+        } else {
+            _loadStatus.value = LoadApiStatus.LOADING
+            val finalProfile = mapOf(
+                "name" to petName.value,
+                "birthday" to (calendar.timeInMillis / 1000),
+                "idNumber" to petIdNumber.value,
+                "species" to petSpecies.value,
+                "gender" to petGender.value
+            )
 
-        selectedPet.value?.profileId?.let { profileId ->
-            petsReference.document(profileId).update(finalProfile)
-                .addOnSuccessListener {
-                    if (petImage.value != null) {
-                        uploadImage(profileId)
-                    } else {
-                        modifyCompleted()
-                        refreshPetProfile()
+            selectedPet.value?.profileId?.let { profileId ->
+                petsReference.document(profileId).update(finalProfile)
+                    .addOnSuccessListener {
+                        if (petImage.value != null) {
+                            uploadImage(profileId)
+                        } else {
+                            modifyCompleted()
+                            navigateToHome()
+                            _loadStatus.value = LoadApiStatus.DONE
+                        }
+                        Log.d(ERIC, "updatePetProfile() succeeded ")
+                    }.addOnFailureListener {
+                        _loadStatus.value = LoadApiStatus.ERROR
+                        Log.d(ERIC, "updatePetProfile() failed : ${it.toString()}")
                     }
-                    Log.d(ERIC, "updatePetProfile() succeeded ")
-                }.addOnFailureListener {
-                    Log.d(ERIC, "updatePetProfile() failed : $it")
-                }
+            }
         }
     }
 
     fun uploadImage(profileId: String) {
         petImage.value?.let {
             if (it.startsWith("https")) {
-                refreshPetProfile()
+                navigateToHome()
                 modifyCompleted()
+                _loadStatus.value = LoadApiStatus.DONE
             } else {
                 val imageRef = storageReference.child("profile/$profileId")
                 Log.d(ERIC, "uri : ${it.toUri()}")
@@ -346,6 +362,7 @@ class HomeViewModel : ViewModel() {
                             updateProfileImageUrl(profileId, downloadUri)
                         }
                     }.addOnFailureListener {
+                        _loadStatus.value = LoadApiStatus.ERROR
                         Log.d(ERIC, "uploadImage failed : $it")
                     }
             }
@@ -355,17 +372,19 @@ class HomeViewModel : ViewModel() {
     fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
         petsReference.document(profileId).update("image", downloadUri.toString())
             .addOnSuccessListener {
-                refreshPetProfile()
+                navigateToHome()
                 modifyCompleted()
+                _loadStatus.value = LoadApiStatus.DONE
                 Log.d(ERIC, "updateProfileImageUrl succeed")
             }.addOnFailureListener {
+                _loadStatus.value = LoadApiStatus.ERROR
                 Log.d(ERIC, "updateProfileImageUrl failed : $it")
             }
 
     }
 
     fun modifyCompleted() {
-        _isModified.value = false
+        Toast.makeText(JustPetApplication.appContext, "修改寵物資料成功！", Toast.LENGTH_LONG).show()
     }
 
     fun modifyCancelled() {
@@ -395,10 +414,12 @@ class HomeViewModel : ViewModel() {
         _navigateToAchievement.value = null
     }
 
-    private fun refreshPetProfile() {
-        userProfile.value?.let { userProfile ->
-            getPetProfileData(userProfile)
-        }
+    private fun navigateToHome() {
+        _navigateToHome.value = true
+    }
+
+    fun navigateToHomeCompleted() {
+        _navigateToHome.value = false
     }
 
     fun changeSpecies(species: Long) {
