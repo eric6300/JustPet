@@ -30,6 +30,10 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
+    private val _loadStatus = MutableLiveData<LoadApiStatus>()
+    val loadStatus: LiveData<LoadApiStatus>
+        get() = _loadStatus
+
     private val _eventTags = MutableLiveData<List<EventTag>>()
     val eventTags: LiveData<List<EventTag>>
         get() = _eventTags
@@ -45,6 +49,10 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     private val _showTimePickerDialog = MutableLiveData<Boolean>()
     val showTimePickerDialog: LiveData<Boolean>
         get() = _showTimePickerDialog
+
+    private val _startGallery = MutableLiveData<Boolean>()
+    val startGallery: LiveData<Boolean>
+        get() = _startGallery
 
     val eventNote = MutableLiveData<String>()
 
@@ -161,6 +169,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun postEvent() {
+        _loadStatus.value = LoadApiStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -197,6 +206,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                     postTags(documentReference.id)
                 }
                 .addOnFailureListener { e ->
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "postEvent failed : $e")
                 }
         }
@@ -210,12 +220,14 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                         .addOnSuccessListener {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
                             if (eventImage.value == null) {
+                                _loadStatus.value = LoadApiStatus.DONE
                                 navigateToCalendar()
                             } else {
                                 uploadImage(eventId)
                             }
                         }
                         .addOnFailureListener {
+                            _loadStatus.value = LoadApiStatus.ERROR
                             Log.d(ERIC, "postTags failed : $it")
                         }
                 }
@@ -241,6 +253,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                         updateEventImageUrl(eventId, downloadUri)
                     }
                 }.addOnFailureListener {
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "uploadImage failed : $it")
                 }
         }
@@ -250,15 +263,18 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
         eventsReference?.let {
             it.document(eventId).update("imageUrl", downloadUri.toString())
                 .addOnSuccessListener {
+                    _loadStatus.value = LoadApiStatus.DONE
                     navigateToCalendar()
                     Log.d(ERIC, "updateEventImageUrl succeed")
                 }.addOnFailureListener {
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "updateEventImageUrl failed : $it")
                 }
         }
     }
 
     private fun updateEvent() {
+        _loadStatus.value = LoadApiStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -284,9 +300,11 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
         petEvent.eventId?.let {
             eventsReference?.document(it)?.update(finalEvent)?.addOnSuccessListener {
+                _loadStatus.value = LoadApiStatus.DONE
                 navigateToCalendar()
                 Log.d(ERIC, "update succeeded")
             }?.addOnFailureListener {
+                _loadStatus.value = LoadApiStatus.ERROR
                 Log.d(ERIC, "update failed")
             }
         }
@@ -318,6 +336,14 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun showTimeDialogCompleted() {
         _showTimePickerDialog.value = false
+    }
+
+    fun startGallery() {
+        _startGallery.value = true
+    }
+
+    fun startGalleryCompleted() {
+        _startGallery.value = false
     }
 
 }

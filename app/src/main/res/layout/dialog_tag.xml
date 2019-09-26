@@ -7,6 +7,8 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.tag.TagViewModel" />
+        <import type="android.view.View"/>
+        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +60,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:clickable="true"
+            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.makeTagList()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -81,7 +83,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:clickable="true"
+            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.quickSave()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -134,6 +136,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
             app:borderColor="@color/colorPrimary"
             app:borderWidth="1dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,6 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
+                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                 app:rounded="true"
                 app:selectedTextColor="@android:color/background_light"
                 app:text="@string/text_diary"
@@ -165,6 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
+                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                 app:rounded="true"
                 app:selectedTextColor="@android:color/background_light"
                 app:text="@string/text_syndrome"
@@ -176,6 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
+                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                 app:rounded="true"
                 app:selectedTextColor="@android:color/background_light"
                 app:text="@string/text_treatment"
@@ -189,6 +195,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

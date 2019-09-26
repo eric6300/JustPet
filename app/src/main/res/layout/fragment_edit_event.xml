@@ -12,6 +12,7 @@
             name="petProfile"
             type="com.taiwan.justvet.justpet.data.PetProfile" />
         <import type="android.view.View" />
+        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
 
     </data>
 
@@ -35,7 +36,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_basic"
@@ -81,6 +81,8 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/border_corner"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                        android:onClick="@{() -> viewModel.startGallery()}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -133,6 +135,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:fontFamily="@font/roboto_mono"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:onClick="@{() -> viewModel.showDatePickerDialog()}"
                         android:text="@{viewModel.dateAndTime}"
                         android:textAlignment="textStart"
@@ -176,6 +179,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="15dp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
@@ -188,8 +192,10 @@
                             android:hint="@string/title_note"
                             android:inputType="text"
                             android:text="@={viewModel.eventNote}"
-                            android:textAlignment="textStart" />
+                            android:textAlignment="textStart"
+                            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"/>
                     </com.google.android.material.textfield.TextInputLayout>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -228,6 +234,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
                         app:bsb_bubble_color="@color/colorPrimary"
@@ -267,6 +274,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:bsb_auto_adjust_section_mark="true"
                         app:bsb_bubble_color="@color/colorPrimary"
@@ -345,6 +353,7 @@
                         android:text="@={viewModel.eventWeight}"
                         android:textAlignment="center"
                         android:textSize="16sp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_body_weight"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -364,6 +373,7 @@
                         android:text="@={viewModel.eventTemper}"
                         android:textAlignment="center"
                         android:textSize="16sp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_temperature"
                         app:layout_constraintStart_toEndOf="@+id/check_respiratory_rate"
@@ -381,6 +391,7 @@
                         android:text="@={viewModel.eventRR}"
                         android:textAlignment="center"
                         android:textSize="16sp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_respiratory_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
@@ -399,6 +410,7 @@
                         android:text="@={viewModel.eventHR}"
                         android:textAlignment="center"
                         android:textSize="16sp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:visibility="@{viewModel.expandStatus == true ? View.VISIBLE : View.GONE }"
                         app:layout_constraintBottom_toBottomOf="@+id/check_heart_rate"
                         app:layout_constraintEnd_toEndOf="@+id/text_temperature"
@@ -455,6 +467,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
                         app:layout_constraintBottom_toBottomOf="@+id/title_advance"
                         app:layout_constraintStart_toEndOf="@+id/title_advance"
@@ -468,8 +481,8 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
-                        android:clickable="true"
                         android:focusable="true"
+                        android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                         android:onClick="@{() -> viewModel.expandAdvanceMenu()}"
                         android:text="@string/title_advance"
                         android:textSize="18sp"
@@ -491,7 +504,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:clickable="true"
+            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
             android:onClick="@{()-> viewModel.checkEventId()}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -504,6 +517,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

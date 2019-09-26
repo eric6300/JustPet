@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.tag
 import android.graphics.drawable.Drawable
 import android.icu.util.Calendar
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,7 +35,6 @@ class TagViewModel : ViewModel() {
     val leaveTagDialog: LiveData<Boolean>
         get() = _leaveTagDialog
 
-
     private val _listOfTags = MutableLiveData<List<EventTag>>()
     val listOfTags: LiveData<List<EventTag>>
         get() = _listOfTags
@@ -43,6 +43,9 @@ class TagViewModel : ViewModel() {
     val listOfProfile: LiveData<List<PetProfile>>
         get() = _listOfProfile
 
+    private val _loadStatus = MutableLiveData<LoadApiStatus>()
+    val loadStatus: LiveData<LoadApiStatus>
+        get() = _loadStatus
 
     private val _currentEvent = MutableLiveData<PetEvent>()
     val currentEvent: LiveData<PetEvent>
@@ -177,6 +180,7 @@ class TagViewModel : ViewModel() {
                 eventTagsIndex = eventTagsIndex
             )
             _navigateToEditEvent.value = true
+            _loadStatus.value = LoadApiStatus.DONE
         }
     }
 
@@ -215,6 +219,7 @@ class TagViewModel : ViewModel() {
     }
 
     fun makeTagList() {
+        _loadStatus.value = LoadApiStatus.LOADING
         val arrayOfList = arrayListOf<List<EventTag>>()
         arrayOfList.add(listTagDiary)
         arrayOfList.add(listTagSyndrome)
@@ -230,12 +235,18 @@ class TagViewModel : ViewModel() {
                     }
                 }
             }
-            navigateToEditEvent()
+            if (eventTags.size == 0) {
+                _loadStatus.value = LoadApiStatus.ERROR
+                Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG).show()
+            } else {
+                navigateToEditEvent()
+            }
         }
     }
 
 
     fun quickSave() {
+        _loadStatus.value = LoadApiStatus.LOADING
         val arrayOfList = arrayListOf<List<EventTag>>()
         arrayOfList.add(listTagDiary)
         arrayOfList.add(listTagSyndrome)
@@ -251,11 +262,17 @@ class TagViewModel : ViewModel() {
                     }
                 }
             }
-            postEvent()
+            if (eventTags.size == 0) {
+                _loadStatus.value = LoadApiStatus.ERROR
+                Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG).show()
+            } else {
+                postEvent()
+            }
         }
     }
 
     private fun postEvent() {
+        _loadStatus.value = LoadApiStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -282,6 +299,7 @@ class TagViewModel : ViewModel() {
                     postTags(documentReference.id)
                     Log.d(ERIC, "TagViewModel quickSave() succeeded")
                 }.addOnFailureListener { e ->
+                    _loadStatus.value = LoadApiStatus.ERROR
                     Log.d(ERIC, "TagViewModel quickSave() failed: $e")
                 }
             }
@@ -292,6 +310,7 @@ class TagViewModel : ViewModel() {
         selectedPetProfile?.apply {
             this.profileId?.let {
                 viewModelScope.launch {
+                    var index = 1
                     for (item in eventTags) {
                         pets.document(it).collection(EVENTS)
                             .document(eventId).collection(TAGS).add(item)
@@ -300,8 +319,13 @@ class TagViewModel : ViewModel() {
                             }.addOnFailureListener { e ->
                                 Log.d(ERIC, "TagViewModel postTags() failed: $e")
                             }
+                        if (index == eventTags.size) {
+                            _loadStatus.value = LoadApiStatus.DONE
+                            _navigateToCalendar.value = true
+                            Toast.makeText(JustPetApplication.appContext, "新增成功！", Toast.LENGTH_LONG).show()
+                        }
+                        index++
                     }
-                    _navigateToCalendar.value = true
                 }
             }
         }

@@ -76,9 +76,14 @@ class EditEventFragment : Fragment() {
 
         setupSeekBar()
 
-        binding.layoutMedia.setOnClickListener {
-            startGallery()
-        }
+        viewModel.startGallery.observe(this, Observer {
+            it?.let{
+                if (it) {
+                    startGallery()
+                    viewModel.startGalleryCompleted()
+                }
+            }
+        })
 
         calendar = viewModel.calendar
         setupDatePickerDialog()

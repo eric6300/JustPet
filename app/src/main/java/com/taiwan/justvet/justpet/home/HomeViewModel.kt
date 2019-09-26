@@ -68,10 +68,6 @@ class HomeViewModel : ViewModel() {
     val loadStatus: LiveData<LoadApiStatus>
         get() = _loadStatus
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
-
     val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
     val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
     val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")

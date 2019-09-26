@@ -70,6 +70,7 @@ class TagDialog : BottomSheetDialogFragment() {
 
         viewModel.navigateToCalendar.observe(this, Observer {
             if (it == true) {
+                dismiss()
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
                 viewModel.navigateToCalendarCompleted()
             }

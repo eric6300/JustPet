@@ -12,7 +12,7 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.ItemChipTagBinding
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
-class CalendarTagListAdapter(val viewModel: CalendarViewModel, val onClickListener: OnClickListener) :
+class CalendarTagListAdapter(val viewModel: CalendarViewModel) :
     ListAdapter<EventTag, CalendarTagListAdapter.ViewHolder>(TagListAdapter.TagDiffCallback()) {
 
     private lateinit var context: Context
@@ -71,10 +71,6 @@ class CalendarTagListAdapter(val viewModel: CalendarViewModel, val onClickListen
             binding.executePendingBindings()
         }
 
-    }
-
-    class OnClickListener(val clickListener: (eventTag: EventTag) -> Unit) {
-        fun onClick(eventTag: EventTag) = clickListener(eventTag)
     }
 }
 

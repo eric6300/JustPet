@@ -159,32 +159,34 @@ class ChartViewModel : ViewModel() {
         months: Int,
         data: List<PetEvent>
     ) {
-        val calendar = Calendar.getInstance()
+        viewModelScope.launch {
+            val calendar = Calendar.getInstance()
 
-        val dataMap = HashMap<Date, List<PetEvent>>()
+            val dataMap = HashMap<Date, List<PetEvent>>()
 
-        // create hashMap of last 12 months by year/month
-        for (i in 1..months) {
-            dataMap[calendar.time] = mutableListOf()
-            calendar.add(Calendar.MONTH, -1)
-        }
+            // create hashMap of last 12 months by year/month
+            for (i in 1..months) {
+                dataMap[calendar.time] = mutableListOf()
+                calendar.add(Calendar.MONTH, -1)
+            }
 
-        if (data.size > 0) {
-            // sort data into hashMap
-            data.forEach { petEvent ->
-                val dateOfEvent = getDateOfEvent(petEvent, calendar)
+            if (data.size > 0) {
+                // sort data into hashMap
+                data.forEach { petEvent ->
+                    val dateOfEvent = getDateOfEvent(petEvent, calendar)
 
-                if (dataMap.contains(dateOfEvent)) {
-                    (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
-                } else {
-                    val newList = ArrayList<PetEvent>()
-                    newList.add(petEvent)
-                    dateOfEvent?.let { dataMap[dateOfEvent] = newList }
+                    if (dataMap.contains(dateOfEvent)) {
+                        (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
+                    } else {
+                        val newList = ArrayList<PetEvent>()
+                        newList.add(petEvent)
+                        dateOfEvent?.let { dataMap[dateOfEvent] = newList }
+                    }
                 }
             }
-        }
 
-        setEntriesForSyndrome(dataMap.toSortedMap())
+            setEntriesForSyndrome(dataMap.toSortedMap())
+        }
     }
 
     fun getDateOfEvent(
