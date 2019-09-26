@@ -64,7 +64,8 @@ class HomeFragment : Fragment() {
         UserManager.refreshUserProfileCompleted.observe(this, Observer {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
-                    viewModel.getPetProfileData(userProfile)
+//                    viewModel.getPetProfileData(userProfile)
+                    findNavController().navigate(R.id.navigate_to_homeFragment)
                     UserManager.refreshUserProfileCompleted()
                 }
             }

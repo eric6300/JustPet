@@ -125,6 +125,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.navigateToHome.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
+                    viewModel.navigateToHomeCompleted()
+                }
+            }
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

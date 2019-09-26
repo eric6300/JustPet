@@ -48,7 +48,13 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         _errorMessage.value = ""
         _loadStatus.value = LoadApiStatus.LOADING
         UserManager.userProfile.value?.let {
-            if (inviteeEmail.value != null) {
+            if (inviteeEmail.value == null || inviteeEmail.value == "") {
+                _errorMessage.value = "用戶 E-mail 不可為空白"
+                _loadStatus.value = LoadApiStatus.ERROR
+            } else if (inviteeEmail.value == userEmail) {
+                _errorMessage.value = "你已經是 ${petName}囉！"
+                _loadStatus.value = LoadApiStatus.ERROR
+            } else {
                 inviteeEmail.value?.let { inviteeEmail ->
                     usersReference.whereEqualTo("email", inviteeEmail).get()
                         .addOnSuccessListener {
@@ -65,7 +71,6 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                                 // show message
                                 _errorMessage.value = "該用戶不存在，請重新輸入E-mail"
                                 _loadStatus.value = LoadApiStatus.ERROR
-                                Log.d(ERIC, "can't find this user")
                             }
                         }.addOnFailureListener {
                             _errorMessage.value = "發送失敗"
@@ -73,9 +78,6 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                             Log.d(ERIC, "checkUser() failed : $it")
                         }
                 }
-            } else {
-                _errorMessage.value = "用戶 E-mail 不可為空白"
-                _loadStatus.value = LoadApiStatus.ERROR
             }
         }
     }

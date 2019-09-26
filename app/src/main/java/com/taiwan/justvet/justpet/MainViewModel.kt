@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
@@ -133,39 +134,9 @@ class MainViewModel : ViewModel() {
         UserManager.userProfile.value?.let { userProfile ->
             usersReference.whereEqualTo("uid", userProfile.uid).get()
                 .addOnSuccessListener {
-
-                    val newPetList = mutableListOf<String>()
-                    userProfile.pets?.let { newPetList.addAll(it) }
-                    invite.petId?.let { newPetList.add(it) }
-
-                    val newUserProfile = UserProfile(
-                        profileId = userProfile.profileId,
-                        uid = userProfile.uid,
-                        email = userProfile.email,
-                        pets = newPetList,
-                        displayName = userProfile.displayName,
-                        photoUrl = userProfile.photoUrl
-                    )
-
                     updateUserProfile(invite)
-                    updatePetProfileFamily(invite.petId)
-
-                    UserManager.refreshUserProfile(newUserProfile)
-
                 }.addOnFailureListener {
                     Log.d(ERIC, "confirmInvite() failed : $it")
-                }
-        }
-    }
-
-    private fun updatePetProfileFamily(petId: String?) {
-        petId?.let {
-            petsReference.document(it)
-                .update("family", FieldValue.arrayUnion(UserManager.userProfile.value?.email))
-                .addOnSuccessListener {
-                    Log.d(ERIC, "updatePetProfileFamily succeeded")
-                }.addOnFailureListener {
-                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
                 }
         }
     }
@@ -186,10 +157,43 @@ class MainViewModel : ViewModel() {
         invite.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
-                    Log.d(ERIC, "deleteInvite() succeeded")
+                    updatePetProfileFamily(invite)
                 }.addOnFailureListener {
                     Log.d(ERIC, "deleteInvite() failed")
                 }
         }
+    }
+
+    private fun updatePetProfileFamily(invite: Invite) {
+        UserManager.userProfile.value?.let { userProfile ->
+            invite.petId?.let { petId ->
+                petsReference.document(petId)
+                    .update("family", FieldValue.arrayUnion(userProfile.email))
+                    .addOnSuccessListener {
+                        val newPetList = mutableListOf<String>()
+                        userProfile.pets?.let { newPetList.addAll(it) }
+                        newPetList.add(petId)
+
+                        val newUserProfile = UserProfile(
+                            profileId = userProfile.profileId,
+                            uid = userProfile.uid,
+                            email = userProfile.email,
+                            pets = newPetList.sortedBy { it },
+                            displayName = userProfile.displayName,
+                            photoUrl = userProfile.photoUrl
+                        )
+
+                        UserManager.refreshUserProfile(newUserProfile)
+                        _navigateToHome.value = true
+                        Log.d(ERIC, "updatePetProfileFamily succeeded")
+                    }.addOnFailureListener {
+                        Log.d(ERIC, "updatePetProfileFamily failed : $it")
+                    }
+            }
+        }
+    }
+
+    fun navigateToHomeCompleted() {
+        _navigateToHome.value = false
     }
 }
