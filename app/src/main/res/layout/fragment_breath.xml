@@ -12,13 +12,9 @@
             type="com.taiwan.justvet.justpet.util.Converter" />
     </data>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
                 android:id="@+id/rate_type_button_group"
@@ -86,7 +82,8 @@
                 android:text="平均速率"
                 app:layout_constraintBottom_toBottomOf="@+id/text_rate"
                 app:layout_constraintEnd_toStartOf="@+id/text_rate"
-                app:layout_constraintTop_toTopOf="@+id/text_rate" />
+                app:layout_constraintTop_toTopOf="@+id/text_rate"
+                app:layout_constraintVertical_bias="0.76" />
 
             <TextView
                 android:id="@+id/textView14"
@@ -95,7 +92,8 @@
                 android:text="次/分鐘"
                 app:layout_constraintBottom_toBottomOf="@+id/text_rate"
                 app:layout_constraintStart_toEndOf="@+id/text_rate"
-                app:layout_constraintTop_toTopOf="@+id/text_rate" />
+                app:layout_constraintTop_toTopOf="@+id/text_rate"
+                app:layout_constraintVertical_bias="0.76" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -103,20 +101,22 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:alpha="0.6"
                 android:clickable="true"
                 android:onClick="@{() -> viewModel.click()}"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/button_next_step"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rate_type_button_group"
-                app:srcCompat="@drawable/ic_heart" />
+                app:srcCompat="@drawable/dog_lying" />
 
             <mehdi.sakout.fancybuttons.FancyButton
                 android:id="@+id/button_next_step"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:onClick="@{() -> viewModel.reset()}"
@@ -131,8 +131,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline4"
@@ -146,14 +145,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:onClick="@{() -> viewModel.saveRecord()}"
+                android:alpha="@{viewModel.averageRate == 0L ? 0.2f : 1f}"
                 android:clickable="@{viewModel.averageRate == 0L ? false : true}"
+                android:onClick="@{() -> viewModel.saveRecord()}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:alpha="@{viewModel.averageRate == 0L ? 0.2f : 1f}"
                 app:fb_defaultColor="@color/colorPrimary"
                 app:fb_focusColor="@color/colorPrimaryLight"
                 app:fb_radius="5dp"
@@ -162,11 +160,8 @@
                 app:fb_textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline4"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </ScrollView>
 </layout>

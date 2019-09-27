@@ -1,10 +1,14 @@
 package com.taiwan.justvet.justpet.breath
 
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.ERIC
+import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.data.PetEvent
 
 class BreathViewModel : ViewModel() {
@@ -23,6 +27,8 @@ class BreathViewModel : ViewModel() {
     var lastInterval = 0L
 //    val instantRate = MutableLiveData<Long>()
     val averageRate = MutableLiveData<Long>()
+
+    val vibrator = JustPetApplication.appContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     init {
         averageRate.value = 0L
@@ -51,6 +57,8 @@ class BreathViewModel : ViewModel() {
 //            Log.d(ERIC, "instantRate : ${instantRate.value}")
             Log.d(ERIC, "averageRate : ${averageRate.value}")
         }
+
+        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
     fun reset() {
