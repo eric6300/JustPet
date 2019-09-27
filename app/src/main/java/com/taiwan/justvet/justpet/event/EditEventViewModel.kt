@@ -54,10 +54,9 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
     val startGallery: LiveData<Boolean>
         get() = _startGallery
 
-    val eventNote = MutableLiveData<String>()
-
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
+    val eventNote = MutableLiveData<String>()
     val eventWeight = MutableLiveData<String>()
     val eventTemper = MutableLiveData<String>()
     val eventRR = MutableLiveData<String>()
@@ -101,9 +100,8 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                 eventTimestamp.value = it.timestamp
             }
 
-            if (it.eventId != null) {
-                _expandStatus.value = true
-            }
+            _expandStatus.value = true
+
         }
     }
 

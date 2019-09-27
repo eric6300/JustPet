@@ -21,7 +21,7 @@
             android:layout_height="wrap_content">
 
             <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
-                android:id="@+id/rate_button_group"
+                android:id="@+id/rate_type_button_group"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -108,7 +108,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rate_button_group"
+                app:layout_constraintTop_toBottomOf="@+id/rate_type_button_group"
                 app:srcCompat="@drawable/ic_heart" />
 
             <mehdi.sakout.fancybuttons.FancyButton
@@ -149,9 +149,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:onClick="@{() -> viewModel.reset()}"
+                android:onClick="@{() -> viewModel.saveRecord()}"
+                android:clickable="@{viewModel.averageRate == 0L ? false : true}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                android:alpha="@{viewModel.averageRate == 0L ? 0.2f : 1f}"
                 app:fb_defaultColor="@color/colorPrimary"
                 app:fb_focusColor="@color/colorPrimaryLight"
                 app:fb_radius="5dp"

@@ -177,7 +177,9 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                 petName = it.name,
                 petSpecies = it.species,
                 eventTags = eventTags,
-                eventTagsIndex = eventTagsIndex
+                eventTagsIndex = eventTagsIndex,
+                respiratoryRate = petEvent.respiratoryRate,
+                heartRate = petEvent.heartRate
             )
             _navigateToEditEvent.value = true
             _loadStatus.value = LoadApiStatus.DONE
@@ -293,7 +295,9 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                         dayOfMonth = timeList[2].toLong(),
                         time = timeList[3],
                         eventTags = eventTags,
-                        eventTagsIndex = eventTagsIndex
+                        eventTagsIndex = eventTagsIndex,
+                        respiratoryRate = petEvent.respiratoryRate,
+                        heartRate = petEvent.heartRate
                     )
                 ).addOnSuccessListener { documentReference ->
                     postTags(documentReference.id)

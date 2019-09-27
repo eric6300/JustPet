@@ -130,6 +130,7 @@ class CalendarViewModel : ViewModel() {
                                         month = event.month,
                                         dayOfMonth = event.dayOfMonth,
                                         time = event.time,
+                                        note = event.note,
                                         eventTagsIndex = event.eventTagsIndex,
                                         spirit = event.spirit,
                                         appetite = event.appetite,
