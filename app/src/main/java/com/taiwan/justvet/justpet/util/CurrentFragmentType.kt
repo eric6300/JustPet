@@ -8,4 +8,5 @@ enum class CurrentFragmentType(val value: String) {
     CHART(Util.getString(R.string.chart)),
     TOOL(Util.getString(R.string.tool)),
     EVENT(Util.getString(R.string.event)),
+    BREATH(Util.getString(R.string.title_calculate_rate))
 }

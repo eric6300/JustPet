@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
@@ -64,6 +65,10 @@ class HomeViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
+    private val _inviteList = MutableLiveData<List<Invite>>()
+    val inviteList: LiveData<List<Invite>>
+        get() = _inviteList
+
     private val _loadStatus = MutableLiveData<LoadApiStatus>()
     val loadStatus: LiveData<LoadApiStatus>
         get() = _loadStatus
@@ -91,8 +96,8 @@ class HomeViewModel : ViewModel() {
 
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
-//    val userReference = firebase.collection(USERS)
-//    val inviteReference = firebase.collection("invites")
+    val userReference = firebase.collection(USERS)
+    val inviteReference = firebase.collection("invites")
 
     val storageReference = FirebaseStorage.getInstance().reference
 
@@ -334,7 +339,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun uploadImage(profileId: String) {
+    private fun uploadImage(profileId: String) {
         petImage.value?.let {
             if (it.startsWith("https")) {
                 navigateToHome()
@@ -365,7 +370,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
+    private fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
         petsReference.document(profileId).update("image", downloadUri.toString())
             .addOnSuccessListener {
                 navigateToHome()
@@ -379,7 +384,7 @@ class HomeViewModel : ViewModel() {
 
     }
 
-    fun modifyCompleted() {
+    private fun modifyCompleted() {
         Toast.makeText(JustPetApplication.appContext, "修改寵物資料成功！", Toast.LENGTH_LONG).show()
     }
 
@@ -391,6 +396,110 @@ class HomeViewModel : ViewModel() {
             petBirthday.value = it.birthday?.timestampToDateString()
             petSpecies.value = it.species
             petGender.value = it.gender
+        }
+    }
+
+    fun checkInvite() {
+        userProfile.value?.let { userProfile ->
+            inviteReference
+                .whereEqualTo("inviteeEmail", userProfile.email)
+                .get()
+                .addOnSuccessListener { it ->
+                    if (it.isEmpty) {
+                        Log.d(ERIC, "no invite")
+                    } else {
+                        val list = mutableListOf<Invite>()
+                        it.documents.forEach {
+                            list.add(
+                                Invite(
+                                    inviteId = it.id,
+                                    petId = it["petId"] as String?,
+                                    petName = it["petName"] as String?,
+                                    inviteeEmail = it["inviteeEmail"] as String?,
+                                    inviterName = it["inviterName"] as String?,
+                                    inviterEmail = it["inviterEmail"] as String?
+                                )
+                            )
+                        }
+                        _inviteList.value = list
+                        Log.d(ERIC, "invite list : $list")
+                    }
+                }.addOnFailureListener {
+                    Log.d(ERIC, "checkInvite() failed : $it")
+                }
+        }
+    }
+
+    fun showInvite(inviteList: MutableList<Invite>) {
+        if (inviteList.isNotEmpty()) {
+            _inviteList.value = inviteList
+        } else {
+            _inviteList.value = null
+            Log.d(ERIC, "inviteList is empty")
+        }
+    }
+
+    fun confirmInvite(invite: Invite) {
+        UserManager.userProfile.value?.let { userProfile ->
+            userReference.whereEqualTo("uid", userProfile.uid).get()
+                .addOnSuccessListener {
+
+                    val newPetList = mutableListOf<String>()
+                    userProfile.pets?.let { newPetList.addAll(it) }
+                    invite.petId?.let { newPetList.add(it) }
+
+                    val newUserProfile = UserProfile(
+                        profileId = userProfile.profileId,
+                        uid = userProfile.uid,
+                        email = userProfile.email,
+                        pets = newPetList,
+                        displayName = userProfile.displayName,
+                        photoUrl = userProfile.photoUrl
+                    )
+
+                    updateUserProfile(invite)
+                    updatePetProfileFamily(invite.petId)
+
+                    UserManager.refreshUserProfile(newUserProfile)
+
+                }.addOnFailureListener {
+                    Log.d(ERIC, "confirmInvite() failed : $it")
+                }
+        }
+    }
+
+    private fun updatePetProfileFamily(petId: String?) {
+        petId?.let {
+            petsReference.document(it)
+                .update("family", FieldValue.arrayUnion(userProfile.value?.email))
+                .addOnSuccessListener {
+                    Log.d(ERIC, "updatePetProfileFamily succeeded")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
+                }
+        }
+    }
+
+    private fun updateUserProfile(invite: Invite) {
+        userProfile.value?.profileId?.let {
+            userReference.document(it)
+                .update("pets", FieldValue.arrayUnion(invite.petId))
+                .addOnSuccessListener {
+                    deleteInvite(invite)
+                }.addOnFailureListener {
+                    Log.d(ERIC, "updateUserProfile() failed")
+                }
+        }
+    }
+
+    private fun deleteInvite(invite: Invite) {
+        invite.inviteId?.let {
+            inviteReference.document(it).delete()
+                .addOnSuccessListener {
+                    Log.d(ERIC, "deleteInvite() succeeded")
+                }.addOnFailureListener {
+                    Log.d(ERIC, "deleteInvite() failed")
+                }
         }
     }
 

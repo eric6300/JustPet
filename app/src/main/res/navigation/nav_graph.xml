@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_tagDialog_to_eventDetailFragment"
             app:destination="@id/eventDetailFragment" />
+        <argument
+            android:name="petEvent"
+            app:argType="com.taiwan.justvet.justpet.data.PetEvent" />
     </dialog>
     <dialog
         android:id="@+id/petProfileDialogFragment"
@@ -78,5 +81,10 @@
         android:id="@+id/navigate_to_homeFragment"
         app:destination="@id/homeFragment"
         app:popUpTo="@+id/nav_graph" />
+    <fragment
+        android:id="@+id/breathFragment"
+        android:name="com.taiwan.justvet.justpet.breath.BreathFragment"
+        android:label="BreathFragment" />
+    <action android:id="@+id/navigate_to_breathFragment" app:destination="@id/breathFragment" />
 
 </navigation>

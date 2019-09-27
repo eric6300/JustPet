@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TagViewModel : ViewModel() {
+class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private val _navigateToEditEvent = MutableLiveData<Boolean>()
     val navigateToEditEvent: LiveData<Boolean>

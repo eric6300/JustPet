@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.taiwan.justvet.justpet.LoadApiStatus
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
+import com.taiwan.justvet.justpet.event.EditEventViewModel
+import com.taiwan.justvet.justpet.event.EditEventViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class TagDialog : BottomSheetDialogFragment() {
@@ -25,9 +28,7 @@ class TagDialog : BottomSheetDialogFragment() {
 //    private lateinit var timePickerDialog: TimePickerDialog
 //    private lateinit var calendar: Calendar
     private lateinit var avatarAdapter: PetAvatarAdapter
-    private val viewModel: TagViewModel by lazy {
-        ViewModelProviders.of(this).get(TagViewModel::class.java)
-    }
+    private lateinit var viewModel: TagViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +37,10 @@ class TagDialog : BottomSheetDialogFragment() {
     ): View? {
 
         binding = DialogTagBinding.inflate(inflater, container, false)
+        val currentEvent = TagDialogArgs.fromBundle(arguments!!).petEvent
+        val viewModelFactory = TagViewModelFactory(currentEvent)
+        viewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(TagViewModel::class.java)
 
         dialog?.setOnShowListener {
 
@@ -73,6 +78,12 @@ class TagDialog : BottomSheetDialogFragment() {
                 dismiss()
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
                 viewModel.navigateToCalendarCompleted()
+            }
+        })
+
+        viewModel.loadStatus.observe(this, Observer {
+            it?.let {
+                binding.listOfTags.isLayoutFrozen = it == LoadApiStatus.LOADING
             }
         })
 

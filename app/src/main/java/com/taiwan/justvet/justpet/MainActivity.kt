@@ -31,6 +31,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.databinding.NavDrawerHeaderBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
@@ -95,44 +96,44 @@ class MainActivity : AppCompatActivity() {
 
         setUserManager()
 
-        viewModel.inviteList.observe(this, Observer { inviteList ->
-            inviteList?.let {
-                val invite = it[0]
+//        viewModel.inviteList.observe(this, Observer { inviteList ->
+//            inviteList?.let {
+//                val invite = it[0]
+//
+//                val dialog = this.let {
+//                    AlertDialog.Builder(it)
+//                        .setTitle("邀請通知")
+//                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
+//                        .setPositiveButton("接受") { _, _ ->
+//
+//                            viewModel.confirmInvite(invite)
+//
+//                            val newList = mutableListOf<Invite>()
+//                            newList.addAll(inviteList)
+//                            newList.removeAt(0)
+//                            viewModel.showInvite(newList)
+//                        }
+//                        .setNeutralButton("再想想") { _, _ ->
+//                            val newList = mutableListOf<Invite>()
+//                            newList.addAll(inviteList)
+//                            newList.removeAt(0)
+//                            viewModel.showInvite(newList)
+//                        }.create()
+//
+//                }
+//
+//                dialog?.show()
+//            }
+//        })
 
-                val dialog = this.let {
-                    AlertDialog.Builder(it)
-                        .setTitle("邀請通知")
-                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
-                        .setPositiveButton("接受") { _, _ ->
-
-                            viewModel.confirmInvite(invite)
-
-                            val newList = mutableListOf<Invite>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
-                        }
-                        .setNeutralButton("再想想") { _, _ ->
-                            val newList = mutableListOf<Invite>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
-                        }.create()
-
-                }
-
-                dialog?.show()
-            }
-        })
-
-        viewModel.navigateToHome.observe(this, Observer {
-            it?.let {
-                if (it) {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
-                    viewModel.navigateToHomeCompleted()
-                }
-            }
-        })
+//        viewModel.navigateToHome.observe(this, Observer {
+//            it?.let {
+//                if (it) {
+//                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
+//                    viewModel.navigateToHomeCompleted()
+//                }
+//            }
+//        })
 
     }
 
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
             R.id.check_invite -> {
-                viewModel.checkInvite()
+//                viewModel.checkInvite()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -165,6 +166,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.chartFragment -> CurrentFragmentType.CHART
                 R.id.toolFragment -> CurrentFragmentType.TOOL
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENT
+                R.id.breathFragment -> CurrentFragmentType.BREATH
                 else -> viewModel.currentFragmentType.value
             }
         }
@@ -172,13 +174,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFAB() {
         binding.floatingActionButton.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_tagDialog)
+            findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToTagDialog(PetEvent()))
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == RC_SIGN_IN) {
             if (resultCode != Activity.RESULT_OK) {
                 finishAndRemoveTask()

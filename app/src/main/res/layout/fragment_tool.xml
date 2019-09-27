@@ -4,7 +4,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.taiwan.justvet.justpet.tool.ToolViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,6 +47,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/filter_tool_image"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.navigateToBreath()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/title_calculate_rate"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
@@ -108,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/title_calculate_food"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
@@ -160,7 +164,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/title_water_intake"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"

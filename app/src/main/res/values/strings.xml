@@ -16,7 +16,7 @@
     <string name="text_syndrome">症狀</string>
     <string name="text_treatment">醫療</string>
     <string name="text_next_step">下一步</string>
-    <string name="text_quick_save">快速紀錄</string>
+    <string name="text_quick_save">快速記錄</string>
     <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format">HH:mm</string>
     <string name="date_time_format">yyyy/MM/dd  HH:mm</string>
@@ -43,7 +43,8 @@
     <string name="title_tool">小工具</string>
     <string name="title_calculate_food">基礎攝取熱量</string>
     <string name="title_water_intake">基礎飲水量</string>
-    <string name="title_calculate_rate">呼吸次數計算</string>
+    <string name="title_calculate_rate">呼吸 / 脈搏</string>
+    <string name="text_reset">重設</string>
 
     //  ChartFragment  //
     <string name="chart_month_day_format">MM/dd</string>

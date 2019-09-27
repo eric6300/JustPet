@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.taiwan.justvet.justpet.breath.BreathViewModel" />
+        <variable
+            name="converter"
+            type="com.taiwan.justvet.justpet.util.Converter" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
+                android:id="@+id/rate_button_group"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/background_light"
+                app:borderColor="@color/colorPrimary"
+                app:borderWidth="1dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_rate"
+                app:position="0"
+                app:radius="5dp"
+                app:ripple="true"
+                app:rippleColor="@color/colorPrimary"
+                app:selectedBackground="@color/colorPrimary"
+                app:selectedButtonRadius="5dp"
+                app:selectionAnimationDuration="@android:integer/config_shortAnimTime"
+                app:selectionAnimationInterpolator="fastOutSlowIn">
+
+                <com.addisonelliott.segmentedbutton.SegmentedButton
+                    android:id="@+id/button_respiratory_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    app:rounded="true"
+                    app:selectedTextColor="@android:color/background_light"
+                    app:text="呼吸速率"
+                    app:textSize="18sp" />
+
+                <com.addisonelliott.segmentedbutton.SegmentedButton
+                    android:id="@+id/button_heart_rate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    app:rounded="true"
+                    app:selectedTextColor="@android:color/background_light"
+                    app:text="脈搏速率"
+                    app:textSize="18sp" />
+
+            </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
+
+            <TextView
+                android:id="@+id/text_rate"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@={converter.longToString(viewModel.averageRate)}"
+                android:textAlignment="center"
+                android:textSize="36sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="128" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="平均速率"
+                app:layout_constraintBottom_toBottomOf="@+id/text_rate"
+                app:layout_constraintEnd_toStartOf="@+id/text_rate"
+                app:layout_constraintTop_toTopOf="@+id/text_rate" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="次/分鐘"
+                app:layout_constraintBottom_toBottomOf="@+id/text_rate"
+                app:layout_constraintStart_toEndOf="@+id/text_rate"
+                app:layout_constraintTop_toTopOf="@+id/text_rate" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:onClick="@{() -> viewModel.click()}"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rate_button_group"
+                app:srcCompat="@drawable/ic_heart" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/button_next_step"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:onClick="@{() -> viewModel.reset()}"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:fb_defaultColor="@color/colorPrimary"
+                app:fb_focusColor="@color/colorPrimaryLight"
+                app:fb_radius="5dp"
+                app:fb_text="@string/text_reset"
+                app:fb_textColor="#FFFFFF"
+                app:fb_textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <mehdi.sakout.fancybuttons.FancyButton
+                android:id="@+id/button_add_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:onClick="@{() -> viewModel.reset()}"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:fb_defaultColor="@color/colorPrimary"
+                app:fb_focusColor="@color/colorPrimaryLight"
+                app:fb_radius="5dp"
+                app:fb_text="@string/text_new_event"
+                app:fb_textColor="#FFFFFF"
+                app:fb_textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline4"
+                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>
