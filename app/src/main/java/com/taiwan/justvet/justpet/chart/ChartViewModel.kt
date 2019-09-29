@@ -75,7 +75,7 @@ class ChartViewModel : ViewModel() {
         calendar.apply {
             nowTimestamp = (calendar.timeInMillis / 1000)
 
-            this.set(localData.year, localData.monthValue.minus(1), 1,0,0,0)
+            this.set(localData.year, localData.monthValue, 1,0,0,0)
 
             this.add(Calendar.MONTH, -3)
             threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
@@ -166,14 +166,14 @@ class ChartViewModel : ViewModel() {
         viewModelScope.launch {
             val calendar = Calendar.getInstance()
 
-            calendar.set(localData.year, localData.monthValue.minus(1), 1,0,0,0)
+            calendar.set(localData.year, localData.monthValue, 1,0,0,0)
 
             val dataMap = HashMap<Date, List<PetEvent>>()
 
             // create hashMap of last 12 months by year/month
             for (i in 1..12) {
-                dataMap[calendar.time] = mutableListOf()
                 calendar.add(Calendar.MONTH, -1)
+                dataMap[calendar.time] = mutableListOf()
             }
 
             if (data.size > 0) {
