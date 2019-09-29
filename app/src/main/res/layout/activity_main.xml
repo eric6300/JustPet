@@ -38,7 +38,7 @@
                     android:layout_gravity="center"
                     android:text="@{viewModel.currentFragmentType.value}"
                     android:textColor="@android:color/background_light"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     tools:layout_editor_absoluteX="186dp"
                     tools:layout_editor_absoluteY="14dp"
                     tools:text="首頁" />

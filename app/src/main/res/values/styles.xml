@@ -11,7 +11,7 @@
     </style>
 
     <style name="MyActionButtonOverflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
-        <item name="android:src">@drawable/plus</item>
+        <item name="android:src">@drawable/ic_add_new_pet_2</item>
         <item name="android:background">?android:attr/actionBarItemBackground</item>
     </style>
 

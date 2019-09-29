@@ -80,6 +80,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {
             viewModelScope.launch {
+                var index = 1
                 for (petId in it) {
                     pets.document(petId).get()
                         .addOnSuccessListener { document ->
@@ -97,8 +98,11 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                                 image = document["image"] as String?
                             )
                             petData.add(petProfile)
-                            petData.sortBy { it.profileId }
-                            _listOfProfile.value = petData
+                            if (index == it.size) {
+                                petData.sortBy { it.profileId }
+                                _listOfProfile.value = petData
+                            }
+                            index++
                             Log.d(ERIC, "TagViewModel getPetProfileData() succeeded")
                         }
                         .addOnFailureListener {

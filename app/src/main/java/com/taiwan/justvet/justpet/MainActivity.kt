@@ -4,36 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
-import com.taiwan.justvet.justpet.databinding.NavDrawerHeaderBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
 
 const val PHOTO_FROM_GALLERY = 1
@@ -49,7 +36,7 @@ const val ERIC = "testEric"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-//    private lateinit var appBarConfiguration: AppBarConfiguration
+    //    private lateinit var appBarConfiguration: AppBarConfiguration
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -67,8 +54,13 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_bottom_chart -> {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_chartFragment)
-                    return@OnNavigationItemSelectedListener true
+                    if (viewModel.petsSizeNotZero.value == true) {
+                        findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_chartFragment)
+                        return@OnNavigationItemSelectedListener true
+                    } else {
+                        Toast.makeText(this, "新增寵物後才能查看圖表", Toast.LENGTH_LONG).show()
+                        return@OnNavigationItemSelectedListener false
+                    }
                 }
                 R.id.nav_bottom_tool -> {
                     findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_toolFragment)
@@ -96,44 +88,50 @@ class MainActivity : AppCompatActivity() {
 
         setUserManager()
 
-//        viewModel.inviteList.observe(this, Observer { inviteList ->
-//            inviteList?.let {
-//                val invite = it[0]
-//
-//                val dialog = this.let {
-//                    AlertDialog.Builder(it)
-//                        .setTitle("邀請通知")
-//                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
-//                        .setPositiveButton("接受") { _, _ ->
-//
-//                            viewModel.confirmInvite(invite)
-//
-//                            val newList = mutableListOf<Invite>()
-//                            newList.addAll(inviteList)
-//                            newList.removeAt(0)
-//                            viewModel.showInvite(newList)
-//                        }
-//                        .setNeutralButton("再想想") { _, _ ->
-//                            val newList = mutableListOf<Invite>()
-//                            newList.addAll(inviteList)
-//                            newList.removeAt(0)
-//                            viewModel.showInvite(newList)
-//                        }.create()
-//
-//                }
-//
-//                dialog?.show()
-//            }
-//        })
+        UserManager.userProfile.observe(this, Observer {
+            it?.let {
+                viewModel.petsSizeNotZero(it.pets?.size != 0)
+            }
+        })
 
-//        viewModel.navigateToHome.observe(this, Observer {
-//            it?.let {
-//                if (it) {
-//                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
-//                    viewModel.navigateToHomeCompleted()
-//                }
-//            }
-//        })
+        viewModel.inviteList.observe(this, Observer { inviteList ->
+            inviteList?.let {
+                val invite = it[0]
+
+                val dialog = this.let {
+                    AlertDialog.Builder(it)
+                        .setTitle("邀請通知")
+                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
+                        .setPositiveButton("接受") { _, _ ->
+
+                            viewModel.confirmInvite(invite)
+
+                            val newList = mutableListOf<Invite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
+                        }
+                        .setNeutralButton("再想想") { _, _ ->
+                            val newList = mutableListOf<Invite>()
+                            newList.addAll(inviteList)
+                            newList.removeAt(0)
+                            viewModel.showInvite(newList)
+                        }.create()
+
+                }
+
+                dialog?.show()
+            }
+        })
+
+        viewModel.navigateToHome.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
+                    viewModel.navigateToHomeCompleted()
+                }
+            }
+        })
 
     }
 
@@ -148,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
             }
             R.id.check_invite -> {
-//                viewModel.checkInvite()
+                viewModel.checkInvite()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -174,7 +172,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFAB() {
         binding.floatingActionButton.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToTagDialog(PetEvent()))
+            if (viewModel.petsSizeNotZero.value == true) {
+                findNavController(R.id.nav_host_fragment).navigate(
+                    NavGraphDirections.navigateToTagDialog(PetEvent())
+                )
+            } else {
+                Toast.makeText(this, "新增寵物後才能替寵物記錄生活", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

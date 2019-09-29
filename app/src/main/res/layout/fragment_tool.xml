@@ -65,6 +65,8 @@
                     android:text="@string/title_calculate_rate"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.navigateToBreath()}"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView5"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -103,7 +105,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/filter_tool_image">
+                    android:background="@drawable/filter_tool_image"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.comingSoon()}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -116,6 +124,8 @@
                     android:text="@string/title_calculate_food"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.comingSoon()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -152,6 +162,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/filter_tool_image"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.comingSoon()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -168,6 +180,8 @@
                     android:text="@string/title_water_intake"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
+                    android:clickable="true"
+                    android:onClick="@{() -> viewModel.comingSoon()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

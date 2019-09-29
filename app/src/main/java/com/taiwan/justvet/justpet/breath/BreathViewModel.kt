@@ -4,11 +4,13 @@ import android.content.Context
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.JustPetApplication
+import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.PetEvent
 
 class BreathViewModel : ViewModel() {
@@ -58,7 +60,7 @@ class BreathViewModel : ViewModel() {
             Log.d(ERIC, "averageRate : ${averageRate.value}")
         }
 
-        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        vibrator.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
     fun reset() {
@@ -73,12 +75,16 @@ class BreathViewModel : ViewModel() {
     }
 
     fun saveRecord() {
-        if (averageRate.value != 0L) {
-            if (rateType == 0) {
-                _navigateToTag.value = PetEvent(respiratoryRate = averageRate.value.toString())
-            } else if (rateType == 1) {
-                _navigateToTag.value = PetEvent(heartRate = averageRate.value.toString())
+        if (UserManager.userProfile.value?.pets?.size != 0) {
+            if (averageRate.value != 0L) {
+                if (rateType == 0) {
+                    _navigateToTag.value = PetEvent(respiratoryRate = averageRate.value.toString())
+                } else if (rateType == 1) {
+                    _navigateToTag.value = PetEvent(heartRate = averageRate.value.toString())
+                }
             }
+        } else {
+            Toast.makeText(JustPetApplication.appContext, "目前沒有寵物資料，無法新增紀錄", Toast.LENGTH_LONG).show()
         }
     }
 

@@ -33,6 +33,10 @@ class PetProfileViewModel : ViewModel() {
     val loadStatus: LiveData<LoadApiStatus>
         get() = _loadStatus
 
+    private val _startGallery = MutableLiveData<Boolean>()
+    val startGallery: LiveData<Boolean>
+        get() = _startGallery
+
     private val _errorName = MutableLiveData<String>()
     val errorName: LiveData<String>
         get() = _errorName
@@ -199,6 +203,14 @@ class PetProfileViewModel : ViewModel() {
                     Log.d(ERIC, "updateEventImageUrl failed : $it")
                 }
         }
+    }
+
+    fun startGallery() {
+        _startGallery.value = true
+    }
+
+    fun startGalleryCompleted() {
+        _startGallery.value = false
     }
 
     fun navigateToHomeFragment() {

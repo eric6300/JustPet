@@ -47,6 +47,7 @@ class CalendarViewModel : ViewModel() {
     init {
         UserManager.userProfile.value?.let {
             getMonthEventsData(it, localDate.year.toLong(), localDate.monthValue.toLong())
+            Log.d(ERIC, "year : ${localDate.year.toLong()} month : ${localDate.monthValue.toLong()}")
         }
     }
 

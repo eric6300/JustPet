@@ -1,8 +1,10 @@
 package com.taiwan.justvet.justpet.tool
 
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.taiwan.justvet.justpet.JustPetApplication
 
 class ToolViewModel : ViewModel() {
 
@@ -16,6 +18,10 @@ class ToolViewModel : ViewModel() {
 
     fun navigateToBreathCompleted() {
         _navigateToBreath.value = false
+    }
+
+    fun comingSoon() {
+        Toast.makeText(JustPetApplication.appContext, "Coming soon", Toast.LENGTH_LONG).show()
     }
 
 }

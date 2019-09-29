@@ -98,9 +98,14 @@ class PetProfileDialog : BottomSheetDialogFragment() {
             }
         })
 
-        binding.layoutImage.setOnClickListener {
-            startGallery()
-        }
+        viewModel.startGallery.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    startGallery()
+                    viewModel.startGalleryCompleted()
+                }
+            }
+        })
 
         viewModel.leaveDialog.observe(this, Observer {
             it?.let {
