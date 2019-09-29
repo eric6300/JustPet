@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 
@@ -132,25 +133,11 @@ class PetProfileViewModel : ViewModel() {
     }
 
     private fun updatePetsOfUser(petId: String) {
+        _loadStatus.value = LoadApiStatus.LOADING
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
                 users.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
                     .addOnSuccessListener {
-
-                        val newPets = arrayListOf<String>()
-                        userProfile.pets?.let {
-                            newPets.addAll(it)
-                        }
-                        newPets.add(petId)
-
-                        UserManager.refreshUserProfile(
-                            UserProfile(
-                                profileId = userProfile.profileId,
-                                uid = userProfile.uid,
-                                email = userProfile.email,
-                                pets = newPets
-                            )
-                        )
                         uploadPetImage(petId)
                         Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
@@ -163,6 +150,7 @@ class PetProfileViewModel : ViewModel() {
     }
 
     private fun uploadPetImage(petId: String) {
+        _loadStatus.value = LoadApiStatus.LOADING
         if (petImage.value != null) {
             petImage.value?.let {
                 val imageRef = storageReference.child("profile/$petId")
@@ -187,22 +175,41 @@ class PetProfileViewModel : ViewModel() {
             }
         } else {
             _loadStatus.value = LoadApiStatus.DONE
-            navigateToHomeFragment()
+//            navigateToHomeFragment()
         }
     }
 
     fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
-        petsReference.let {
-            it.document(petId).update("image", downloadUri.toString())
-                .addOnSuccessListener {
-                    _loadStatus.value = LoadApiStatus.DONE
-                    navigateToHomeFragment()
-                    Log.d(ERIC, "updateEventImageUrl succeed")
-                }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Log.d(ERIC, "updateEventImageUrl failed : $it")
-                }
+        _loadStatus.value = LoadApiStatus.LOADING
+        UserManager.userProfile.value?.let { userProfile ->
+            petsReference.let {
+                it.document(petId).update("image", downloadUri.toString())
+                    .addOnSuccessListener {
+                        val newPets = arrayListOf<String>()
+                        userProfile.pets?.let {
+                            newPets.addAll(it)
+                        }
+                        newPets.add(petId)
+
+                        UserManager.refreshUserProfile(
+                            UserProfile(
+                                profileId = userProfile.profileId,
+                                uid = userProfile.uid,
+                                email = userProfile.email,
+                                pets = newPets
+                            )
+                        )
+
+                        _loadStatus.value = LoadApiStatus.DONE
+//                        navigateToHomeFragment()
+                        Log.d(ERIC, "updateEventImageUrl succeed")
+                    }.addOnFailureListener {
+                        _loadStatus.value = LoadApiStatus.ERROR
+                        Log.d(ERIC, "updateEventImageUrl failed : $it")
+                    }
+            }
         }
+
     }
 
     fun startGallery() {

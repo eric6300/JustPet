@@ -8,6 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.profile.PetProfileViewModel" />
         <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -194,6 +195,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:scaleType="centerCrop"
+                android:onClick="@{() -> viewModel.startGallery()}"
                 android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -207,6 +209,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                android:onClick="@{() -> viewModel.startGallery()}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -290,5 +293,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close" />
+
+        <ProgressBar
+            android:id="@+id/progressBar2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
