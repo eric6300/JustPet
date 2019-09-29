@@ -175,7 +175,7 @@ class PetProfileViewModel : ViewModel() {
             }
         } else {
             _loadStatus.value = LoadApiStatus.DONE
-//            navigateToHomeFragment()
+            navigateToHomeFragment()
         }
     }
 

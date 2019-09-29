@@ -38,6 +38,8 @@ class MainViewModel : ViewModel() {
     val inviteList: LiveData<List<Invite>>
         get() = _inviteList
 
+    var checkedInvite = false
+
     // Record current fragment to support data binding
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
 
@@ -106,7 +108,10 @@ class MainViewModel : ViewModel() {
                 .addOnSuccessListener { it ->
                     if (it.isEmpty) {
                         Log.d(ERIC, "no invite")
-//                        Toast.makeText(JustPetApplication.appContext, "目前沒有邀請", Toast.LENGTH_LONG).show()
+                        if (checkedInvite) {
+                            Toast.makeText(JustPetApplication.appContext, "目前沒有邀請", Toast.LENGTH_LONG).show()
+                        }
+                        checkedInvite = true
                     } else {
                         val list = mutableListOf<Invite>()
 
@@ -123,7 +128,7 @@ class MainViewModel : ViewModel() {
                             )
                         }
                         _inviteList.value = list
-                        Toast.makeText(JustPetApplication.appContext, "你有${list.size}個邀請待確認", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(JustPetApplication.appContext, "你有${list.size}個邀請待確認", Toast.LENGTH_LONG).show()
                         Log.d(ERIC, "invite list : $list")
                     }
                 }.addOnFailureListener {
