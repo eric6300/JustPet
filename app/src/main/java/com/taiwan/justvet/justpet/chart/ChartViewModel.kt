@@ -16,6 +16,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.TagType
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -48,7 +49,8 @@ class ChartViewModel : ViewModel() {
     val database = FirebaseFirestore.getInstance()
     val petsRef = database.collection(PETS)
 
-
+    val calendar = Calendar.getInstance()
+    val localData = LocalDate.now()
     var nowTimestamp: Long = 0
     var threeMonthsAgoTimestamp: Long = 0
     var sixMonthsAgoTimestamp: Long = 0
@@ -64,15 +66,16 @@ class ChartViewModel : ViewModel() {
     init {
         UserManager.userProfile.value?.let {
             selectedEventTag = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
+            calculateTimestamp()
             getPetProfileData(it)
         }
-        calculateTimestamp()
     }
 
     fun calculateTimestamp() {
-        val calendar = Calendar.getInstance()
         calendar.apply {
             nowTimestamp = (calendar.timeInMillis / 1000)
+
+            this.set(localData.year, localData.monthValue.minus(1), 1,0,0,0)
 
             this.add(Calendar.MONTH, -3)
             threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
@@ -92,7 +95,7 @@ class ChartViewModel : ViewModel() {
     fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let {
             viewModelScope.launch {
-                var index = 0
+                var index = 1
                 for (petId in it) {
                     petsRef.document(petId).get()
                         .addOnSuccessListener { document ->
@@ -110,10 +113,10 @@ class ChartViewModel : ViewModel() {
                                 image = document["image"] as String?
                             )
                             petProfileData.add(petProfile)
-                            index++
                             if (index == it.size) {
                                 _listOfProfile.value = petProfileData.sortedBy { it.profileId }
                             }
+                            index++
                         }
                         .addOnFailureListener {
                             Log.d(ERIC, "ChartViewModel getPetProfileData() failed : $it")
@@ -129,6 +132,7 @@ class ChartViewModel : ViewModel() {
                 petsRef.document(it).collection(EVENTS).whereArrayContains("eventTagsIndex", index)
                     .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                     .addOnSuccessListener {
+                        Log.d(ERIC, "one year : $oneYearAgoTimestamp")
                         if (it.size() > 0) {
                             val data = mutableListOf<PetEvent>()
 
@@ -139,7 +143,7 @@ class ChartViewModel : ViewModel() {
                                 }
                             }
 
-                            _eventData.value = data
+//                            _eventData.value = data
                             // get 12 months sorted syndrome data
                             sortSyndromeData(12, data)
                         } else {
@@ -162,10 +166,12 @@ class ChartViewModel : ViewModel() {
         viewModelScope.launch {
             val calendar = Calendar.getInstance()
 
+            calendar.set(localData.year, localData.monthValue.minus(1), 1,0,0,0)
+
             val dataMap = HashMap<Date, List<PetEvent>>()
 
             // create hashMap of last 12 months by year/month
-            for (i in 1..months) {
+            for (i in 1..12) {
                 dataMap[calendar.time] = mutableListOf()
                 calendar.add(Calendar.MONTH, -1)
             }
@@ -174,7 +180,6 @@ class ChartViewModel : ViewModel() {
                 // sort data into hashMap
                 data.forEach { petEvent ->
                     val dateOfEvent = getDateOfEvent(petEvent, calendar)
-
                     if (dataMap.contains(dateOfEvent)) {
                         (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
                     } else {
@@ -184,8 +189,8 @@ class ChartViewModel : ViewModel() {
                     }
                 }
             }
-
-            setEntriesForSyndrome(dataMap.toSortedMap())
+            val sortedMap = dataMap.toSortedMap()
+            setEntriesForSyndrome(sortedMap)
         }
     }
 

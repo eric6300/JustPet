@@ -143,12 +143,12 @@ class CalendarViewModel : ViewModel() {
                                         eventTags = tagList
                                     )
                                 )
-                                index++
                                 if (index == data.size) {
                                     _monthEventsData.value = finalMonthEventData.sortedBy {
                                         it.timestamp
                                     }
                                 }
+                                index++
                             }
                         }
                         .addOnFailureListener {

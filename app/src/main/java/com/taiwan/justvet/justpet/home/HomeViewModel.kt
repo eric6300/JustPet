@@ -124,7 +124,7 @@ class HomeViewModel : ViewModel() {
         val petData = mutableListOf<PetProfile>()
         if (userProfile.pets?.size != 0) {
             userProfile.pets?.let {
-                var index = 0
+                var index = 1
                 for (petId in it) {
                     petsReference.document(petId).get()
                         .addOnSuccessListener { profile ->
@@ -144,11 +144,11 @@ class HomeViewModel : ViewModel() {
                                 )
                             )
 
-                            index++
-
                             if (index == it.size) {
                                 _petList.value = petData.sortedBy { it.profileId }
                             }
+
+                            index++
                         }
                         .addOnFailureListener {
                             Log.d(ERIC, "getPetProfileData() failed: $it")

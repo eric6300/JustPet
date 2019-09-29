@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.event
 import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -219,6 +220,7 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
                             if (eventImage.value == null) {
                                 _loadStatus.value = LoadApiStatus.DONE
+                                Toast.makeText(JustPetApplication.appContext, "新增成功", Toast.LENGTH_SHORT).show()
                                 navigateToCalendar()
                             } else {
                                 uploadImage(eventId)
