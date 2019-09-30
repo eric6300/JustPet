@@ -137,6 +137,7 @@
                     android:text="@{petProfile.name}"
                     android:textColor="@android:color/background_light"
                     android:textSize="24sp"
+                    android:onClick="@{() -> viewModel.navigateToAchievement(petProfile)}"
                     android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"

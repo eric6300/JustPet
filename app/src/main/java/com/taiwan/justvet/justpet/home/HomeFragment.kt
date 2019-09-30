@@ -209,7 +209,7 @@ class HomeFragment : Fragment() {
     private fun setupEventNotification() {
         notificationAdapter =
             EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
-                if (it.type != 2) {
+                if (it.type != 2 && it.type != -1) {
                     findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(
                         PetEvent(
                             petProfile = it.petProfile,
