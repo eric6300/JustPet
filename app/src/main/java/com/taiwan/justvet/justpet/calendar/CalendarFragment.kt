@@ -1,8 +1,6 @@
 package com.taiwan.justvet.justpet.calendar
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +18,7 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
-import com.taiwan.justvet.justpet.decorators.EventDecorator
+import com.taiwan.justvet.justpet.decorator.EventDecorator
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {

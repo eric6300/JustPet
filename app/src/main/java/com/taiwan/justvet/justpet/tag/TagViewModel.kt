@@ -16,6 +16,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.util.TagType
+import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getDrawable
 import com.taiwan.justvet.justpet.util.Util.getString
 import kotlinx.coroutines.launch
@@ -133,43 +134,43 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private fun setupDiaryTagList() {
         listTagDiary.let {
-            it.add(EventTag(TagType.DIARY.value, 0, "吃飯"))
-            it.add(EventTag(TagType.DIARY.value, 1, "洗澡"))
-            it.add(EventTag(TagType.DIARY.value, 2, "散步"))
-            it.add(EventTag(TagType.DIARY.value, 3, "剪指甲"))
-            it.add(EventTag(TagType.DIARY.value, 4, "剃毛"))
-            it.add(EventTag(TagType.DIARY.value, 5, "量體重"))
-            it.add(EventTag(TagType.DIARY.value, 6, "其他日常"))
+            it.add(EventTag(TagType.DIARY.value, 0, getString(R.string.text_eating)))
+            it.add(EventTag(TagType.DIARY.value, 1, getString(R.string.text_shower)))
+            it.add(EventTag(TagType.DIARY.value, 2, getString(R.string.text_walking)))
+            it.add(EventTag(TagType.DIARY.value, 3, getString(R.string.text_nail_trimming)))
+            it.add(EventTag(TagType.DIARY.value, 4, getString(R.string.text_hair_trimming)))
+            it.add(EventTag(TagType.DIARY.value, 5, getString(R.string.text_weight_measure)))
+            it.add(EventTag(TagType.DIARY.value, 6, getString(R.string.text_other_daily)))
         }
     }
 
     private fun setupSyndromeTagList() {
         listTagSyndrome.let {
-            it.add(EventTag(TagType.SYNDROME.value, 100, "嘔吐"))
-            it.add(EventTag(TagType.SYNDROME.value, 101, "下痢"))
-            it.add(EventTag(TagType.SYNDROME.value, 102, "咳嗽"))
-            it.add(EventTag(TagType.SYNDROME.value, 103, "打噴嚏"))
-            it.add(EventTag(TagType.SYNDROME.value, 104, "搔癢"))
-            it.add(EventTag(TagType.SYNDROME.value, 105, "癲癇"))
-            it.add(EventTag(TagType.SYNDROME.value, 106, "昏倒"))
-            it.add(EventTag(TagType.SYNDROME.value, 107, "排尿異常"))
-            it.add(EventTag(TagType.SYNDROME.value, 108, "其他症狀"))
+            it.add(EventTag(TagType.SYNDROME.value, 100, getString(R.string.text_vomit)))
+            it.add(EventTag(TagType.SYNDROME.value, 101, getString(R.string.text_diarrhea)))
+            it.add(EventTag(TagType.SYNDROME.value, 102, getString(R.string.text_coughing)))
+            it.add(EventTag(TagType.SYNDROME.value, 103, getString(R.string.text_sneezing)))
+            it.add(EventTag(TagType.SYNDROME.value, 104, getString(R.string.text_itchy)))
+            it.add(EventTag(TagType.SYNDROME.value, 105, getString(R.string.text_seizure)))
+            it.add(EventTag(TagType.SYNDROME.value, 106, getString(R.string.text_collapse)))
+            it.add(EventTag(TagType.SYNDROME.value, 107, getString(R.string.text_urine_abnormal)))
+            it.add(EventTag(TagType.SYNDROME.value, 108, getString(R.string.text_other_syndrome)))
         }
     }
 
     private fun setupTreatmentTagList() {
         listTagTreatment.let {
-            it.add(EventTag(TagType.TREATMENT.value, 200, "除蚤"))
-            it.add(EventTag(TagType.TREATMENT.value, 201, "驅蟲"))
-            it.add(EventTag(TagType.TREATMENT.value, 202, "心絲蟲藥"))
-            it.add(EventTag(TagType.TREATMENT.value, 203, "皮下注射"))
-            it.add(EventTag(TagType.TREATMENT.value, 204, "血糖紀錄"))
-            it.add(EventTag(TagType.TREATMENT.value, 205, "口服藥"))
-            it.add(EventTag(TagType.TREATMENT.value, 206, "外用藥"))
-            it.add(EventTag(TagType.TREATMENT.value, 207, "滴劑"))
-            it.add(EventTag(TagType.TREATMENT.value, 208, "疫苗注射"))
-            it.add(EventTag(TagType.TREATMENT.value, 209, "健康檢查"))
-            it.add(EventTag(TagType.TREATMENT.value, 210, "其他醫療"))
+            it.add(EventTag(TagType.TREATMENT.value, 200, getString(R.string.text_ecto_prevention)))
+            it.add(EventTag(TagType.TREATMENT.value, 201, getString(R.string.text_endo_prevention)))
+            it.add(EventTag(TagType.TREATMENT.value, 202, getString(R.string.text_heart_worm_prevention)))
+            it.add(EventTag(TagType.TREATMENT.value, 203, getString(R.string.text_sc_injection)))
+            it.add(EventTag(TagType.TREATMENT.value, 204, getString(R.string.text_blood_glucose)))
+            it.add(EventTag(TagType.TREATMENT.value, 205, getString(R.string.text_oral_med)))
+            it.add(EventTag(TagType.TREATMENT.value, 206, getString(R.string.text_external_med)))
+            it.add(EventTag(TagType.TREATMENT.value, 207, getString(R.string.text_drop)))
+            it.add(EventTag(TagType.TREATMENT.value, 208, getString(R.string.text_vaccine)))
+            it.add(EventTag(TagType.TREATMENT.value, 209, getString(R.string.text_health_exam)))
+            it.add(EventTag(TagType.TREATMENT.value, 210, getString(R.string.text_other_treatment)))
         }
     }
 

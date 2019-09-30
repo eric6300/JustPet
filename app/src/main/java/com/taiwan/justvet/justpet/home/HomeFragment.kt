@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.home
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -12,21 +11,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
@@ -100,10 +94,10 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToAchievement.observe(this, Observer {
+        viewModel.navigateToFamily.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
-                viewModel.navigateToAchievementCompleted()
+                viewModel.navigateToFamilyCompleted()
             }
         })
 

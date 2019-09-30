@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.decorators
+package com.taiwan.justvet.justpet.decorator
 
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator

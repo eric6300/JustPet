@@ -40,17 +40,13 @@ class HomeViewModel : ViewModel() {
     val isModified: LiveData<Boolean>
         get() = _isModified
 
-    private val _isRefreshCompleted = MutableLiveData<Boolean>()
-    val isRefreshCompleted: LiveData<Boolean>
-        get() = _isRefreshCompleted
-
     private val _birthdayChange = MutableLiveData<Boolean>()
     val birthdayChange: LiveData<Boolean>
         get() = _birthdayChange
 
-    private val _navigateToAchievement = MutableLiveData<PetProfile>()
-    val navigateToAchievement: LiveData<PetProfile>
-        get() = _navigateToAchievement
+    private val _navigateToFamily = MutableLiveData<PetProfile>()
+    val navigateToFamily: LiveData<PetProfile>
+        get() = _navigateToFamily
 
     private val _navigateToHome = MutableLiveData<Boolean>()
     val navigateToHome: LiveData<Boolean>
@@ -109,7 +105,7 @@ class HomeViewModel : ViewModel() {
     val firebase = FirebaseFirestore.getInstance()
     val petsReference = firebase.collection(PETS)
     val userReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection("invites")
+    val inviteReference = firebase.collection(INVITES)
 
     val storageReference = FirebaseStorage.getInstance().reference
 
@@ -439,12 +435,12 @@ class HomeViewModel : ViewModel() {
         _birthdayChange.value = false
     }
 
-    fun navigateToAchievement(petProfile: PetProfile) {
-        _navigateToAchievement.value = petProfile
+    fun navigateToFamily(petProfile: PetProfile) {
+        _navigateToFamily.value = petProfile
     }
 
-    fun navigateToAchievementCompleted() {
-        _navigateToAchievement.value = null
+    fun navigateToFamilyCompleted() {
+        _navigateToFamily.value = null
     }
 
     private fun navigateToHome() {
