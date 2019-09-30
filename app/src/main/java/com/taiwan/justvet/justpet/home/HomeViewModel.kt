@@ -40,6 +40,10 @@ class HomeViewModel : ViewModel() {
     val isModified: LiveData<Boolean>
         get() = _isModified
 
+    private val _isRefreshCompleted = MutableLiveData<Boolean>()
+    val isRefreshCompleted: LiveData<Boolean>
+        get() = _isRefreshCompleted
+
     private val _birthdayChange = MutableLiveData<Boolean>()
     val birthdayChange: LiveData<Boolean>
         get() = _birthdayChange
@@ -253,7 +257,8 @@ class HomeViewModel : ViewModel() {
             tags.add(tagVomit)
             tagVomit.index?.let { tagsIndex.add(it) }
             _selectedPet.value?.let {
-                EventNotification(type = 2, title = "這個月已經${tagVomit.title} ${vomit.size} 次囉",eventTags = tags,
+                EventNotification(
+                    type = 2, title = "這個月已經${tagVomit.title} ${vomit.size} 次囉", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
                 )
             }?.let { notificationList.add(it) }
@@ -265,7 +270,8 @@ class HomeViewModel : ViewModel() {
             tags.add(tagVaccine)
             tagVaccine.index?.let { tagsIndex.add(it) }
             _selectedPet.value?.let {
-                EventNotification(type = 1, title = "今年都還沒有打疫苗喔！",eventTags = tags,
+                EventNotification(
+                    type = 1, title = "今年都還沒有打疫苗喔！", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
                 )
             }?.let { notificationList.add(it) }
@@ -277,14 +283,32 @@ class HomeViewModel : ViewModel() {
             tags.add(tagWeight)
             tagWeight.index?.let { tagsIndex.add(it) }
             _selectedPet.value?.let {
-                EventNotification(type = 0, title = "該幫 ${it.name} 量體重囉！",eventTags = tags,
+                EventNotification(
+                    type = 0, title = "該幫 ${it.name} 量體重囉！", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
                 )
             }?.let { notificationList.add(it) }
         }
 
-        _notificationList.value = notificationList.sortedBy {
-            it.type
+        if (notificationList.isEmpty()) {
+            _selectedPet.value?.let {
+                notificationList.add(
+                    EventNotification(
+                        type = -1,
+                        title = "暫無提醒事項",
+                        eventTags = emptyList(),
+                        eventTagsIndex = emptyList(),
+                        petProfile = it
+                    )
+                )
+            }
+
+            _notificationList.value = notificationList
+
+        } else {
+            _notificationList.value = notificationList.sortedBy {
+                it.type
+            }
         }
     }
 

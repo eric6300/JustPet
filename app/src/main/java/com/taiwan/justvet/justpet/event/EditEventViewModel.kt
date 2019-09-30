@@ -162,7 +162,17 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun checkEventId() {
         if (petEvent.eventId == null) {
-            postEvent()
+            petEvent.eventTagsIndex?.let {
+                if (it.contains(5)) {
+                    if (eventWeight.value.isNullOrEmpty()) {
+                        Toast.makeText(JustPetApplication.appContext, "體重未填寫", Toast.LENGTH_LONG).show()
+                    } else {
+                        postEvent()
+                    }
+                } else {
+                    postEvent()
+                }
+            }
         } else {
             updateEvent()
         }

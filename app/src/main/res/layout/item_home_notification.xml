@@ -81,7 +81,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/ic_event"
                     android:backgroundTint="@android:color/black"
-                    android:visibility="@{notification.type == 2 ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{notification.type == 2 || notification.type == -1 ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"

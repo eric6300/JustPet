@@ -49,9 +49,16 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
 
 
 @BindingAdapter("notificationBackground")
-fun bindEventBackground(cardView: CardView, eventType: Int) {
-    eventType.let {
+fun bindEventBackground(cardView: CardView, notificationType: Int) {
+    notificationType.let {
         when (it) {
+            -1 -> {
+                cardView.setCardBackgroundColor(
+                    JustPetApplication.appContext.getColor(
+                        android.R.color.background_light
+                    )
+                )
+            }
             0 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
@@ -81,6 +88,12 @@ fun bindEventBackground(cardView: CardView, eventType: Int) {
 fun bindEventTagIcon(imageView: ImageView, type: Int) {
     type.let {
         when (it) {
+            // no notification
+            -1 -> {
+                imageView.setImageDrawable(
+                    Util.getDrawable(R.drawable.ic_others)
+                )
+            }
             // normal
             0 -> {
                 imageView.setImageDrawable(
