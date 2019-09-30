@@ -8,7 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.family.FamilyViewModel" />
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
     </data>
 
     <ScrollView

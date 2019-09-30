@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.util
 import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
@@ -32,13 +33,15 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_cat
-                    ))
+                    )
+                )
             }
             1L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_dog
-                    ))
+                    )
+                )
             }
         }
     }
@@ -46,69 +49,77 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
 
 
 @BindingAdapter("notificationBackground")
-fun bindEventBackground (cardView: CardView, eventType: Int) {
+fun bindEventBackground(cardView: CardView, eventType: Int) {
     eventType.let {
         when (it) {
             0 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorDiary
-                    ))
+                    )
+                )
             }
             1 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorTreatment
-                    ))
+                    )
+                )
             }
             2 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorSyndrome
-                    ))
+                    )
+                )
             }
         }
     }
 }
 
 @BindingAdapter("notificationType")
-fun bindEventTagIcon (imageView: ImageView, type: Int) {
+fun bindEventTagIcon(imageView: ImageView, type: Int) {
     type.let {
         when (it) {
             // normal
             0 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_others))
+                    Util.getDrawable(R.drawable.ic_others)
+                )
             }
             // medicine
             1 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_medicine))
+                    Util.getDrawable(R.drawable.ic_medicine)
+                )
             }
             // warning
             2 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_warning))
+                    Util.getDrawable(R.drawable.ic_warning)
+                )
             }
         }
     }
 }
 
 @BindingAdapter("expandIcon")
-fun bindExpandIcon (imageView: ImageView, status: Boolean) {
+fun bindExpandIcon(imageView: ImageView, status: Boolean) {
     status.let {
         when (it) {
             true -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_expand_less
-                    ))
+                    )
+                )
             }
             else -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_expand_more
-                    ))
+                    )
+                )
             }
         }
     }
@@ -138,7 +149,10 @@ fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<P
 }
 
 @BindingAdapter("listOfNotification")
-fun bindRecyclerViewWithListOfNotification(recyclerView: RecyclerView, list: List<EventNotification>?) {
+fun bindRecyclerViewWithListOfNotification(
+    recyclerView: RecyclerView,
+    list: List<EventNotification>?
+) {
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
@@ -210,16 +224,11 @@ fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
         val imgUri = imgUrl.toUri().buildUpon().build()
         GlideApp.with(imgView.context)
             .load(imgUri)
-//            .apply(
-//                RequestOptions()
-//                    .placeholder(R.drawable.placeholder)
-//            )
             .into(imgView)
     } else {
         GlideApp.with(imgView.context)
             .load(R.drawable.placeholder)
             .into(imgView)
-//            .clear(imgView)
     }
 }
 
@@ -230,15 +239,36 @@ fun bindTagBackground(layout: ConstraintLayout, eventTag: EventTag) {
     } else {
         when (eventTag.type) {
             TagType.DIARY.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
             }
             TagType.SYNDROME.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
             }
             TagType.TREATMENT.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
             }
 
+        }
+    }
+}
+
+@BindingAdapter("tagChipBackground")
+fun bindTagChipBackground(textView: TextView, eventTag: EventTag) {
+    when (eventTag.type) {
+        TagType.DIARY.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
+        }
+        TagType.SYNDROME.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
+        }
+        TagType.TREATMENT.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
         }
     }
 }

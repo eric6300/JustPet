@@ -13,12 +13,10 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.taiwan.justvet.justpet.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
-import com.taiwan.justvet.justpet.event.EditEventViewModel
-import com.taiwan.justvet.justpet.event.EditEventViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class TagDialog : BottomSheetDialogFragment() {

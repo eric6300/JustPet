@@ -7,7 +7,7 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.profile.PetProfileViewModel" />
-        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
         <import type="android.view.View"/>
     </data>
 

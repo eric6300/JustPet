@@ -4,39 +4,38 @@ import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.ContentResolver
 import android.content.Intent
-import android.os.Bundle
+import android.graphics.Outline
 import android.icu.util.Calendar
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
+import android.widget.ImageView
 import android.widget.TimePicker
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.databinding.FragmentEditEventBinding
-import com.xw.repo.BubbleSeekBar
-import kotlinx.android.synthetic.main.activity_main.*
-import android.graphics.BitmapFactory
-import android.graphics.Outline
-import androidx.room.util.CursorUtil.getColumnIndex
-import android.provider.MediaStore
-import android.view.ViewOutlineProvider
-import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
+import com.taiwan.justvet.justpet.ERIC
+import com.taiwan.justvet.justpet.MainActivity
+import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
+import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.PetEvent
+import com.taiwan.justvet.justpet.databinding.FragmentEventBinding
+import com.xw.repo.BubbleSeekBar
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class EditEventFragment : Fragment() {
 
-    private lateinit var binding: FragmentEditEventBinding
+    private lateinit var binding: FragmentEventBinding
     private lateinit var viewModel: EditEventViewModel
     private lateinit var currentEvent: PetEvent
     private lateinit var datePickerDialog: DatePickerDialog
@@ -55,7 +54,7 @@ class EditEventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentEditEventBinding.inflate(inflater, container, false)
+        binding = FragmentEventBinding.inflate(inflater, container, false)
         currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
         val viewModelFactory = EditEventViewModelFactory(currentEvent)
         viewModel =
@@ -103,11 +102,8 @@ class EditEventFragment : Fragment() {
     }
 
     private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
-        // this will be called when some/all permissions required by the method are permanently
-        // denied. Handle it your way.
         this.context?.let {
             AlertDialog.Builder(it)
-//                .setTitle("Permissions Denied")
                 .setMessage("開啟「設定」，點選「權限」，並開啟「儲存」")
                 .setPositiveButton("開啟「設定」") { _, _ -> req.openAppSettings() }
                 .setNegativeButton("取消") { _, _ -> req.cancel() }

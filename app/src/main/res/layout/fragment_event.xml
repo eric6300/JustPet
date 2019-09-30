@@ -12,7 +12,7 @@
             name="petProfile"
             type="com.taiwan.justvet.justpet.data.PetProfile" />
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
 
     </data>
 
