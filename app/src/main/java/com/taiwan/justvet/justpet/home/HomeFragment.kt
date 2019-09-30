@@ -59,9 +59,7 @@ class HomeFragment : Fragment() {
         binding.viewModel = viewModel
 
         binding.layoutSwipeRefresh.setOnRefreshListener {
-            UserManager.userProfile.value?.let { userProfile ->
-                viewModel.getPetProfileData(userProfile)
-            }
+            findNavController().navigate(R.id.navigate_to_homeFragment)
             binding.layoutSwipeRefresh.isRefreshing = false
         }
 
