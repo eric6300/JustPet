@@ -38,10 +38,11 @@
     <string name="unit_body_weight">公斤</string>
     <string name="unit_temperature">℃</string>
     <string name="unit_respiratory_rate">次 / 分鐘</string>
+    <string name="text_no_pet_no_new_event">目前沒有寵物資料，無法新增紀錄</string>
 
     //  ToolFragment  //
     <string name="title_tool">小工具</string>
-    <string name="title_calculate_food">基礎攝取熱量</string>
+    <string name="title_food_intake">基礎攝取熱量</string>
     <string name="title_water_intake">基礎飲水量</string>
     <string name="title_calculate_rate">呼吸 / 脈搏</string>
     <string name="text_reset">重設</string>
