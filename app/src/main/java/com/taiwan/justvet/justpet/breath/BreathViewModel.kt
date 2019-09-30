@@ -19,7 +19,7 @@ class BreathViewModel : ViewModel() {
     val navigateToTag: LiveData<PetEvent>
         get() = _navigateToTag
 
-    var rateType = 0
+    var rateType = MutableLiveData<Int>()
 
     private var count: Int = 0
     private var startTime = 0L
@@ -27,17 +27,17 @@ class BreathViewModel : ViewModel() {
     var lastEndTime = 0L
     var totalInterval = 0L
     var lastInterval = 0L
-//    val instantRate = MutableLiveData<Long>()
     val averageRate = MutableLiveData<Long>()
 
     val vibrator = JustPetApplication.appContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     init {
         averageRate.value = 0L
+        rateType.value = 0
     }
 
     fun setTypeOfRate(type: Int) {
-        rateType = type
+        rateType.value = type
     }
 
     fun click() {
@@ -49,15 +49,9 @@ class BreathViewModel : ViewModel() {
         } else {
             lastEndTime = endTime
             endTime = System.currentTimeMillis()
-//            lastInterval = endTime.minus(lastEndTime)
-//            instantRate.value = 60 * 1000 / lastInterval
 
             totalInterval = endTime.minus(startTime)
             averageRate.value = count * 60 * 1000 / totalInterval
-
-            Log.d(ERIC, "==========================")
-//            Log.d(ERIC, "instantRate : ${instantRate.value}")
-            Log.d(ERIC, "averageRate : ${averageRate.value}")
         }
 
         vibrator.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -70,17 +64,18 @@ class BreathViewModel : ViewModel() {
         lastEndTime = 0L
         totalInterval = 0L
         lastInterval = 0L
-//        instantRate.value = 0
         averageRate.value = 0
     }
 
     fun saveRecord() {
         if (UserManager.userProfile.value?.pets?.size != 0) {
             if (averageRate.value != 0L) {
-                if (rateType == 0) {
-                    _navigateToTag.value = PetEvent(respiratoryRate = averageRate.value.toString())
-                } else if (rateType == 1) {
-                    _navigateToTag.value = PetEvent(heartRate = averageRate.value.toString())
+                rateType.value?.let {
+                    if (it == 0) {
+                        _navigateToTag.value = PetEvent(respiratoryRate = averageRate.value.toString())
+                    } else if (it == 1) {
+                        _navigateToTag.value = PetEvent(heartRate = averageRate.value.toString())
+                    }
                 }
             }
         } else {

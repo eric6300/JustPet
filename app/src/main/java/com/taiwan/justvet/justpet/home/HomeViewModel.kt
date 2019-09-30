@@ -65,16 +65,25 @@ class HomeViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
-    private val _inviteList = MutableLiveData<List<Invite>>()
-    val inviteList: LiveData<List<Invite>>
-        get() = _inviteList
-
     private val _loadStatus = MutableLiveData<LoadApiStatus>()
     val loadStatus: LiveData<LoadApiStatus>
         get() = _loadStatus
 
     val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
+    val tagDiarrhea = EventTag(TagType.SYNDROME.value, 101, "下痢")
+    val tagCough = EventTag(TagType.SYNDROME.value, 102, "咳嗽")
+    val tagSneeze = EventTag(TagType.SYNDROME.value, 103, "打噴嚏")
+    val tagItchy = EventTag(TagType.SYNDROME.value, 104, "搔癢")
+    val tagSeizure = EventTag(TagType.SYNDROME.value, 105, "癲癇")
+    val tagCollapse = EventTag(TagType.SYNDROME.value, 106, "昏倒")
+    val tagAbnormalUrine = EventTag(TagType.SYNDROME.value, 107, "排尿異常")
+
+    val tagEctoPrevent = EventTag(TagType.TREATMENT.value, 200, "除蚤")
+    val tagEndoPrevent = EventTag(TagType.TREATMENT.value, 201, "驅蟲")
+    val tagHeartWormPrevent = EventTag(TagType.TREATMENT.value, 202, "心絲蟲藥")
+    val tagHealthExam = EventTag(TagType.TREATMENT.value, 209, "健康檢查")
     val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
+
     val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")
 
     val petName = MutableLiveData<String>()
@@ -220,11 +229,11 @@ class HomeViewModel : ViewModel() {
                 // filter for syndrome tags
                 event.eventTagsIndex?.let { tags ->
                     // vomit
-                    if ((timestamp > oneMonthAgoTimestamp) && tags.contains(100)) {
+                    if ((timestamp > oneMonthAgoTimestamp) && tags.contains(tagVomit.index)) {
                         vomit.add(event)
                     }
                     // vaccine
-                    if ((timestamp > oneYearAgoTimestamp) && tags.contains(208)) {
+                    if ((timestamp > oneYearAgoTimestamp) && tags.contains(tagVaccine.index)) {
                         vaccine.add(event)
                     }
                 }
@@ -245,7 +254,7 @@ class HomeViewModel : ViewModel() {
             tags.add(tagVomit)
             tagVomit.index?.let { tagsIndex.add(it) }
             _selectedPet.value?.let {
-                EventNotification(type = 2, title = "這個月已經嘔吐 ${vomit.size} 次囉",eventTags = tags,
+                EventNotification(type = 2, title = "這個月已經${tagVomit.title} ${vomit.size} 次囉",eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
                 )
             }?.let { notificationList.add(it) }
@@ -398,110 +407,6 @@ class HomeViewModel : ViewModel() {
             petGender.value = it.gender
         }
     }
-
-//    fun checkInvite() {
-//        userProfile.value?.let { userProfile ->
-//            inviteReference
-//                .whereEqualTo("inviteeEmail", userProfile.email)
-//                .get()
-//                .addOnSuccessListener { it ->
-//                    if (it.isEmpty) {
-//                        Log.d(ERIC, "no invite")
-//                    } else {
-//                        val list = mutableListOf<Invite>()
-//                        it.documents.forEach {
-//                            list.add(
-//                                Invite(
-//                                    inviteId = it.id,
-//                                    petId = it["petId"] as String?,
-//                                    petName = it["petName"] as String?,
-//                                    inviteeEmail = it["inviteeEmail"] as String?,
-//                                    inviterName = it["inviterName"] as String?,
-//                                    inviterEmail = it["inviterEmail"] as String?
-//                                )
-//                            )
-//                        }
-//                        _inviteList.value = list
-//                        Log.d(ERIC, "invite list : $list")
-//                    }
-//                }.addOnFailureListener {
-//                    Log.d(ERIC, "checkInvite() failed : $it")
-//                }
-//        }
-//    }
-//
-//    fun showInvite(inviteList: MutableList<Invite>) {
-//        if (inviteList.isNotEmpty()) {
-//            _inviteList.value = inviteList
-//        } else {
-//            _inviteList.value = null
-//            Log.d(ERIC, "inviteList is empty")
-//        }
-//    }
-//
-//    fun confirmInvite(invite: Invite) {
-//        UserManager.userProfile.value?.let { userProfile ->
-//            userReference.whereEqualTo("uid", userProfile.uid).get()
-//                .addOnSuccessListener {
-//
-//                    val newPetList = mutableListOf<String>()
-//                    userProfile.pets?.let { newPetList.addAll(it) }
-//                    invite.petId?.let { newPetList.add(it) }
-//
-//                    val newUserProfile = UserProfile(
-//                        profileId = userProfile.profileId,
-//                        uid = userProfile.uid,
-//                        email = userProfile.email,
-//                        pets = newPetList,
-//                        displayName = userProfile.displayName,
-//                        photoUrl = userProfile.photoUrl
-//                    )
-//
-//                    updateUserProfile(invite)
-//                    updatePetProfileFamily(invite.petId)
-//
-//                    UserManager.refreshUserProfile(newUserProfile)
-//
-//                }.addOnFailureListener {
-//                    Log.d(ERIC, "confirmInvite() failed : $it")
-//                }
-//        }
-//    }
-//
-//    private fun updatePetProfileFamily(petId: String?) {
-//        petId?.let {
-//            petsReference.document(it)
-//                .update("family", FieldValue.arrayUnion(userProfile.value?.email))
-//                .addOnSuccessListener {
-//                    Log.d(ERIC, "updatePetProfileFamily succeeded")
-//                }.addOnFailureListener {
-//                    Log.d(ERIC, "updatePetProfileFamily failed : $it")
-//                }
-//        }
-//    }
-//
-//    private fun updateUserProfile(invite: Invite) {
-//        userProfile.value?.profileId?.let {
-//            userReference.document(it)
-//                .update("pets", FieldValue.arrayUnion(invite.petId))
-//                .addOnSuccessListener {
-//                    deleteInvite(invite)
-//                }.addOnFailureListener {
-//                    Log.d(ERIC, "updateUserProfile() failed")
-//                }
-//        }
-//    }
-//
-//    private fun deleteInvite(invite: Invite) {
-//        invite.inviteId?.let {
-//            inviteReference.document(it).delete()
-//                .addOnSuccessListener {
-//                    Log.d(ERIC, "deleteInvite() succeeded")
-//                }.addOnFailureListener {
-//                    Log.d(ERIC, "deleteInvite() failed")
-//                }
-//        }
-//    }
 
     fun birthdayChange() {
         _birthdayChange.value = true

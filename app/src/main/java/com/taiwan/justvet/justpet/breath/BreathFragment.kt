@@ -42,18 +42,6 @@ class BreathFragment : Fragment() {
             viewModel.setTypeOfRate(it)
         }
 
-//        viewModel.averageRate.observe(this, Observer {
-//            it?.let {
-//                if (it == 0L) {
-//                    binding.buttonAddEvent.setBackgroundColor(JustPetApplication.appContext.getColor(R.color.colorPrimaryLight))
-//                    Log.d(ERIC, "unClickable")
-//                } else {
-//                    binding.buttonAddEvent.setBackgroundColor(JustPetApplication.appContext.getColor(R.color.colorPrimary))
-//                    Log.d(ERIC, "clickable")
-//                }
-//            }
-//        })
-
         viewModel.navigateToTag.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToTagDialog(it))

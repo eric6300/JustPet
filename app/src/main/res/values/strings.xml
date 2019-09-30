@@ -46,6 +46,12 @@
     <string name="title_calculate_rate">呼吸 / 脈搏</string>
     <string name="text_reset">重設</string>
 
+    //  BreathFragment  //
+    <string name="title_average_respiratory_rate">平均呼吸速率</string>
+    <string name="title_average_heart_rate">平均脈搏速率</string>
+    <string name="text_heart_rate">脈搏速率</string>
+    <string name="text_respiratory_rate">呼吸速率</string>
+
     //  ChartFragment  //
     <string name="chart_month_day_format">MM/dd</string>
     <string name="chart_year_month_format">MMM</string>
@@ -72,5 +78,7 @@
     <string name="chart">圖表</string>
     <string name="tool">工具</string>
     <string name="event">記錄詳情</string>
+
+
 
 </resources>
