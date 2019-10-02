@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.home
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -12,21 +11,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
 
@@ -58,14 +52,17 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        binding.layoutSwipeRefresh.setOnRefreshListener {
+            findNavController().navigate(R.id.navigate_to_homeFragment)
+            binding.layoutSwipeRefresh.isRefreshing = false
+        }
+
         setupPetProfile()
         setupEventNotification()
 
         UserManager.refreshUserProfileCompleted.observe(this, Observer {
             if (it == true) {
                 UserManager.userProfile.value?.let { userProfile ->
-//                    viewModel.getPetProfileData(userProfile)
-//                    viewModel.checkInvite()
                     findNavController().navigate(R.id.navigate_to_homeFragment)
                     UserManager.refreshUserProfileCompleted()
                 }
@@ -97,10 +94,10 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToAchievement.observe(this, Observer {
+        viewModel.navigateToFamily.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
-                viewModel.navigateToAchievementCompleted()
+                viewModel.navigateToFamilyCompleted()
             }
         })
 
@@ -138,36 +135,6 @@ class HomeFragment : Fragment() {
             }
         })
 
-//        viewModel.inviteList.observe(this, Observer { inviteList ->
-//            inviteList?.let {
-//                val invite = it[0]
-//
-//                val dialog = this.context?.let { context ->
-//                    AlertDialog.Builder(context)
-//                        .setTitle("邀請通知")
-//                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
-//                        .setPositiveButton("接受") { _, _ ->
-//
-//                            viewModel.confirmInvite(invite)
-//
-//                            val newList = mutableListOf<Invite>()
-//                            newList.addAll(inviteList)
-//                            newList.removeAt(0)
-//                            viewModel.showInvite(newList)
-//                        }
-//                        .setNeutralButton("再想想") { _, _ ->
-//                            val newList = mutableListOf<Invite>()
-//                            newList.addAll(inviteList)
-//                            newList.removeAt(0)
-//                            viewModel.showInvite(newList)
-//                        }.create()
-//
-//                }
-//
-//                dialog?.show()
-//            }
-//        })
-
         viewModel.startGallery.observe(this, Observer {
             if (it) {
                 startGallery()
@@ -177,7 +144,7 @@ class HomeFragment : Fragment() {
 
         viewModel.navigateToNewPet.observe(this, Observer {
             if (it) {
-                findNavController().navigate(NavGraphDirections.navigateToPetProfileDialogFragment())
+                findNavController().navigate(NavGraphDirections.navigateToAddNewPetDialog())
                 viewModel.navigateToNewPetCompleted()
             }
         })
@@ -191,7 +158,7 @@ class HomeFragment : Fragment() {
         })
 
         // set layoutManager
-        val layoutManager = CustomLayoutManager(this.context)
+        val layoutManager = PetProfileLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         // set recyclerView with adapter and layoutManager
@@ -212,7 +179,7 @@ class HomeFragment : Fragment() {
         var lastPosition = -1
         listProfilePet.setOnScrollChangeListener { _, _, _, _, _ ->
             val newPosition =
-                (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
+                (listProfilePet.layoutManager as PetProfileLayoutManager).findFirstVisibleItemPosition()
 
             if (lastPosition != newPosition) {
                 viewModel.selectPetProfile(newPosition)
@@ -224,10 +191,10 @@ class HomeFragment : Fragment() {
         // disable scroll function when editing pet profile
         viewModel.isModified.observe(this, Observer {
             if (it == true) {
-                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = false)
+                (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = false)
                 profileAdapter.notifyDataSetChanged()
             } else {
-                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = true)
+                (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = true)
                 profileAdapter.notifyDataSetChanged()
             }
         })
@@ -236,8 +203,8 @@ class HomeFragment : Fragment() {
     private fun setupEventNotification() {
         notificationAdapter =
             EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
-                if (it.type != 2) {
-                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(
+                if (it.type != 2 && it.type != -1) {
+                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment(
                         PetEvent(
                             petProfile = it.petProfile,
                             petName = it.petProfile.name,

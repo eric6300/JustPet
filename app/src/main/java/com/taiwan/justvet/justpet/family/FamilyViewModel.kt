@@ -8,11 +8,10 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.ERIC
 import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.UserManager
-import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.data.UserProfile
 
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
@@ -108,7 +107,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         UserManager.userProfile.value?.let { userProfile ->
             inviteeEmail.value?.let { inviteeEmail ->
                 inviteReference.add(
-                    Invite(
+                    Invitation(
                         petId = petProfile.profileId,
                         petName = petProfile.name,
                         inviteeEmail = inviteeEmail,

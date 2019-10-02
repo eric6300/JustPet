@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableMap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -59,13 +60,6 @@ class ChartFragment : Fragment() {
 
         viewModel.selectedProfile.observe(this, Observer {
             it?.let {
-                weightChart.data = LineData()
-                weightChart.invalidate()
-                syndromeChart.data = BarData()
-                syndromeChart.invalidate()
-                if (binding.filterChartGroup.position != 0) {
-                    binding.filterChartGroup.setPosition(0, true)
-                }
                 viewModel.getSyndromeData(it)
                 viewModel.getWeightData(it)
             }
@@ -135,11 +129,9 @@ class ChartFragment : Fragment() {
         xAxis.setDrawGridLines(false)
         xAxis.setDrawLabels(false)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.labelCount = 2
-//        xAxis.valueFormatter = WeightChartFormatter()
         xAxis.granularity = 86400f
-        xAxis.axisMinimum = viewModel.threeMonthsAgoTimestamp.toFloat()
-        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0007).toFloat()
+        xAxis.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0005).toFloat()
 
         // set Y axis
         val yAxisRight = weightChart.axisRight
@@ -189,12 +181,8 @@ class ChartFragment : Fragment() {
     }
 
     private fun showWeightData(entries: List<Entry>) {
-
-        if (viewModel.threeMonthsWeight.value == 0 || viewModel.oneYearWeight.value == null) {
-            binding.textNoWeightData.visibility = View.VISIBLE
-        } else {
-            binding.textNoWeightData.visibility = View.GONE
-        }
+        weightChart.data = LineData()
+        weightChart.invalidate()
 
         // set DataSet
         val dataset = LineDataSet(entries, "體重")
@@ -219,12 +207,8 @@ class ChartFragment : Fragment() {
     }
 
     private fun showSyndromeData(entries: List<BarEntry>) {
-
-        if (viewModel.threeMonthsSyndrome.value == 0 || viewModel.threeMonthsSyndrome.value == null) {
-            binding.textNoSyndromeData.visibility = View.VISIBLE
-        } else {
-            binding.textNoSyndromeData.visibility = View.GONE
-        }
+        syndromeChart.data = BarData()
+        syndromeChart.invalidate()
 
         // set DataSet
         val dataset = BarDataSet(entries, "症狀")
@@ -234,21 +218,20 @@ class ChartFragment : Fragment() {
         dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
 
         syndromeChart.data = BarData(dataset)
-        syndromeChart.moveViewToX(9.5f)
-        syndromeChart.setVisibleXRangeMaximum(3f)
-
+        if (binding.filterChartGroup.position == 0) {
+            syndromeChart.moveViewToX(9.5f)
+            syndromeChart.setVisibleXRangeMaximum(3f)
+        }
         // refresh
         syndromeChart.notifyDataSetChanged()
         syndromeChart.invalidate()
     }
 
     private fun setupSegmentedButtonGroup() {
-        val noSyndromeDataText = binding.textNoSyndromeData
-        val noWeightDataText = binding.textNoWeightData
         binding.filterChartGroup.setOnPositionChangedListener { index ->
             when (index) {
                 0 -> {
-                    weightChart.xAxis.axisMinimum = viewModel.threeMonthsAgoTimestamp.toFloat()
+                    weightChart.xAxis.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -256,21 +239,9 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(3f)
                     }
 
-                    if (viewModel.threeMonthsWeight.value == 0 || viewModel.threeMonthsWeight.value == null) {
-                        noWeightDataText.visibility = View.VISIBLE
-                    } else {
-                        noWeightDataText.visibility = View.GONE
-                    }
-
-                    if (viewModel.threeMonthsSyndrome.value == 0 || viewModel.threeMonthsSyndrome.value == null) {
-                        noSyndromeDataText.visibility = View.VISIBLE
-                    } else {
-                        noSyndromeDataText.visibility = View.GONE
-                    }
-
                 }
                 1 -> {
-                    weightChart.xAxis.axisMinimum = viewModel.sixMonthsAgoTimestamp.toFloat()
+                    weightChart.xAxis.axisMinimum = (viewModel.sixMonthsAgoTimestamp * 0.9995).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -278,21 +249,9 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(6f)
                     }
 
-                    if (viewModel.sixMonthsWeight.value == 0 || viewModel.sixMonthsWeight.value == null) {
-                        noWeightDataText.visibility = View.VISIBLE
-                    } else {
-                        noWeightDataText.visibility = View.GONE
-                    }
-
-                    if (viewModel.sixMonthsWeight.value == 0 || viewModel.sixMonthsWeight.value == null) {
-                        noSyndromeDataText.visibility = View.VISIBLE
-                    } else {
-                        noSyndromeDataText.visibility = View.GONE
-                    }
-
                 }
                 2 -> {
-                    weightChart.xAxis.axisMinimum = viewModel.oneYearAgoTimestamp.toFloat()
+                    weightChart.xAxis.axisMinimum = (viewModel.oneYearAgoTimestamp * 0.9995).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -300,17 +259,6 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(12f)
                     }
 
-                    if (viewModel.oneYearWeight.value == 0 || viewModel.oneYearWeight.value == null) {
-                        noWeightDataText.visibility = View.VISIBLE
-                    } else {
-                        noWeightDataText.visibility = View.GONE
-                    }
-
-                    if (viewModel.oneYearWeight.value == 0 || viewModel.oneYearWeight.value == null) {
-                        noSyndromeDataText.visibility = View.VISIBLE
-                    } else {
-                        noSyndromeDataText.visibility = View.GONE
-                    }
                 }
             }
         }

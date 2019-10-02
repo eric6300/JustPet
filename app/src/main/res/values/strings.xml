@@ -38,12 +38,19 @@
     <string name="unit_body_weight">公斤</string>
     <string name="unit_temperature">℃</string>
     <string name="unit_respiratory_rate">次 / 分鐘</string>
+    <string name="text_no_pet_no_new_event">目前沒有寵物資料，無法新增紀錄</string>
 
     //  ToolFragment  //
-    <string name="title_tool">小工具</string>
-    <string name="title_calculate_food">基礎攝取熱量</string>
+    <string name="title_food_intake">基礎攝取熱量</string>
     <string name="title_water_intake">基礎飲水量</string>
     <string name="title_calculate_rate">呼吸 / 脈搏</string>
+
+
+    //  BreathFragment  //
+    <string name="title_average_respiratory_rate">平均呼吸速率</string>
+    <string name="title_average_heart_rate">平均脈搏速率</string>
+    <string name="text_heart_rate">脈搏速率</string>
+    <string name="text_respiratory_rate">呼吸速率</string>
     <string name="text_reset">重設</string>
 
     //  ChartFragment  //
@@ -53,7 +60,7 @@
     <string name="text_six_month">六個月</string>
     <string name="text_one_year">一年</string>
     <string name="text_three_months">三個月</string>
-    <string name="text_vomit">嘔吐次數</string>
+    <string name="text_vomit_count">嘔吐次數</string>
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>
@@ -72,5 +79,36 @@
     <string name="chart">圖表</string>
     <string name="tool">工具</string>
     <string name="event">記錄詳情</string>
+
+    //  Tag  //
+    <string name="text_eating">吃飯</string>
+    <string name="text_shower">洗澡</string>
+    <string name="text_walking">散步</string>
+    <string name="text_nail_trimming">剪指甲</string>
+    <string name="text_hair_trimming">剃毛</string>
+    <string name="text_weight_measure">量體重</string>
+    <string name="text_other_daily">其他日常</string>
+
+    <string name="text_vomit">嘔吐</string>
+    <string name="text_diarrhea">下痢</string>
+    <string name="text_coughing">咳嗽</string>
+    <string name="text_sneezing">打噴嚏</string>
+    <string name="text_itchy">搔癢</string>
+    <string name="text_seizure">癲癇</string>
+    <string name="text_collapse">昏倒</string>
+    <string name="text_urine_abnormal">排尿異常</string>
+    <string name="text_other_syndrome">其他症狀</string>
+
+    <string name="text_ecto_prevention">除蚤</string>
+    <string name="text_endo_prevention">驅蟲</string>
+    <string name="text_heart_worm_prevention">心絲蟲藥</string>
+    <string name="text_sc_injection">皮下注射</string>
+    <string name="text_blood_glucose">血糖紀錄</string>
+    <string name="text_oral_med">口服藥</string>
+    <string name="text_external_med">外用藥</string>
+    <string name="text_drop">滴劑</string>
+    <string name="text_vaccine">疫苗注射</string>
+    <string name="text_health_exam">健康檢查</string>
+    <string name="text_other_treatment">其他醫療</string>
 
 </resources>

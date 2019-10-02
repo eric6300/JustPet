@@ -13,21 +13,16 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.taiwan.justvet.justpet.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
-import com.taiwan.justvet.justpet.event.EditEventViewModel
-import com.taiwan.justvet.justpet.event.EditEventViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class TagDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogTagBinding
-    //    private lateinit var datePickerDialog: DatePickerDialog
-//    private lateinit var timePickerDialog: TimePickerDialog
-//    private lateinit var calendar: Calendar
-    private lateinit var avatarAdapter: PetAvatarAdapter
+    private lateinit var avatarAdapterTag: TagPetAvatarAdapter
     private lateinit var viewModel: TagViewModel
 
     override fun onCreateView(
@@ -99,12 +94,12 @@ class TagDialog : BottomSheetDialogFragment() {
         var lastPosition: Int? = -1
 
         val listOfProfile = binding.listOfProfile
-        avatarAdapter = PetAvatarAdapter(viewModel)
+        avatarAdapterTag = TagPetAvatarAdapter(viewModel)
 
         listOfProfile.apply {
             PagerSnapHelper().attachToRecyclerView(this)
 
-            this.adapter = avatarAdapter
+            this.adapter = avatarAdapterTag
 
             this.setOnScrollChangeListener { _, _, _, _, _ ->
                 val newPosition = (listOfProfile.layoutManager as LinearLayoutManager)

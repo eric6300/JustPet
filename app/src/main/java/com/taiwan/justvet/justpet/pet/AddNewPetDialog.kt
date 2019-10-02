@@ -1,10 +1,9 @@
-package com.taiwan.justvet.justpet.profile
+package com.taiwan.justvet.justpet.pet
 
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Outline
 import android.os.Bundle
-import android.renderscript.Allocation
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,15 +20,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.databinding.DialogNewProfileBinding
+import com.taiwan.justvet.justpet.databinding.DialogNewPetBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
-class PetProfileDialog : BottomSheetDialogFragment() {
+class AddNewPetDialog : BottomSheetDialogFragment() {
 
-    private lateinit var binding: DialogNewProfileBinding
+    private lateinit var binding: DialogNewPetBinding
     private lateinit var petImage: ImageView
-    private val viewModel: PetProfileViewModel by lazy {
-        ViewModelProviders.of(this).get(PetProfileViewModel::class.java)
+    private val viewModel: AddNewPetViewModel by lazy {
+        ViewModelProviders.of(this).get(AddNewPetViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -38,7 +37,7 @@ class PetProfileDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DialogNewProfileBinding.inflate(inflater, container, false)
+        binding = DialogNewPetBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

@@ -17,11 +17,12 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.BarScore
+import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
+class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private val _navigateToCalendar = MutableLiveData<Boolean>()
     val navigateToCalendar: LiveData<Boolean>
@@ -161,7 +162,17 @@ class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun checkEventId() {
         if (petEvent.eventId == null) {
-            postEvent()
+            petEvent.eventTagsIndex?.let {
+                if (it.contains(5)) {
+                    if (eventWeight.value.isNullOrEmpty()) {
+                        Toast.makeText(JustPetApplication.appContext, "體重未填寫", Toast.LENGTH_LONG).show()
+                    } else {
+                        postEvent()
+                    }
+                } else {
+                    postEvent()
+                }
+            }
         } else {
             updateEvent()
         }

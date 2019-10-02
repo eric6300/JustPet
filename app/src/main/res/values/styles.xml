@@ -20,7 +20,7 @@
     </style>
 
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/rounded_corners_bottom_sheet</item>
+        <item name="android:background">@drawable/corners_bottom_sheet</item>
     </style>
 
     <style name="LoginTheme" parent="FirebaseUI">

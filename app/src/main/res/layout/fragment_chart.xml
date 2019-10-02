@@ -202,7 +202,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/roboto_mono"
-                        android:text="@string/text_vomit"
+                        android:text="@string/text_vomit_count"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

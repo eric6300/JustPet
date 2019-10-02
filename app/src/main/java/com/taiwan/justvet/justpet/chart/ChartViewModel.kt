@@ -35,10 +35,6 @@ class ChartViewModel : ViewModel() {
     val weightEntries: LiveData<List<Entry>>
         get() = _weightEntries
 
-    private val _eventData = MutableLiveData<List<PetEvent>>()
-    val eventData: LiveData<List<PetEvent>>
-        get() = _eventData
-
     private val _syndromeEntries = MutableLiveData<List<BarEntry>>()
     val syndromeEntries: LiveData<List<BarEntry>>
         get() = _syndromeEntries
@@ -56,12 +52,12 @@ class ChartViewModel : ViewModel() {
     var sixMonthsAgoTimestamp: Long = 0
     var oneYearAgoTimestamp: Long = 0
 
-    val threeMonthsSyndrome = MutableLiveData<Int>()
-    val sixMonthsSyndrome = MutableLiveData<Int>()
-    val oneYearSyndrome = MutableLiveData<Int>()
-    val threeMonthsWeight = MutableLiveData<Int>()
-    val sixMonthsWeight = MutableLiveData<Int>()
-    val oneYearWeight = MutableLiveData<Int>()
+//    val threeMonthsSyndrome = MutableLiveData<Int>()
+//    val sixMonthsSyndrome = MutableLiveData<Int>()
+//    val oneYearSyndrome = MutableLiveData<Int>()
+//    val threeMonthsWeight = MutableLiveData<Int>()
+//    val sixMonthsWeight = MutableLiveData<Int>()
+//    val oneYearWeight = MutableLiveData<Int>()
 
     init {
         UserManager.userProfile.value?.let {
@@ -231,9 +227,9 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-            oneYearSyndrome.value = oneYear
-            sixMonthsSyndrome.value = sixMonths
-            threeMonthsSyndrome.value = threeMonths
+//            oneYearSyndrome.value = oneYear
+//            sixMonthsSyndrome.value = sixMonths
+//            threeMonthsSyndrome.value = threeMonths
 
             _syndromeEntries.value = entries
         }
@@ -307,13 +303,9 @@ class ChartViewModel : ViewModel() {
             }
         }
 
-        Log.d(ERIC, "3 : $threeMonths")
-        Log.d(ERIC, "6 : $sixMonths")
-        Log.d(ERIC, "12 : $oneYear")
-
-        oneYearWeight.value = oneYear
-        sixMonthsWeight.value = sixMonths
-        threeMonthsWeight.value = threeMonths
+//        oneYearWeight.value = oneYear
+//        sixMonthsWeight.value = sixMonths
+//        threeMonthsWeight.value = threeMonths
 
     }
 }

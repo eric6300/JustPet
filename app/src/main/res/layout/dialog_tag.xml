@@ -8,7 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.tag.TagViewModel" />
         <import type="android.view.View"/>
-        <import type="com.taiwan.justvet.justpet.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:background="@drawable/border_corner_tag"
+            android:background="@drawable/border_corner_tag_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tag_category_button_group">

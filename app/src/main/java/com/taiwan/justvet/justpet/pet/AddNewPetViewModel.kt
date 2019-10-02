@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.profile
+package com.taiwan.justvet.justpet.pet
 
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
@@ -16,11 +16,11 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.util.LoadApiStatus
 
-class PetProfileViewModel : ViewModel() {
+class AddNewPetViewModel : ViewModel() {
 
     private val _navigateToHomeFragment = MutableLiveData<Boolean>()
     val navigateToHomeFragment: LiveData<Boolean>

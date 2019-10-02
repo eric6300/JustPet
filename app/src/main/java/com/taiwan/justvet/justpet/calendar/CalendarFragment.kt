@@ -1,8 +1,6 @@
 package com.taiwan.justvet.justpet.calendar
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +18,6 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
-import com.taiwan.justvet.justpet.decorators.EventDecorator
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
@@ -63,7 +60,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         viewModel.navigateToDetail.observe(this, Observer {
             it?.let {
                 findNavController().navigate(
-                    CalendarFragmentDirections.actionCalendarFragmentToEventDetailFragment(
+                    CalendarFragmentDirections.actionCalendarFragmentToEventFragment(
                         it
                     )
                 )
@@ -137,7 +134,12 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
                 val dayOfMonth = event.dayOfMonth
                 list.add(CalendarDay.from(year.toInt(), month.toInt(), dayOfMonth.toInt()))
             }
-            calendarView.addDecorator(EventDecorator(Color.RED, list))
+            calendarView.addDecorator(
+                CalendarEventDecorator(
+                    Color.RED,
+                    list
+                )
+            )
         })
     }
 

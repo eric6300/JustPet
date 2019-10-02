@@ -18,10 +18,10 @@ import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.event.EditEventTagAdapter
-import com.taiwan.justvet.justpet.family.FamilyAdapter
+import com.taiwan.justvet.justpet.event.EventTagAdapter
+import com.taiwan.justvet.justpet.family.FamilyEmailAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
-import com.taiwan.justvet.justpet.tag.PetAvatarAdapter
+import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -32,13 +32,15 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_cat
-                    ))
+                    )
+                )
             }
             1L -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_dog
-                    ))
+                    )
+                )
             }
         }
     }
@@ -46,69 +48,90 @@ fun bindSpeciesIcon(imageView: ImageView, species: Long) {
 
 
 @BindingAdapter("notificationBackground")
-fun bindEventBackground (cardView: CardView, eventType: Int) {
-    eventType.let {
+fun bindEventBackground(cardView: CardView, notificationType: Int) {
+    notificationType.let {
         when (it) {
+            -1 -> {
+                cardView.setCardBackgroundColor(
+                    JustPetApplication.appContext.getColor(
+                        android.R.color.background_light
+                    )
+                )
+            }
             0 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorDiary
-                    ))
+                    )
+                )
             }
             1 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorTreatment
-                    ))
+                    )
+                )
             }
             2 -> {
                 cardView.setCardBackgroundColor(
                     JustPetApplication.appContext.getColor(
                         R.color.colorSyndrome
-                    ))
+                    )
+                )
             }
         }
     }
 }
 
 @BindingAdapter("notificationType")
-fun bindEventTagIcon (imageView: ImageView, type: Int) {
+fun bindEventTagIcon(imageView: ImageView, type: Int) {
     type.let {
         when (it) {
+            // no notification
+            -1 -> {
+                imageView.setImageDrawable(
+                    Util.getDrawable(R.drawable.ic_others)
+                )
+            }
             // normal
             0 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_others))
+                    Util.getDrawable(R.drawable.ic_others)
+                )
             }
             // medicine
             1 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_medicine))
+                    Util.getDrawable(R.drawable.ic_medicine)
+                )
             }
             // warning
             2 -> {
                 imageView.setImageDrawable(
-                    Util.getDrawable(R.drawable.ic_warning))
+                    Util.getDrawable(R.drawable.ic_warning)
+                )
             }
         }
     }
 }
 
 @BindingAdapter("expandIcon")
-fun bindExpandIcon (imageView: ImageView, status: Boolean) {
+fun bindExpandIcon(imageView: ImageView, status: Boolean) {
     status.let {
         when (it) {
             true -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_expand_less
-                    ))
+                    )
+                )
             }
             else -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_expand_more
-                    ))
+                    )
+                )
             }
         }
     }
@@ -120,7 +143,7 @@ fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventT
         recyclerView.adapter?.apply {
             when (this) {
                 is TagListAdapter -> submitList(it)
-                is EditEventTagAdapter -> submitList(it)
+                is EventTagAdapter -> submitList(it)
             }
         }
     }
@@ -138,7 +161,10 @@ fun bindRecyclerViewWithListOfPetEvents(recyclerView: RecyclerView, list: List<P
 }
 
 @BindingAdapter("listOfNotification")
-fun bindRecyclerViewWithListOfNotification(recyclerView: RecyclerView, list: List<EventNotification>?) {
+fun bindRecyclerViewWithListOfNotification(
+    recyclerView: RecyclerView,
+    list: List<EventNotification>?
+) {
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
@@ -153,7 +179,7 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
-                is PetAvatarAdapter -> {
+                is TagPetAvatarAdapter -> {
                     when (itemCount) {
                         0 -> submitList(it)
                         it.size -> notifyDataSetChanged()
@@ -177,7 +203,7 @@ fun bindRecyclerViewWithFamily(recyclerView: RecyclerView, list: List<String>?) 
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
-                is FamilyAdapter -> {
+                is FamilyEmailAdapter -> {
                     submitList(it)
                 }
             }
@@ -210,16 +236,11 @@ fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
         val imgUri = imgUrl.toUri().buildUpon().build()
         GlideApp.with(imgView.context)
             .load(imgUri)
-//            .apply(
-//                RequestOptions()
-//                    .placeholder(R.drawable.placeholder)
-//            )
             .into(imgView)
     } else {
         GlideApp.with(imgView.context)
-            .load(R.drawable.placeholder)
+            .load(R.drawable.pet_profile_placeholder)
             .into(imgView)
-//            .clear(imgView)
     }
 }
 
@@ -230,15 +251,36 @@ fun bindTagBackground(layout: ConstraintLayout, eventTag: EventTag) {
     } else {
         when (eventTag.type) {
             TagType.DIARY.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
             }
             TagType.SYNDROME.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
             }
             TagType.TREATMENT.value -> {
-                layout.background = JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
+                layout.background =
+                    JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
             }
 
+        }
+    }
+}
+
+@BindingAdapter("tagChipBackground")
+fun bindTagChipBackground(textView: TextView, eventTag: EventTag) {
+    when (eventTag.type) {
+        TagType.DIARY.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_green)
+        }
+        TagType.SYNDROME.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_red)
+        }
+        TagType.TREATMENT.value -> {
+            textView.background =
+                JustPetApplication.appContext.getDrawable(R.drawable.selected_icon_tag_yellow)
         }
     }
 }

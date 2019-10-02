@@ -1,4 +1,4 @@
-package com.taiwan.justvet.justpet.event
+package com.taiwan.justvet.justpet.tag
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,31 +6,26 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.databinding.ItemChipTagBinding
-import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
-import com.taiwan.justvet.justpet.tag.TagListAdapter
-import com.taiwan.justvet.justpet.tag.TagViewModel
+import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.databinding.ItemAvatarPetBinding
+import com.taiwan.justvet.justpet.home.PetProfileAdapter
 
-class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<EventTag, EditEventTagAdapter.ViewHolder>(TagListAdapter.TagDiffCallback()) {
+class TagPetAvatarAdapter(val viewModel: TagViewModel) :
+    ListAdapter<PetProfile, TagPetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
 
     private lateinit var context: Context
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val eventTag = getItem(position)
-        holder.bind(eventTag)
+        val profile = getItem(position)
+        holder.bind(profile)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return EditEventTagAdapter.ViewHolder(
-            ItemChipTagBinding.inflate(
+        return TagPetAvatarAdapter.ViewHolder(
+            ItemAvatarPetBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -38,17 +33,17 @@ class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener
         )
     }
 
-    override fun onViewAttachedToWindow(holder: EditEventTagAdapter.ViewHolder) {
+    override fun onViewAttachedToWindow(holder: TagPetAvatarAdapter.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: EditEventTagAdapter.ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: TagPetAvatarAdapter.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemChipTagBinding, val viewModel: EditEventViewModel) :
+    class ViewHolder(val binding: ItemAvatarPetBinding, val viewModel: TagViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)
@@ -69,16 +64,12 @@ class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener
             lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         }
 
-        fun bind(eventTag: EventTag) {
+        fun bind(profile: PetProfile) {
             binding.lifecycleOwner = this
-            binding.editEventViewModel = viewModel
-            binding.eventTag = eventTag
+            binding.viewModel = viewModel
+            binding.profile = profile
             binding.executePendingBindings()
         }
 
-    }
-
-    class OnClickListener(val clickListener: (eventTag: EventTag) -> Unit) {
-        fun onClick(eventTag: EventTag) = clickListener(eventTag)
     }
 }

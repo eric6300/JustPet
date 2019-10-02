@@ -31,7 +31,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/image_calculate_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.3"
@@ -41,7 +41,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/image_cat2" />
+                    app:srcCompat="@drawable/cat_sleep" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/title_calculate_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -67,7 +67,7 @@
                     android:textSize="20sp"
                     android:clickable="true"
                     android:onClick="@{() -> viewModel.navigateToBreath()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_calculate_rate"
                     app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -90,7 +90,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/image_food_intake"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.3"
@@ -116,12 +116,12 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/title_food_intake"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/title_calculate_food"
+                    android:text="@string/title_food_intake"
                     android:textColor="@android:color/background_light"
                     android:textSize="20sp"
                     android:clickable="true"
@@ -147,7 +147,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/image_water_intake"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.3"
@@ -172,7 +172,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/title_water_intake"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"

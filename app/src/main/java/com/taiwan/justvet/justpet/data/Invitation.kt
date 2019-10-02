@@ -5,7 +5,7 @@ import com.google.firebase.firestore.Exclude
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Invite (
+data class Invitation (
     @get: Exclude val inviteId: String? = "",
     val petId: String? = "",
     val petName: String? = "",

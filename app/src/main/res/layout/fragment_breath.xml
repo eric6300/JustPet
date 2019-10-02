@@ -46,7 +46,7 @@
                     android:padding="8dp"
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
-                    app:text="呼吸速率"
+                    app:text="@string/text_respiratory_rate"
                     app:textSize="18sp" />
 
                 <com.addisonelliott.segmentedbutton.SegmentedButton
@@ -57,7 +57,7 @@
                     android:padding="8dp"
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
-                    app:text="脈搏速率"
+                    app:text="@string/text_heart_rate"
                     app:textSize="18sp" />
 
             </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
@@ -76,34 +76,34 @@
                 tools:text="128" />
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/title_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="平均速率"
+                android:text="@{viewModel.rateType == 0 ? @string/title_average_respiratory_rate : @string/title_average_heart_rate }"
                 app:layout_constraintBottom_toBottomOf="@+id/text_rate"
                 app:layout_constraintEnd_toStartOf="@+id/text_rate"
                 app:layout_constraintTop_toTopOf="@+id/text_rate"
                 app:layout_constraintVertical_bias="0.76" />
 
             <TextView
-                android:id="@+id/textView14"
+                android:id="@+id/title_unit_of_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="次/分鐘"
+                android:text="@string/unit_respiratory_rate"
                 app:layout_constraintBottom_toBottomOf="@+id/text_rate"
                 app:layout_constraintStart_toEndOf="@+id/text_rate"
                 app:layout_constraintTop_toTopOf="@+id/text_rate"
                 app:layout_constraintVertical_bias="0.76" />
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/image_tap_for_count"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="@{() -> viewModel.click()}"
+                android:onClick="@{() -> viewModel.tapForCalculation()}"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/button_next_step"
                 app:layout_constraintDimensionRatio="1:1"
@@ -129,12 +129,12 @@
                 app:fb_textColor="#FFFFFF"
                 app:fb_textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline4"
+                android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -149,7 +149,7 @@
                 android:layout_marginBottom="16dp"
                 android:alpha="@{viewModel.averageRate == 0L ? 0.2f : 1f}"
                 android:clickable="@{viewModel.averageRate == 0L ? false : true}"
-                android:onClick="@{() -> viewModel.saveRecord()}"
+                android:onClick="@{() -> viewModel.navigateToTag()}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 app:fb_defaultColor="@color/colorPrimary"
@@ -160,7 +160,7 @@
                 app:fb_textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline4" />
+                app:layout_constraintStart_toStartOf="@+id/guideline" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
