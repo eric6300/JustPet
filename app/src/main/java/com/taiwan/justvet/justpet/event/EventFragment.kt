@@ -33,10 +33,10 @@ import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class EditEventFragment : Fragment() {
+class EventFragment : Fragment() {
 
     private lateinit var binding: FragmentEventBinding
-    private lateinit var viewModel: EditEventViewModel
+    private lateinit var viewModel: EventViewModel
     private lateinit var currentEvent: PetEvent
     private lateinit var datePickerDialog: DatePickerDialog
     private lateinit var timePickerDialog: TimePickerDialog
@@ -55,10 +55,10 @@ class EditEventFragment : Fragment() {
     ): View? {
 
         binding = FragmentEventBinding.inflate(inflater, container, false)
-        currentEvent = EditEventFragmentArgs.fromBundle(arguments!!).petEvent
-        val viewModelFactory = EditEventViewModelFactory(currentEvent)
+        currentEvent = EventFragmentArgs.fromBundle(arguments!!).petEvent
+        val viewModelFactory = EventViewModelFactory(currentEvent)
         viewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel::class.java)
+            ViewModelProviders.of(this, viewModelFactory).get(EventViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -114,7 +114,7 @@ class EditEventFragment : Fragment() {
 
     private fun setupTagRecyclerView() {
         val listOfTag = binding.listTags
-        val adapter = EditEventTagAdapter(viewModel, EditEventTagAdapter.OnClickListener {
+        val adapter = EventTagAdapter(viewModel, EventTagAdapter.OnClickListener {
         })
         listOfTag.adapter = adapter
     }

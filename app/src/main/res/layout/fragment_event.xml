@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.taiwan.justvet.justpet.event.EditEventViewModel" />
+            type="com.taiwan.justvet.justpet.event.EventViewModel" />
         <variable
             name="petProfile"
             type="com.taiwan.justvet.justpet.data.PetProfile" />

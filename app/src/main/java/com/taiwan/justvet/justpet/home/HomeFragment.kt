@@ -204,7 +204,7 @@ class HomeFragment : Fragment() {
         notificationAdapter =
             EventNotificationAdapter(viewModel, EventNotificationAdapter.OnClickListener {
                 if (it.type != 2 && it.type != -1) {
-                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(
+                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment(
                         PetEvent(
                             petProfile = it.petProfile,
                             petName = it.petProfile.name,

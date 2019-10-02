@@ -6,19 +6,14 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.recyclerview.selection.ItemDetailsLookup
-import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.ItemChipTagBinding
-import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
 import com.taiwan.justvet.justpet.tag.TagListAdapter
-import com.taiwan.justvet.justpet.tag.TagViewModel
 
-class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener: OnClickListener) :
-    ListAdapter<EventTag, EditEventTagAdapter.ViewHolder>(TagListAdapter.TagDiffCallback()) {
+class EventTagAdapter(val viewModel: EventViewModel, val onClickListener: OnClickListener) :
+    ListAdapter<EventTag, EventTagAdapter.ViewHolder>(TagListAdapter.TagDiffCallback()) {
 
     private lateinit var context: Context
 
@@ -29,7 +24,7 @@ class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return EditEventTagAdapter.ViewHolder(
+        return EventTagAdapter.ViewHolder(
             ItemChipTagBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -38,17 +33,17 @@ class EditEventTagAdapter(val viewModel: EditEventViewModel, val onClickListener
         )
     }
 
-    override fun onViewAttachedToWindow(holder: EditEventTagAdapter.ViewHolder) {
+    override fun onViewAttachedToWindow(holder: EventTagAdapter.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: EditEventTagAdapter.ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: EventTagAdapter.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }
 
-    class ViewHolder(val binding: ItemChipTagBinding, val viewModel: EditEventViewModel) :
+    class ViewHolder(val binding: ItemChipTagBinding, val viewModel: EventViewModel) :
         RecyclerView.ViewHolder(binding.root), LifecycleOwner {
 
         private val lifecycleRegistry = LifecycleRegistry(this)

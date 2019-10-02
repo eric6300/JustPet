@@ -18,7 +18,7 @@ import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.inviteList.observe(this, Observer { inviteList ->
+        viewModel.invitationList.observe(this, Observer { inviteList ->
             inviteList?.let {
                 val invite = it[0]
 
@@ -107,13 +107,13 @@ class MainActivity : AppCompatActivity() {
 
                             viewModel.confirmInvite(invite)
 
-                            val newList = mutableListOf<Invite>()
+                            val newList = mutableListOf<Invitation>()
                             newList.addAll(inviteList)
                             newList.removeAt(0)
                             viewModel.showInvite(newList)
                         }
                         .setNeutralButton("再想想") { _, _ ->
-                            val newList = mutableListOf<Invite>()
+                            val newList = mutableListOf<Invitation>()
                             newList.addAll(inviteList)
                             newList.removeAt(0)
                             viewModel.showInvite(newList)
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.calendarFragment -> CurrentFragmentType.CALENDAR
                 R.id.chartFragment -> CurrentFragmentType.CHART
                 R.id.toolFragment -> CurrentFragmentType.TOOL
-                R.id.eventDetailFragment -> CurrentFragmentType.EVENT
+                R.id.eventFragment -> CurrentFragmentType.EVENT
                 R.id.breathFragment -> CurrentFragmentType.BREATH
                 else -> viewModel.currentFragmentType.value
             }

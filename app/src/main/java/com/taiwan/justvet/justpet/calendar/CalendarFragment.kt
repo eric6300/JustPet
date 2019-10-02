@@ -18,7 +18,7 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
-import com.taiwan.justvet.justpet.decorator.EventDecorator
+import com.taiwan.justvet.justpet.decorator.CalendarEventDecorator
 import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
@@ -61,7 +61,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         viewModel.navigateToDetail.observe(this, Observer {
             it?.let {
                 findNavController().navigate(
-                    CalendarFragmentDirections.actionCalendarFragmentToEventDetailFragment(
+                    CalendarFragmentDirections.actionCalendarFragmentToEventFragment(
                         it
                     )
                 )
@@ -135,7 +135,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
                 val dayOfMonth = event.dayOfMonth
                 list.add(CalendarDay.from(year.toInt(), month.toInt(), dayOfMonth.toInt()))
             }
-            calendarView.addDecorator(EventDecorator(Color.RED, list))
+            calendarView.addDecorator(CalendarEventDecorator(Color.RED, list))
         })
     }
 

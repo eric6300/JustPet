@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
 
@@ -34,8 +34,8 @@ class MainViewModel : ViewModel() {
     val navigateToHome: LiveData<Boolean>
         get() = _navigateToHome
 
-    private val _inviteList = MutableLiveData<List<Invite>>()
-    val inviteList: LiveData<List<Invite>>
+    private val _inviteList = MutableLiveData<List<Invitation>>()
+    val invitationList: LiveData<List<Invitation>>
         get() = _inviteList
 
     var checkedInvite = false
@@ -113,11 +113,11 @@ class MainViewModel : ViewModel() {
                         }
                         checkedInvite = true
                     } else {
-                        val list = mutableListOf<Invite>()
+                        val list = mutableListOf<Invitation>()
 
                         it.documents.forEach {
                             list.add(
-                                Invite(
+                                Invitation(
                                     inviteId = it.id,
                                     petId = it["petId"] as String?,
                                     petName = it["petName"] as String?,
@@ -137,52 +137,52 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun showInvite(inviteList: MutableList<Invite>) {
-        if (inviteList.isNotEmpty()) {
-            _inviteList.value = inviteList
+    fun showInvite(invitationList: MutableList<Invitation>) {
+        if (invitationList.isNotEmpty()) {
+            _inviteList.value = invitationList
         } else {
             _inviteList.value = null
-            Log.d(ERIC, "inviteList is empty")
+            Log.d(ERIC, "invitationList is empty")
         }
     }
 
-    fun confirmInvite(invite: Invite) {
+    fun confirmInvite(invitation: Invitation) {
         UserManager.userProfile.value?.let { userProfile ->
             usersReference.whereEqualTo("uid", userProfile.uid).get()
                 .addOnSuccessListener {
-                    updateUserProfile(invite)
+                    updateUserProfile(invitation)
                 }.addOnFailureListener {
                     Log.d(ERIC, "confirmInvite() failed : $it")
                 }
         }
     }
 
-    private fun updateUserProfile(invite: Invite) {
+    private fun updateUserProfile(invitation: Invitation) {
         UserManager.userProfile.value?.profileId?.let {
             usersReference.document(it)
-                .update("pets", FieldValue.arrayUnion(invite.petId))
+                .update("pets", FieldValue.arrayUnion(invitation.petId))
                 .addOnSuccessListener {
-                    deleteInvite(invite)
+                    deleteInvite(invitation)
                 }.addOnFailureListener {
                     Log.d(ERIC, "updateUserProfile() failed")
                 }
         }
     }
 
-    private fun deleteInvite(invite: Invite) {
-        invite.inviteId?.let {
+    private fun deleteInvite(invitation: Invitation) {
+        invitation.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
-                    updatePetProfileFamily(invite)
+                    updatePetProfileFamily(invitation)
                 }.addOnFailureListener {
                     Log.d(ERIC, "deleteInvite() failed")
                 }
         }
     }
 
-    private fun updatePetProfileFamily(invite: Invite) {
+    private fun updatePetProfileFamily(invitation: Invitation) {
         UserManager.userProfile.value?.let { userProfile ->
-            invite.petId?.let { petId ->
+            invitation.petId?.let { petId ->
                 petsReference.document(petId)
                     .update("family", FieldValue.arrayUnion(userProfile.email))
                     .addOnSuccessListener {

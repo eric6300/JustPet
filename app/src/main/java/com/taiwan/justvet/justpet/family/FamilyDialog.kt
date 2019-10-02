@@ -1,13 +1,10 @@
 package com.taiwan.justvet.justpet.family
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -15,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogFamilyBinding
-import com.taiwan.justvet.justpet.event.EditEventViewModel
 
 class FamilyDialog : AppCompatDialogFragment() {
 
@@ -42,7 +38,7 @@ class FamilyDialog : AppCompatDialogFragment() {
                 .get(FamilyViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        binding.listFamily.adapter = FamilyAdapter(viewModel)
+        binding.listFamily.adapter = FamilyEmailAdapter(viewModel)
 
         viewModel.leaveDialog.observe(this, Observer {
             if (it) {

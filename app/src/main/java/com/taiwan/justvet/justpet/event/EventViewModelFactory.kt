@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.taiwan.justvet.justpet.data.PetEvent
 
-class EditEventViewModelFactory(
+class EventViewModelFactory(
     private val petEvent: PetEvent
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(EditEventViewModel::class.java)) {
-            return EditEventViewModel(petEvent) as T
+        if (modelClass.isAssignableFrom(EventViewModel::class.java)) {
+            return EventViewModel(petEvent) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -22,7 +22,7 @@ import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EditEventViewModel(val petEvent: PetEvent) : ViewModel() {
+class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private val _navigateToCalendar = MutableLiveData<Boolean>()
     val navigateToCalendar: LiveData<Boolean>

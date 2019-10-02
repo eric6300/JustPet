@@ -8,8 +8,8 @@
             android:name="com.taiwan.justvet.justpet.home.HomeFragment"
             android:label="HomeFragment" >
         <action
-            android:id="@+id/action_homeFragment_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment" />
+            android:id="@+id/action_homeFragment_to_eventFragment"
+            app:destination="@id/eventFragment" />
     </fragment>
 
     <fragment
@@ -17,8 +17,8 @@
             android:name="com.taiwan.justvet.justpet.calendar.CalendarFragment"
             android:label="CalendarFragment" >
         <action
-            android:id="@+id/action_calendarFragment_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment" />
+            android:id="@+id/action_calendarFragment_to_eventFragment"
+            app:destination="@id/eventFragment" />
     </fragment>
 
     <fragment
@@ -41,9 +41,9 @@
     </dialog>
 
     <fragment
-        android:id="@+id/eventDetailFragment"
-        android:name="com.taiwan.justvet.justpet.event.EditEventFragment"
-        android:label="EventDetailFragment" >
+        android:id="@+id/eventFragment"
+        android:name="com.taiwan.justvet.justpet.event.EventFragment"
+        android:label="EventFragment" >
         <argument
             android:name="petEvent"
             app:argType="com.taiwan.justvet.justpet.data.PetEvent" />
@@ -55,7 +55,7 @@
         android:label="TagDialog" >
         <action
             android:id="@+id/action_tagDialog_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment" />
+            app:destination="@id/eventFragment" />
         <argument
             android:name="petEvent"
             app:argType="com.taiwan.justvet.justpet.data.PetEvent" />
@@ -91,14 +91,13 @@
         app:destination="@id/chartFragment"
         app:popUpTo="@+id/nav_graph" />
 
-    <action android:id="@+id/navigate_to_familyDialog" app:destination="@id/familyDialog" />
-    <action android:id="@+id/navigate_to_tagDialog" app:destination="@id/tagDialog" />
-
     <action
         android:id="@+id/navigate_to_addNewPetDialog"
         app:destination="@id/addNewPetDialog"
         app:popUpTo="@+id/homeFragment" />
 
+    <action android:id="@+id/navigate_to_familyDialog" app:destination="@id/familyDialog" />
+    <action android:id="@+id/navigate_to_tagDialog" app:destination="@id/tagDialog" />
     <action android:id="@+id/navigate_to_breathFragment" app:destination="@id/breathFragment" />
 
 </navigation>

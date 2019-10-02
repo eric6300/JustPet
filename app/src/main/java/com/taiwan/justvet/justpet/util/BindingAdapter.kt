@@ -18,8 +18,8 @@ import com.taiwan.justvet.justpet.data.EventNotification
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.event.EditEventTagAdapter
-import com.taiwan.justvet.justpet.family.FamilyAdapter
+import com.taiwan.justvet.justpet.event.EventTagAdapter
+import com.taiwan.justvet.justpet.family.FamilyEmailAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
 import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
@@ -143,7 +143,7 @@ fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventT
         recyclerView.adapter?.apply {
             when (this) {
                 is TagListAdapter -> submitList(it)
-                is EditEventTagAdapter -> submitList(it)
+                is EventTagAdapter -> submitList(it)
             }
         }
     }
@@ -203,7 +203,7 @@ fun bindRecyclerViewWithFamily(recyclerView: RecyclerView, list: List<String>?) 
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
-                is FamilyAdapter -> {
+                is FamilyEmailAdapter -> {
                     submitList(it)
                 }
             }

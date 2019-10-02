@@ -6,7 +6,7 @@
     <data>
         <variable
             name="editEventViewModel"
-            type="com.taiwan.justvet.justpet.event.EditEventViewModel" />
+            type="com.taiwan.justvet.justpet.event.EventViewModel" />
         <variable
             name="calendarViewModel"
             type="com.taiwan.justvet.justpet.calendar.CalendarViewModel" />
