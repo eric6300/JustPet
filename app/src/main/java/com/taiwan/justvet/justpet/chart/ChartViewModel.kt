@@ -14,7 +14,7 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
-import com.taiwan.justvet.justpet.util.TagType
+import com.taiwan.justvet.justpet.tag.TagType
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*

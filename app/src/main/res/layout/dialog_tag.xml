@@ -29,7 +29,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_of_tags"
-                listOfTags="@{viewModel.listOfTags}"
+                listOfTag="@{viewModel.listOfTag}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -110,7 +110,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_of_profile"
-            listOfProfile="@{viewModel.listOfProfile}"
+            listOfProfile="@{viewModel.petList}"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="16dp"

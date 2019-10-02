@@ -24,6 +24,7 @@ import com.taiwan.justvet.justpet.home.EventNotificationAdapter
 import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
+import com.taiwan.justvet.justpet.tag.TagType
 
 @BindingAdapter("iconSpecies")
 fun bindSpeciesIcon(imageView: ImageView, species: Long) {
@@ -138,7 +139,7 @@ fun bindExpandIcon(imageView: ImageView, status: Boolean) {
     }
 }
 
-@BindingAdapter("listOfTags")
+@BindingAdapter("listOfTag")
 fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventTag>?) {
     list?.let {
         recyclerView.adapter?.apply {

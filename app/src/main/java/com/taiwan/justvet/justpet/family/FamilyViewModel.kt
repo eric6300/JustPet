@@ -30,9 +30,9 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
-    private val _leaveDialog = MutableLiveData<Boolean>()
-    val leaveDialog: LiveData<Boolean>
-        get() = _leaveDialog
+    private val _leaveFamilyDialog = MutableLiveData<Boolean>()
+    val leaveFamilyDialog: LiveData<Boolean>
+        get() = _leaveFamilyDialog
 
     val petFamily = getString(R.string.text_pet_family, petProfile.name)
     val userEmail = UserManager.userEmail.value
@@ -134,7 +134,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
                 Log.d(ERIC, "sendInvite() succeeded , ID : ${it.id}")
 
-                leaveDialog()
+                leaveFamilyDialog()
 
             }.addOnFailureListener {
                 _errorMessage.value = getString(R.string.text_invite_failure)
@@ -145,12 +145,12 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     }
 
-    fun leaveDialog() {
-        _leaveDialog.value = true
+    fun leaveFamilyDialog() {
+        _leaveFamilyDialog.value = true
     }
 
-    fun leaveDialogComplete() {
-        _leaveDialog.value = false
+    fun leaveFamilyDialogComplete() {
+        _leaveFamilyDialog.value = false
     }
 
     fun expandDialog() {

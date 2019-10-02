@@ -18,7 +18,7 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.LoadApiStatus
-import com.taiwan.justvet.justpet.util.TagType
+import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
 

@@ -10,7 +10,7 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.tag.TagViewModel" />
-        <import type="com.taiwan.justvet.justpet.util.TagType"/>
+        <import type="com.taiwan.justvet.justpet.tag.TagType"/>
         <import type="android.view.View"/>
     </data>
 

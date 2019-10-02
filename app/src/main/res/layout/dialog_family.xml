@@ -117,7 +117,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:onClick="@{() -> viewModel.leaveDialog()}"
+                    android:onClick="@{() -> viewModel.leaveFamilyDialog()}"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:text="@string/text_cancel"

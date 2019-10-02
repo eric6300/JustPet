@@ -147,7 +147,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/list_tags"
-                        listOfTags="@{viewModel.eventTags}"
+                        listOfTag="@{viewModel.eventTags}"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"

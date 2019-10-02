@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogFamilyBinding
 
@@ -43,10 +42,10 @@ class FamilyDialog : AppCompatDialogFragment() {
             it.listFamily.adapter = FamilyEmailAdapter(viewModel)
         }
 
-        viewModel.leaveDialog.observe(this, Observer {
+        viewModel.leaveFamilyDialog.observe(this, Observer {
             if (it) {
                 dismiss()
-                viewModel.leaveDialogComplete()
+                viewModel.leaveFamilyDialogComplete()
             }
         })
 
