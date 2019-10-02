@@ -120,7 +120,7 @@ class MainViewModel : ViewModel() {
                                 Invitation(
                                     inviteId = it.id,
                                     petId = it["petId"] as String?,
-                                    petName = it["petName"] as String?,
+                                    petName = it["petFamily"] as String?,
                                     inviteeEmail = it["inviteeEmail"] as String?,
                                     inviterName = it["inviterName"] as String?,
                                     inviterEmail = it["inviterEmail"] as String?

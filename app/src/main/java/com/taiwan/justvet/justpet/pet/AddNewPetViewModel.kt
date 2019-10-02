@@ -19,9 +19,12 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.Util
+import com.taiwan.justvet.justpet.util.Util.getString
 
+const val IMAGE = "image"
+const val SLASH = "/"
 class AddNewPetViewModel : ViewModel() {
-
     private val _navigateToHomeFragment = MutableLiveData<Boolean>()
     val navigateToHomeFragment: LiveData<Boolean>
         get() = _navigateToHomeFragment
@@ -34,9 +37,9 @@ class AddNewPetViewModel : ViewModel() {
     val loadStatus: LiveData<LoadApiStatus>
         get() = _loadStatus
 
-    private val _startGallery = MutableLiveData<Boolean>()
-    val startGallery: LiveData<Boolean>
-        get() = _startGallery
+    private val _showGallery = MutableLiveData<Boolean>()
+    val showGallery: LiveData<Boolean>
+        get() = _showGallery
 
     private val _errorName = MutableLiveData<String>()
     val errorName: LiveData<String>
@@ -46,10 +49,10 @@ class AddNewPetViewModel : ViewModel() {
     val errorBirthday: LiveData<String>
         get() = _errorBirthday
 
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+    private val calendar = Calendar.getInstance()
+    private val year = calendar.get(Calendar.YEAR)
+    private val month = calendar.get(Calendar.MONTH)
+    private val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
 
     val petName = MutableLiveData<String>()
     val petSpecies = MutableLiveData<Long>()
@@ -59,14 +62,13 @@ class AddNewPetViewModel : ViewModel() {
     val petImage = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val users = firebase.collection(USERS)
-    val petsReference = firebase.collection(PETS)
-    val eventsReference = firebase.collection(EVENTS)
-    val storageReference = FirebaseStorage.getInstance().reference
+    private val users = firebase.collection(USERS)
+    private val petsReference = firebase.collection(PETS)
+    private val storageReference = FirebaseStorage.getInstance().reference
 
     init {
-        petSpecies.value = 0
-        petGender.value = 0
+        petSpecies.value = 0L
+        petGender.value = 0L
     }
 
     fun selectSpecies(species: Long) {
@@ -77,11 +79,16 @@ class AddNewPetViewModel : ViewModel() {
         petGender.value = gender
     }
 
-    fun datePicker(view: View) {
+    fun showDatePicker(view: View) {
         DatePickerDialog(
             view.context,
-            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                petBirthday.value = "$year/${month.plus(1)}/$dayOfMonth"
+            DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                petBirthday.value = JustPetApplication.appContext.getString(
+                    R.string.text_birthday_format,
+                    year,
+                    month.plus(1),
+                    dayOfMonth
+                )
                 calendar.set(year, month, dayOfMonth, 0, 0, 0)
             }, year, month, dayOfMonth
         ).show()
@@ -90,11 +97,11 @@ class AddNewPetViewModel : ViewModel() {
     fun checkProfileText() {
         var index = 0
         if (petName.value.isNullOrEmpty()) {
-            _errorName.value = "請輸入名字"
+            _errorName.value = getString(R.string.text_empty_name_error)
             index++
         }
         if (petBirthday.value.isNullOrEmpty()) {
-            _errorBirthday.value = "請輸入出生日期"
+            _errorBirthday.value = getString(R.string.text_empty_birthday_error)
             index++
         }
         if (index == 0) {
@@ -105,8 +112,9 @@ class AddNewPetViewModel : ViewModel() {
     private fun newPetProfile() {
         _loadStatus.value = LoadApiStatus.LOADING
         UserManager.userProfile.value?.let { userProfile ->
+
             petBirthday.value?.let {
-                val timeList = it.split("/")
+                val timeList = it.split(SLASH)
                 calendar.set(timeList[0].toInt(), timeList[1].toInt().minus(1), timeList[2].toInt())
             }
 
@@ -120,15 +128,13 @@ class AddNewPetViewModel : ViewModel() {
                     owner = userProfile.profileId,
                     ownerEmail = userProfile.email
                 )
-            )
-                .addOnSuccessListener {
-                    Log.d(ERIC, "newPetProfile() succeeded")
-                    updatePetsOfUser(it.id)
-                }
-                .addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Log.d(ERIC, "newPetProfile() failed : $it")
-                }
+            ).addOnSuccessListener {
+                Log.d(ERIC, "newPetProfile() succeeded")
+                updatePetsOfUser(it.id)
+            }.addOnFailureListener {
+                _loadStatus.value = LoadApiStatus.ERROR
+                Log.d(ERIC, "newPetProfile() failed : $it")
+            }
         }
     }
 
@@ -153,7 +159,8 @@ class AddNewPetViewModel : ViewModel() {
         _loadStatus.value = LoadApiStatus.LOADING
         if (petImage.value != null) {
             petImage.value?.let {
-                val imageRef = storageReference.child("profile/$petId")
+                val imageRef =
+                    storageReference.child(getString(R.string.text_profile_image_path, petId))
                 imageRef.putFile(it.toUri())
                     .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                         if (!task.isSuccessful) {
@@ -183,7 +190,7 @@ class AddNewPetViewModel : ViewModel() {
         _loadStatus.value = LoadApiStatus.LOADING
         UserManager.userProfile.value?.let { userProfile ->
             petsReference.let {
-                it.document(petId).update("image", downloadUri.toString())
+                it.document(petId).update(IMAGE, downloadUri.toString())
                     .addOnSuccessListener {
                         val newPets = arrayListOf<String>()
                         userProfile.pets?.let {
@@ -201,7 +208,6 @@ class AddNewPetViewModel : ViewModel() {
                         )
 
                         _loadStatus.value = LoadApiStatus.DONE
-//                        navigateToHomeFragment()
                         Log.d(ERIC, "updateEventImageUrl succeed")
                     }.addOnFailureListener {
                         _loadStatus.value = LoadApiStatus.ERROR
@@ -213,11 +219,11 @@ class AddNewPetViewModel : ViewModel() {
     }
 
     fun startGallery() {
-        _startGallery.value = true
+        _showGallery.value = true
     }
 
     fun startGalleryCompleted() {
-        _startGallery.value = false
+        _showGallery.value = false
     }
 
     fun navigateToHomeFragment() {

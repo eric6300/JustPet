@@ -7,11 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.util.LoadApiStatus
 import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
 
 const val EMAIL = "email"
@@ -36,7 +34,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     val leaveDialog: LiveData<Boolean>
         get() = _leaveDialog
 
-    val petName = getString(R.string.text_pet_family, petProfile.name)
+    val petFamily = getString(R.string.text_pet_family, petProfile.name)
     val userEmail = UserManager.userEmail.value
     val inviteeEmail = MutableLiveData<String>()
 
@@ -58,7 +56,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                 _loadStatus.value = LoadApiStatus.ERROR
             }
             userEmail -> {
-                _errorMessage.value = getString(R.string.text_user_already_pet_family, petName)
+                _errorMessage.value = getString(R.string.text_user_already_pet_family, petProfile.name)
                 _loadStatus.value = LoadApiStatus.ERROR
             }
             else -> {
@@ -70,7 +68,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                                     if (familyList.contains(inviteeEmail)) {
                                         _errorMessage.value = getString(
                                             R.string.text_invitee_already_pet_family,
-                                            petName
+                                            petProfile.name
                                         )
                                         _loadStatus.value = LoadApiStatus.DONE
                                     } else {
