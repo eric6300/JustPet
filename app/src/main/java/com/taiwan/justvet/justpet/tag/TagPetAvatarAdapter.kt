@@ -12,8 +12,8 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemAvatarPetBinding
 import com.taiwan.justvet.justpet.home.PetProfileAdapter
 
-class PetAvatarAdapter(val viewModel: TagViewModel) :
-    ListAdapter<PetProfile, PetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
+class TagPetAvatarAdapter(val viewModel: TagViewModel) :
+    ListAdapter<PetProfile, TagPetAvatarAdapter.ViewHolder>(PetProfileAdapter.ProfileDiffCallback()) {
 
     private lateinit var context: Context
 
@@ -24,7 +24,7 @@ class PetAvatarAdapter(val viewModel: TagViewModel) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        return PetAvatarAdapter.ViewHolder(
+        return TagPetAvatarAdapter.ViewHolder(
             ItemAvatarPetBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
@@ -33,12 +33,12 @@ class PetAvatarAdapter(val viewModel: TagViewModel) :
         )
     }
 
-    override fun onViewAttachedToWindow(holder: PetAvatarAdapter.ViewHolder) {
+    override fun onViewAttachedToWindow(holder: TagPetAvatarAdapter.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         holder.onAttach()
     }
 
-    override fun onViewDetachedFromWindow(holder: PetAvatarAdapter.ViewHolder) {
+    override fun onViewDetachedFromWindow(holder: TagPetAvatarAdapter.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.onDetach()
     }

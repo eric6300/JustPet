@@ -144,7 +144,7 @@ class HomeFragment : Fragment() {
 
         viewModel.navigateToNewPet.observe(this, Observer {
             if (it) {
-                findNavController().navigate(NavGraphDirections.navigateToPetProfileDialogFragment())
+                findNavController().navigate(NavGraphDirections.navigateToAddNewPetDialog())
                 viewModel.navigateToNewPetCompleted()
             }
         })

@@ -3,7 +3,6 @@ package com.taiwan.justvet.justpet.util
 import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
@@ -22,7 +21,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EditEventTagAdapter
 import com.taiwan.justvet.justpet.family.FamilyAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
-import com.taiwan.justvet.justpet.tag.PetAvatarAdapter
+import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
 @BindingAdapter("iconSpecies")
@@ -180,7 +179,7 @@ fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<Pet
     list?.let {
         recyclerView.adapter?.apply {
             when (this) {
-                is PetAvatarAdapter -> {
+                is TagPetAvatarAdapter -> {
                     when (itemCount) {
                         0 -> submitList(it)
                         it.size -> notifyDataSetChanged()

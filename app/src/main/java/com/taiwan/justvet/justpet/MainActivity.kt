@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.new_pet -> {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_petProfileDialogFragment)
+                findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_addNewPetDialog)
             }
             R.id.check_invite -> {
                 viewModel.checkInvite()
