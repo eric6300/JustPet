@@ -27,7 +27,9 @@ class BreathFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_breath, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_breath, container, false
+        )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -79,7 +79,7 @@
                 android:id="@+id/title_event_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.tapRateType == 0 ? @string/title_average_respiratory_rate : @string/title_average_heart_rate }"
+                android:text="@{viewModel.tapRateType == 0 ? @string/text_average_respiratory_rate : @string/text_average_heart_rate }"
                 app:layout_constraintBottom_toBottomOf="@+id/text_event_rate"
                 app:layout_constraintEnd_toStartOf="@+id/text_event_rate"
                 app:layout_constraintTop_toTopOf="@+id/text_event_rate"

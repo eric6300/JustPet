@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.databinding.ItemFamilyEmailBinding
 
-class FamilyEmailAdapter(val viewModel: FamilyViewModel) :
-    ListAdapter<String, FamilyEmailAdapter.ViewHolder>(DiffCallback()) {
+class FamilyEmailAdapter(
+    val viewModel: FamilyViewModel
+) : ListAdapter<String, FamilyEmailAdapter.ViewHolder>(DiffCallback()) {
 
     private lateinit var context: Context
 
@@ -28,8 +29,11 @@ class FamilyEmailAdapter(val viewModel: FamilyViewModel) :
             ), viewModel
         )
     }
-    class ViewHolder(val binding: ItemFamilyEmailBinding, val viewModel: FamilyViewModel) :
-        RecyclerView.ViewHolder(binding.root) {
+
+    class ViewHolder(
+        val binding: ItemFamilyEmailBinding,
+        val viewModel: FamilyViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(email: String) {
             binding.email = email
