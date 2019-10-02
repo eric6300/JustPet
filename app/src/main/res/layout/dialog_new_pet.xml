@@ -182,7 +182,7 @@
             android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
             android:focusable="true"
             android:onClick="@{() -> viewModel.startGallery()}"
-            android:background="@drawable/corner_profile_image"
+            android:background="@drawable/border_corner_pet_image"
             app:layout_constraintDimensionRatio="1.78:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -239,7 +239,7 @@ fun bindImageWithUrlString(imgView: ImageView, imgUrl: String?) {
             .into(imgView)
     } else {
         GlideApp.with(imgView.context)
-            .load(R.drawable.placeholder)
+            .load(R.drawable.pet_profile_placeholder)
             .into(imgView)
     }
 }
