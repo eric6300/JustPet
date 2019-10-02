@@ -19,7 +19,6 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.LoadApiStatus
-import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
 
 const val IMAGE = "image"
@@ -105,14 +104,14 @@ class AddNewPetViewModel : ViewModel() {
             index++
         }
         if (index == 0) {
-            newPetProfile()
+            addNewPetProfile()
         }
     }
 
-    private fun newPetProfile() {
+    private fun addNewPetProfile() {
         _loadStatus.value = LoadApiStatus.LOADING
-        UserManager.userProfile.value?.let { userProfile ->
 
+        UserManager.userProfile.value?.let { userProfile ->
             petBirthday.value?.let {
                 val timeList = it.split(SLASH)
                 calendar.set(timeList[0].toInt(), timeList[1].toInt().minus(1), timeList[2].toInt())
@@ -129,22 +128,31 @@ class AddNewPetViewModel : ViewModel() {
                     ownerEmail = userProfile.email
                 )
             ).addOnSuccessListener {
-                Log.d(ERIC, "newPetProfile() succeeded")
+                Log.d(ERIC, "addNewPetProfile() succeeded")
                 updatePetsOfUser(it.id)
             }.addOnFailureListener {
                 _loadStatus.value = LoadApiStatus.ERROR
-                Log.d(ERIC, "newPetProfile() failed : $it")
+                Log.d(ERIC, "addNewPetProfile() failed : $it")
             }
         }
     }
 
     private fun updatePetsOfUser(petId: String) {
         _loadStatus.value = LoadApiStatus.LOADING
+
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
                 users.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
                     .addOnSuccessListener {
-                        uploadPetImage(petId)
+                        when (petImage.value) {
+                            null -> {
+                                _loadStatus.value = LoadApiStatus.DONE
+                                navigateToHomeFragment()
+                            }
+                            else -> {
+                                uploadPetImage(petId)
+                            }
+                        }
                         Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {
@@ -157,37 +165,34 @@ class AddNewPetViewModel : ViewModel() {
 
     private fun uploadPetImage(petId: String) {
         _loadStatus.value = LoadApiStatus.LOADING
-        if (petImage.value != null) {
-            petImage.value?.let {
-                val imageRef =
-                    storageReference.child(getString(R.string.text_profile_image_path, petId))
-                imageRef.putFile(it.toUri())
-                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
+
+        petImage.value?.let {
+            val imageRef =
+                storageReference.child(getString(R.string.text_profile_image_path, petId))
+            imageRef.putFile(it.toUri())
+                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
                         }
-                        return@Continuation imageRef.downloadUrl
-                    }).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val downloadUri = task.result
-                            Log.d(ERIC, "downloadUri : $downloadUri")
-                            updateProfileImageUrl(petId, downloadUri)
-                        }
-                    }.addOnFailureListener {
-                        _loadStatus.value = LoadApiStatus.ERROR
-                        Log.d(ERIC, "uploadImage failed : $it")
                     }
-            }
-        } else {
-            _loadStatus.value = LoadApiStatus.DONE
-            navigateToHomeFragment()
+                    return@Continuation imageRef.downloadUrl
+                }).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUri = task.result
+                        Log.d(ERIC, "downloadUri : $downloadUri")
+                        updateProfileImageUrl(petId, downloadUri)
+                    }
+                }.addOnFailureListener {
+                    _loadStatus.value = LoadApiStatus.ERROR
+                    Log.d(ERIC, "uploadImage failed : $it")
+                }
         }
     }
 
-    fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
+    private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
         _loadStatus.value = LoadApiStatus.LOADING
+
         UserManager.userProfile.value?.let { userProfile ->
             petsReference.let {
                 it.document(petId).update(IMAGE, downloadUri.toString())
