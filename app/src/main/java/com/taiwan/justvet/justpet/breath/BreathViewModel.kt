@@ -13,83 +13,111 @@ import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.Util
 
+const val RESPIRATORY_RATE = 0
+const val HEART_RATE = 1
 class BreathViewModel : ViewModel() {
-
     private val _navigateToTag = MutableLiveData<PetEvent>()
     val navigateToTag: LiveData<PetEvent>
         get() = _navigateToTag
 
-    var rateType = MutableLiveData<Int>()
+    var tapRateType = MutableLiveData<Int>()
 
-    private var tapCount: Int = 0
+    private var tapCount = 0L
     private var startTime = 0L
-    var endTime = 0L
-    var lastEndTime = 0L
-    var totalInterval = 0L
-    var lastInterval = 0L
-    val averageRate = MutableLiveData<Long>()
+    private var endTime = 0L
+    private var lastEndTime = 0L
+    private var totalInterval = 0L
+    private var lastTapInterval = 0L
 
-    val vibrator =
+    private val _averageTapRate = MutableLiveData<Long>()
+    val averageTapRate: LiveData<Long>
+        get() = _averageTapRate
+
+    private val vibrator =
         JustPetApplication.appContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
     init {
-        averageRate.value = 0L
-        rateType.value = 0
+        _averageTapRate.value = 0L
+        tapRateType.value = RESPIRATORY_RATE
     }
 
-    fun setTypeOfRate(type: Int) {
-        rateType.value = type
+    fun setTapRateType(type: Int) {
+        tapRateType.value = type
     }
 
-    fun tapForCalculation() {
+    fun countTapRate() {
         tapCount++
 
-        vibrator.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE))
+        vibration()
 
-        if (startTime == 0L) {
-            startTime = System.currentTimeMillis()
-            endTime = System.currentTimeMillis()
-        } else {
-            lastEndTime = endTime
-            endTime = System.currentTimeMillis()
+        when (startTime) {
+            0L -> {
+                startTime = System.currentTimeMillis()
+                endTime = System.currentTimeMillis()
+            }
+            else -> {
+                lastEndTime = endTime
+                endTime = System.currentTimeMillis()
 
-            calculateAverageRate()
+                displayAverageTapRate()
+            }
         }
     }
 
-    fun calculateAverageRate() {
-        totalInterval = endTime.minus(startTime)
-        averageRate.value = tapCount * 60 * 1000 / totalInterval
+    private fun vibration() {
+        vibrator.vibrate(VibrationEffect.createOneShot(30, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
-    fun reset() {
-        tapCount = 0
+    private fun displayAverageTapRate() {
+        _averageTapRate.value = tapCount * 60 * 1000 / endTime.minus(startTime)
+    }
+
+    fun resetTapRateCount() {
+        tapCount = 0L
         startTime = 0L
         endTime = 0L
         lastEndTime = 0L
         totalInterval = 0L
-        lastInterval = 0L
-        averageRate.value = 0
+        lastTapInterval = 0L
+        _averageTapRate.value = 0L
     }
 
     fun navigateToTag() {
-        if (UserManager.userProfile.value?.pets?.size != 0) {
-            if (averageRate.value != 0L) {
-                rateType.value?.let {
-                    if (it == 0) {
-                        _navigateToTag.value =
-                            PetEvent(respiratoryRate = averageRate.value.toString())
-                    } else if (it == 1) {
-                        _navigateToTag.value = PetEvent(heartRate = averageRate.value.toString())
+        when (UserManager.userProfile.value?.pets?.size) {
+            0 -> {
+                Toast.makeText(
+                    JustPetApplication.appContext,
+                    Util.getString(R.string.text_no_pet_no_new_event),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            else -> {
+                averageTapRate.value?.let { tapRate ->
+                    when (tapRate) {
+                        0L -> {
+                            Toast.makeText(
+                                JustPetApplication.appContext,
+                                Util.getString(R.string.text_rate_empty_error),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        else -> {
+                            tapRateType.value?.let {
+                                when (it) {
+                                    RESPIRATORY_RATE -> {
+                                        _navigateToTag.value =
+                                            PetEvent(respiratoryRate = tapRate.toString())
+                                    }
+                                    HEART_RATE -> {
+                                        _navigateToTag.value =
+                                            PetEvent(heartRate = tapRate.toString())
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
-        } else {
-            Toast.makeText(
-                JustPetApplication.appContext,
-                Util.getString(R.string.text_no_pet_no_new_event),
-                Toast.LENGTH_LONG
-            ).show()
         }
     }
 

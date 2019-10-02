@@ -21,6 +21,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EventTagAdapter
 import com.taiwan.justvet.justpet.family.FamilyEmailAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
+import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
@@ -28,14 +29,14 @@ import com.taiwan.justvet.justpet.tag.TagListAdapter
 fun bindSpeciesIcon(imageView: ImageView, species: Long) {
     species.let {
         when (it) {
-            0L -> {
+            PetSpecies.CAT.value -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_cat
                     )
                 )
             }
-            1L -> {
+            PetSpecies.DOG.value -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_dog

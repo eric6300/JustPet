@@ -28,21 +28,24 @@ class FamilyDialog : AppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.dialog_family, container, false
-        )
-
         val petProfile = FamilyDialogArgs.fromBundle(arguments!!).petProfile
         val viewModel =
             ViewModelProviders.of(this, FamilyViewModelFactory(petProfile))
                 .get(FamilyViewModel::class.java)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
-        binding.listFamily.adapter = FamilyEmailAdapter(viewModel)
+
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.dialog_family, container, false
+        )
+
+        binding.let {
+            it.viewModel = viewModel
+            it.lifecycleOwner = this
+            it.listFamily.adapter = FamilyEmailAdapter(viewModel)
+        }
 
         viewModel.leaveDialog.observe(this, Observer {
             if (it) {
-                findNavController().popBackStack()
+                dismiss()
                 viewModel.leaveDialogComplete()
             }
         })
