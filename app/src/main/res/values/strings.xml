@@ -52,6 +52,7 @@
     <string name="text_heart_rate">脈搏速率</string>
     <string name="text_respiratory_rate">呼吸速率</string>
     <string name="text_reset">重設</string>
+    <string name="text_rate_empty_error">新增記錄時，速率不可為零</string>
 
     //  ChartFragment  //
     <string name="chart_month_day_format">MM/dd</string>
