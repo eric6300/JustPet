@@ -3,7 +3,7 @@ package com.taiwan.justvet.justpet.home
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 
-class CustomLayoutManager(context: Context?) : LinearLayoutManager(context) {
+class PetProfileLayoutManager(context: Context?) : LinearLayoutManager(context) {
     private var isScrollEnabled = true
 
     fun setScrollEnabled(flag: Boolean) {

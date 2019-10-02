@@ -158,7 +158,7 @@ class HomeFragment : Fragment() {
         })
 
         // set layoutManager
-        val layoutManager = CustomLayoutManager(this.context)
+        val layoutManager = PetProfileLayoutManager(this.context)
         layoutManager.orientation = LinearLayoutManager.HORIZONTAL
 
         // set recyclerView with adapter and layoutManager
@@ -179,7 +179,7 @@ class HomeFragment : Fragment() {
         var lastPosition = -1
         listProfilePet.setOnScrollChangeListener { _, _, _, _, _ ->
             val newPosition =
-                (listProfilePet.layoutManager as CustomLayoutManager).findFirstVisibleItemPosition()
+                (listProfilePet.layoutManager as PetProfileLayoutManager).findFirstVisibleItemPosition()
 
             if (lastPosition != newPosition) {
                 viewModel.selectPetProfile(newPosition)
@@ -191,10 +191,10 @@ class HomeFragment : Fragment() {
         // disable scroll function when editing pet profile
         viewModel.isModified.observe(this, Observer {
             if (it == true) {
-                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = false)
+                (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = false)
                 profileAdapter.notifyDataSetChanged()
             } else {
-                (listProfilePet.layoutManager as CustomLayoutManager).setScrollEnabled(flag = true)
+                (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = true)
                 profileAdapter.notifyDataSetChanged()
             }
         })
