@@ -11,7 +11,7 @@ data class PetProfile(
     val species: Long? = 0,
     val gender: Long? = 0,
     val neutered: Boolean? = false,
-    val birthday: Long? = 0,
+    val birthday: Long = 0,
     val idNumber: String? = "",
     val owner: String?,
     val ownerEmail: String?,

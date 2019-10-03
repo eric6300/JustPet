@@ -91,7 +91,7 @@
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_camera"
                     android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel.startGallery()}"
+                    android:onClick="@{() -> viewModel.showGallery()}"
                     android:visibility="@{viewModel.isModified() == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
@@ -242,7 +242,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="15dp"
-                        android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+                        android:onClick="@{ () -> viewModel.showDatePicker() }"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_text_name">
@@ -257,9 +257,9 @@
                             android:fontFamily="@font/roboto_mono"
                             android:hint="@string/text_birthday"
                             android:inputType="none"
-                            android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+                            android:onClick="@{ () -> viewModel.showDatePicker() }"
                             android:singleLine="true"
-                            android:text="@{viewModel.petBirthday}"
+                            android:text="@{viewModel.petBirthdayString}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -300,7 +300,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:onClick="@{() -> viewModel.modifyCancelled()}"
+                        android:onClick="@{() -> viewModel.modifyPetProfileCancelled()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         app:fb_defaultColor="@color/colorPrimary"

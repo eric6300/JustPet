@@ -3,11 +3,9 @@ package com.taiwan.justvet.justpet.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
@@ -17,10 +15,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
+import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
+import com.taiwan.justvet.justpet.util.toDateFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
+import java.util.*
 
 
 class HomeViewModel : ViewModel() {
@@ -57,9 +58,13 @@ class HomeViewModel : ViewModel() {
     val navigateToNewPetDialog: LiveData<Boolean>
         get() = _navigateToNewPetDialog
 
-    private val _startGallery = MutableLiveData<Boolean>()
-    val startGallery: LiveData<Boolean>
-        get() = _startGallery
+    private val _showGallery = MutableLiveData<Boolean>()
+    val showGallery: LiveData<Boolean>
+        get() = _showGallery
+
+    private val _showDatePicker = MutableLiveData<Boolean>()
+    val showDatePicker: LiveData<Boolean>
+        get() = _showDatePicker
 
     private val _eventsList = MutableLiveData<List<PetEvent>>()
     val eventsList: LiveData<List<PetEvent>>
@@ -87,21 +92,17 @@ class HomeViewModel : ViewModel() {
     val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")
 
     val petName = MutableLiveData<String>()
-    val petBirthday = MutableLiveData<String>()
+    val petBirthdayString = MutableLiveData<String>()
+    val petBirthdayDate = MutableLiveData<Date>()
     val petIdNumber = MutableLiveData<String>()
     val petSpecies = MutableLiveData<Long>()
     val petGender = MutableLiveData<Long>()
     val petImage = MutableLiveData<String>()
 
-    val calendar = Calendar.getInstance()
     var oneMonthAgoTimestamp: Long = 0
     var threeMonthsAgoTimestamp: Long = 0
     var sixMonthsAgoTimestamp: Long = 0
     var oneYearAgoTimestamp: Long = 0
-
-    var year: Int = 0
-    var month: Int = 0
-    var dayOfMonth: Int = 0
 
     val petsReference = FirebaseFirestore.getInstance().collection(PETS)
     val storageReference = FirebaseStorage.getInstance().reference
@@ -114,16 +115,19 @@ class HomeViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-        val calendarClone = calendar.clone() as Calendar
-        calendarClone.add(Calendar.MONTH, -1)
-        oneMonthAgoTimestamp = (calendarClone.timeInMillis / 1000)
-        calendarClone.add(Calendar.MONTH, -2)
-        threeMonthsAgoTimestamp = (calendarClone.timeInMillis / 1000)
-        calendarClone.add(Calendar.MONTH, -3)
-        sixMonthsAgoTimestamp = (calendarClone.timeInMillis / 1000)
-        calendarClone.add(Calendar.MONTH, -6)
-        oneYearAgoTimestamp = (calendarClone.timeInMillis / 1000)
-        calendarClone.add(Calendar.MONTH, 12)
+        val calendar = Calendar.getInstance(Locale.getDefault())
+
+        calendar.add(Calendar.MONTH, -1)
+        oneMonthAgoTimestamp = (calendar.timeInMillis / 1000)
+
+        calendar.add(Calendar.MONTH, -2)
+        threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+
+        calendar.add(Calendar.MONTH, -3)
+        sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+
+        calendar.add(Calendar.MONTH, -6)
+        oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
@@ -152,9 +156,9 @@ class HomeViewModel : ViewModel() {
                         }
                 }
 
+                //  get first pet profile
                 val index = 0
                 getNextPetProfile(index)
-
             }
         } else {
             _petList.value = petListFromFirebase
@@ -170,16 +174,17 @@ class HomeViewModel : ViewModel() {
     }
 
     fun showPetProfile(petProfile: PetProfile) {
+        val calendar = Calendar.getInstance(Locale.getDefault())
+
+        petBirthdayString.value = petProfile.birthday.timestampToDateString()
+        calendar.timeInMillis = petProfile.birthday * 1000
+        petBirthdayDate.value = calendar.time
+
         petName.value = petProfile.name
         petIdNumber.value = petProfile.idNumber
-        petBirthday.value = petProfile.birthday?.timestampToDateString()
         petSpecies.value = petProfile.species
         petGender.value = petProfile.gender
         petImage.value = null
-
-        petProfile.birthday?.let {
-            calendar.timeInMillis = it * 1000
-        }
     }
 
     fun getPetEvents(petProfile: PetProfile) {
@@ -300,31 +305,34 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun datePicker(view: View) {
-        if (petBirthday.value == null) {
-            year = calendar.get(Calendar.YEAR)
-            month = calendar.get(Calendar.MONTH)
-            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-        } else {
-            petBirthday.value?.let {
-                val timeList = it.split("/")
-                year = timeList[0].toInt()
-                month = timeList[1].toInt().minus(1)
-                dayOfMonth = timeList[2].toInt()
+    fun getPetBirthdayDate(): List<Int> {
+
+        var year: Int = 0
+        var month: Int = 0
+        var dayOfMonth: Int = 0
+
+        when (petBirthdayString.value) {
+            null -> {
+                val calendar = Calendar.getInstance(Locale.getDefault())
+                year = calendar.get(Calendar.YEAR)
+                month = calendar.get(Calendar.MONTH)
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+            }
+            else -> {
+                petBirthdayString.value?.let {
+                    val timeList = it.split(SLASH)
+                    year = timeList[0].toInt()
+                    month = timeList[1].toInt().minus(1)
+                    dayOfMonth = timeList[2].toInt()
+                }
             }
         }
-        DatePickerDialog(
-            view.context,
-            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                petBirthday.value = "$year/${month.plus(1)}/$dayOfMonth"
-                calendar.set(year, month, dayOfMonth, 0, 0, 0)
-                birthdayChange()
-            }, year, month, dayOfMonth
-        ).show()
+        return listOf(year, month, dayOfMonth)
     }
 
-    fun modifyPetProfile() {
-        _isModified.value = true
+    fun setPetBirthday(date: Date) {
+        petBirthdayString.value = date.toDateFormat()
+        petBirthdayDate.value = date
     }
 
     fun updatePetProfile() {
@@ -332,9 +340,10 @@ class HomeViewModel : ViewModel() {
             Toast.makeText(JustPetApplication.appContext, "名字不可為空白", Toast.LENGTH_SHORT).show()
         } else {
             _loadStatus.value = LoadStatus.LOADING
+
             val finalProfile = mapOf(
                 "name" to petName.value,
-                "birthday" to (calendar.timeInMillis / 1000),
+                "birthday" to (petBirthdayDate.value?.time?.div(1000)),
                 "idNumber" to petIdNumber.value,
                 "species" to petSpecies.value,
                 "gender" to petGender.value
@@ -346,7 +355,7 @@ class HomeViewModel : ViewModel() {
                         if (petImage.value != null) {
                             uploadImage(profileId)
                         } else {
-                            modifyCompleted()
+                            modifyPetProfileCompleted()
                             navigateToHomeFragment()
                             _loadStatus.value = LoadStatus.DONE
                         }
@@ -363,7 +372,7 @@ class HomeViewModel : ViewModel() {
         petImage.value?.let {
             if (it.startsWith("https")) {
                 navigateToHomeFragment()
-                modifyCompleted()
+                modifyPetProfileCompleted()
                 _loadStatus.value = LoadStatus.DONE
             } else {
                 val imageRef = storageReference.child("profile/$profileId")
@@ -393,7 +402,7 @@ class HomeViewModel : ViewModel() {
     private fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
         petsReference.document(profileId).update("image", downloadUri.toString())
             .addOnSuccessListener {
-                modifyCompleted()
+                modifyPetProfileCompleted()
                 navigateToHomeFragment()
                 _loadStatus.value = LoadStatus.DONE
                 Log.d(ERIC, "updateProfileImageUrl succeed")
@@ -404,27 +413,43 @@ class HomeViewModel : ViewModel() {
 
     }
 
-    private fun modifyCompleted() {
+    fun modifyPetProfile() {
+        _isModified.value = true
+    }
+
+    private fun modifyPetProfileCompleted() {
         _isModified.value = false
         Toast.makeText(JustPetApplication.appContext, "修改寵物資料成功！", Toast.LENGTH_LONG).show()
     }
 
-    fun modifyCancelled() {
+    fun modifyPetProfileCancelled() {
         _isModified.value = false
+        returnDefaultPetProfile()
+    }
+
+    private fun returnDefaultPetProfile() {
         _selectedPetProfile.value?.let {
             petName.value = it.name
             petIdNumber.value = it.idNumber
-            petBirthday.value = it.birthday?.timestampToDateString()
+            petBirthdayString.value = it.birthday?.timestampToDateString()
             petSpecies.value = it.species
             petGender.value = it.gender
         }
     }
 
-    fun birthdayChange() {
+    fun showDatePicker() {
+        _showDatePicker.value = true
+    }
+
+    fun showDatePickerCompleted() {
+        _showDatePicker.value = false
+    }
+
+    fun birthdayChanged() {
         _birthdayChange.value = true
     }
 
-    fun birthdayChangeCompleted() {
+    fun birthdayChangedCompleted() {
         _birthdayChange.value = false
     }
 
@@ -432,7 +457,7 @@ class HomeViewModel : ViewModel() {
         _navigateToFamilyDialog.value = petProfile
     }
 
-    fun navigateToFamilyCompleted() {
+    fun navigateToFamilyDialogCompleted() {
         _navigateToFamilyDialog.value = null
     }
 
@@ -440,7 +465,7 @@ class HomeViewModel : ViewModel() {
         _navigateToHomeFragment.value = true
     }
 
-    fun navigateToHomeCompleted() {
+    fun navigateToHomeFragmentCompleted() {
         _navigateToHomeFragment.value = false
     }
 
@@ -452,19 +477,19 @@ class HomeViewModel : ViewModel() {
         petGender.value = gender
     }
 
-    fun startGallery() {
-        _startGallery.value = true
+    fun showGallery() {
+        _showGallery.value = true
     }
 
-    fun startGalleryCompleted() {
-        _startGallery.value = false
+    fun showGalleryCompleted() {
+        _showGallery.value = false
     }
 
     fun navigateToNewPetDialog() {
         _navigateToNewPetDialog.value = true
     }
 
-    fun navigateToNewPetCompleted() {
+    fun navigateToNewPetDialogCompleted() {
         _navigateToNewPetDialog.value = false
     }
 

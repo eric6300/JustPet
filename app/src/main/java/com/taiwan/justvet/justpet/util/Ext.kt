@@ -15,13 +15,6 @@ fun Long.timestampToDateString(): String {
     ).toString()
 }
 
-fun Long.timestampToTimeString(): String {
-    return DateFormat.format(
-        JustPetApplication.appContext.getString(R.string.time_format),
-        Calendar.getInstance().apply { timeInMillis = this@timestampToTimeString * 1000 }
-    ).toString()
-}
-
 fun DocumentSnapshot.toPetProfile(): PetProfile {
     return PetProfile(
         profileId = this.id,
@@ -29,7 +22,7 @@ fun DocumentSnapshot.toPetProfile(): PetProfile {
         species = this["species"] as Long?,
         gender = this["gender"] as Long?,
         neutered = this["neutered"] as Boolean?,
-        birthday = this["birthday"] as Long?,
+        birthday = this["birthday"] as Long,
         idNumber = this["idNumber"] as String?,
         owner = this["owner"] as String?,
         ownerEmail = this["ownerEmail"] as String?,
@@ -38,9 +31,16 @@ fun DocumentSnapshot.toPetProfile(): PetProfile {
     )
 }
 
-fun Date.toFullTimeStringFormat(): String {
+fun Date.toFullDateTimeFormat(): String {
     return SimpleDateFormat(
         Util.getString(R.string.timelist_format),
-        Locale.TAIWAN
+        Locale.getDefault()
+    ).format(this)
+}
+
+fun Date.toDateFormat(): String {
+    return SimpleDateFormat(
+        Util.getString(R.string.date_format),
+        Locale.getDefault()
     ).format(this)
 }

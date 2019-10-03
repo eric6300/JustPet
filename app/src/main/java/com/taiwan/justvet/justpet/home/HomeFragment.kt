@@ -2,9 +2,9 @@ package com.taiwan.justvet.justpet.home
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +23,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
+import java.util.*
 
 class HomeFragment : Fragment() {
 
@@ -70,7 +71,7 @@ class HomeFragment : Fragment() {
         viewModel.birthdayChange.observe(this, Observer {
             if (it == true) {
                 profileAdapter.notifyDataSetChanged()
-                viewModel.birthdayChangeCompleted()
+                viewModel.birthdayChangedCompleted()
             }
         })
 
@@ -95,7 +96,7 @@ class HomeFragment : Fragment() {
         viewModel.navigateToFamilyDialog.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
-                viewModel.navigateToFamilyCompleted()
+                viewModel.navigateToFamilyDialogCompleted()
             }
         })
 
@@ -103,7 +104,7 @@ class HomeFragment : Fragment() {
             it?.let {
                 if (it) {
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                    viewModel.navigateToHomeCompleted()
+                    viewModel.navigateToHomeFragmentCompleted()
                 }
             }
         })
@@ -133,17 +134,24 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.startGallery.observe(this, Observer {
+        viewModel.showGallery.observe(this, Observer {
             if (it) {
                 startGallery()
-                viewModel.startGalleryCompleted()
+                viewModel.showGalleryCompleted()
+            }
+        })
+
+        viewModel.showDatePicker.observe(this, Observer {
+            if (it) {
+                showDatePicker()
+                viewModel.showDatePickerCompleted()
             }
         })
 
         viewModel.navigateToNewPetDialog.observe(this, Observer {
             if (it) {
                 findNavController().navigate(NavGraphDirections.navigateToAddNewPetDialog())
-                viewModel.navigateToNewPetCompleted()
+                viewModel.navigateToNewPetDialogCompleted()
             }
         })
 
@@ -251,6 +259,23 @@ class HomeFragment : Fragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
+
+    private fun showDatePicker() {
+        this.context?.let {
+            val list = viewModel.getPetBirthdayDate()
+            DatePickerDialog(
+                it,
+                DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    val calendar = Calendar.getInstance(Locale.getDefault())
+                    calendar.set(year, month, dayOfMonth, 0, 0, 0)
+
+                    viewModel.setPetBirthday(calendar.time)
+                    viewModel.birthdayChanged()
+
+                }, list[0], list[1], list[2]
+            ).show()
+        }
     }
 
     private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {

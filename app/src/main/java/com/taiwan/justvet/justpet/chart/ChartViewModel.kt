@@ -15,6 +15,7 @@ import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.tag.TagType
+import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.*
@@ -95,20 +96,8 @@ class ChartViewModel : ViewModel() {
                 for (petId in it) {
                     petsRef.document(petId).get()
                         .addOnSuccessListener { document ->
-                            val petProfile = PetProfile(
-                                profileId = document.id,
-                                name = document["name"] as String?,
-                                species = document["species"] as Long?,
-                                gender = document["gender"] as Long?,
-                                neutered = document["neutered"] as Boolean?,
-                                birthday = document["birthday"] as Long?,
-                                idNumber = document["idNumber"] as String?,
-                                owner = document["owner"] as String?,
-                                ownerEmail = document["ownerEmail"] as String?,
-                                family = document["family"] as List<String>?,
-                                image = document["image"] as String?
-                            )
-                            petProfileData.add(petProfile)
+
+                            petProfileData.add(document.toPetProfile())
                             if (index == it.size) {
                                 _listOfProfile.value = petProfileData.sortedBy { it.profileId }
                             }
