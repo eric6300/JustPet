@@ -29,8 +29,6 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
     private lateinit var notificationAdapter: EventNotificationAdapter
-    private lateinit var colorDrawableBackground: ColorDrawable
-    private lateinit var swipeIcon: Drawable
 
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,
@@ -94,14 +92,14 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToFamily.observe(this, Observer {
+        viewModel.navigateToFamilyDialog.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
                 viewModel.navigateToFamilyCompleted()
             }
         })
 
-        viewModel.navigateToHome.observe(this, Observer {
+        viewModel.navigateToHomeFragment.observe(this, Observer {
             it?.let {
                 if (it) {
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
@@ -121,7 +119,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.selectedPet.observe(this, Observer {
+        viewModel.selectedPetProfile.observe(this, Observer {
             it?.let {
                 viewModel.showPetProfile(it)
                 viewModel.getPetEvents(it)
@@ -142,7 +140,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToNewPet.observe(this, Observer {
+        viewModel.navigateToNewPetDialog.observe(this, Observer {
             if (it) {
                 findNavController().navigate(NavGraphDirections.navigateToAddNewPetDialog())
                 viewModel.navigateToNewPetCompleted()

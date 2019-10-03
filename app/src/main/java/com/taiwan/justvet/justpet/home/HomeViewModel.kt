@@ -20,6 +20,7 @@ import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
+import com.taiwan.justvet.justpet.util.toPetProfile
 
 
 class HomeViewModel : ViewModel() {
@@ -28,9 +29,9 @@ class HomeViewModel : ViewModel() {
     val petList: LiveData<List<PetProfile>>
         get() = _petList
 
-    private val _selectedPet = MutableLiveData<PetProfile>()
-    val selectedPet: LiveData<PetProfile>
-        get() = _selectedPet
+    private val _selectedPetProfile = MutableLiveData<PetProfile>()
+    val selectedPetProfile: LiveData<PetProfile>
+        get() = _selectedPetProfile
 
     private val _notificationList = MutableLiveData<List<EventNotification>>()
     val notificationList: LiveData<List<EventNotification>>
@@ -44,17 +45,17 @@ class HomeViewModel : ViewModel() {
     val birthdayChange: LiveData<Boolean>
         get() = _birthdayChange
 
-    private val _navigateToFamily = MutableLiveData<PetProfile>()
-    val navigateToFamily: LiveData<PetProfile>
-        get() = _navigateToFamily
+    private val _navigateToFamilyDialog = MutableLiveData<PetProfile>()
+    val navigateToFamilyDialog: LiveData<PetProfile>
+        get() = _navigateToFamilyDialog
 
-    private val _navigateToHome = MutableLiveData<Boolean>()
-    val navigateToHome: LiveData<Boolean>
-        get() = _navigateToHome
+    private val _navigateToHomeFragment = MutableLiveData<Boolean>()
+    val navigateToHomeFragment: LiveData<Boolean>
+        get() = _navigateToHomeFragment
 
-    private val _navigateToNewPet = MutableLiveData<Boolean>()
-    val navigateToNewPet: LiveData<Boolean>
-        get() = _navigateToNewPet
+    private val _navigateToNewPetDialog = MutableLiveData<Boolean>()
+    val navigateToNewPetDialog: LiveData<Boolean>
+        get() = _navigateToNewPetDialog
 
     private val _startGallery = MutableLiveData<Boolean>()
     val startGallery: LiveData<Boolean>
@@ -102,11 +103,7 @@ class HomeViewModel : ViewModel() {
     var month: Int = 0
     var dayOfMonth: Int = 0
 
-    val firebase = FirebaseFirestore.getInstance()
-    val petsReference = firebase.collection(PETS)
-    val userReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection(INVITES)
-
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
     val storageReference = FirebaseStorage.getInstance().reference
 
     init {
@@ -117,60 +114,56 @@ class HomeViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
-        calendar.add(Calendar.MONTH, -1)
-        oneMonthAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -2)
-        threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -3)
-        sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, -6)
-        oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
-        calendar.add(Calendar.MONTH, 12)
+        val calendarClone = calendar.clone() as Calendar
+        calendarClone.add(Calendar.MONTH, -1)
+        oneMonthAgoTimestamp = (calendarClone.timeInMillis / 1000)
+        calendarClone.add(Calendar.MONTH, -2)
+        threeMonthsAgoTimestamp = (calendarClone.timeInMillis / 1000)
+        calendarClone.add(Calendar.MONTH, -3)
+        sixMonthsAgoTimestamp = (calendarClone.timeInMillis / 1000)
+        calendarClone.add(Calendar.MONTH, -6)
+        oneYearAgoTimestamp = (calendarClone.timeInMillis / 1000)
+        calendarClone.add(Calendar.MONTH, 12)
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
-        val petData = mutableListOf<PetProfile>()
+        val petListFromFirebase = mutableListOf<PetProfile>()
         if (userProfile.pets?.size != 0) {
-            userProfile.pets?.let {
-                var index = 1
-                for (petId in it) {
-                    petsReference.document(petId).get()
-                        .addOnSuccessListener { profile ->
-                            petData.add(
-                                PetProfile(
-                                    profileId = profile.id,
-                                    name = profile["name"] as String?,
-                                    species = profile["species"] as Long?,
-                                    gender = profile["gender"] as Long?,
-                                    neutered = profile["neutered"] as Boolean?,
-                                    birthday = profile["birthday"] as Long?,
-                                    idNumber = profile["idNumber"] as String?,
-                                    owner = profile["owner"] as String?,
-                                    ownerEmail = profile["ownerEmail"] as String?,
-                                    family = profile["family"] as List<String>?,
-                                    image = profile["image"] as String?
-                                )
-                            )
+            userProfile.pets?.let { pets ->
+                fun getNextPetProfile(index: Int) {
 
-                            if (index == it.size) {
-                                _petList.value = petData.sortedBy { it.profileId }
-                            }
+                    if (index == pets.size) { // already get all pet data from firebase
+                        _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                        return
+                    }
 
-                            index++
+                    petsReference.document(pets[index]).get()
+                        .addOnSuccessListener { document ->
+
+                            petListFromFirebase.add(document.toPetProfile())
+
+                            getNextPetProfile(index.plus(1))
+                            Log.d(ERIC, "getPetProfileData() succeeded: ${document.id}")
                         }
                         .addOnFailureListener {
+
+                            getNextPetProfile(index.plus(1))
                             Log.d(ERIC, "getPetProfileData() failed: $it")
                         }
                 }
+
+                val index = 0
+                getNextPetProfile(index)
+
             }
         } else {
-            _petList.value = petData
+            _petList.value = petListFromFirebase
             Log.d(ERIC, "viewModel petList = zero")
         }
     }
 
     fun selectPetProfile(index: Int) {
-        _selectedPet.value = _petList.value?.let {
+        _selectedPetProfile.value = _petList.value?.let {
             Log.d(ERIC, "selected pet profile id : ${it[index].profileId}")
             it[index]
         }
@@ -187,7 +180,6 @@ class HomeViewModel : ViewModel() {
         petProfile.birthday?.let {
             calendar.timeInMillis = it * 1000
         }
-
     }
 
     fun getPetEvents(petProfile: PetProfile) {
@@ -252,7 +244,7 @@ class HomeViewModel : ViewModel() {
             val tagsIndex = arrayListOf<Long>()
             tags.add(tagVomit)
             tagVomit.index?.let { tagsIndex.add(it) }
-            _selectedPet.value?.let {
+            _selectedPetProfile.value?.let {
                 EventNotification(
                     type = 2, title = "這個月已經${tagVomit.title} ${vomit.size} 次囉", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
@@ -265,7 +257,7 @@ class HomeViewModel : ViewModel() {
             val tagsIndex = arrayListOf<Long>()
             tags.add(tagVaccine)
             tagVaccine.index?.let { tagsIndex.add(it) }
-            _selectedPet.value?.let {
+            _selectedPetProfile.value?.let {
                 EventNotification(
                     type = 1, title = "今年都還沒有打疫苗喔！", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
@@ -278,7 +270,7 @@ class HomeViewModel : ViewModel() {
             val tagsIndex = arrayListOf<Long>()
             tags.add(tagWeight)
             tagWeight.index?.let { tagsIndex.add(it) }
-            _selectedPet.value?.let {
+            _selectedPetProfile.value?.let {
                 EventNotification(
                     type = 0, title = "該幫 ${it.name} 量體重囉！", eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
@@ -287,7 +279,7 @@ class HomeViewModel : ViewModel() {
         }
 
         if (notificationList.isEmpty()) {
-            _selectedPet.value?.let {
+            _selectedPetProfile.value?.let {
                 notificationList.add(
                     EventNotification(
                         type = -1,
@@ -348,14 +340,14 @@ class HomeViewModel : ViewModel() {
                 "gender" to petGender.value
             )
 
-            selectedPet.value?.profileId?.let { profileId ->
+            selectedPetProfile.value?.profileId?.let { profileId ->
                 petsReference.document(profileId).update(finalProfile)
                     .addOnSuccessListener {
                         if (petImage.value != null) {
                             uploadImage(profileId)
                         } else {
                             modifyCompleted()
-                            navigateToHome()
+                            navigateToHomeFragment()
                             _loadStatus.value = LoadStatus.DONE
                         }
                         Log.d(ERIC, "updatePetProfile() succeeded ")
@@ -370,7 +362,7 @@ class HomeViewModel : ViewModel() {
     private fun uploadImage(profileId: String) {
         petImage.value?.let {
             if (it.startsWith("https")) {
-                navigateToHome()
+                navigateToHomeFragment()
                 modifyCompleted()
                 _loadStatus.value = LoadStatus.DONE
             } else {
@@ -401,8 +393,8 @@ class HomeViewModel : ViewModel() {
     private fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
         petsReference.document(profileId).update("image", downloadUri.toString())
             .addOnSuccessListener {
-                navigateToHome()
                 modifyCompleted()
+                navigateToHomeFragment()
                 _loadStatus.value = LoadStatus.DONE
                 Log.d(ERIC, "updateProfileImageUrl succeed")
             }.addOnFailureListener {
@@ -413,12 +405,13 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun modifyCompleted() {
+        _isModified.value = false
         Toast.makeText(JustPetApplication.appContext, "修改寵物資料成功！", Toast.LENGTH_LONG).show()
     }
 
     fun modifyCancelled() {
         _isModified.value = false
-        _selectedPet.value?.let {
+        _selectedPetProfile.value?.let {
             petName.value = it.name
             petIdNumber.value = it.idNumber
             petBirthday.value = it.birthday?.timestampToDateString()
@@ -435,20 +428,20 @@ class HomeViewModel : ViewModel() {
         _birthdayChange.value = false
     }
 
-    fun navigateToFamily(petProfile: PetProfile) {
-        _navigateToFamily.value = petProfile
+    fun navigateToFamilyDialog(petProfile: PetProfile) {
+        _navigateToFamilyDialog.value = petProfile
     }
 
     fun navigateToFamilyCompleted() {
-        _navigateToFamily.value = null
+        _navigateToFamilyDialog.value = null
     }
 
-    private fun navigateToHome() {
-        _navigateToHome.value = true
+    private fun navigateToHomeFragment() {
+        _navigateToHomeFragment.value = true
     }
 
     fun navigateToHomeCompleted() {
-        _navigateToHome.value = false
+        _navigateToHomeFragment.value = false
     }
 
     fun changeSpecies(species: Long) {
@@ -467,12 +460,12 @@ class HomeViewModel : ViewModel() {
         _startGallery.value = false
     }
 
-    fun navigateToNewPet() {
-        _navigateToNewPet.value = true
+    fun navigateToNewPetDialog() {
+        _navigateToNewPetDialog.value = true
     }
 
     fun navigateToNewPetCompleted() {
-        _navigateToNewPet.value = false
+        _navigateToNewPetDialog.value = false
     }
 
 }
