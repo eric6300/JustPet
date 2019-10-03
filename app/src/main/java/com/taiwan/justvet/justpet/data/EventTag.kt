@@ -9,5 +9,5 @@ data class EventTag(
     val type: String?,
     val index: Long?,
     val title: String?,
-    @get:Exclude var isSelected: Boolean? = false
+    @get:Exclude var isSelected: Boolean = false
 ): Parcelable

@@ -18,7 +18,7 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 
 const val IMAGE = "image"
@@ -32,8 +32,8 @@ class AddNewPetViewModel : ViewModel() {
     val leaveDialog: LiveData<Boolean>
         get() = _leaveDialog
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     private val _showGallery = MutableLiveData<Boolean>()
@@ -109,7 +109,7 @@ class AddNewPetViewModel : ViewModel() {
     }
 
     private fun addNewPetProfile() {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         UserManager.userProfile.value?.let { userProfile ->
             petBirthday.value?.let {
@@ -131,14 +131,14 @@ class AddNewPetViewModel : ViewModel() {
                 Log.d(ERIC, "addNewPetProfile() succeeded")
                 updatePetsOfUser(it.id)
             }.addOnFailureListener {
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
                 Log.d(ERIC, "addNewPetProfile() failed : $it")
             }
         }
     }
 
     private fun updatePetsOfUser(petId: String) {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
@@ -146,7 +146,7 @@ class AddNewPetViewModel : ViewModel() {
                     .addOnSuccessListener {
                         when (petImage.value) {
                             null -> {
-                                _loadStatus.value = LoadApiStatus.DONE
+                                _loadStatus.value = LoadStatus.DONE
                                 navigateToHomeFragment()
                             }
                             else -> {
@@ -156,7 +156,7 @@ class AddNewPetViewModel : ViewModel() {
                         Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
                     .addOnFailureListener {
-                        _loadStatus.value = LoadApiStatus.ERROR
+                        _loadStatus.value = LoadStatus.ERROR
                         Log.d(ERIC, "updatePetsOfUser() failed : $it")
                     }
             }
@@ -164,7 +164,7 @@ class AddNewPetViewModel : ViewModel() {
     }
 
     private fun uploadPetImage(petId: String) {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         petImage.value?.let {
             val imageRef =
@@ -184,14 +184,14 @@ class AddNewPetViewModel : ViewModel() {
                         updateProfileImageUrl(petId, downloadUri)
                     }
                 }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "uploadImage failed : $it")
                 }
         }
     }
 
     private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         UserManager.userProfile.value?.let { userProfile ->
             petsReference.let {
@@ -212,10 +212,10 @@ class AddNewPetViewModel : ViewModel() {
                             )
                         )
 
-                        _loadStatus.value = LoadApiStatus.DONE
+                        _loadStatus.value = LoadStatus.DONE
                         Log.d(ERIC, "updateEventImageUrl succeed")
                     }.addOnFailureListener {
-                        _loadStatus.value = LoadApiStatus.ERROR
+                        _loadStatus.value = LoadStatus.ERROR
                         Log.d(ERIC, "updateEventImageUrl failed : $it")
                     }
             }

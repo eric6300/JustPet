@@ -130,5 +130,8 @@
     <string name="text_health_exam">健康檢查</string>
     <string name="text_other_treatment">其他醫療</string>
 
+    <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>
+    <string name="text_event_save_success">新增成功！</string>
+
 
 </resources>

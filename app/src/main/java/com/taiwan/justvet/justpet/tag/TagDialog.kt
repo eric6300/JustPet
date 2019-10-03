@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogTagBinding
@@ -36,10 +36,11 @@ class TagDialog : BottomSheetDialogFragment() {
     ): View? {
 
         dialog?.setOnShowListener {
-            val dialog = it as BottomSheetDialog
-            val bottomSheet = dialog
+            val bottomSheetDialog = (it as BottomSheetDialog)
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetDialog?.let {
+                BottomSheetBehavior.from(bottomSheetDialog).state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
 
         viewModelFactory = TagViewModelFactory(TagDialogArgs.fromBundle(arguments!!).petEvent)
@@ -66,20 +67,20 @@ class TagDialog : BottomSheetDialogFragment() {
 
         viewModel.loadStatus.observe(this, Observer {
             it?.let {
-                binding.listOfTags.isLayoutFrozen = it == LoadApiStatus.LOADING
+                binding.listOfTags.isLayoutFrozen = it == LoadStatus.LOADING
             }
         })
 
-        viewModel.navigateToEvent.observe(this, Observer {
+        viewModel.navigateToEventFragment.observe(this, Observer {
             it?.let {
                 findNavController().navigate(
                     TagDialogDirections.actionTagDialogToEventDetailFragment(it)
                 )
-                viewModel.navigateToEventCompleted()
+                viewModel.navigateToEventFragmentCompleted()
             }
         })
 
-        viewModel.navigateToCalendar.observe(this, Observer {
+        viewModel.navigateToCalendarFragment.observe(this, Observer {
             if (it) {
                 dismiss()
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
@@ -107,7 +108,7 @@ class TagDialog : BottomSheetDialogFragment() {
                     .findFirstVisibleItemPosition()
 
                 if (lastPosition != newPosition) {
-                    viewModel.getProfileByPosition(newPosition)
+                    viewModel.getPetProfileByPosition(newPosition)
                     lastPosition = newPosition
                 }
             }
@@ -120,17 +121,7 @@ class TagDialog : BottomSheetDialogFragment() {
 
     private fun setupSegmentedButtonGroup() {
         binding.tagCategoryButtonGroup.setOnPositionChangedListener {
-            when (it) {
-                TagType.DIARY.index -> {
-                    viewModel.showDiaryTags()
-                }
-                TagType.SYNDROME.index -> {
-                    viewModel.showSyndromeTags()
-                }
-                TagType.TREATMENT.index -> {
-                    viewModel.showTreatmentTags()
-                }
-            }
+            viewModel.showEventTags(it)
         }
     }
 

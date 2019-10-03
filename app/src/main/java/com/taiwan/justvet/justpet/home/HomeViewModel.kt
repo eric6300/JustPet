@@ -17,7 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.timestampToDateString
 
@@ -64,8 +64,8 @@ class HomeViewModel : ViewModel() {
     val eventsList: LiveData<List<PetEvent>>
         get() = _eventsList
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
@@ -339,7 +339,7 @@ class HomeViewModel : ViewModel() {
         if (petName.value.isNullOrEmpty()) {
             Toast.makeText(JustPetApplication.appContext, "名字不可為空白", Toast.LENGTH_SHORT).show()
         } else {
-            _loadStatus.value = LoadApiStatus.LOADING
+            _loadStatus.value = LoadStatus.LOADING
             val finalProfile = mapOf(
                 "name" to petName.value,
                 "birthday" to (calendar.timeInMillis / 1000),
@@ -356,11 +356,11 @@ class HomeViewModel : ViewModel() {
                         } else {
                             modifyCompleted()
                             navigateToHome()
-                            _loadStatus.value = LoadApiStatus.DONE
+                            _loadStatus.value = LoadStatus.DONE
                         }
                         Log.d(ERIC, "updatePetProfile() succeeded ")
                     }.addOnFailureListener {
-                        _loadStatus.value = LoadApiStatus.ERROR
+                        _loadStatus.value = LoadStatus.ERROR
                         Log.d(ERIC, "updatePetProfile() failed : ${it.toString()}")
                     }
             }
@@ -372,7 +372,7 @@ class HomeViewModel : ViewModel() {
             if (it.startsWith("https")) {
                 navigateToHome()
                 modifyCompleted()
-                _loadStatus.value = LoadApiStatus.DONE
+                _loadStatus.value = LoadStatus.DONE
             } else {
                 val imageRef = storageReference.child("profile/$profileId")
                 Log.d(ERIC, "uri : ${it.toUri()}")
@@ -391,7 +391,7 @@ class HomeViewModel : ViewModel() {
                             updateProfileImageUrl(profileId, downloadUri)
                         }
                     }.addOnFailureListener {
-                        _loadStatus.value = LoadApiStatus.ERROR
+                        _loadStatus.value = LoadStatus.ERROR
                         Log.d(ERIC, "uploadImage failed : $it")
                     }
             }
@@ -403,10 +403,10 @@ class HomeViewModel : ViewModel() {
             .addOnSuccessListener {
                 navigateToHome()
                 modifyCompleted()
-                _loadStatus.value = LoadApiStatus.DONE
+                _loadStatus.value = LoadStatus.DONE
                 Log.d(ERIC, "updateProfileImageUrl succeed")
             }.addOnFailureListener {
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
                 Log.d(ERIC, "updateProfileImageUrl failed : $it")
             }
 

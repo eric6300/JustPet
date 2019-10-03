@@ -14,23 +14,22 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
-import com.taiwan.justvet.justpet.util.Util.getDrawable
 import com.taiwan.justvet.justpet.util.Util.getString
+import com.taiwan.justvet.justpet.util.toFullTimeStringFormat
+import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
-    private val _navigateToEvent = MutableLiveData<PetEvent>()
-    val navigateToEvent: LiveData<PetEvent>
-        get() = _navigateToEvent
+    private val _navigateToEventFragment = MutableLiveData<PetEvent>()
+    val navigateToEventFragment: LiveData<PetEvent>
+        get() = _navigateToEventFragment
 
-    private val _navigateToCalendar = MutableLiveData<Boolean>()
-    val navigateToCalendar: LiveData<Boolean>
-        get() = _navigateToCalendar
+    private val _navigateToCalendarFragment = MutableLiveData<Boolean>()
+    val navigateToCalendarFragment: LiveData<Boolean>
+        get() = _navigateToCalendarFragment
 
     private val _leaveTagDialog = MutableLiveData<Boolean>()
     val leaveTagDialog: LiveData<Boolean>
@@ -44,11 +43,11 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     val petList: LiveData<List<PetProfile>>
         get() = _petList
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
-    val calendar = Calendar.getInstance()
+
     var selectedPetProfile: PetProfile? = null
     val eventTags = mutableListOf<EventTag>()
     val eventTagsIndex = mutableListOf<Long>()
@@ -66,41 +65,29 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         setupSyndromeTagList()
         setupTreatmentTagList()
 
-        showDiaryTags()
+        showEventTags(0)
 
     }
 
-    val firebase = FirebaseFirestore.getInstance()
-    val pets = firebase.collection(PETS)
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
 
     fun getPetProfileData(userProfile: UserProfile) {
-        val petData = mutableListOf<PetProfile>()
-        userProfile.pets?.let {
+        val petListFromFirebase = mutableListOf<PetProfile>()
+        userProfile.pets?.let { pets ->
             viewModelScope.launch {
                 var index = 1
-                for (petId in it) {
-                    pets.document(petId).get()
+                for (petId in pets) {
+                    petsReference.document(petId).get()
                         .addOnSuccessListener { document ->
-                            val petProfile = PetProfile(
-                                profileId = document.id,
-                                name = document["name"] as String?,
-                                species = document["species"] as Long?,
-                                gender = document["gender"] as Long?,
-                                neutered = document["neutered"] as Boolean?,
-                                birthday = document["birthday"] as Long?,
-                                idNumber = document["idNumber"] as String?,
-                                owner = document["owner"] as String?,
-                                ownerEmail = document["ownerEmail"] as String?,
-                                family = document["family"] as List<String>?,
-                                image = document["image"] as String?
-                            )
-                            petData.add(petProfile)
-
-                            if (index == it.size) {
-                                _petList.value = petData.sortedBy { it.profileId }
+                            petListFromFirebase.add(document.toPetProfile())
+                            when (index) {
+                                pets.size -> {
+                                    _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                                }
+                                else -> {
+                                    index++
+                                }
                             }
-
-                            index++
                             Log.d(ERIC, "TagViewModel getPetProfileData() succeeded")
                         }
                         .addOnFailureListener {
@@ -111,7 +98,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    fun getProfileByPosition(position: Int) {
+    fun getPetProfileByPosition(position: Int) {
         _petList.value?.let {
             selectedPetProfile = it[position]
         }
@@ -165,58 +152,74 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    fun showDiaryTags() {
-        _listOfTag.value = diaryTags
-    }
-
-    fun showSyndromeTags() {
-        _listOfTag.value = syndromeTags
-    }
-
-    fun showTreatmentTags() {
-        _listOfTag.value = treatmentTags
+    fun showEventTags(index: Int) {
+        _listOfTag.value = when (index) {
+            TagType.DIARY.index -> {
+                diaryTags
+            }
+            TagType.SYNDROME.index -> {
+                syndromeTags
+            }
+            TagType.TREATMENT.index -> {
+                treatmentTags
+            }
+            else -> {
+                null
+            }
+        }
     }
 
     fun getIconDrawable(index: Long): Drawable? {
         return Util.getIconDrawable(index)
     }
 
-    fun makeTagList() {
-        viewModelScope.let {
-            _loadStatus.value = LoadApiStatus.LOADING
-            val arrayOfList = arrayListOf<List<EventTag>>()
-            arrayOfList.add(diaryTags)
-            arrayOfList.add(syndromeTags)
-            arrayOfList.add(treatmentTags)
+    fun getSelectedTagsForEvent(eventSaveType: EventSaveType) {
+        val arrayOfList = arrayListOf<List<EventTag>>()
 
-            for (list in arrayOfList) {
-                for (tag in list) {
-                    tag.title?.let {
-                        if (tag.isSelected == true) {
-                            eventTags.add(tag)
-                            tag.index?.let { index -> eventTagsIndex.add(index) }
-                        }
+        arrayOfList.let {
+            it.add(diaryTags)
+            it.add(syndromeTags)
+            it.add(treatmentTags)
+        }
+
+        for (list in arrayOfList) {
+            for (tag in list) {
+                if (tag.isSelected) {
+                    eventTags.add(tag)
+                    tag.index?.let { index ->
+                        eventTagsIndex.add(index)
                     }
                 }
             }
+        }
 
-            when (eventTags.size) {
-                0 -> {
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {
-                    navigateToEvent()
+        saveEventBy(eventSaveType)
+    }
+
+    fun saveEventBy(eventSaveType: EventSaveType) {
+        _loadStatus.value = LoadStatus.LOADING
+
+        when (eventTags.size) {
+            0 -> {
+                Toast.makeText(
+                    JustPetApplication.appContext,
+                    getString(R.string.text_tag_empty_error),
+                    Toast.LENGTH_LONG
+                ).show()
+                _loadStatus.value = LoadStatus.ERROR
+            }
+            else -> {
+                when (eventSaveType) {
+                    EventSaveType.DETAIL -> navigateToEventFragment()
+                    EventSaveType.QUICK -> postEventToFirebase()
                 }
             }
-
         }
     }
 
-    private fun navigateToEvent() {
+    private fun navigateToEventFragment() {
         selectedPetProfile?.let {
-            _navigateToEvent.value = PetEvent(
+            _navigateToEventFragment.value = PetEvent(
                 petProfile = it,
                 petId = it.profileId,
                 petName = it.name,
@@ -226,57 +229,27 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                 respiratoryRate = petEvent.respiratoryRate,
                 heartRate = petEvent.heartRate
             )
-            _loadStatus.value = LoadApiStatus.DONE
+            _loadStatus.value = LoadStatus.DONE
         }
     }
 
-    fun quickSave() {
-        viewModelScope.let {
-            _loadStatus.value = LoadApiStatus.LOADING
-
-            val arrayOfList = arrayListOf<List<EventTag>>()
-            arrayOfList.add(diaryTags)
-            arrayOfList.add(syndromeTags)
-            arrayOfList.add(treatmentTags)
-
-
-            for (list in arrayOfList) {
-                for (tag in list) {
-                    tag.title?.let {
-                        if (tag.isSelected == true) {
-                            eventTags.add(tag)
-                            tag.index?.let { index -> eventTagsIndex.add(index) }
-                        }
-                    }
-                }
-            }
-            when (eventTags.size) {
-                0 -> {
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG)
-                        .show()
-                }
-                else -> {
-                    postEvent()
-                }
-            }
-        }
+    fun navigateToEventFragmentCompleted() {
+        _navigateToEventFragment.value = null
     }
 
-    private fun postEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        // get selected time and date string list
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(calendar.time).split("/")
+    private fun postEventToFirebase() {
+        _loadStatus.value = LoadStatus.LOADING
+
+        val calendar = Calendar.getInstance()
+
+        val timeList = calendar.time.toFullTimeStringFormat().split("/")
 
         selectedPetProfile?.let {
             it.profileId?.apply {
-                pets.document(this).collection(EVENTS).add(
+                petsReference.document(this).collection(EVENTS).add(
                     PetEvent(
                         petProfile = it,
-                        petId = it.profileId,
+                        petId = this,
                         petName = it.name,
                         petSpecies = it.species,
                         timestamp = (calendar.timeInMillis / 1000),
@@ -289,11 +262,11 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                         respiratoryRate = petEvent.respiratoryRate,
                         heartRate = petEvent.heartRate
                     )
-                ).addOnSuccessListener { documentReference ->
-                    postTags(documentReference.id)
+                ).addOnSuccessListener { document ->
+                    postTags(document.id)
                     Log.d(ERIC, "TagViewModel quickSave() succeeded")
                 }.addOnFailureListener { e ->
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "TagViewModel quickSave() failed: $e")
                 }
             }
@@ -306,35 +279,54 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                 viewModelScope.launch {
                     var index = 1
                     for (item in eventTags) {
-                        pets.document(it).collection(EVENTS)
+                        petsReference.document(it).collection(EVENTS)
                             .document(eventId).collection(TAGS).add(item)
                             .addOnSuccessListener {
+                                when (index) {
+                                    eventTags.size -> {
+                                        Toast.makeText(
+                                            JustPetApplication.appContext,
+                                            getString(R.string.text_event_save_success),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        navigateToCalendar()
+                                        _loadStatus.value = LoadStatus.DONE
+                                        Log.d(ERIC, "TagViewModel postTags() succeeded")
+                                    }
+                                    else -> {
+                                        index++
+                                    }
+                                }
                                 Log.d(ERIC, "TagViewModel postTags() succeeded")
                             }.addOnFailureListener { e ->
+                                when (index) {
+                                    eventTags.size -> {
+                                        Toast.makeText(
+                                            JustPetApplication.appContext,
+                                            getString(R.string.text_event_save_success),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        navigateToCalendar()
+                                        _loadStatus.value = LoadStatus.DONE
+                                    }
+                                    else -> {
+                                        index++
+                                    }
+                                }
                                 Log.d(ERIC, "TagViewModel postTags() failed: $e")
                             }
-                        if (index == eventTags.size) {
-                            _loadStatus.value = LoadApiStatus.DONE
-                            _navigateToCalendar.value = true
-                            Toast.makeText(
-                                JustPetApplication.appContext,
-                                "新增成功！",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        index++
                     }
                 }
             }
         }
     }
 
-    fun navigateToEventCompleted() {
-        _navigateToEvent.value = null
+    fun navigateToCalendar() {
+        _navigateToCalendarFragment.value = true
     }
 
     fun navigateToCalendarCompleted() {
-        _navigateToCalendar.value = false
+        _navigateToCalendarFragment.value = false
     }
 
     fun leaveTagDialog() {

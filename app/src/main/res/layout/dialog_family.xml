@@ -8,7 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.family.FamilyViewModel" />
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
     </data>
 
     <ScrollView
@@ -91,7 +91,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="16dp"
-                    android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                    android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                     android:onClick="@{() -> viewModel.checkUser()}"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
@@ -217,7 +217,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.loadStatus == LoadStatus.LOADING ? View.VISIBLE : View.GONE}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

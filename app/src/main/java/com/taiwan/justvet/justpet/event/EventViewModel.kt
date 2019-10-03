@@ -17,7 +17,7 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.BarScore
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,8 +32,8 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     private val _eventTags = MutableLiveData<List<EventTag>>()
@@ -179,7 +179,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun postEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -216,7 +216,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                     postTags(documentReference.id)
                 }
                 .addOnFailureListener { e ->
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "postEvent failed : $e")
                 }
         }
@@ -230,7 +230,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                         .addOnSuccessListener {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
                             if (eventImage.value == null) {
-                                _loadStatus.value = LoadApiStatus.DONE
+                                _loadStatus.value = LoadStatus.DONE
                                 Toast.makeText(JustPetApplication.appContext, "新增成功", Toast.LENGTH_SHORT).show()
                                 navigateToCalendar()
                             } else {
@@ -238,7 +238,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                             }
                         }
                         .addOnFailureListener {
-                            _loadStatus.value = LoadApiStatus.ERROR
+                            _loadStatus.value = LoadStatus.ERROR
                             Log.d(ERIC, "postTags failed : $it")
                         }
                 }
@@ -264,7 +264,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                         updateEventImageUrl(eventId, downloadUri)
                     }
                 }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "uploadImage failed : $it")
                 }
         }
@@ -274,18 +274,18 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         eventsReference?.let {
             it.document(eventId).update("imageUrl", downloadUri.toString())
                 .addOnSuccessListener {
-                    _loadStatus.value = LoadApiStatus.DONE
+                    _loadStatus.value = LoadStatus.DONE
                     navigateToCalendar()
                     Log.d(ERIC, "updateEventImageUrl succeed")
                 }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "updateEventImageUrl failed : $it")
                 }
         }
     }
 
     private fun updateEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
             getString(R.string.timelist_format),
@@ -311,11 +311,11 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
         petEvent.eventId?.let {
             eventsReference?.document(it)?.update(finalEvent)?.addOnSuccessListener {
-                _loadStatus.value = LoadApiStatus.DONE
+                _loadStatus.value = LoadStatus.DONE
                 navigateToCalendar()
                 Log.d(ERIC, "update succeeded")
             }?.addOnFailureListener {
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
                 Log.d(ERIC, "update failed")
             }
         }

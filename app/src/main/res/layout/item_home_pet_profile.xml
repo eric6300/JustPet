@@ -18,7 +18,7 @@
             type="com.taiwan.justvet.justpet.util.Converter" />
 
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

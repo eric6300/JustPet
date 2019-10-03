@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
@@ -77,7 +77,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
 
         viewModel.loadStatus.value?.let {
             when (it) {
-                LoadApiStatus.LOADING -> {
+                LoadStatus.LOADING -> {
                     holder.binding.buttonConfirm.isClickable = false
                     holder.binding.buttonCancel.isClickable = false
                 }

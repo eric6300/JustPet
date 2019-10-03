@@ -115,8 +115,7 @@ class CalendarViewModel : ViewModel() {
                                         EventTag(
                                             type = tag["type"] as String?,
                                             index = tag["index"] as Long?,
-                                            title = tag["title"] as String?,
-                                            isSelected = tag["isSelected"] as Boolean?
+                                            title = tag["title"] as String?
                                         )
                                     )
                                 }

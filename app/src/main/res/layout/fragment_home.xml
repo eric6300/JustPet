@@ -11,7 +11,7 @@
 
         <import type="android.view.View" />
 
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus" />
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -128,7 +128,7 @@
                     style="?android:attr/progressBarStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{viewModel.loadStatus == LoadStatus.LOADING ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@+id/home_list_profile_pet"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

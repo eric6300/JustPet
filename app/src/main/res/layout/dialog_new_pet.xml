@@ -7,7 +7,7 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.pet.AddNewPetViewModel" />
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
         <import type="com.taiwan.justvet.justpet.pet.PetSpecies"/>
         <import type="com.taiwan.justvet.justpet.pet.PetGender"/>
         <import type="android.view.View"/>
@@ -23,7 +23,7 @@
             android:layout_height="36dp"
             android:layout_marginTop="16dp"
             android:alpha="0.15"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.selectSpecies(PetSpecies.CAT.value)}"
             app:layout_constraintEnd_toStartOf="@+id/icon_dog"
             app:layout_constraintHorizontal_bias="0.5"
@@ -36,7 +36,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:alpha="0.15"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.selectSpecies(PetSpecies.DOG.value)}"
             app:layout_constraintBottom_toBottomOf="@+id/icon_cat"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -53,7 +53,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.checkProfileText()}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -78,7 +78,7 @@
             android:layout_marginBottom="16dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.leaveDialog()}"
             app:fb_defaultColor="@color/colorPrimary"
             app:fb_focusColor="@color/colorDiaryLight"
@@ -96,7 +96,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:alpha="0.15"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.selectGender(PetGender.FEMALE.value)}"
             app:layout_constraintBottom_toBottomOf="@+id/icon_dog"
             app:layout_constraintEnd_toStartOf="@+id/icon_male"
@@ -110,7 +110,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:alpha="0.15"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.selectGender(PetGender.MALE.value)}"
             android:padding="3dp"
             app:layout_constraintBottom_toBottomOf="@+id/icon_female"
@@ -157,7 +157,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/border_corner_pet_image"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:focusable="true"
             android:onClick="@{() -> viewModel.startGallery()}"
             app:layout_constraintDimensionRatio="1.78:1"
@@ -171,7 +171,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                 android:onClick="@{() -> viewModel.startGallery()}"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -184,7 +184,7 @@
                 android:id="@+id/image_pet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                 android:onClick="@{() -> viewModel.startGallery()}"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -202,7 +202,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="15dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -211,7 +211,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                 android:hint="@string/text_name"
                 android:singleLine="true"
                 android:text="@={viewModel.petName}"
@@ -226,7 +226,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{ (view) -> viewModel.showDatePicker(view) }"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -236,7 +236,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+                android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -256,7 +256,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="15dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_birthday_new">
@@ -268,7 +268,7 @@
                 android:singleLine="true"
                 android:text="@={viewModel.petIdNumber}"
                 android:textAlignment="center"
-                android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"/>
+                android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -288,7 +288,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="3dp"
             android:layout_marginEnd="3dp"
-            android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
+            android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             android:onClick="@{() -> viewModel.leaveDialog()}"
             android:padding="6dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -300,7 +300,7 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.loadStatus == LoadStatus.LOADING ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
