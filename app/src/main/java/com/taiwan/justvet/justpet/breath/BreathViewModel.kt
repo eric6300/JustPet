@@ -107,11 +107,11 @@ class BreathViewModel : ViewModel() {
                                 when (it) {
                                     RESPIRATORY_RATE -> {
                                         _navigateToTag.value =
-                                            PetEvent(respiratoryRate = tapRate.toString())
+                                            PetEvent(respiratoryRate = tapRate)
                                     }
                                     HEART_RATE -> {
                                         _navigateToTag.value =
-                                            PetEvent(heartRate = tapRate.toString())
+                                            PetEvent(heartRate = tapRate)
                                     }
                                 }
                             }

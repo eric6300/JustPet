@@ -16,4 +16,17 @@ object Converter {
         return long.toString()
     }
 
+    @InverseMethod("doubleToString")
+    fun stringToDouble(string: String): Double {
+        return try {
+            string.toDouble()
+        } catch (e: Exception) {
+            0.0
+        }
+    }
+
+    fun doubleToString(double: Double): String {
+        return double.toString()
+    }
+
 }

@@ -11,8 +11,12 @@
         <variable
             name="petProfile"
             type="com.taiwan.justvet.justpet.data.PetProfile" />
+        <variable
+            name="converter"
+            type="com.taiwan.justvet.justpet.util.Converter" />
         <import type="android.view.View" />
         <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
+
 
     </data>
 
@@ -350,7 +354,7 @@
                         android:ems="10"
                         android:inputType="number|numberDecimal"
                         android:singleLine="true"
-                        android:text="@={viewModel.eventWeight}"
+                        android:text="@={converter.doubleToString(viewModel.eventWeight)}"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
@@ -370,7 +374,7 @@
                         android:ems="10"
                         android:inputType="number|numberDecimal"
                         android:singleLine="true"
-                        android:text="@={viewModel.eventTemper}"
+                        android:text="@={converter.doubleToString(viewModel.eventTemper)}"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
@@ -388,7 +392,7 @@
                         android:ems="10"
                         android:inputType="number"
                         android:singleLine="true"
-                        android:text="@={viewModel.eventRr}"
+                        android:text="@={converter.longToString(viewModel.eventRr)}"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
@@ -407,7 +411,7 @@
                         android:ems="10"
                         android:inputType="number"
                         android:singleLine="true"
-                        android:text="@={viewModel.eventHr}"
+                        android:text="@={converter.longToString(viewModel.eventHr)}"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"

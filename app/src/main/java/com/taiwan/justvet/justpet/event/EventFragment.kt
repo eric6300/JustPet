@@ -26,6 +26,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEventBinding
+import com.taiwan.justvet.justpet.util.Converter
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -59,6 +60,7 @@ class EventFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        binding.converter = Converter
         binding.petProfile = currentEvent.petProfile
 
         viewModel.navigateToCalendarFragment.observe(this, Observer {

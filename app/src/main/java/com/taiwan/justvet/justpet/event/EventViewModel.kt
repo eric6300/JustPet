@@ -62,10 +62,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
     val eventNote = MutableLiveData<String>()
-    val eventWeight = MutableLiveData<String>()
-    val eventTemper = MutableLiveData<String>()
-    val eventRr = MutableLiveData<String>()
-    val eventHr = MutableLiveData<String>()
+    val eventWeight = MutableLiveData<Double>()
+    val eventTemper = MutableLiveData<Double>()
+    val eventRr = MutableLiveData<Long>()
+    val eventHr = MutableLiveData<Long>()
     val eventTimestamp = MutableLiveData<Long>()
     val eventImage = MutableLiveData<String>()
 
@@ -138,7 +138,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         if (petEvent.eventId == EMPTY_STRING) {
 
             petEvent.eventTagsIndex?.let {
-                if (it.contains(5) && eventWeight.value.isNullOrEmpty()) {
+                if (it.contains(5) && eventWeight.value == null && eventWeight.value == 0.0) {
 
                     Toast.makeText(
                         JustPetApplication.appContext,
@@ -179,10 +179,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 note = eventNote.value,
                 spirit = eventSpirit,
                 appetite = eventAppetite,
-                weight = eventWeight.value,
-                temperature = eventTemper.value,
-                respiratoryRate = eventRr.value,
-                heartRate = eventHr.value
+                weight = eventWeight.value ?: 0.0,
+                temperature = eventTemper.value ?: 0.0,
+                respiratoryRate = eventRr.value ?: 0,
+                heartRate = eventHr.value ?: 0
             )
         }
         eventsReference.let {
