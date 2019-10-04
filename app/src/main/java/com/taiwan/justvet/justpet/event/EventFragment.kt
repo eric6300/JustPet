@@ -37,7 +37,6 @@ class EventFragment : Fragment() {
     private lateinit var currentEvent: PetEvent
     private lateinit var calendar: Calendar
 
-
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,
         permanentDeniedMethod = { permissionsPermanentlyDenied(it) }
@@ -49,11 +48,10 @@ class EventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
         currentEvent = EventFragmentArgs.fromBundle(arguments!!).petEvent
-        val viewModelFactory = EventViewModelFactory(currentEvent)
         viewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(EventViewModel::class.java)
+            ViewModelProviders.of(this, EventViewModelFactory(currentEvent))
+                .get(EventViewModel::class.java)
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_event, container, false
@@ -63,20 +61,21 @@ class EventFragment : Fragment() {
         binding.viewModel = viewModel
         binding.petProfile = currentEvent.petProfile
 
-        viewModel.navigateToCalendar.observe(this, Observer {
+        viewModel.navigateToCalendarFragment.observe(this, Observer {
             it?.let {
                 if (it) {
-                    (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
+                    (activity as MainActivity).nav_bottom_view.selectedItemId =
+                        R.id.nav_bottom_calendar
                     viewModel.navigateToCalendarCompleted()
                 }
             }
         })
 
-        viewModel.startGallery.observe(this, Observer {
+        viewModel.showGallery.observe(this, Observer {
             it?.let {
                 if (it) {
                     showGallery()
-                    viewModel.startGalleryCompleted()
+                    viewModel.showGalleryCompleted()
                 }
             }
         })
@@ -102,18 +101,16 @@ class EventFragment : Fragment() {
     private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
         this.context?.let {
             AlertDialog.Builder(it)
-                .setMessage("開啟「設定」，點選「權限」，並開啟「儲存」")
-                .setPositiveButton("開啟「設定」") { _, _ -> req.openAppSettings() }
-                .setNegativeButton("取消") { _, _ -> req.cancel() }
+                .setMessage(getString(R.string.text_event_permission_message))
+                .setPositiveButton(getString(R.string.text_open_app_setting)) { _, _ -> req.openAppSettings() }
+                .setNegativeButton(getString(R.string.text_cancel)) { _, _ -> req.cancel() }
                 .setCancelable(true)
                 .show()
         }
     }
 
     private fun setupTagRecyclerView() {
-        val listOfTag = binding.listTags
-        val adapter = EventTagAdapter(viewModel)
-        listOfTag.adapter = adapter
+        binding.listTags.adapter = EventTagAdapter(viewModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

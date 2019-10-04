@@ -9,24 +9,25 @@ import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun Long.toDateString(): String {
+fun Long.toDateFormat(): String {
     return DateFormat.format(
         JustPetApplication.appContext.getString(R.string.date_format),
-        Calendar.getInstance().apply { timeInMillis = this@toDateString * 1000 }
+        Calendar.getInstance().apply { timeInMillis = this@toDateFormat * 1000 }
     ).toString()
 }
 
-fun Long.toEventTimeFormat(): String {
+fun Long.toEventDateAndTimeFormat(): String {
     return DateFormat.format(
         JustPetApplication.appContext.getString(R.string.event_time_format),
-        Calendar.getInstance().apply { timeInMillis = this@toEventTimeFormat * 1000 }
+        Calendar.getInstance().apply { timeInMillis = this@toEventDateAndTimeFormat * 1000 }
     ).toString()
 }
 
-fun Long.toDate(): Date {
-    return Calendar.getInstance(Locale.getDefault()).apply {
-        this.timeInMillis = this@toDate * 1000
-    }.time
+fun Long.toTimeListFormat(): String {
+    return DateFormat.format(
+        JustPetApplication.appContext.getString(R.string.time_list_format),
+        Calendar.getInstance().apply { timeInMillis = this@toTimeListFormat * 1000 }
+    ).toString()
 }
 
 fun Date.toTimeListFormat(): String {
@@ -36,7 +37,7 @@ fun Date.toTimeListFormat(): String {
     ).format(this)
 }
 
-fun Date.toEventTimeFormat(): String {
+fun Date.toEventDateAndTimeFormat(): String {
     return SimpleDateFormat(
         getString(R.string.event_time_format),
         Locale.getDefault()

@@ -20,16 +20,16 @@ import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.BarScore
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toDate
-import com.taiwan.justvet.justpet.util.toEventTimeFormat
+import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
+import com.taiwan.justvet.justpet.util.toTimeListFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
-    private val _navigateToCalendar = MutableLiveData<Boolean>()
-    val navigateToCalendar: LiveData<Boolean>
-        get() = _navigateToCalendar
+    private val _navigateToCalendarFragment = MutableLiveData<Boolean>()
+    val navigateToCalendarFragment: LiveData<Boolean>
+        get() = _navigateToCalendarFragment
 
     private val _expandStatus = MutableLiveData<Boolean>()
     val expandStatus: LiveData<Boolean>
@@ -43,9 +43,9 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventTags: LiveData<List<EventTag>>
         get() = _eventTags
 
-    private val _dateAndTime = MutableLiveData<String>()
-    val dateAndTime: LiveData<String>
-        get() = _dateAndTime
+    private val _dateAndTimeOfEvent = MutableLiveData<String>()
+    val dateAndTimeOfEvent: LiveData<String>
+        get() = _dateAndTimeOfEvent
 
     private val _showDatePickerDialog = MutableLiveData<Boolean>()
     val showDatePickerDialog: LiveData<Boolean>
@@ -55,9 +55,9 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val showTimePickerDialog: LiveData<Boolean>
         get() = _showTimePickerDialog
 
-    private val _startGallery = MutableLiveData<Boolean>()
-    val startGallery: LiveData<Boolean>
-        get() = _startGallery
+    private val _showGallery = MutableLiveData<Boolean>()
+    val showGallery: LiveData<Boolean>
+        get() = _showGallery
 
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
@@ -67,7 +67,6 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventRr = MutableLiveData<String>()
     val eventHr = MutableLiveData<String>()
     val eventTimestamp = MutableLiveData<Long>()
-
     val eventImage = MutableLiveData<String>()
 
     val calendar = Calendar.getInstance()
@@ -106,15 +105,15 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun initialDateAndTimeOfEvent() {
-        _dateAndTime.value = when (petEvent.timestamp) {
-            0L -> (calendar.timeInMillis / 1000).toEventTimeFormat()
-            else -> petEvent.timestamp?.toEventTimeFormat()
+        _dateAndTimeOfEvent.value = when (petEvent.timestamp) {
+            0L -> (calendar.timeInMillis / 1000).toEventDateAndTimeFormat()
+            else -> petEvent.timestamp.toEventDateAndTimeFormat()
         }
 
-        val timeList = SimpleDateFormat(
-            getString(R.string.time_list_format),
-            Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split(SLASH)
+        val timeList = when (petEvent.timestamp) {
+            0L -> (calendar.timeInMillis / 1000).toTimeListFormat().split(SLASH)
+            else -> petEvent.timestamp.toTimeListFormat().split(SLASH)
+        }
 
         calendar.set(
             timeList[0].toInt(),
@@ -126,7 +125,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun updateDateAndTimeOfEvent() {
-        _dateAndTime.value = calendar.time.toEventTimeFormat()
+        _dateAndTimeOfEvent.value = calendar.time.toEventDateAndTimeFormat()
         eventTimestamp.value = (calendar.timeInMillis / 1000)
     }
 
@@ -179,7 +178,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 petId = it.petId,
                 petName = it.petName,
                 petSpecies = it.petSpecies,
-                timestamp = eventTimestamp.value,
+                timestamp = (calendar.timeInMillis / 1000),
                 year = timeList[0].toLong(),
                 month = timeList[1].toLong(),
                 dayOfMonth = timeList[2].toLong(),
@@ -313,11 +312,11 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun navigateToCalendar() {
-        _navigateToCalendar.value = true
+        _navigateToCalendarFragment.value = true
     }
 
     fun navigateToCalendarCompleted() {
-        _navigateToCalendar.value = null
+        _navigateToCalendarFragment.value = null
     }
 
     fun expandAdvanceMenu() {
@@ -340,12 +339,12 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         _showTimePickerDialog.value = false
     }
 
-    fun startGallery() {
-        _startGallery.value = true
+    fun showGallery() {
+        _showGallery.value = true
     }
 
-    fun startGalleryCompleted() {
-        _startGallery.value = false
+    fun showGalleryCompleted() {
+        _showGallery.value = false
     }
 
 }

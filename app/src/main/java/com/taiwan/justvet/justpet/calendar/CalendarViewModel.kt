@@ -70,7 +70,7 @@ class CalendarViewModel : ViewModel() {
                                             petId = event["petId"] as String?,
                                             petName = event["petName"] as String?,
                                             petSpecies = event["petSpecies"] as Long?,
-                                            timestamp = event["timestamp"] as Long?,
+                                            timestamp = event["timestamp"] as Long,
                                             year = event["year"] as Long,
                                             month = event["month"] as Long,
                                             dayOfMonth = event["dayOfMonth"] as Long,

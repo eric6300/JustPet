@@ -40,6 +40,8 @@
     <string name="unit_temperature">℃</string>
     <string name="unit_respiratory_rate">次 / 分鐘</string>
     <string name="text_no_pet_no_new_event">目前沒有寵物資料，無法新增紀錄</string>
+    <string name="text_event_permission_message">開啟「設定」，點選「權限」，並開啟「儲存」</string>
+    <string name="text_open_app_setting">開啟「設定」</string>
 
     //  ToolFragment  //
     <string name="title_food_intake">基礎攝取熱量</string>

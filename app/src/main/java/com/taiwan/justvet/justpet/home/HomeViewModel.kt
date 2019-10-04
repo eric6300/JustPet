@@ -163,7 +163,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun showPetProfile(petProfile: PetProfile) {
-        petBirthdayString.value = petProfile.birthday.toDateString()
+        petBirthdayString.value = petProfile.birthday.toDateFormat()
         petName.value = petProfile.name
         petIdNumber.value = petProfile.idNumber
         petSpecies.value = petProfile.species
@@ -436,7 +436,7 @@ class HomeViewModel : ViewModel() {
         _selectedPetProfile.value?.let {
             petName.value = it.name
             petIdNumber.value = it.idNumber
-            petBirthdayString.value = it.birthday?.toDateString()
+            petBirthdayString.value = it.birthday?.toDateFormat()
             petSpecies.value = it.species
             petGender.value = it.gender
         }
