@@ -23,6 +23,7 @@ import com.taiwan.justvet.justpet.util.Util.getString
 
 const val IMAGE = "image"
 const val SLASH = "/"
+const val COLON = ":"
 class AddNewPetViewModel : ViewModel() {
     private val _navigateToHomeFragment = MutableLiveData<Boolean>()
     val navigateToHomeFragment: LiveData<Boolean>
@@ -146,8 +147,22 @@ class AddNewPetViewModel : ViewModel() {
                     .addOnSuccessListener {
                         when (petImage.value) {
                             null -> {
+                                val newPets = arrayListOf<String>()
+                                userProfile.pets?.let {
+                                    newPets.addAll(it)
+                                }
+                                newPets.add(petId)
+
+                                UserManager.refreshUserProfile(
+                                    UserProfile(
+                                        profileId = userProfile.profileId,
+                                        uid = userProfile.uid,
+                                        email = userProfile.email,
+                                        pets = newPets
+                                    )
+                                )
+
                                 _loadStatus.value = LoadStatus.DONE
-                                navigateToHomeFragment()
                             }
                             else -> {
                                 uploadPetImage(petId)
@@ -168,7 +183,7 @@ class AddNewPetViewModel : ViewModel() {
 
         petImage.value?.let {
             val imageRef =
-                storageReference.child(getString(R.string.text_profile_image_path, petId))
+                storageReference.child(getString(R.string.text_image_path, petId))
             imageRef.putFile(it.toUri())
                 .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {

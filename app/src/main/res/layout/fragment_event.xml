@@ -508,7 +508,7 @@
             android:onClick="@{()-> viewModel.checkEventId()}"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:text="@{viewModel.petEvent.eventId == null ? @string/text_new_event : @string/text_modify_event}"
+            android:text='@{viewModel.petEvent.eventId == "" ? @string/text_new_event : @string/text_modify_event}'
             app:fb_defaultColor="@color/colorPrimaryDark"
             app:fb_focusColor="@color/colorPrimary"
             app:fb_radius="5dp"
