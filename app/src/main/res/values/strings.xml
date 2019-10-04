@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">JustPet</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     //  HomeFragment  //
     <string name="text_id_number">晶片號碼 ( 選填 )</string>
     <string name="text_name">名字</string>
     <string name="text_birthday">出生日期</string>
     <string name="text_gender">性別</string>
     <string name="text_neutered">絕育(結紮)</string>
+    <string name="text_name_empty_error">名字不可為空白</string>
+    <string name="text_profile_edit_success">修改寵物資料成功！</string>
+    <string name="text_vaccine_invalid">今年都還沒有打疫苗喔！</string>
+    <string name="text_no_event_notification">暫無提醒事項</string>
 
     //  EventDialog  //
     <string name="text_diary">日常</string>
@@ -20,7 +21,7 @@
     <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format">HH:mm</string>
     <string name="date_time_format">yyyy/MM/dd  HH:mm</string>
-    <string name="timelist_format">yyyy/MM/dd/HH:mm</string>
+    <string name="time_list_format">yyyy/MM/dd/HH:mm</string>
     <string name="title_time">時間</string>
     <string name="title_tag">分類</string>
     <string name="title_note">備註</string>
@@ -80,6 +81,7 @@
     <string name="text_empty_birthday_error">請輸入出生日期</string>
     <string name="text_birthday_format">%d/%d/%d</string>
     <string name="text_profile_image_path">image/%s</string>
+    <string name="text_profile_path">profile/%s</string>
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>

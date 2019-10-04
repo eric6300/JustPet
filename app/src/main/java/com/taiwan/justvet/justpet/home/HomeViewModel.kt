@@ -15,17 +15,16 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.IMAGE
 import com.taiwan.justvet.justpet.pet.SLASH
-import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.tag.TagType
-import com.taiwan.justvet.justpet.util.timestampToDateString
-import com.taiwan.justvet.justpet.util.toDateFormat
-import com.taiwan.justvet.justpet.util.toPetProfile
+import com.taiwan.justvet.justpet.util.*
+import com.taiwan.justvet.justpet.util.Util.getString
 import java.util.*
 
 
 class HomeViewModel : ViewModel() {
-
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -42,9 +41,9 @@ class HomeViewModel : ViewModel() {
     val isModified: LiveData<Boolean>
         get() = _isModified
 
-    private val _birthdayChange = MutableLiveData<Boolean>()
-    val birthdayChange: LiveData<Boolean>
-        get() = _birthdayChange
+    private val _isBirthdayChanged = MutableLiveData<Boolean>()
+    val isBirthdayChanged: LiveData<Boolean>
+        get() = _isBirthdayChanged
 
     private val _navigateToFamilyDialog = MutableLiveData<PetProfile>()
     val navigateToFamilyDialog: LiveData<PetProfile>
@@ -66,43 +65,31 @@ class HomeViewModel : ViewModel() {
     val showDatePicker: LiveData<Boolean>
         get() = _showDatePicker
 
-    private val _eventsList = MutableLiveData<List<PetEvent>>()
-    val eventsList: LiveData<List<PetEvent>>
-        get() = _eventsList
+    private val _eventList = MutableLiveData<List<PetEvent>>()
+    val eventList: LiveData<List<PetEvent>>
+        get() = _eventList
 
     private val _loadStatus = MutableLiveData<LoadStatus>()
     val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
-    val tagDiarrhea = EventTag(TagType.SYNDROME.value, 101, "下痢")
-    val tagCough = EventTag(TagType.SYNDROME.value, 102, "咳嗽")
-    val tagSneeze = EventTag(TagType.SYNDROME.value, 103, "打噴嚏")
-    val tagItchy = EventTag(TagType.SYNDROME.value, 104, "搔癢")
-    val tagSeizure = EventTag(TagType.SYNDROME.value, 105, "癲癇")
-    val tagCollapse = EventTag(TagType.SYNDROME.value, 106, "昏倒")
-    val tagAbnormalUrine = EventTag(TagType.SYNDROME.value, 107, "排尿異常")
 
-    val tagEctoPrevent = EventTag(TagType.TREATMENT.value, 200, "除蚤")
-    val tagEndoPrevent = EventTag(TagType.TREATMENT.value, 201, "驅蟲")
-    val tagHeartWormPrevent = EventTag(TagType.TREATMENT.value, 202, "心絲蟲藥")
-    val tagHealthExam = EventTag(TagType.TREATMENT.value, 209, "健康檢查")
     val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
 
     val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")
 
     val petName = MutableLiveData<String>()
     val petBirthdayString = MutableLiveData<String>()
-    val petBirthdayDate = MutableLiveData<Date>()
     val petIdNumber = MutableLiveData<String>()
     val petSpecies = MutableLiveData<Long>()
     val petGender = MutableLiveData<Long>()
     val petImage = MutableLiveData<String>()
 
-    var oneMonthAgoTimestamp: Long = 0
-    var threeMonthsAgoTimestamp: Long = 0
-    var sixMonthsAgoTimestamp: Long = 0
-    var oneYearAgoTimestamp: Long = 0
+    var oneMonthAgoTimestamp = 0L
+    var threeMonthsAgoTimestamp = 0L
+    var sixMonthsAgoTimestamp = 0L
+    var oneYearAgoTimestamp = 0L
 
     val petsReference = FirebaseFirestore.getInstance().collection(PETS)
     val storageReference = FirebaseStorage.getInstance().reference
@@ -131,9 +118,13 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
-        val petListFromFirebase = mutableListOf<PetProfile>()
+
         if (userProfile.pets?.size != 0) {
+
+            val petListFromFirebase = mutableListOf<PetProfile>()
+
             userProfile.pets?.let { pets ->
+
                 fun getNextPetProfile(index: Int) {
 
                     if (index == pets.size) { // already get all pet data from firebase
@@ -156,12 +147,10 @@ class HomeViewModel : ViewModel() {
                         }
                 }
 
-                //  get first pet profile
-                val index = 0
-                getNextPetProfile(index)
+                getNextPetProfile(0) //  get first pet profile
             }
         } else {
-            _petList.value = petListFromFirebase
+            _petList.value = mutableListOf()
             Log.d(ERIC, "viewModel petList = zero")
         }
     }
@@ -174,12 +163,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun showPetProfile(petProfile: PetProfile) {
-        val calendar = Calendar.getInstance(Locale.getDefault())
-
-        petBirthdayString.value = petProfile.birthday.timestampToDateString()
-        calendar.timeInMillis = petProfile.birthday * 1000
-        petBirthdayDate.value = calendar.time
-
+        petBirthdayString.value = petProfile.birthday.toDateString()
         petName.value = petProfile.name
         petIdNumber.value = petProfile.idNumber
         petSpecies.value = petProfile.species
@@ -190,22 +174,34 @@ class HomeViewModel : ViewModel() {
     fun getPetEvents(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
-                .addOnSuccessListener {
-                    val list = mutableListOf<PetEvent>()
+                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
+                .addOnSuccessListener { events ->
 
-                    // return to default
-                    _eventsList.value = list
+                    if (events.size() > 0) {
 
-                    if (it.size() > 0) {
-                        it.documents.forEach {
-                            val event = it.toObject(PetEvent::class.java)
-                            event?.let { event ->
-                                list.add(event)
+                        val list = mutableListOf<PetEvent>()
+
+                        fun getNextEvent(index: Int) {
+
+                            if (index == events.size()) {
+                                _eventList.value = list
+                                return
                             }
-                            _eventsList.value = list
+
+                            events.documents[index].toObject(PetEvent::class.java)?.let { it ->
+                                Log.d(ERIC, "$it")
+                                list.add(it)
+                            }
+
+                            getNextEvent(index.plus(1))
                         }
+
+                        getNextEvent(0)  // get first pet event
+
+                    } else {
+                        _eventList.value = mutableListOf()
                     }
+
                 }.addOnFailureListener {
                     Log.d(ERIC, "getPetEvents() failed : $it")
                 }
@@ -264,7 +260,7 @@ class HomeViewModel : ViewModel() {
             tagVaccine.index?.let { tagsIndex.add(it) }
             _selectedPetProfile.value?.let {
                 EventNotification(
-                    type = 1, title = "今年都還沒有打疫苗喔！", eventTags = tags,
+                    type = 1, title = getString(R.string.text_vaccine_invalid), eventTags = tags,
                     eventTagsIndex = tagsIndex, petProfile = it
                 )
             }?.let { notificationList.add(it) }
@@ -288,7 +284,7 @@ class HomeViewModel : ViewModel() {
                 notificationList.add(
                     EventNotification(
                         type = -1,
-                        title = "暫無提醒事項",
+                        title = getString(R.string.text_no_event_notification),
                         eventTags = emptyList(),
                         eventTagsIndex = emptyList(),
                         petProfile = it
@@ -305,20 +301,22 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun getPetBirthdayDate(): List<Int> {
+    fun getPetBirthdayForDatePicker(): List<Int> {
 
-        var year: Int = 0
-        var month: Int = 0
-        var dayOfMonth: Int = 0
+        var year = 0
+        var month = 0
+        var dayOfMonth = 0
 
         when (petBirthdayString.value) {
             null -> {
+                // show today in date picker
                 val calendar = Calendar.getInstance(Locale.getDefault())
                 year = calendar.get(Calendar.YEAR)
                 month = calendar.get(Calendar.MONTH)
                 dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
             }
             else -> {
+                // show pet birthday in date picker
                 petBirthdayString.value?.let {
                     val timeList = it.split(SLASH)
                     year = timeList[0].toInt()
@@ -332,28 +330,32 @@ class HomeViewModel : ViewModel() {
 
     fun setPetBirthday(date: Date) {
         petBirthdayString.value = date.toDateFormat()
-        petBirthdayDate.value = date
     }
 
     fun updatePetProfile() {
-        if (petName.value.isNullOrEmpty()) {
-            Toast.makeText(JustPetApplication.appContext, "名字不可為空白", Toast.LENGTH_SHORT).show()
-        } else {
-            _loadStatus.value = LoadStatus.LOADING
+        when (petName.value) {
+            null, EMPTY_STRING -> {
+                Toast.makeText(
+                    JustPetApplication.appContext,
+                    Util.getString(R.string.text_name_empty_error),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else -> {
+                _loadStatus.value = LoadStatus.LOADING
 
-            val finalProfile = mapOf(
-                "name" to petName.value,
-                "birthday" to (petBirthdayDate.value?.time?.div(1000)),
-                "idNumber" to petIdNumber.value,
-                "species" to petSpecies.value,
-                "gender" to petGender.value
-            )
-
-            selectedPetProfile.value?.profileId?.let { profileId ->
-                petsReference.document(profileId).update(finalProfile)
-                    .addOnSuccessListener {
+                selectedPetProfile.value?.profileId?.let { petId ->
+                    petsReference.document(petId).update(
+                        mapOf(
+                            NAME to petName.value,
+                            BIRTHDAY to petBirthdayString.value?.toTimestamp(),
+                            ID_NUMBER to petIdNumber.value,
+                            SPECIES to petSpecies.value,
+                            GENDER to petGender.value
+                        )
+                    ).addOnSuccessListener {
                         if (petImage.value != null) {
-                            uploadImage(profileId)
+                            uploadImage(petId)
                         } else {
                             modifyPetProfileCompleted()
                             navigateToHomeFragment()
@@ -362,21 +364,22 @@ class HomeViewModel : ViewModel() {
                         Log.d(ERIC, "updatePetProfile() succeeded ")
                     }.addOnFailureListener {
                         _loadStatus.value = LoadStatus.ERROR
-                        Log.d(ERIC, "updatePetProfile() failed : ${it.toString()}")
+                        Log.d(ERIC, "updatePetProfile() failed : $it")
                     }
+                }
             }
         }
     }
 
-    private fun uploadImage(profileId: String) {
+    private fun uploadImage(petId: String) {
         petImage.value?.let {
-            if (it.startsWith("https")) {
+            if (it.startsWith(HTTPS)) {
                 navigateToHomeFragment()
                 modifyPetProfileCompleted()
                 _loadStatus.value = LoadStatus.DONE
             } else {
-                val imageRef = storageReference.child("profile/$profileId")
-                Log.d(ERIC, "uri : ${it.toUri()}")
+                val imageRef = storageReference.child(getString(R.string.text_profile_path, petId))
+
                 imageRef.putFile(it.toUri())
                     .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                         if (!task.isSuccessful) {
@@ -387,9 +390,7 @@ class HomeViewModel : ViewModel() {
                         return@Continuation imageRef.downloadUrl
                     }).addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            val downloadUri = task.result
-                            Log.d(ERIC, "downloadUri : $downloadUri")
-                            updateProfileImageUrl(profileId, downloadUri)
+                            updateProfileImageUrl(petId, task.result)
                         }
                     }.addOnFailureListener {
                         _loadStatus.value = LoadStatus.ERROR
@@ -399,8 +400,8 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private fun updateProfileImageUrl(profileId: String, downloadUri: Uri?) {
-        petsReference.document(profileId).update("image", downloadUri.toString())
+    private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
+        petsReference.document(petId).update(IMAGE, downloadUri.toString())
             .addOnSuccessListener {
                 modifyPetProfileCompleted()
                 navigateToHomeFragment()
@@ -419,7 +420,11 @@ class HomeViewModel : ViewModel() {
 
     private fun modifyPetProfileCompleted() {
         _isModified.value = false
-        Toast.makeText(JustPetApplication.appContext, "修改寵物資料成功！", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            JustPetApplication.appContext,
+            getString(R.string.text_profile_edit_success),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     fun modifyPetProfileCancelled() {
@@ -431,7 +436,7 @@ class HomeViewModel : ViewModel() {
         _selectedPetProfile.value?.let {
             petName.value = it.name
             petIdNumber.value = it.idNumber
-            petBirthdayString.value = it.birthday?.timestampToDateString()
+            petBirthdayString.value = it.birthday?.toDateString()
             petSpecies.value = it.species
             petGender.value = it.gender
         }
@@ -446,11 +451,11 @@ class HomeViewModel : ViewModel() {
     }
 
     fun birthdayChanged() {
-        _birthdayChange.value = true
+        _isBirthdayChanged.value = true
     }
 
     fun birthdayChangedCompleted() {
-        _birthdayChange.value = false
+        _isBirthdayChanged.value = false
     }
 
     fun navigateToFamilyDialog(petProfile: PetProfile) {

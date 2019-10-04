@@ -119,7 +119,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
 
         val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
+            getString(R.string.time_list_format),
             Locale.TAIWAN
         ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 
@@ -182,7 +182,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         _loadStatus.value = LoadStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
+            getString(R.string.time_list_format),
             Locale.TAIWAN
         ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 
@@ -288,7 +288,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         _loadStatus.value = LoadStatus.LOADING
         // get selected time and date string list
         val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
+            getString(R.string.time_list_format),
             Locale.TAIWAN
         ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
 

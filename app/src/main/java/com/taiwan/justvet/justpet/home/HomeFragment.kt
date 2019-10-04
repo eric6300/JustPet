@@ -68,7 +68,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.birthdayChange.observe(this, Observer {
+        viewModel.isBirthdayChanged.observe(this, Observer {
             if (it == true) {
                 profileAdapter.notifyDataSetChanged()
                 viewModel.birthdayChangedCompleted()
@@ -128,7 +128,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.eventsList.observe(this, Observer {
+        viewModel.eventList.observe(this, Observer {
             it?.let {
                 viewModel.filterForNotification(it)
             }
@@ -263,7 +263,7 @@ class HomeFragment : Fragment() {
 
     private fun showDatePicker() {
         this.context?.let {
-            val list = viewModel.getPetBirthdayDate()
+            val list = viewModel.getPetBirthdayForDatePicker()
             DatePickerDialog(
                 it,
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->

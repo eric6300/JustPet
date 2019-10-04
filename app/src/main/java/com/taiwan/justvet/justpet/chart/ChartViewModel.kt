@@ -53,13 +53,6 @@ class ChartViewModel : ViewModel() {
     var sixMonthsAgoTimestamp: Long = 0
     var oneYearAgoTimestamp: Long = 0
 
-//    val threeMonthsSyndrome = MutableLiveData<Int>()
-//    val sixMonthsSyndrome = MutableLiveData<Int>()
-//    val oneYearSyndrome = MutableLiveData<Int>()
-//    val threeMonthsWeight = MutableLiveData<Int>()
-//    val sixMonthsWeight = MutableLiveData<Int>()
-//    val oneYearWeight = MutableLiveData<Int>()
-
     init {
         UserManager.userProfile.value?.let {
             selectedEventTag = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
@@ -72,16 +65,16 @@ class ChartViewModel : ViewModel() {
         calendar.apply {
             nowTimestamp = (calendar.timeInMillis / 1000)
 
-            this.set(localData.year, localData.monthValue, 1,0,0,0)
+            set(localData.year, localData.monthValue, 1,0,0,0)
 
-            this.add(Calendar.MONTH, -3)
-            threeMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+            add(Calendar.MONTH, -3)
+            threeMonthsAgoTimestamp = (timeInMillis / 1000)
 
-            this.add(Calendar.MONTH, -3)
-            sixMonthsAgoTimestamp = (calendar.timeInMillis / 1000)
+            add(Calendar.MONTH, -3)
+            sixMonthsAgoTimestamp = (timeInMillis / 1000)
 
-            this.add(Calendar.MONTH, -6)
-            oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
+            add(Calendar.MONTH, -6)
+            oneYearAgoTimestamp = (timeInMillis / 1000)
         }
     }
 

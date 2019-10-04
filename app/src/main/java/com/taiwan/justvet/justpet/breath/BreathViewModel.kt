@@ -15,6 +15,7 @@ import com.taiwan.justvet.justpet.util.Util
 
 const val RESPIRATORY_RATE = 0
 const val HEART_RATE = 1
+
 class BreathViewModel : ViewModel() {
     private val _navigateToTag = MutableLiveData<PetEvent>()
     val navigateToTag: LiveData<PetEvent>
