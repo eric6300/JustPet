@@ -37,9 +37,9 @@ class HomeViewModel : ViewModel() {
     val notificationList: LiveData<List<EventNotification>>
         get() = _notificationList
 
-    private val _isModified = MutableLiveData<Boolean>()
-    val isModified: LiveData<Boolean>
-        get() = _isModified
+    private val _isPetProfileModified = MutableLiveData<Boolean>()
+    val isPetProfileModified: LiveData<Boolean>
+        get() = _isPetProfileModified
 
     private val _isBirthdayChanged = MutableLiveData<Boolean>()
     val isBirthdayChanged: LiveData<Boolean>
@@ -415,11 +415,11 @@ class HomeViewModel : ViewModel() {
     }
 
     fun modifyPetProfile() {
-        _isModified.value = true
+        _isPetProfileModified.value = true
     }
 
     private fun modifyPetProfileCompleted() {
-        _isModified.value = false
+        _isPetProfileModified.value = false
         Toast.makeText(
             JustPetApplication.appContext,
             getString(R.string.text_profile_edit_success),
@@ -428,7 +428,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun modifyPetProfileCancelled() {
-        _isModified.value = false
+        _isPetProfileModified.value = false
         returnDefaultPetProfile()
     }
 

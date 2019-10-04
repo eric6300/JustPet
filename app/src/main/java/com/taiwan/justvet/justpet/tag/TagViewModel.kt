@@ -17,7 +17,7 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toFullDateTimeFormat
+import com.taiwan.justvet.justpet.util.toTimeListFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
 
@@ -242,7 +242,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
         val calendar = Calendar.getInstance()
 
-        val timeList = calendar.time.toFullDateTimeFormat().split("/")
+        val timeList = calendar.time.toTimeListFormat().split("/")
 
         selectedPetProfile?.let {
             it.profileId?.apply {

@@ -20,7 +20,7 @@
     <string name="text_quick_save">快速記錄</string>
     <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format">HH:mm</string>
-    <string name="date_time_format">yyyy/MM/dd  HH:mm</string>
+    <string name="event_time_format">yyyy/MM/dd  HH:mm</string>
     <string name="time_list_format">yyyy/MM/dd/HH:mm</string>
     <string name="title_time">時間</string>
     <string name="title_tag">分類</string>

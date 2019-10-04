@@ -92,7 +92,7 @@
                     android:background="@drawable/ic_camera"
                     android:backgroundTint="@android:color/background_light"
                     android:onClick="@{() -> viewModel.showGallery()}"
-                    android:visibility="@{viewModel.isModified() == true ? View.VISIBLE : View.GONE }"
+                    android:visibility="@{viewModel.isPetProfileModified() == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     tools:visibility="invisible" />
@@ -104,7 +104,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="13dp"
                     android:onClick="@{() -> viewModel.modifyPetProfile()}"
-                    android:visibility="@{viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     app:srcCompat="@drawable/ic_edit_white" />
@@ -119,7 +119,7 @@
                     android:backgroundTint="@android:color/background_light"
                     android:onClick="@{() -> viewModel.navigateToFamilyDialog(petProfile)}"
                     android:padding="2dp"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{ viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -137,7 +137,7 @@
                     android:textColor="@android:color/background_light"
                     android:textSize="24sp"
                     android:onClick="@{() -> viewModel.navigateToFamilyDialog(petProfile)}"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{ viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"
                     app:layout_constraintStart_toEndOf="@+id/icon_family"
@@ -147,7 +147,7 @@
                     android:id="@+id/detail_pet_profile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:visibility="@{ viewModel.isModified() != true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{ viewModel.isPetProfileModified() != true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

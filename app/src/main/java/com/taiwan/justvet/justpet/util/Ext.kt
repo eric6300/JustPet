@@ -16,15 +16,29 @@ fun Long.toDateString(): String {
     ).toString()
 }
 
-fun Long.toDateFormat(): Date {
+fun Long.toEventTimeFormat(): String {
+    return DateFormat.format(
+        JustPetApplication.appContext.getString(R.string.event_time_format),
+        Calendar.getInstance().apply { timeInMillis = this@toEventTimeFormat * 1000 }
+    ).toString()
+}
+
+fun Long.toDate(): Date {
     return Calendar.getInstance(Locale.getDefault()).apply {
-        this.timeInMillis = this@toDateFormat * 1000
+        this.timeInMillis = this@toDate * 1000
     }.time
 }
 
-fun Date.toFullDateTimeFormat(): String {
+fun Date.toTimeListFormat(): String {
     return SimpleDateFormat(
-        Util.getString(R.string.time_list_format),
+        getString(R.string.time_list_format),
+        Locale.getDefault()
+    ).format(this)
+}
+
+fun Date.toEventTimeFormat(): String {
+    return SimpleDateFormat(
+        getString(R.string.event_time_format),
         Locale.getDefault()
     ).format(this)
 }

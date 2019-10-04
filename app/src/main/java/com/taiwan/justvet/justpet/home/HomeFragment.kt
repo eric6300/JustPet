@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -46,7 +47,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,R.layout.fragment_home, container, false
+        )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -69,7 +72,7 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.isBirthdayChanged.observe(this, Observer {
-            if (it == true) {
+            if (it) {
                 profileAdapter.notifyDataSetChanged()
                 viewModel.birthdayChangedCompleted()
             }
@@ -195,7 +198,7 @@ class HomeFragment : Fragment() {
         }
 
         // disable scroll function when editing pet profile
-        viewModel.isModified.observe(this, Observer {
+        viewModel.isPetProfileModified.observe(this, Observer {
             if (it == true) {
                 (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = false)
                 profileAdapter.notifyDataSetChanged()

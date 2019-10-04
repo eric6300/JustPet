@@ -13,9 +13,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
-import android.widget.ImageView
 import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,10 +23,7 @@ import com.bumptech.glide.Glide
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
-import com.taiwan.justvet.justpet.ERIC
-import com.taiwan.justvet.justpet.MainActivity
-import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
-import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEventBinding
 import com.xw.repo.BubbleSeekBar
@@ -38,10 +35,8 @@ class EventFragment : Fragment() {
     private lateinit var binding: FragmentEventBinding
     private lateinit var viewModel: EventViewModel
     private lateinit var currentEvent: PetEvent
-    private lateinit var datePickerDialog: DatePickerDialog
-    private lateinit var timePickerDialog: TimePickerDialog
     private lateinit var calendar: Calendar
-    lateinit var eventPicture: ImageView
+
 
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,
@@ -54,35 +49,39 @@ class EventFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentEventBinding.inflate(inflater, container, false)
+
         currentEvent = EventFragmentArgs.fromBundle(arguments!!).petEvent
         val viewModelFactory = EventViewModelFactory(currentEvent)
         viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(EventViewModel::class.java)
 
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_event, container, false
+        )
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.petProfile = currentEvent.petProfile
 
-        Log.d(ERIC, "event Id : ${currentEvent.eventId}")
-
         viewModel.navigateToCalendar.observe(this, Observer {
-            if (it == true) {
-                (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
-                viewModel.navigateToCalendarCompleted()
+            it?.let {
+                if (it) {
+                    (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
+                    viewModel.navigateToCalendarCompleted()
+                }
             }
         })
 
-        setupSeekBar()
-
         viewModel.startGallery.observe(this, Observer {
-            it?.let{
+            it?.let {
                 if (it) {
-                    startGallery()
+                    showGallery()
                     viewModel.startGalleryCompleted()
                 }
             }
         })
+
+        setupSeekBarOfEvent()
 
         calendar = viewModel.calendar
         setupDatePickerDialog()
@@ -90,9 +89,8 @@ class EventFragment : Fragment() {
 
         setupTagRecyclerView()
 
-        eventPicture = binding.imageMedia
-        eventPicture.clipToOutline = true
-        eventPicture.outlineProvider = object : ViewOutlineProvider() {
+        binding.imageMedia.clipToOutline = true
+        binding.imageMedia.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
                 outline?.setRoundRect(0, 0, view.width, view.height, 12F)
             }
@@ -114,8 +112,7 @@ class EventFragment : Fragment() {
 
     private fun setupTagRecyclerView() {
         val listOfTag = binding.listTags
-        val adapter = EventTagAdapter(viewModel, EventTagAdapter.OnClickListener {
-        })
+        val adapter = EventTagAdapter(viewModel)
         listOfTag.adapter = adapter
     }
 
@@ -127,11 +124,11 @@ class EventFragment : Fragment() {
                     Activity.RESULT_OK -> {
                         data?.let { data ->
                             data.data?.let {
-                                if (eventPicture.visibility == View.GONE) {
-                                    eventPicture.visibility = View.VISIBLE
+                                if (binding.imageMedia.visibility == View.GONE) {
+                                    binding.imageMedia.visibility = View.VISIBLE
                                 }
                                 viewModel.eventImage.value = it.toString()
-                                Glide.with(this).load(it).into(eventPicture)
+                                Glide.with(this).load(it).into(binding.imageMedia)
                             }
                         }
                     }
@@ -143,7 +140,7 @@ class EventFragment : Fragment() {
         }
     }
 
-    fun startGallery() = runWithPermissions(
+    fun showGallery() = runWithPermissions(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         options = quickPermissionsOption
@@ -153,16 +150,13 @@ class EventFragment : Fragment() {
         startActivityForResult(intent, PHOTO_FROM_GALLERY)
     }
 
-    fun setupSeekBar() {
-        val seekBarSpirit = binding.seekBarSpirit
-        val seekBarAppetite = binding.seekBarAppetite
-
+    fun setupSeekBarOfEvent() {
         binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
-            seekBarSpirit.correctOffsetWhenContainerOnScrolling()
-            seekBarAppetite.correctOffsetWhenContainerOnScrolling()
+            binding.seekBarSpirit.correctOffsetWhenContainerOnScrolling()
+            binding.seekBarAppetite.correctOffsetWhenContainerOnScrolling()
         }
 
-        seekBarSpirit.onProgressChangedListener =
+        binding.seekBarSpirit.onProgressChangedListener =
             object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
                 override fun getProgressOnFinally(
                     bubbleSeekBar: BubbleSeekBar?,
@@ -174,7 +168,7 @@ class EventFragment : Fragment() {
                 }
             }
 
-        seekBarAppetite.onProgressChangedListener =
+        binding.seekBarAppetite.onProgressChangedListener =
             object : BubbleSeekBar.OnProgressChangedListenerAdapter() {
                 override fun getProgressOnFinally(
                     bubbleSeekBar: BubbleSeekBar?,
@@ -186,52 +180,60 @@ class EventFragment : Fragment() {
                 }
             }
 
-        currentEvent.spirit?.let { seekBarSpirit.setProgress(it.toFloat()) }
-        currentEvent.appetite?.let { seekBarAppetite.setProgress(it.toFloat()) }
+        currentEvent.spirit?.let { binding.seekBarSpirit.setProgress(it.toFloat()) }
+        currentEvent.appetite?.let { binding.seekBarAppetite.setProgress(it.toFloat()) }
 
     }
 
     private fun setupDatePickerDialog() {
-        val dateListener =
+        val datePickerListener =
             DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                viewModel.showDateDialogCompleted()
                 calendar.set(year, month, dayOfMonth)
+                viewModel.showDateDialogCompleted()
                 viewModel.showTimePickerDialog()
             }
-        datePickerDialog = DatePickerDialog(
+
+        val datePickerDialog = DatePickerDialog(
             this.context!!,
-            dateListener,
+            datePickerListener,
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
+
         viewModel.showDatePickerDialog.observe(this, Observer {
-            if (it == true) {
-                datePickerDialog.show()
-                viewModel.showDateDialogCompleted()
+            it?.let {
+                if (it) {
+                    datePickerDialog.show()
+                    viewModel.showDateDialogCompleted()
+                }
             }
         })
     }
 
     private fun setupTimePickerDialog() {
-        val timeListener =
+        val timePickerListener =
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
-                viewModel.showTimeDialogCompleted()
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
-                viewModel.updateDateAndTime()
+                viewModel.showTimeDialogCompleted()
+                viewModel.updateDateAndTimeOfEvent()
             }
-        timePickerDialog = TimePickerDialog(
+
+        val timePickerDialog = TimePickerDialog(
             this.context,
-            timeListener,
+            timePickerListener,
             calendar.get(Calendar.HOUR_OF_DAY),
             calendar.get(Calendar.MINUTE),
             true
         )
+
         viewModel.showTimePickerDialog.observe(this, Observer {
-            if (it == true) {
-                timePickerDialog.show()
-                viewModel.showTimeDialogCompleted()
+            it?.let {
+                if (it) {
+                    timePickerDialog.show()
+                    viewModel.showTimeDialogCompleted()
+                }
             }
         })
     }

@@ -31,7 +31,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         petImage.clipToOutline = true
         petImage.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                viewModel.isModified.value.let {
+                viewModel.isPetProfileModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else {
@@ -45,7 +45,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         filter.clipToOutline = true
         filter.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                viewModel.isModified.value.let {
+                viewModel.isPetProfileModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else {
