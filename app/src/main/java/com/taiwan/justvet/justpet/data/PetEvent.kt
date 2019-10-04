@@ -7,9 +7,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PetEvent (
     @get:Exclude val petProfile: PetProfile? = null,
-    val petId: String? = "",
-    val petName: String? = "",
-    val petSpecies: Long? = 0,
+    val petId: String = "",
+    val petName: String = "",
+    val petSpecies: Long = 0,
     @get:Exclude val eventId: String? = null,
     val timestamp: Long = 0,
     val year: Long = 0,

@@ -24,6 +24,8 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.PetSpecies
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -216,9 +218,9 @@ class HomeFragment : Fragment() {
                     findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment(
                         PetEvent(
                             petProfile = it.petProfile,
-                            petName = it.petProfile.name,
-                            petId = it.petProfile.profileId,
-                            petSpecies = it.petProfile.species,
+                            petName = it.petProfile.name ?: EMPTY_STRING,
+                            petId = it.petProfile.profileId ?: EMPTY_STRING,
+                            petSpecies = it.petProfile.species ?: PetSpecies.CAT.value,
                             eventTags = it.eventTags,
                             eventTagsIndex = it.eventTagsIndex
                         )

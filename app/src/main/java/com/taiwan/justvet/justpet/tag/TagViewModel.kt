@@ -14,6 +14,9 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.PetSpecies
+import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
@@ -221,9 +224,9 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         selectedPetProfile?.let {
             _navigateToEventFragment.value = PetEvent(
                 petProfile = it,
-                petId = it.profileId,
-                petName = it.name,
-                petSpecies = it.species,
+                petId = it.profileId ?: EMPTY_STRING,
+                petName = it.name ?: EMPTY_STRING,
+                petSpecies = it.species ?: PetSpecies.CAT.value,
                 eventTags = eventTags,
                 eventTagsIndex = eventTagsIndex,
                 respiratoryRate = petEvent.respiratoryRate,
@@ -242,7 +245,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
         val calendar = Calendar.getInstance()
 
-        val timeList = calendar.time.toTimeListFormat().split("/")
+        val timeList = calendar.time.toTimeListFormat().split(SLASH)
 
         selectedPetProfile?.let {
             it.profileId?.apply {
@@ -250,8 +253,8 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                     PetEvent(
                         petProfile = it,
                         petId = this,
-                        petName = it.name,
-                        petSpecies = it.species,
+                        petName = it.name ?: EMPTY_STRING,
+                        petSpecies = it.species ?: PetSpecies.CAT.value,
                         timestamp = (calendar.timeInMillis / 1000),
                         year = timeList[0].toLong(),
                         month = timeList[1].toLong(),
