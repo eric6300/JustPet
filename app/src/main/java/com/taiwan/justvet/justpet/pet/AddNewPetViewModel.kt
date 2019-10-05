@@ -18,12 +18,10 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.home.HomeViewModel.Companion.IMAGE
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 
-const val IMAGE = "image"
-const val SLASH = "/"
-const val COLON = ":"
 class AddNewPetViewModel : ViewModel() {
     private val _navigateToHomeFragment = MutableLiveData<Boolean>()
     val navigateToHomeFragment: LiveData<Boolean>
@@ -62,13 +60,13 @@ class AddNewPetViewModel : ViewModel() {
     val petImage = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    private val users = firebase.collection(USERS)
+    private val usersReference = firebase.collection(USERS)
     private val petsReference = firebase.collection(PETS)
     private val storageReference = FirebaseStorage.getInstance().reference
 
     init {
-        petSpecies.value = 0L
-        petGender.value = 0L
+        petSpecies.value = PetSpecies.CAT.value
+        petGender.value = PetGender.FEMALE.value
     }
 
     fun selectSpecies(species: Long) {
@@ -105,17 +103,20 @@ class AddNewPetViewModel : ViewModel() {
             index++
         }
         if (index == 0) {
-            addNewPetProfile()
+            addNewPet()
         }
     }
 
-    private fun addNewPetProfile() {
+    private fun addNewPet() {
         _loadStatus.value = LoadStatus.LOADING
 
         UserManager.userProfile.value?.let { userProfile ->
             petBirthday.value?.let {
                 val timeList = it.split(SLASH)
-                calendar.set(timeList[0].toInt(), timeList[1].toInt().minus(1), timeList[2].toInt())
+                calendar.set(
+                    timeList[0].toInt(), //  year
+                    timeList[1].toInt().minus(1),  //  month
+                    timeList[2].toInt())  //  dayOfMonth
             }
 
             petsReference.add(
@@ -129,11 +130,11 @@ class AddNewPetViewModel : ViewModel() {
                     ownerEmail = userProfile.email
                 )
             ).addOnSuccessListener {
-                Log.d(ERIC, "addNewPetProfile() succeeded")
+                Log.d(ERIC, "addNewPet() succeeded")
                 updatePetsOfUser(it.id)
             }.addOnFailureListener {
                 _loadStatus.value = LoadStatus.ERROR
-                Log.d(ERIC, "addNewPetProfile() failed : $it")
+                Log.d(ERIC, "addNewPet() failed : $it")
             }
         }
     }
@@ -143,28 +144,14 @@ class AddNewPetViewModel : ViewModel() {
 
         UserManager.userProfile.value?.let { userProfile ->
             userProfile.profileId?.let { profileId ->
-                users.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
+                usersReference.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
                     .addOnSuccessListener {
                         when (petImage.value) {
-                            null -> {
-                                val newPets = arrayListOf<String>()
-                                userProfile.pets?.let {
-                                    newPets.addAll(it)
-                                }
-                                newPets.add(petId)
-
-                                UserManager.refreshUserProfile(
-                                    UserProfile(
-                                        profileId = userProfile.profileId,
-                                        uid = userProfile.uid,
-                                        email = userProfile.email,
-                                        pets = newPets
-                                    )
-                                )
-
+                            null -> {  //  no new pet image
+                                refreshUserProfile(petId)
                                 _loadStatus.value = LoadStatus.DONE
                             }
-                            else -> {
+                            else -> {  //  new pet image to upload
                                 uploadPetImage(petId)
                             }
                         }
@@ -207,26 +194,11 @@ class AddNewPetViewModel : ViewModel() {
 
     private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
         _loadStatus.value = LoadStatus.LOADING
-
         UserManager.userProfile.value?.let { userProfile ->
             petsReference.let {
                 it.document(petId).update(IMAGE, downloadUri.toString())
                     .addOnSuccessListener {
-                        val newPets = arrayListOf<String>()
-                        userProfile.pets?.let {
-                            newPets.addAll(it)
-                        }
-                        newPets.add(petId)
-
-                        UserManager.refreshUserProfile(
-                            UserProfile(
-                                profileId = userProfile.profileId,
-                                uid = userProfile.uid,
-                                email = userProfile.email,
-                                pets = newPets
-                            )
-                        )
-
+                        refreshUserProfile(petId)
                         _loadStatus.value = LoadStatus.DONE
                         Log.d(ERIC, "updateEventImageUrl succeed")
                     }.addOnFailureListener {
@@ -235,14 +207,37 @@ class AddNewPetViewModel : ViewModel() {
                     }
             }
         }
-
     }
 
-    fun startGallery() {
+    fun refreshUserProfile(petId: String) {
+        UserManager.userProfile.value?.let { userProfile ->
+
+            val newPets = arrayListOf<String>()
+
+            userProfile.pets?.let {
+                newPets.addAll(it)
+            }
+
+            newPets.add(petId)
+
+            UserManager.refreshUserProfile(
+                UserProfile(
+                    profileId = userProfile.profileId,
+                    uid = userProfile.uid,
+                    email = userProfile.email,
+                    pets = newPets
+                )
+            )
+
+            leaveDialog()
+        }
+    }
+
+    fun showGallery() {
         _showGallery.value = true
     }
 
-    fun startGalleryCompleted() {
+    fun showGalleryCompleted() {
         _showGallery.value = false
     }
 

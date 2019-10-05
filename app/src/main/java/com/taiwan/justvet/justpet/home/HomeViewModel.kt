@@ -15,16 +15,15 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.family.EMPTY_STRING
-import com.taiwan.justvet.justpet.pet.IMAGE
-import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.*
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.util.*
 
-
 class HomeViewModel : ViewModel() {
+
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -347,11 +346,11 @@ class HomeViewModel : ViewModel() {
                 selectedPetProfile.value?.profileId?.let { petId ->
                     petsReference.document(petId).update(
                         mapOf(
-                            NAME to petName.value,
-                            BIRTHDAY to petBirthdayString.value?.toTimestamp(),
-                            ID_NUMBER to petIdNumber.value,
-                            SPECIES to petSpecies.value,
-                            GENDER to petGender.value
+                            Companion.NAME to petName.value,
+                            Companion.BIRTHDAY to petBirthdayString.value?.toTimestamp(),
+                            Companion.ID_NUMBER to petIdNumber.value,
+                            Companion.SPECIES to petSpecies.value,
+                            Companion.GENDER to petGender.value
                         )
                     ).addOnSuccessListener {
                         if (petImage.value != null) {
@@ -496,6 +495,16 @@ class HomeViewModel : ViewModel() {
 
     fun navigateToNewPetDialogCompleted() {
         _navigateToNewPetDialog.value = false
+    }
+
+    companion object {
+        const val NAME = "name"
+        const val BIRTHDAY = "birthday"
+        const val ID_NUMBER = "idNumber"
+        const val SPECIES = "species"
+        const val GENDER = "gender"
+        const val HTTPS = "https"
+        const val IMAGE = "image"
     }
 
 }

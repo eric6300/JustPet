@@ -11,12 +11,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.taiwan.justvet.justpet.NavGraphDirections
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.breath.BreathViewModel
 import com.taiwan.justvet.justpet.databinding.FragmentToolBinding
 
 class ToolFragment : Fragment() {
 
-    private lateinit var binding: FragmentToolBinding
     private val viewModel: ToolViewModel by lazy {
         ViewModelProviders.of(this).get(ToolViewModel::class.java)
     }
@@ -27,18 +25,18 @@ class ToolFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(
+        val binding: FragmentToolBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_tool, container, false
         )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.navigateToBreath.observe(this, Observer {
+        viewModel.navigateToBreathFragment.observe(this, Observer {
             it?.let {
                 if (it) {
                     findNavController().navigate(NavGraphDirections.navigateToBreathFragment())
-                    viewModel.navigateToBreathCompleted()
+                    viewModel.navigateToBreathFragmentCompleted()
                 }
             }
         })

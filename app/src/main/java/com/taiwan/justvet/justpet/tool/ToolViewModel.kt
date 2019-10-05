@@ -8,16 +8,16 @@ import com.taiwan.justvet.justpet.JustPetApplication
 
 class ToolViewModel : ViewModel() {
 
-    private val _navigateToBreath = MutableLiveData<Boolean>()
-    val navigateToBreath: LiveData<Boolean>
-        get() = _navigateToBreath
+    private val _navigateToBreathFragment = MutableLiveData<Boolean>()
+    val navigateToBreathFragment: LiveData<Boolean>
+        get() = _navigateToBreathFragment
     
-    fun navigateToBreath() {
-        _navigateToBreath.value = true
+    fun navigateToBreathFragment() {
+        _navigateToBreathFragment.value = true
     }
 
-    fun navigateToBreathCompleted() {
-        _navigateToBreath.value = false
+    fun navigateToBreathFragmentCompleted() {
+        _navigateToBreathFragment.value = false
     }
 
     fun comingSoon() {

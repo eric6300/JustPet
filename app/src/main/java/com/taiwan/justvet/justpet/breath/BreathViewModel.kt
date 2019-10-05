@@ -11,8 +11,8 @@ import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.UserManager
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.event.HEART_RATE
-import com.taiwan.justvet.justpet.event.RESPIRATORY_RATE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.HEART_RATE_TYPE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.RESPIRATORY_RATE_TYPE
 import com.taiwan.justvet.justpet.util.Util
 
 
@@ -40,7 +40,7 @@ class BreathViewModel : ViewModel() {
 
     init {
         _averageTapRate.value = 0L
-        tapRateType.value = RESPIRATORY_RATE
+        tapRateType.value = RESPIRATORY_RATE_TYPE
     }
 
     fun setTapRateType(type: Int) {
@@ -106,11 +106,11 @@ class BreathViewModel : ViewModel() {
                         else -> {
                             tapRateType.value?.let {
                                 when (it) {
-                                    RESPIRATORY_RATE -> {
+                                    RESPIRATORY_RATE_TYPE -> {
                                         _navigateToTag.value =
                                             PetEvent(respiratoryRate = tapRate)
                                     }
-                                    HEART_RATE -> {
+                                    HEART_RATE_TYPE -> {
                                         _navigateToTag.value =
                                             PetEvent(heartRate = tapRate)
                                     }

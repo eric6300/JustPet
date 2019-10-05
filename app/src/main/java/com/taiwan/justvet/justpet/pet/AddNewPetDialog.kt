@@ -86,7 +86,7 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
             it?.let {
                 if (it) {
                     showGallery()
-                    viewModel.startGalleryCompleted()
+                    viewModel.showGalleryCompleted()
                 }
             }
         })

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ItemCalendarEventBinding
 
-class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener: OnClickListener) :
+class CalendarEventAdapter(val viewModel: CalendarViewModel) :
     ListAdapter<PetEvent, CalendarEventAdapter.ViewHolder>(CalendarEventAdapter.EventDiffCallback()) {
 
     private lateinit var context: Context
@@ -20,7 +20,7 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val petEvent = getItem(position)
         holder.itemView.setOnClickListener {
-            viewModel.navigateToDetail(petEvent)
+            viewModel.navigateToEventFragment(petEvent)
         }
 
         holder.binding.icDelete.setOnClickListener {
@@ -31,10 +31,6 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
             val adapter = CalendarTagListAdapter(viewModel)
             it.adapter = adapter
             adapter.submitList(petEvent.eventTags)
-        }
-
-        holder.binding.listOfTags.setOnClickListener {
-            viewModel.navigateToDetail(petEvent)
         }
 
         holder.bind(petEvent)
@@ -99,9 +95,5 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
         override fun areContentsTheSame(oldItem: PetEvent, newItem: PetEvent): Boolean {
             return oldItem.timestamp == newItem.timestamp
         }
-    }
-
-    class OnClickListener(val clickListener: (petEvent: PetEvent) -> Unit) {
-        fun onClick(petEvent: PetEvent) = clickListener(petEvent)
     }
 }
