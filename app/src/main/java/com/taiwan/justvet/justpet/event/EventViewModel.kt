@@ -17,10 +17,7 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.family.EMPTY_STRING
-import com.taiwan.justvet.justpet.pet.COLON
-import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.LoadStatus
-import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
 import com.taiwan.justvet.justpet.util.toTimeListFormat
@@ -334,14 +331,14 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
             else -> {
                 when (type) {
 
-                    WEIGHT ->
+                    Companion.WEIGHT_TYPE ->
                         Toast.makeText(
                             JustPetApplication.appContext,
                             getString(R.string.text_weight_format_error),
                             Toast.LENGTH_LONG
                         ).show()
 
-                    TEMPERATURE ->
+                    Companion.TEMPERATURE_TYPE ->
                         Toast.makeText(
                             JustPetApplication.appContext,
                             getString(R.string.text_temperature_format_error),
@@ -364,14 +361,14 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
                 when (rateType) {
 
-                    RESPIRATORY_RATE ->
+                    Companion.RESPIRATORY_RATE_TYPE ->
                         Toast.makeText(
                             JustPetApplication.appContext,
                             getString(R.string.text_respiratory_rate_format_error),
                             Toast.LENGTH_LONG
                         ).show()
 
-                    HEART_RATE -> {
+                    Companion.HEART_RATE_TYPE -> {
                         Toast.makeText(
                             JustPetApplication.appContext,
                             getString(R.string.text_heart_rate_format_error),
@@ -386,10 +383,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun isAllFormatValid(): Boolean {
-        return isValidFormat(eventWeight, WEIGHT) &&
-                isValidFormat(eventTemper, TEMPERATURE) &&
-                isValidRateFormat(eventRr, RESPIRATORY_RATE) &&
-                isValidRateFormat(eventHr, HEART_RATE)
+        return isValidFormat(eventWeight, Companion.WEIGHT_TYPE) &&
+                isValidFormat(eventTemper, Companion.TEMPERATURE_TYPE) &&
+                isValidRateFormat(eventRr, Companion.RESPIRATORY_RATE_TYPE) &&
+                isValidRateFormat(eventHr, Companion.HEART_RATE_TYPE)
     }
 
     fun navigateToCalendar() {
@@ -442,6 +439,37 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun defaultHr() {
         eventHr.value = null
+    }
+
+    companion object {
+        const val RESPIRATORY_RATE_TYPE = 0
+        const val HEART_RATE_TYPE = 1
+        const val WEIGHT_TYPE = 2
+        const val TEMPERATURE_TYPE = 3
+
+        //  PetEvent
+        const val PET_ID = "petId"
+        const val PET_NAME = "petName"
+        const val PET_SPECIES = "petSpecies"
+        const val TIMESTAMP = "timestamp"
+        const val YEAR = "year"
+        const val MONTH = "month"
+        const val DAY_OF_MONTH = "dayOfMonth"
+        const val TIME = "time"
+        const val EVENT_TAGS_INDEX = "eventTagsIndex"
+        const val NOTE = "note"
+        const val SPIRIT = "spirit"
+        const val APPETITE = "appetite"
+        const val WEIGHT = "weight"
+        const val TEMPERATURE = "temperature"
+        const val RESPIRATORY_RATE = "respiratoryRate"
+        const val HEART_RATE = "heartRate"
+        const val IMAGE_URL = "imageUrl"
+
+        //  EventTag
+        const val TYPE = "type"
+        const val INDEX = "index"
+        const val TITLE = "title"
     }
 
 }

@@ -8,6 +8,7 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.jvm.internal.impl.types.checker.TypeIntersector
 
 fun Long.toDateFormat(): String {
     return DateFormat.format(
@@ -30,6 +31,13 @@ fun Long.toTimeListFormat(): String {
     ).toString()
 }
 
+fun Long.toChartDateFormat(): String {
+    return DateFormat.format(
+        getString(R.string.chart_date_format),
+        Calendar.getInstance().apply { timeInMillis = this@toChartDateFormat * 1000 }
+    ).toString()
+}
+
 fun Date.toTimeListFormat(): String {
     return SimpleDateFormat(
         getString(R.string.time_list_format),
@@ -47,6 +55,13 @@ fun Date.toEventDateAndTimeFormat(): String {
 fun Date.toDateFormat(): String {
     return SimpleDateFormat(
         Util.getString(R.string.date_format),
+        Locale.getDefault()
+    ).format(this)
+}
+
+fun Date.toMonthOnlyFormat(): String {
+    return SimpleDateFormat(
+        getString(R.string.chart_format_month),
         Locale.getDefault()
     ).format(this)
 }

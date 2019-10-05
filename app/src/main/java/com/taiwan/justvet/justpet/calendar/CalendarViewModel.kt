@@ -10,6 +10,26 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.APPETITE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.DAY_OF_MONTH
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.HEART_RATE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.IMAGE_URL
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.INDEX
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.MONTH
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.NOTE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_ID
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_NAME
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_SPECIES
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.RESPIRATORY_RATE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.SPIRIT
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TEMPERATURE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIME
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TITLE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TYPE
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.WEIGHT
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.YEAR
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDate
 
@@ -31,9 +51,9 @@ class CalendarViewModel : ViewModel() {
     val refreshEventData: LiveData<Boolean>
         get() = _refreshEventData
 
-    private val _navigateToDetail = MutableLiveData<PetEvent>()
-    val navigateToDetail: LiveData<PetEvent>
-        get() = _navigateToDetail
+    private val _navigateToEventFragment = MutableLiveData<PetEvent>()
+    val navigateToEventFragment: LiveData<PetEvent>
+        get() = _navigateToEventFragment
 
     private val _showDeleteDialog = MutableLiveData<PetEvent>()
     val showDeleteDialog: LiveData<PetEvent>
@@ -41,13 +61,11 @@ class CalendarViewModel : ViewModel() {
 
     val localDate = LocalDate.now()
 
-    val firebase = FirebaseFirestore.getInstance()
-    val pets = firebase.collection(PETS)
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
 
     init {
         UserManager.userProfile.value?.let {
             getMonthEventsData(it, localDate.year.toLong(), localDate.monthValue.toLong())
-            Log.d(ERIC, "year : ${localDate.year.toLong()} month : ${localDate.monthValue.toLong()}")
         }
     }
 
@@ -56,9 +74,9 @@ class CalendarViewModel : ViewModel() {
             viewModelScope.launch {
                 val data = mutableListOf<PetEvent>()
                 for (petId in UserProfile.pets) {
-                    pets.document(petId).collection(EVENTS)
-                        .whereEqualTo("year", year)
-                        .whereEqualTo("month", month)
+                    petsReference.document(petId).collection(EVENTS)
+                        .whereEqualTo(YEAR, year)
+                        .whereEqualTo(MONTH, month)
                         .get()
                         .addOnSuccessListener { document ->
                             Log.d(ERIC, "get months data success, data size = ${document.size()}")
@@ -67,23 +85,23 @@ class CalendarViewModel : ViewModel() {
                                     data.add(
                                         PetEvent(
                                             eventId = event.id,
-                                            petId = event["petId"] as String,
-                                            petName = event["petName"] as String,
-                                            petSpecies = event["petSpecies"] as Long,
-                                            timestamp = event["timestamp"] as Long,
-                                            year = event["year"] as Long,
-                                            month = event["month"] as Long,
-                                            dayOfMonth = event["dayOfMonth"] as Long,
-                                            time = event["time"] as String,
-                                            eventTagsIndex = event["eventTagsIndex"] as List<Long>?,
-                                            note = event["note"] as String?,
-                                            spirit = event["spirit"] as Double?,
-                                            appetite = event["appetite"] as Double?,
-                                            weight = event["weight"] as Double?,
-                                            temperature = event["temperature"] as Double?,
-                                            respiratoryRate = event["respiratoryRate"] as Long?,
-                                            heartRate = event["heartRate"] as Long?,
-                                            imageUrl = event["imageUrl"] as String?
+                                            petId = event[PET_ID] as String,
+                                            petName = event[PET_NAME] as String,
+                                            petSpecies = event[PET_SPECIES] as Long,
+                                            timestamp = event[TIMESTAMP] as Long,
+                                            year = event[YEAR] as Long,
+                                            month = event[MONTH] as Long,
+                                            dayOfMonth = event[DAY_OF_MONTH] as Long,
+                                            time = event[TIME] as String,
+                                            eventTagsIndex = event[EVENT_TAGS_INDEX] as List<Long>?,
+                                            note = event[NOTE] as String?,
+                                            spirit = event[SPIRIT] as Double?,
+                                            appetite = event[APPETITE] as Double?,
+                                            weight = event[WEIGHT] as Double?,
+                                            temperature = event[TEMPERATURE] as Double?,
+                                            respiratoryRate = event[RESPIRATORY_RATE] as Long?,
+                                            heartRate = event[HEART_RATE] as Long?,
+                                            imageUrl = event[IMAGE_URL] as String?
                                         )
                                     )
                                 }
@@ -102,59 +120,57 @@ class CalendarViewModel : ViewModel() {
         val finalMonthEventData = mutableListOf<PetEvent>()
         var index = 1
         for (event in data) {
-            event.petId?.let {
-                event.eventId?.let {
-                    val tagList = mutableListOf<EventTag>()
-                    pets.document(event.petId).collection(EVENTS).document(event.eventId)
-                        .collection(TAGS)
-                        .get()
-                        .addOnSuccessListener { document ->
-                            if (document.size() > 0) {
-                                for (tag in document) {
-                                    tagList.add(
-                                        EventTag(
-                                            type = tag["type"] as String?,
-                                            index = tag["index"] as Long?,
-                                            title = tag["title"] as String?
-                                        )
-                                    )
-                                }
-                                finalMonthEventData.add(
-                                    PetEvent(
-                                        petId = event.petId,
-                                        petName = event.petName,
-                                        petSpecies = event.petSpecies,
-                                        eventId = event.eventId,
-                                        timestamp = event.timestamp,
-                                        year = event.year,
-                                        month = event.month,
-                                        dayOfMonth = event.dayOfMonth,
-                                        time = event.time,
-                                        note = event.note,
-                                        eventTagsIndex = event.eventTagsIndex,
-                                        spirit = event.spirit,
-                                        appetite = event.appetite,
-                                        weight = event.weight,
-                                        temperature = event.temperature,
-                                        respiratoryRate = event.respiratoryRate,
-                                        heartRate = event.heartRate,
-                                        imageUrl = event.imageUrl,
-                                        eventTags = tagList
-                                    )
-                                )
-                                if (index == data.size) {
-                                    _monthEventsData.value = finalMonthEventData.sortedBy {
-                                        it.timestamp
-                                    }
-                                }
-                                index++
-                            }
+            val tagList = mutableListOf<EventTag>()
+            petsReference.document(event.petId).collection(EVENTS).document(event.eventId)
+                .collection(TAGS)
+                .get()
+                .addOnSuccessListener { document ->
+
+                    for (tag in document) {
+                        tagList.add(
+                            EventTag(
+                                type = tag[TYPE] as String?,
+                                index = tag[INDEX] as Long?,
+                                title = tag[TITLE] as String?
+                            )
+                        )
+                    }
+
+                    finalMonthEventData.add(
+                        PetEvent(
+                            petId = event.petId,
+                            petName = event.petName,
+                            petSpecies = event.petSpecies,
+                            eventId = event.eventId,
+                            timestamp = event.timestamp,
+                            year = event.year,
+                            month = event.month,
+                            dayOfMonth = event.dayOfMonth,
+                            time = event.time,
+                            note = event.note,
+                            eventTagsIndex = event.eventTagsIndex,
+                            spirit = event.spirit,
+                            appetite = event.appetite,
+                            weight = event.weight,
+                            temperature = event.temperature,
+                            respiratoryRate = event.respiratoryRate,
+                            heartRate = event.heartRate,
+                            imageUrl = event.imageUrl,
+                            eventTags = tagList
+                        )
+                    )
+
+                    if (index == data.size) {
+                        _monthEventsData.value = finalMonthEventData.sortedBy {
+                            it.timestamp
                         }
-                        .addOnFailureListener {
-                            Log.d(ERIC, "getEventWithTags() failed : $it")
-                        }
+                    }
+
+                    index++
                 }
-            }
+                .addOnFailureListener {
+                    Log.d(ERIC, "getEventWithTags() failed : $it")
+                }
         }
     }
 
@@ -184,50 +200,38 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun getEventTagsToDelete(petEvent: PetEvent) {
-        petEvent.petId?.let { petId ->
-            petEvent.eventId?.let { eventId ->
-                pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
-                    .get()
-                    .addOnSuccessListener {
-                        for (item in it) {
-                            deleteTags(petEvent, item.id)
-                        }
-                        deleteEvent(petEvent)
-                    }
-                    .addOnFailureListener {
-                        Log.d(ERIC, "deleteEvent() failed : $it")
-                    }
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
+            .get()
+            .addOnSuccessListener {
+                for (item in it) {
+                    deleteTags(petEvent, item.id)
+                }
+                deleteEvent(petEvent)
             }
-        }
+            .addOnFailureListener {
+                Log.d(ERIC, "deleteEvent() failed : $it")
+            }
     }
 
     private fun deleteEvent(petEvent: PetEvent) {
-        petEvent.petId?.let { petId ->
-            petEvent.eventId?.let { eventId ->
-                pets.document(petId).collection(EVENTS).document(eventId).delete()
-                    .addOnSuccessListener {
-                        refreshEventData()
-                    }
-                    .addOnFailureListener {
-                        Log.d(ERIC, "deleteEvent() failed : $it")
-                    }
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).delete()
+            .addOnSuccessListener {
+                refreshEventData()
             }
-        }
+            .addOnFailureListener {
+                Log.d(ERIC, "deleteEvent() failed : $it")
+            }
     }
 
     private fun deleteTags(petEvent: PetEvent, documentId: String) {
-        petEvent.petId?.let { petId ->
-            petEvent.eventId?.let { eventId ->
-                pets.document(petId).collection(EVENTS).document(eventId).collection(TAGS)
-                    .document(documentId).delete()
-                    .addOnSuccessListener {
-                        Log.d(ERIC, "deleteTags() succeeded")
-                    }
-                    .addOnFailureListener {
-                        Log.d(ERIC, "deleteTags() failed : $it")
-                    }
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
+            .document(documentId).delete()
+            .addOnSuccessListener {
+                Log.d(ERIC, "deleteTags() succeeded")
             }
-        }
+            .addOnFailureListener {
+                Log.d(ERIC, "deleteTags() failed : $it")
+            }
     }
 
     fun default() {
@@ -243,11 +247,11 @@ class CalendarViewModel : ViewModel() {
         _refreshEventData.value = false
     }
 
-    fun navigateToDetail(petEvent: PetEvent) {
-        _navigateToDetail.value = petEvent
+    fun navigateToEventFragment(petEvent: PetEvent) {
+        _navigateToEventFragment.value = petEvent
     }
 
-    fun navigateToDetailCompleted() {
-        _navigateToDetail.value = null
+    fun navigateToEventFragmentCompleted() {
+        _navigateToEventFragment.value = null
     }
 }

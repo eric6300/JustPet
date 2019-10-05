@@ -1,6 +1,6 @@
 package com.taiwan.justvet.justpet.chart
 
-import android.icu.text.SimpleDateFormat
+import android.icu.text.DecimalFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,7 +26,10 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
-import java.util.*
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.util.Util.getString
+import com.taiwan.justvet.justpet.util.toChartDateFormat
+import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 
 class ChartFragment : Fragment() {
 
@@ -111,26 +114,35 @@ class ChartFragment : Fragment() {
 
     private fun setupWeightChart() {
         weightChart = binding.graphWeight
-        weightChart.setExtraOffsets(10f, 30f, 10f, 10f)
-        // enable scaling and dragging
-        weightChart.isDragEnabled = false
-        weightChart.setScaleEnabled(false)
-        // disable grid background
-        weightChart.setDrawGridBackground(false)
-        // disable legend
-        weightChart.legend.isEnabled = false
-        weightChart.setNoDataText("")
+        weightChart.let {
+            it.setExtraOffsets(10f, 30f, 10f, 10f)
+
+            // enable scaling and dragging
+            it.isDragEnabled = false
+            it.setScaleEnabled(false)
+
+            // disable grid background
+            it.setDrawGridBackground(false)
+
+            // disable legend
+            it.legend.isEnabled = false
+
+            // disable data text
+            it.setNoDataText(EMPTY_STRING)
+        }
 
         // set X axis
         val xAxis = weightChart.xAxis
-        xAxis.textSize = 16f
-        xAxis.setDrawAxisLine(true)
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(false)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.granularity = 86400f
-        xAxis.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
-        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0015).toFloat()
+        xAxis.let {
+            it.textSize = 16f
+            it.setDrawAxisLine(true)
+            it.setDrawGridLines(false)
+            it.setDrawLabels(false)
+            it.position = XAxis.XAxisPosition.BOTTOM
+            it.granularity = 86400f
+            it.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+            it.axisMaximum = (viewModel.nowTimestamp * 1.0005).toFloat()
+        }
 
         // set Y axis
         val yAxisRight = weightChart.axisRight
@@ -146,26 +158,36 @@ class ChartFragment : Fragment() {
 
     private fun setupSyndromeChart() {
         syndromeChart = binding.graphSyndrome
-        syndromeChart.setExtraOffsets(10f, 30f, 10f, 10f)
-        // disable scaling, dragging and zooming
-        syndromeChart.isDragEnabled = false
-        syndromeChart.setScaleEnabled(false)
-        syndromeChart.setPinchZoom(false)
-        // disable grid background
-        syndromeChart.setDrawGridBackground(false)
-        // disable legend
-        syndromeChart.legend.isEnabled = false
-        syndromeChart.setNoDataText("")
+        syndromeChart.let {
+            it.setExtraOffsets(10f, 30f, 10f, 10f)
+
+            // disable scaling, dragging and zooming
+            it.isDragEnabled = false
+            it.setScaleEnabled(false)
+            it.setPinchZoom(false)
+
+            // disable grid background
+            it.setDrawGridBackground(false)
+
+            // disable legend
+            it.legend.isEnabled = false
+
+            // disable data text
+            it.setNoDataText(EMPTY_STRING)
+        }
+
 
         // set X axis
         val xAxis = syndromeChart.xAxis
-        xAxis.textSize = 16f
-        xAxis.setDrawAxisLine(true)
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.valueFormatter = SyndromeFormatter()
-        xAxis.granularity = 1f
+        xAxis.let {
+            xAxis.textSize = 16f
+            xAxis.setDrawAxisLine(true)
+            xAxis.setDrawGridLines(false)
+            xAxis.setDrawLabels(true)
+            xAxis.position = XAxis.XAxisPosition.BOTTOM
+            xAxis.valueFormatter = SyndromeFormatter()
+            xAxis.granularity = 1f
+        }
 
         // set Y axis
         val yAxisRight = syndromeChart.axisRight
@@ -184,16 +206,19 @@ class ChartFragment : Fragment() {
         weightChart.invalidate()
 
         // set DataSet
-        val dataset = LineDataSet(entries, "體重")
-        dataset.setDrawValues(true)
-        dataset.valueFormatter = SyndromeFormatter()
-        dataset.valueTextSize = 20f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
-        dataset.circleHoleColor = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
-        dataset.lineWidth = 2f
-        dataset.setCircleColor(JustPetApplication.appContext.getColor(R.color.grey_bdbdbd))
-        dataset.circleRadius = 4f
-        dataset.valueFormatter = WeightChartFormatter()
+        val dataset = LineDataSet(entries, getString(R.string.title_body_weight))
+        dataset.let {
+            it.setDrawValues(true)
+            it.valueFormatter = SyndromeFormatter()
+            it.valueTextSize = 20f
+            it.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
+            it.circleHoleColor = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
+            it.lineWidth = 2f
+            it.setCircleColor(JustPetApplication.appContext.getColor(R.color.grey_bdbdbd))
+            it.circleRadius = 4f
+            it.valueFormatter = WeightChartFormatter()
+        }
+
         weightChart.axisLeft.axisMaximum = ((dataset.yMax) * 1.05).toFloat()
 
         weightChart.data = LineData(dataset)
@@ -210,11 +235,13 @@ class ChartFragment : Fragment() {
         syndromeChart.invalidate()
 
         // set DataSet
-        val dataset = BarDataSet(entries, "症狀")
-        dataset.setDrawValues(true)
-        dataset.valueFormatter = SyndromeFormatter()
-        dataset.valueTextSize = 14f
-        dataset.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
+        val dataset = BarDataSet(entries, getString(R.string.text_syndrome))
+        dataset.let {
+            it.setDrawValues(true)
+            it.valueFormatter = SyndromeFormatter()
+            it.valueTextSize = 14f
+            it.color = JustPetApplication.appContext.getColor(R.color.grey_bdbdbd)
+        }
 
         syndromeChart.data = BarData(dataset)
         if (binding.filterChartGroup.position == 0) {
@@ -230,7 +257,10 @@ class ChartFragment : Fragment() {
         binding.filterChartGroup.setOnPositionChangedListener { index ->
             when (index) {
                 0 -> {
-                    weightChart.xAxis.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMinimum =
+                        (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMaximum =
+                        (viewModel.nowTimestamp * 1.0005).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -240,7 +270,10 @@ class ChartFragment : Fragment() {
 
                 }
                 1 -> {
-                    weightChart.xAxis.axisMinimum = (viewModel.sixMonthsAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMinimum =
+                        (viewModel.sixMonthsAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMaximum =
+                        (viewModel.nowTimestamp * 1.001).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -250,7 +283,10 @@ class ChartFragment : Fragment() {
 
                 }
                 2 -> {
-                    weightChart.xAxis.axisMinimum = (viewModel.oneYearAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMinimum =
+                        (viewModel.oneYearAgoTimestamp * 0.9995).toFloat()
+                    weightChart.xAxis.axisMaximum =
+                        (viewModel.nowTimestamp * 1.0020).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -269,15 +305,13 @@ class SyndromeFormatter : ValueFormatter() {
     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
         val calendar = Calendar.getInstance()
         calendar.roll(Calendar.MONTH, value.toInt())
-        val date = Date(calendar.timeInMillis)
-        val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
-        return sdf.format(date)
+        return calendar.time.toMonthOnlyFormat()
     }
 
     override fun getBarLabel(barEntry: BarEntry?): String {
         barEntry?.y?.let {
             return if (it == 0f) {
-                ""
+                EMPTY_STRING
             } else {
                 it.toInt().toString()
             }
@@ -288,14 +322,11 @@ class SyndromeFormatter : ValueFormatter() {
 
 class WeightChartFormatter : ValueFormatter() {
 
-    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-        val date = Date(value.toLong() * 1000)
-        val sdf = SimpleDateFormat("M月", Locale.TAIWAN)
-        return sdf.format(date)
-    }
-
     override fun getFormattedValue(value: Float): String {
-        return "$value kg"
+        return JustPetApplication.appContext.getString(
+            R.string.chart_weight_unit,
+            DecimalFormat(getString(R.string.chart_weight_value_format)).format(value)
+        )
     }
 }
 
@@ -306,10 +337,7 @@ class WeightMarkerView :
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         e?.x?.toLong()?.let {
-            val date = Date(it * 1000)
-            val sdf = SimpleDateFormat("M月dd日", Locale.TAIWAN)
-            val displayString = sdf.format(date)
-            text.text = displayString
+            text.text = it.toChartDateFormat()
         }
         super.refreshContent(e, highlight)
     }

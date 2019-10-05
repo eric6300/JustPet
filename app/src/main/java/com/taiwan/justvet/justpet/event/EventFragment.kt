@@ -31,11 +31,6 @@ import com.taiwan.justvet.justpet.util.Converter
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 
-const val RESPIRATORY_RATE = 0
-const val HEART_RATE = 1
-const val WEIGHT = 2
-const val TEMPERATURE = 3
-
 class EventFragment : Fragment() {
 
     private lateinit var binding: FragmentEventBinding

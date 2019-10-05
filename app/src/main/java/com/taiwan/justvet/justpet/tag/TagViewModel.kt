@@ -16,7 +16,6 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.pet.PetSpecies
-import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
@@ -49,8 +48,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     private val _loadStatus = MutableLiveData<LoadStatus>()
     val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
-
-
+    
     var selectedPetProfile: PetProfile? = null
     val eventTags = mutableListOf<EventTag>()
     val eventTagsIndex = mutableListOf<Long>()
