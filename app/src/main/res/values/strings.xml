@@ -69,7 +69,7 @@
     <string name="text_one_year">一年</string>
     <string name="text_vomit_count">嘔吐次數</string>
 
-    //  Family  //
+    //  FamilyDialog  //
     <string name="text_pet_family">%s 的家人</string>
     <string name="text_user_already_pet_family">你已經是 %s 的家人囉！</string>
     <string name="text_invitee_already_pet_family">該用戶已經是 %s 的家人</string>
@@ -83,7 +83,7 @@
     <string name="text_invitation">邀請</string>
     <string name="text_send_invitation">發送邀請</string>
 
-    //  AddNewPet  //
+    //  AddNewPetDialog  //
     <string name="text_empty_name_error">請輸入名字</string>
     <string name="text_empty_birthday_error">請輸入出生日期</string>
     <string name="text_birthday_format">%d/%d/%d</string>
@@ -96,7 +96,7 @@
     <string name="text_modify">修改</string>
     <string name="text_cancel">取消</string>
     <string name="text_tody_notification">每日提醒</string>
-    <string name="text_confirm">確認</string>
+    <string name="text_confirm">確定</string>
     <string name="text_new_pet_profile">新增寵物</string>
     <string name="title_pet_profile">寵物檔案</string>
     <string name="text_check_invite">確認邀請</string>
@@ -108,7 +108,7 @@
     <string name="tool">工具</string>
     <string name="event">記錄詳情</string>
 
-    //  Tag  //
+    //  TagDialog  //
     <string name="text_eating">吃飯</string>
     <string name="text_shower">洗澡</string>
     <string name="text_walking">散步</string>
@@ -142,5 +142,8 @@
     <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>
     <string name="text_event_save_success">新增成功！</string>
 
+
+    //  CalendarFragment //
+    <string name="text_delete_event_message">確定要刪除此筆記錄嗎？</string>
 
 </resources>

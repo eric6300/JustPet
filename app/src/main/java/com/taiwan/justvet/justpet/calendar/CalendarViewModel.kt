@@ -61,7 +61,7 @@ class CalendarViewModel : ViewModel() {
 
     val localDate = LocalDate.now()
 
-    val pets = FirebaseFirestore.getInstance().collection(PETS)
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
 
     init {
         UserManager.userProfile.value?.let {
@@ -74,7 +74,7 @@ class CalendarViewModel : ViewModel() {
             viewModelScope.launch {
                 val data = mutableListOf<PetEvent>()
                 for (petId in UserProfile.pets) {
-                    pets.document(petId).collection(EVENTS)
+                    petsReference.document(petId).collection(EVENTS)
                         .whereEqualTo(YEAR, year)
                         .whereEqualTo(MONTH, month)
                         .get()
@@ -121,7 +121,7 @@ class CalendarViewModel : ViewModel() {
         var index = 1
         for (event in data) {
             val tagList = mutableListOf<EventTag>()
-            pets.document(event.petId).collection(EVENTS).document(event.eventId)
+            petsReference.document(event.petId).collection(EVENTS).document(event.eventId)
                 .collection(TAGS)
                 .get()
                 .addOnSuccessListener { document ->
@@ -200,7 +200,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     fun getEventTagsToDelete(petEvent: PetEvent) {
-        pets.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
             .get()
             .addOnSuccessListener {
                 for (item in it) {
@@ -214,7 +214,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     private fun deleteEvent(petEvent: PetEvent) {
-        pets.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).delete()
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).delete()
             .addOnSuccessListener {
                 refreshEventData()
             }
@@ -224,7 +224,7 @@ class CalendarViewModel : ViewModel() {
     }
 
     private fun deleteTags(petEvent: PetEvent, documentId: String) {
-        pets.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
+        petsReference.document(petEvent.petId).collection(EVENTS).document(petEvent.eventId).collection(TAGS)
             .document(documentId).delete()
             .addOnSuccessListener {
                 Log.d(ERIC, "deleteTags() succeeded")

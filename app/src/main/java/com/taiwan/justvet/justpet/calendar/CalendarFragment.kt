@@ -15,18 +15,15 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.databinding.FragmentCalendarBinding
-import org.threeten.bp.LocalDate
 
 class CalendarFragment : Fragment(), OnDateSelectedListener {
 
     private lateinit var binding: FragmentCalendarBinding
     private lateinit var calendarView: MaterialCalendarView
-    private lateinit var userProfile: UserProfile
-    private lateinit var localDate: LocalDate
-    private lateinit var adapter: CalendarEventAdapter
 
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
@@ -42,19 +39,15 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
             inflater, R.layout.fragment_calendar, container, false
         )
 
-        UserManager.userProfile.value?.let {
-            userProfile = it
-        }
-
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        localDate = viewModel.localDate
 
         setupCalendarView()
         setupEventRecyclerView()
+        setupMonthChangedListener()
+        setupDecorationOfEvents()
 
-        monthChangedListener()
-        decorationObserver()
+        showEventsOfThisMonth()
 
         viewModel.navigateToEventFragment.observe(this, Observer {
             it?.let {
@@ -68,24 +61,26 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
 
         viewModel.refreshEventData.observe(this, Observer {
-            calendarView.selectedDate?.apply {
-                if (it) {
-                    calendarView.removeDecorators()
-                    viewModel.default()
-                    viewModel.getMonthEventsData(
-                        userProfile,
-                        this.year.toLong(),
-                        this.month.toLong()
-                    )
-                    showSelectedDayEvents(this)
-                    viewModel.refreshEventDataCompleted()
+            UserManager.userProfile.value?.let { userProfile ->
+                calendarView.selectedDate?.apply {
+                    if (it) {
+                        calendarView.removeDecorators()
+                        viewModel.default()
+                        viewModel.getMonthEventsData(
+                            userProfile,
+                            this.year.toLong(),
+                            this.month.toLong()
+                        )
+                        showEventsOfSelectedDay(this)
+                        viewModel.refreshEventDataCompleted()
+                    }
                 }
             }
         })
 
         viewModel.showDeleteDialog.observe(this, Observer {
             it?.let {
-                deleteDialog(it)
+                showDeleteEventDialog(it)
                 viewModel.showDeleteDialogCompleted()
             }
         })
@@ -93,38 +88,32 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        showThisMonthEvents()
-    }
-
     private fun setupCalendarView() {
         calendarView = binding.calendarView
         calendarView.apply {
             this.setOnDateChangedListener(this@CalendarFragment)
-            this.setSelectedDate(localDate)
+            this.setSelectedDate(viewModel.localDate)
             this.isDynamicHeightEnabled = true
         }
     }
 
     private fun setupEventRecyclerView() {
-        val listOfEvents = binding.calendarListEvent
-        adapter = CalendarEventAdapter(viewModel, CalendarEventAdapter.OnClickListener {
-        })
-        listOfEvents.adapter = adapter
+        binding.calendarListEvent.adapter = CalendarEventAdapter(viewModel)
     }
 
-    private fun monthChangedListener() {
-        calendarView.setOnMonthChangedListener { widget, date ->
-            viewModel.getMonthEventsData(
-                userProfile,
-                date.year.toLong(),
-                date.month.toLong()
-            )
+    private fun setupMonthChangedListener() {
+        calendarView.setOnMonthChangedListener { _, date ->
+            UserManager.userProfile.value?.let {
+                viewModel.getMonthEventsData(
+                    it,
+                    date.year.toLong(),
+                    date.month.toLong()
+                )
+            }
         }
     }
 
-    private fun decorationObserver() {
+    private fun setupDecorationOfEvents() {
         viewModel.decorateListOfEvents.observe(this, Observer {
             val list = ArrayList<CalendarDay>()
             for (event in it) {
@@ -142,16 +131,16 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         })
     }
 
-    private fun showThisMonthEvents() {
+    private fun showEventsOfThisMonth() {
         viewModel.monthEventsData.observe(this, Observer { list ->
             calendarView.selectedDate?.let {
                 viewModel.getDecorationEvents(list)
-                showSelectedDayEvents(it)
+                showEventsOfSelectedDay(it)
             }
         })
     }
 
-    private fun showSelectedDayEvents(calendarDay: CalendarDay) {
+    private fun showEventsOfSelectedDay(calendarDay: CalendarDay) {
         viewModel.dayEventsFilter(
             year = calendarDay.year.toLong(),
             month = calendarDay.month.toLong(),
@@ -159,7 +148,6 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
             events = viewModel.monthEventsData.value
         )
     }
-
 
     override fun onDateSelected(
         calendarView: MaterialCalendarView,
@@ -174,13 +162,13 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         )
     }
 
-    fun deleteDialog(petEvent: PetEvent) {
+    private fun showDeleteEventDialog(petEvent: PetEvent) {
         val builder = AlertDialog.Builder(this.context!!, R.style.Theme_AppCompat_Dialog)
 
-        builder.setTitle("確定要刪除此筆資料嗎？")
-        builder.setPositiveButton("確定") { _, _ ->
+        builder.setTitle(getString(R.string.text_delete_event_message))
+        builder.setPositiveButton(getString(R.string.text_confirm)) { _, _ ->
             viewModel.getEventTagsToDelete(petEvent)
-        }.setNegativeButton("取消") { _, _ ->
+        }.setNegativeButton(getString(R.string.text_cancel)) { _, _ ->
         }.show()
     }
 
