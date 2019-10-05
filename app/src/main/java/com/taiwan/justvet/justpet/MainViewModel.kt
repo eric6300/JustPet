@@ -26,9 +26,9 @@ class MainViewModel : ViewModel() {
     val userPhotoUrl: LiveData<Uri>
         get() = _userPhotoUrl
 
-    private val _petsSizeNotZero = MutableLiveData<Boolean>()
-    val petsSizeNotZero: LiveData<Boolean>
-        get() = _petsSizeNotZero
+    private val _userHasPets = MutableLiveData<Boolean>()
+    val userHasPets: LiveData<Boolean>
+        get() = _userHasPets
 
     private val _navigateToHome = MutableLiveData<Boolean>()
     val navigateToHome: LiveData<Boolean>
@@ -96,8 +96,8 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun petsSizeNotZero(status: Boolean) {
-        _petsSizeNotZero.value = status
+    fun userHasPets(status: Boolean) {
+        _userHasPets.value = status
     }
 
     fun checkInvite() {

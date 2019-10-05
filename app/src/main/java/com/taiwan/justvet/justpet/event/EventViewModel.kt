@@ -17,8 +17,6 @@ import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.family.EMPTY_STRING
-import com.taiwan.justvet.justpet.pet.COLON
-import com.taiwan.justvet.justpet.pet.SLASH
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
@@ -449,6 +447,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         const val WEIGHT_TYPE = 2
         const val TEMPERATURE_TYPE = 3
 
+        //  PetEvent
         const val PET_ID = "petId"
         const val PET_NAME = "petName"
         const val PET_SPECIES = "petSpecies"
@@ -467,6 +466,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         const val HEART_RATE = "heartRate"
         const val IMAGE_URL = "imageUrl"
 
+        //  EventTag
         const val TYPE = "type"
         const val INDEX = "index"
         const val TITLE = "title"

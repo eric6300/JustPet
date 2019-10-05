@@ -14,6 +14,8 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
@@ -63,6 +65,8 @@ class ChartViewModel : ViewModel() {
 
             set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1, 0, 0, 0)
 
+            Log.d(ERIC, "date : ${calendar.time}")
+
             add(Calendar.MONTH, -3)
             threeMonthsAgoTimestamp = (timeInMillis / 1000)
 
@@ -108,10 +112,9 @@ class ChartViewModel : ViewModel() {
         petProfile.profileId?.let {
             selectedEventTag?.index?.let { index ->
                 petsReference.document(it).collection(EVENTS)
-                    .whereArrayContains("eventTagsIndex", index)
-                    .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
+                    .whereArrayContains(EVENT_TAGS_INDEX, index)
+                    .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
                     .addOnSuccessListener {
-                        Log.d(ERIC, "one year : $oneYearAgoTimestamp")
 
                         if (it.size() > 0) {
                             val data = mutableListOf<PetEvent>()
@@ -142,7 +145,14 @@ class ChartViewModel : ViewModel() {
             val calendar = Calendar.getInstance()
 
             //  set the calendar to first day of next month
-            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH.plus(1)), 1, 0, 0, 0)
+            calendar.set(
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH).plus(1),
+                1,
+                0,
+                0,
+                0
+            )
 
             // create hashMap of last 12 months
             val dataMap = HashMap<Date, List<PetEvent>>()
@@ -156,16 +166,15 @@ class ChartViewModel : ViewModel() {
                 // sort data into hashMap
                 data.forEach { petEvent ->
                     val dateOfEvent = getDateOfEvent(petEvent, calendar)
+
                     if (dataMap.contains(dateOfEvent)) {
                         (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
-                    } else {
-                        val newList = ArrayList<PetEvent>()
-                        newList.add(petEvent)
-                        dateOfEvent?.let { dataMap[dateOfEvent] = newList }
                     }
                 }
             }
+
             val sortedMap = dataMap.toSortedMap()
+            Log.d(ERIC, "$sortedMap")
             setEntriesForSyndrome(sortedMap)
         }
     }
@@ -175,8 +184,16 @@ class ChartViewModel : ViewModel() {
         calendar: Calendar
     ): Date? {
         val calendarClone = calendar.clone() as Calendar
-        calendarClone.set(Calendar.YEAR, petEvent.year.toInt())
-        calendarClone.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
+
+        calendarClone.set(
+            petEvent.year.toInt(),
+            petEvent.month.toInt().minus(1),
+            1,
+            0,
+            0,
+            0
+        )
+
         return calendarClone.time
     }
 
@@ -185,27 +202,16 @@ class ChartViewModel : ViewModel() {
             // Setting Data
             val entries = mutableListOf<BarEntry>()
 
-            var threeMonths = 0
-            var sixMonths = 0
-            var oneYear = 0
             var index = 1f
 
             for (date in syndromeData.keys) {
-
                 syndromeData[date]?.size?.let {
-                    if (index in 1f..12f) {
-                        oneYear += it
-                    }
-                    if (index in 7f..12f) {
-                        sixMonths += it
-                    }
-                    if (index in 10f..12f) {
-                        threeMonths += it
-                    }
                     entries.add(BarEntry(index, it.toFloat()))
                     index += 1f
                 }
             }
+
+            Log.d(ERIC, "$entries")
 
             _syndromeEntries.value = entries
         }

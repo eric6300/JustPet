@@ -33,17 +33,12 @@ const val PETS = "pets"
 const val EVENTS = "events"
 const val TAGS = "tags"
 const val INVITES = "invites"
-const val NAME = "name"
-const val BIRTHDAY = "birthday"
-const val ID_NUMBER = "idNumber"
-const val SPECIES = "species"
-const val GENDER = "gender"
-const val HTTPS = "https"
+const val SLASH = "/"
+const val COLON = ":"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    //    private lateinit var appBarConfiguration: AppBarConfiguration
     private val viewModel: MainViewModel by lazy {
         ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
@@ -61,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_bottom_chart -> {
-                    if (viewModel.petsSizeNotZero.value == true) {
+                    if (viewModel.userHasPets.value == true) {
                         findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_chartFragment)
                         return@OnNavigationItemSelectedListener true
                     } else {
@@ -89,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNav()
         setupNavController()
-        setupFAB()
+        setupFab()
 
         setupFirebaseAuth()
 
@@ -97,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
         UserManager.userProfile.observe(this, Observer {
             it?.let {
-                viewModel.petsSizeNotZero(it.pets?.size != 0)
+                viewModel.userHasPets(it.pets?.size != 0)
             }
         })
 
@@ -177,9 +172,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupFAB() {
+    private fun setupFab() {
         binding.floatingActionButton.setOnClickListener {
-            if (viewModel.petsSizeNotZero.value == true) {
+            if (viewModel.userHasPets.value == true) {
                 findNavController(R.id.nav_host_fragment).navigate(
                     NavGraphDirections.navigateToTagDialog(PetEvent())
                 )

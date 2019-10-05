@@ -1,12 +1,29 @@
 <resources>
     <string name="app_name">JustPet</string>
 
+    //  App  //
+    <string name="home">首頁</string>
+    <string name="calendar">月曆</string>
+    <string name="chart">圖表</string>
+    <string name="tool">工具</string>
+    <string name="event">記錄詳情</string>
+    <string name="text_new_pet_profile">新增寵物</string>
+    <string name="text_check_invite">確認邀請</string>
+
+    //  Login  //
+    <string name="text_google_sign_in">Google 登入</string>
+
     //  HomeFragment  //
+    <string name="text_tody_notification">每日提醒</string>
+    <string name="text_species">物種</string>
     <string name="text_id_number">晶片號碼 ( 選填 )</string>
     <string name="text_name">名字</string>
     <string name="text_birthday">出生日期</string>
     <string name="text_gender">性別</string>
     <string name="text_neutered">絕育(結紮)</string>
+    <string name="text_modify">修改</string>
+    <string name="text_cancel">取消</string>
+    <string name="text_confirm">確定</string>
     <string name="text_name_empty_error">名字不可為空白</string>
     <string name="text_profile_edit_success">修改寵物資料成功！</string>
     <string name="text_vaccine_invalid">今年都還沒有打疫苗喔！</string>
@@ -19,7 +36,6 @@
     <string name="text_next_step">下一步</string>
     <string name="text_quick_save">快速記錄</string>
     <string name="date_format">yyyy/MM/dd</string>
-    <string name="time_format">HH:mm</string>
     <string name="event_time_format">yyyy/MM/dd  HH:mm</string>
     <string name="time_list_format">yyyy/MM/dd/HH:mm</string>
     <string name="title_time">時間</string>
@@ -68,6 +84,10 @@
     <string name="text_six_months">六個月</string>
     <string name="text_one_year">一年</string>
     <string name="text_vomit_count">嘔吐次數</string>
+    <string name="chart_date_format">MM月dd日</string>
+    <string name="chart_month_format">M月</string>
+    <string name="chart_weight_unit">%s kg</string>
+    <string name="chart_weight_value_format">#.#</string>
 
     //  FamilyDialog  //
     <string name="text_pet_family">%s 的家人</string>
@@ -90,25 +110,10 @@
     <string name="text_image_path">image/%s</string>
     <string name="text_profile_path">profile/%s</string>
 
-    //  Login  //
-    <string name="text_google_sign_in">Google 登入</string>
-    <string name="text_species">物種</string>
-    <string name="text_modify">修改</string>
-    <string name="text_cancel">取消</string>
-    <string name="text_tody_notification">每日提醒</string>
-    <string name="text_confirm">確定</string>
-    <string name="text_new_pet_profile">新增寵物</string>
-    <string name="title_pet_profile">寵物檔案</string>
-    <string name="text_check_invite">確認邀請</string>
-
-    //  App  //
-    <string name="home">首頁</string>
-    <string name="calendar">月曆</string>
-    <string name="chart">圖表</string>
-    <string name="tool">工具</string>
-    <string name="event">記錄詳情</string>
-
     //  TagDialog  //
+    <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>
+    <string name="text_event_save_success">新增成功！</string>
+
     <string name="text_eating">吃飯</string>
     <string name="text_shower">洗澡</string>
     <string name="text_walking">散步</string>
@@ -138,10 +143,6 @@
     <string name="text_vaccine">疫苗注射</string>
     <string name="text_health_exam">健康檢查</string>
     <string name="text_other_treatment">其他醫療</string>
-
-    <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>
-    <string name="text_event_save_success">新增成功！</string>
-
 
     //  CalendarFragment //
     <string name="text_delete_event_message">確定要刪除此筆記錄嗎？</string>
