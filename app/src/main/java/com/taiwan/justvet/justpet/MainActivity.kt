@@ -38,7 +38,6 @@ const val BIRTHDAY = "birthday"
 const val ID_NUMBER = "idNumber"
 const val SPECIES = "species"
 const val GENDER = "gender"
-const val TIMESTAMP = "timestamp"
 const val HTTPS = "https"
 
 class MainActivity : AppCompatActivity() {

@@ -20,7 +20,7 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val petEvent = getItem(position)
         holder.itemView.setOnClickListener {
-            viewModel.navigateToDetail(petEvent)
+            viewModel.navigateToEventFragment(petEvent)
         }
 
         holder.binding.icDelete.setOnClickListener {
@@ -34,7 +34,7 @@ class CalendarEventAdapter(val viewModel: CalendarViewModel, val onClickListener
         }
 
         holder.binding.listOfTags.setOnClickListener {
-            viewModel.navigateToDetail(petEvent)
+            viewModel.navigateToEventFragment(petEvent)
         }
 
         holder.bind(petEvent)

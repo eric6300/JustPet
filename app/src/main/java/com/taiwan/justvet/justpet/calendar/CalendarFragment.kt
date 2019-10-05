@@ -56,16 +56,14 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
         monthChangedListener()
         decorationObserver()
 
-//        showThisMonthEvents()
-
-        viewModel.navigateToDetail.observe(this, Observer {
+        viewModel.navigateToEventFragment.observe(this, Observer {
             it?.let {
                 findNavController().navigate(
                     CalendarFragmentDirections.actionCalendarFragmentToEventFragment(
                         it
                     )
                 )
-                viewModel.navigateToDetailCompleted()
+                viewModel.navigateToEventFragmentCompleted()
             }
         })
 
