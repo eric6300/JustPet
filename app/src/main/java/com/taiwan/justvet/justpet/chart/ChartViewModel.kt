@@ -17,20 +17,18 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ChartViewModel : ViewModel() {
+    private val _petList = MutableLiveData<List<PetProfile>>()
+    val petList: LiveData<List<PetProfile>>
+        get() = _petList
 
-    private val _listOfProfile = MutableLiveData<List<PetProfile>>()
-    val listOfProfile: LiveData<List<PetProfile>>
-        get() = _listOfProfile
-
-    private val _selectedProfile = MutableLiveData<PetProfile>()
-    val selectedProfile: LiveData<PetProfile>
-        get() = _selectedProfile
+    private val _selectedPetProfile = MutableLiveData<PetProfile>()
+    val selectedPetProfile: LiveData<PetProfile>
+        get() = _selectedPetProfile
 
     private val _weightEntries = MutableLiveData<List<Entry>>()
     val weightEntries: LiveData<List<Entry>>
@@ -40,18 +38,14 @@ class ChartViewModel : ViewModel() {
     val syndromeEntries: LiveData<List<BarEntry>>
         get() = _syndromeEntries
 
-    val petProfileData = mutableListOf<PetProfile>()
     var selectedEventTag: EventTag? = null
 
-    val database = FirebaseFirestore.getInstance()
-    val petsRef = database.collection(PETS)
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
 
-    val calendar = Calendar.getInstance()
-    val localData = LocalDate.now()
-    var nowTimestamp: Long = 0
-    var threeMonthsAgoTimestamp: Long = 0
-    var sixMonthsAgoTimestamp: Long = 0
-    var oneYearAgoTimestamp: Long = 0
+    var nowTimestamp = 0L
+    var threeMonthsAgoTimestamp = 0L
+    var sixMonthsAgoTimestamp = 0L
+    var oneYearAgoTimestamp = 0L
 
     init {
         UserManager.userProfile.value?.let {
@@ -62,10 +56,12 @@ class ChartViewModel : ViewModel() {
     }
 
     fun calculateTimestamp() {
+        val calendar = Calendar.getInstance()
+
         calendar.apply {
             nowTimestamp = (calendar.timeInMillis / 1000)
 
-            set(localData.year, localData.monthValue, 1,0,0,0)
+            set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1, 0, 0, 0)
 
             add(Calendar.MONTH, -3)
             threeMonthsAgoTimestamp = (timeInMillis / 1000)
@@ -79,38 +75,44 @@ class ChartViewModel : ViewModel() {
     }
 
     fun getProfileByPosition(position: Int) {
-        _selectedProfile.value = _listOfProfile.value?.get(position)
+        _selectedPetProfile.value = _petList.value?.get(position)
     }
 
     fun getPetProfileData(userProfile: UserProfile) {
-        userProfile.pets?.let {
-            viewModelScope.launch {
-                var index = 1
-                for (petId in it) {
-                    petsRef.document(petId).get()
-                        .addOnSuccessListener { document ->
+        userProfile.pets?.let { pets ->
 
-                            petProfileData.add(document.toPetProfile())
-                            if (index == it.size) {
-                                _listOfProfile.value = petProfileData.sortedBy { it.profileId }
-                            }
-                            index++
-                        }
-                        .addOnFailureListener {
-                            Log.d(ERIC, "ChartViewModel getPetProfileData() failed : $it")
-                        }
+            val list = mutableListOf<PetProfile>()
+
+            fun getNextProfile(index: Int) {
+                if (index == pets.size) {
+                    _petList.value = list.sortedBy { it.profileId }
+                    return
                 }
+
+                petsReference.document(pets[index]).get()
+                    .addOnSuccessListener { document ->
+                        list.add(document.toPetProfile())
+                        getNextProfile(index.plus(1))
+                    }
+                    .addOnFailureListener {
+                        getNextProfile(index.plus(1))
+                        Log.d(ERIC, "ChartViewModel getPetList() failed : $it")
+                    }
             }
+
+            getNextProfile(0)
         }
     }
 
     fun getSyndromeData(petProfile: PetProfile) {
         petProfile.profileId?.let {
             selectedEventTag?.index?.let { index ->
-                petsRef.document(it).collection(EVENTS).whereArrayContains("eventTagsIndex", index)
+                petsReference.document(it).collection(EVENTS)
+                    .whereArrayContains("eventTagsIndex", index)
                     .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                     .addOnSuccessListener {
                         Log.d(ERIC, "one year : $oneYearAgoTimestamp")
+
                         if (it.size() > 0) {
                             val data = mutableListOf<PetEvent>()
 
@@ -121,16 +123,12 @@ class ChartViewModel : ViewModel() {
                                 }
                             }
 
-//                            _eventData.value = data
-                            // get 12 months sorted syndrome data
-                            sortSyndromeData(12, data)
+                            sortSyndromeData(data)  // get 12 months sorted syndrome data
                         } else {
-//                            _eventData.value = emptyList()
-                            sortSyndromeData(12, emptyList())
+                            sortSyndromeData(emptyList())
                         }
                     }.addOnFailureListener {
-//                        _eventData.value = emptyList()
-                        sortSyndromeData(12, emptyList())
+                        sortSyndromeData(emptyList())
                         Log.d(ERIC, "getSyndromeEntries() failed : $it")
                     }
             }
@@ -138,23 +136,23 @@ class ChartViewModel : ViewModel() {
     }
 
     private fun sortSyndromeData(
-        months: Int,
         data: List<PetEvent>
     ) {
         viewModelScope.launch {
             val calendar = Calendar.getInstance()
 
-            calendar.set(localData.year, localData.monthValue, 1,0,0,0)
+            //  set the calendar to first day of next month
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH.plus(1)), 1, 0, 0, 0)
 
+            // create hashMap of last 12 months
             val dataMap = HashMap<Date, List<PetEvent>>()
 
-            // create hashMap of last 12 months by year/month
             for (i in 1..12) {
                 calendar.add(Calendar.MONTH, -1)
                 dataMap[calendar.time] = mutableListOf()
             }
 
-            if (data.size > 0) {
+            if (data.isNotEmpty()) {
                 // sort data into hashMap
                 data.forEach { petEvent ->
                     val dateOfEvent = getDateOfEvent(petEvent, calendar)
@@ -176,10 +174,10 @@ class ChartViewModel : ViewModel() {
         petEvent: PetEvent,
         calendar: Calendar
     ): Date? {
-        val calendar2 = calendar.clone() as Calendar
-        calendar2.set(Calendar.YEAR, petEvent.year.toInt())
-        calendar2.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
-        return calendar2.time
+        val calendarClone = calendar.clone() as Calendar
+        calendarClone.set(Calendar.YEAR, petEvent.year.toInt())
+        calendarClone.set(Calendar.MONTH, petEvent.month.toInt().minus(1))
+        return calendarClone.time
     }
 
     fun setEntriesForSyndrome(syndromeData: Map<Date, List<PetEvent>>) {
@@ -209,17 +207,13 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-//            oneYearSyndrome.value = oneYear
-//            sixMonthsSyndrome.value = sixMonths
-//            threeMonthsSyndrome.value = threeMonths
-
             _syndromeEntries.value = entries
         }
     }
 
     fun getWeightData(petProfile: PetProfile) {
         petProfile.profileId?.let {
-            petsRef.document(it).collection(EVENTS)
+            petsReference.document(it).collection(EVENTS)
                 .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
                     if (it.size() > 0) {
@@ -284,10 +278,6 @@ class ChartViewModel : ViewModel() {
                 }
             }
         }
-
-//        oneYearWeight.value = oneYear
-//        sixMonthsWeight.value = sixMonths
-//        threeMonthsWeight.value = threeMonths
 
     }
 }

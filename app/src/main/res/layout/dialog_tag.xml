@@ -111,7 +111,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_of_profile"
-            listOfProfile="@{viewModel.petList}"
+            petList="@{viewModel.petList}"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="16dp"

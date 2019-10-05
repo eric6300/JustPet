@@ -22,9 +22,9 @@ data class PetEvent (
     val note: String? = "",
     val spirit: Double? = null,
     val appetite: Double? = null,
-    val weight: Double = 0.0,
-    val temperature: Double = 0.0,
-    val respiratoryRate: Long = 0,
-    val heartRate: Long = 0,
+    val weight: Double? = null,
+    val temperature: Double? = null,
+    val respiratoryRate: Long? = null,
+    val heartRate: Long? = null,
     val imageUrl: String? = null
 ): Parcelable

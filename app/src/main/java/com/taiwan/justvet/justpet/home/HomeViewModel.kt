@@ -138,12 +138,12 @@ class HomeViewModel : ViewModel() {
                             petListFromFirebase.add(document.toPetProfile())
 
                             getNextPetProfile(index.plus(1))
-                            Log.d(ERIC, "getPetProfileData() succeeded: ${document.id}")
+                            Log.d(ERIC, "getPetList() succeeded: ${document.id}")
                         }
                         .addOnFailureListener {
 
                             getNextPetProfile(index.plus(1))
-                            Log.d(ERIC, "getPetProfileData() failed: $it")
+                            Log.d(ERIC, "getPetList() failed: $it")
                         }
                 }
 

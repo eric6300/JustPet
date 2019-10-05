@@ -43,6 +43,10 @@
     <string name="text_event_permission_message">開啟「設定」，點選「權限」，並開啟「儲存」</string>
     <string name="text_open_app_setting">開啟「設定」</string>
     <string name="text_weight_empty_error">體重未填寫</string>
+    <string name="text_weight_format_error">體重格式或數據錯誤，請修正數據</string>
+    <string name="text_temperature_format_error">體溫格式或數據錯誤，請修正數據</string>
+    <string name="text_respiratory_rate_format_error">呼吸次數格式或數據錯誤，請修正數據</string>
+    <string name="text_heart_rate_format_error">脈搏格式或數據錯誤，請修正數據</string>
 
     //  ToolFragment  //
     <string name="title_food_intake">基礎攝取熱量</string>

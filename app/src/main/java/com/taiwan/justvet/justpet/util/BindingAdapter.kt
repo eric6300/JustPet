@@ -176,7 +176,7 @@ fun bindRecyclerViewWithListOfNotification(
     }
 }
 
-@BindingAdapter("listOfProfile")
+@BindingAdapter("petList")
 fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<PetProfile>?) {
     list?.let {
         recyclerView.adapter?.apply {

@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ServerTimestamp
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
@@ -20,10 +19,11 @@ import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.pet.COLON
 import com.taiwan.justvet.justpet.pet.SLASH
-import com.taiwan.justvet.justpet.util.*
+import com.taiwan.justvet.justpet.util.LoadStatus
+import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
-import java.text.SimpleDateFormat
-import java.util.*
+import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
+import com.taiwan.justvet.justpet.util.toTimeListFormat
 
 class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
@@ -62,10 +62,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
     val eventNote = MutableLiveData<String>()
-    val eventWeight = MutableLiveData<Double>()
-    val eventTemper = MutableLiveData<Double>()
-    val eventRr = MutableLiveData<Long>()
-    val eventHr = MutableLiveData<Long>()
+    val eventWeight = MutableLiveData<String>()
+    val eventTemper = MutableLiveData<String>()
+    val eventRr = MutableLiveData<String>()
+    val eventHr = MutableLiveData<String>()
     val eventTimestamp = MutableLiveData<Long>()
     val eventImage = MutableLiveData<String>()
 
@@ -85,17 +85,27 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
             eventNote.value = it.note
             eventSpirit = it.spirit
             eventAppetite = it.appetite
-            eventWeight.value = it.weight
-            eventTemper.value = it.temperature
-            eventRr.value = it.respiratoryRate
-            eventHr.value = it.heartRate
             eventImage.value = it.imageUrl
             _eventTags.value = it.eventTags
-
-            if (it.timestamp == 0L) {  // navigate from tag dialog for add an event
-                eventTimestamp.value = (calendar.timeInMillis / 1000)
-            } else {  // navigate from calendar fragment for edit the event
-                eventTimestamp.value = it.timestamp
+            eventWeight.value = when (it.weight) {
+                null -> null
+                else -> it.weight.toString()
+            }
+            eventTemper.value = when (it.temperature) {
+                null -> null
+                else -> it.temperature.toString()
+            }
+            eventRr.value = when (it.respiratoryRate) {
+                null -> null
+                else -> it.respiratoryRate.toString()
+            }
+            eventHr.value = when (it.heartRate) {
+                null -> null
+                else -> it.heartRate.toString()
+            }
+            eventTimestamp.value = when (it.timestamp) {
+                0L -> (calendar.timeInMillis / 1000)
+                else -> it.timestamp
             }
         }
 
@@ -138,7 +148,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         if (petEvent.eventId == EMPTY_STRING) {
 
             petEvent.eventTagsIndex?.let {
-                if (it.contains(5) && eventWeight.value == null && eventWeight.value == 0.0) {
+                if (it.contains(5) && eventWeight.value.isNullOrEmpty()) {
 
                     Toast.makeText(
                         JustPetApplication.appContext,
@@ -147,13 +157,19 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                     ).show()
 
                 } else {
-
-                    postEvent()
-
+                    if (isAllFormatValid()) {
+                        postEvent()
+                    } else {
+                        Log.d(ERIC, "格式不對")
+                    }
                 }
             }
         } else {
-            updateEvent()
+            if (isAllFormatValid()) {
+                updateEvent()
+            } else {
+                Log.d(ERIC, "格式不對")
+            }
         }
     }
 
@@ -179,10 +195,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 note = eventNote.value,
                 spirit = eventSpirit,
                 appetite = eventAppetite,
-                weight = eventWeight.value ?: 0.0,
-                temperature = eventTemper.value ?: 0.0,
-                respiratoryRate = eventRr.value ?: 0,
-                heartRate = eventHr.value ?: 0
+                weight = eventWeight.value?.toDouble(),
+                temperature = eventTemper.value?.toDouble(),
+                respiratoryRate = eventRr.value?.toLong(),
+                heartRate = eventHr.value?.toLong()
             )
         }
         eventsReference.let {
@@ -282,10 +298,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 "note" to eventNote.value,
                 "spirit" to eventSpirit,
                 "appetite" to eventAppetite,
-                "weight" to eventWeight.value,
-                "temperature" to eventTemper.value,
-                "respiratoryRate" to eventRr.value,
-                "heartRate" to eventHr.value,
+                "weight" to eventWeight.value?.toDouble(),
+                "temperature" to eventTemper.value?.toDouble(),
+                "respiratoryRate" to eventRr.value?.toLong(),
+                "heartRate" to eventHr.value?.toLong(),
                 "imageUrl" to eventImage.value
             )
 
@@ -307,6 +323,73 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
             0L -> (calendar.timeInMillis / 1000).toTimeListFormat().split(SLASH)
             else -> petEvent.timestamp.toTimeListFormat().split(SLASH)
         }
+    }
+
+    fun isValidFormat(mutableLiveData: MutableLiveData<String>, type: Int): Boolean {
+        return when {
+            mutableLiveData.value == null -> true
+
+            "[0-9]{0,2}([.][0-9]{0,2})?".toRegex().matches(mutableLiveData.value.toString()) -> true
+
+            else -> {
+                when (type) {
+
+                    WEIGHT ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_weight_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    TEMPERATURE ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_temperature_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                }
+
+                false
+            }
+        }
+    }
+
+    fun isValidRateFormat(mutableLiveData: MutableLiveData<String>, rateType: Int): Boolean {
+        return when {
+            mutableLiveData.value == null -> true
+
+            "[0-9]{0,3}?".toRegex().matches(mutableLiveData.value.toString()) -> true
+
+            else -> {
+
+                when (rateType) {
+
+                    RESPIRATORY_RATE ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_respiratory_rate_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    HEART_RATE -> {
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_heart_rate_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                false
+            }
+        }
+    }
+
+    fun isAllFormatValid(): Boolean {
+        return isValidFormat(eventWeight, WEIGHT) &&
+                isValidFormat(eventTemper, TEMPERATURE) &&
+                isValidRateFormat(eventRr, RESPIRATORY_RATE) &&
+                isValidRateFormat(eventHr, HEART_RATE)
     }
 
     fun navigateToCalendar() {
@@ -343,6 +426,22 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     fun showGalleryCompleted() {
         _showGallery.value = false
+    }
+
+    fun defaultWeight() {
+        eventWeight.value = null
+    }
+
+    fun defaultTemper() {
+        eventTemper.value = null
+    }
+
+    fun defaultRr() {
+        eventRr.value = null
+    }
+
+    fun defaultHr() {
+        eventHr.value = null
     }
 
 }

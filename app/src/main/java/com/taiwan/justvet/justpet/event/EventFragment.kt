@@ -26,10 +26,15 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEventBinding
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.util.Converter
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
 
+const val RESPIRATORY_RATE = 0
+const val HEART_RATE = 1
+const val WEIGHT = 2
+const val TEMPERATURE = 3
 
 class EventFragment : Fragment() {
 
@@ -96,6 +101,42 @@ class EventFragment : Fragment() {
                 outline?.setRoundRect(0, 0, view.width, view.height, 12F)
             }
         }
+
+        //  Handle empty string can't transform to double issue
+        viewModel.eventWeight.observe(this, Observer {
+            it?.let {
+                if (it == EMPTY_STRING) {
+                    viewModel.defaultWeight()
+                }
+            }
+        })
+
+        //  Handle empty string can't transform to double issue
+        viewModel.eventTemper.observe(this, Observer {
+            it?.let {
+                if (it == EMPTY_STRING) {
+                    viewModel.defaultTemper()
+                }
+            }
+        })
+
+        //  Handle empty string can't transform to double issue
+        viewModel.eventRr.observe(this, Observer {
+            it?.let {
+                if (it == EMPTY_STRING) {
+                    viewModel.defaultRr()
+                }
+            }
+        })
+
+        //  Handle empty string can't transform to double issue
+        viewModel.eventHr.observe(this, Observer {
+            it?.let {
+                if (it == EMPTY_STRING) {
+                    viewModel.defaultHr()
+                }
+            }
+        })
 
         return binding.root
     }

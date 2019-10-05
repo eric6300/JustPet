@@ -91,10 +91,10 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                                     index++
                                 }
                             }
-                            Log.d(ERIC, "TagViewModel getPetProfileData() succeeded")
+                            Log.d(ERIC, "TagViewModel getPetList() succeeded")
                         }
                         .addOnFailureListener {
-                            Log.d(ERIC, "TagViewModel getPetProfileData() failed : $it")
+                            Log.d(ERIC, "TagViewModel getPetList() failed : $it")
                         }
                 }
             }

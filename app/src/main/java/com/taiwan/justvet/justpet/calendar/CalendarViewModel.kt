@@ -79,10 +79,10 @@ class CalendarViewModel : ViewModel() {
                                             note = event["note"] as String?,
                                             spirit = event["spirit"] as Double?,
                                             appetite = event["appetite"] as Double?,
-                                            weight = event["weight"] as Double,
-                                            temperature = event["temperature"] as Double,
-                                            respiratoryRate = event["respiratoryRate"] as Long,
-                                            heartRate = event["heartRate"] as Long,
+                                            weight = event["weight"] as Double?,
+                                            temperature = event["temperature"] as Double?,
+                                            respiratoryRate = event["respiratoryRate"] as Long?,
+                                            heartRate = event["heartRate"] as Long?,
                                             imageUrl = event["imageUrl"] as String?
                                         )
                                     )
