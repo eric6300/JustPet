@@ -16,7 +16,6 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
-import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.*
 import com.taiwan.justvet.justpet.util.Util.getString
@@ -72,11 +71,11 @@ class HomeViewModel : ViewModel() {
     val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
-    val tagVomit = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
+    val tagVomit = EventTag(TagType.SYNDROME.value, 100, getString(R.string.text_vomit))
 
-    val tagVaccine = EventTag(TagType.TREATMENT.value, 208, "疫苗注射")
+    val tagVaccine = EventTag(TagType.TREATMENT.value, 208, getString(R.string.text_vaccine))
 
-    val tagWeight = EventTag(TagType.DIARY.value, 5, "量體重")
+    val tagWeight = EventTag(TagType.DIARY.value, 5, getString(R.string.text_weight_measure))
 
     val petName = MutableLiveData<String>()
     val petBirthdayString = MutableLiveData<String>()

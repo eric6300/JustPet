@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -22,12 +23,14 @@ import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
+import kotlinx.android.synthetic.main.activity_main.*
 
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
 const val ERIC = "testEric"
 const val UID = "uid"
+const val EMAIL = "email"
 const val USERS = "users"
 const val PETS = "pets"
 const val EVENTS = "events"
@@ -35,6 +38,7 @@ const val TAGS = "tags"
 const val INVITES = "invites"
 const val SLASH = "/"
 const val COLON = ":"
+const val EMPTY_STRING = ""
 
 class MainActivity : AppCompatActivity() {
 
@@ -96,6 +100,17 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        UserManager.refreshUserProfileCompleted.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    UserManager.userProfile.value?.let { userProfile ->
+                        nav_bottom_view.selectedItemId = R.id.nav_bottom_home
+                        UserManager.refreshUserProfileCompleted()
+                    }
+                }
+            }
+        })
+
         viewModel.invitationList.observe(this, Observer { inviteList ->
             inviteList?.let {
                 val invite = it[0]
@@ -123,15 +138,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 dialog?.show()
-            }
-        })
-
-        viewModel.navigateToHome.observe(this, Observer {
-            it?.let {
-                if (it) {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
-                    viewModel.navigateToHomeCompleted()
-                }
             }
         })
 

@@ -17,7 +17,7 @@ import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
 
-class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnClickListener) :
+class PetProfileAdapter(val viewModel: HomeViewModel) :
     ListAdapter<PetProfile, PetProfileAdapter.ViewHolder>(ProfileDiffCallback()) {
 
     private lateinit var context: Context
@@ -150,9 +150,5 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         override fun areContentsTheSame(oldItem: PetProfile, newItem: PetProfile): Boolean {
             return (oldItem.name == newItem.name) && (oldItem.owner == newItem.owner) && (oldItem.birthday == newItem.birthday) && (oldItem.idNumber == newItem.idNumber)
         }
-    }
-
-    class OnClickListener(val clickListener: (profile: PetProfile) -> Unit) {
-        fun onClick(profile: PetProfile) = clickListener(profile)
     }
 }

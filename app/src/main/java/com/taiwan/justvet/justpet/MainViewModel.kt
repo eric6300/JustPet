@@ -200,7 +200,7 @@ class MainViewModel : ViewModel() {
                         )
 
                         UserManager.refreshUserProfile(newUserProfile)
-                        _navigateToHome.value = true
+
                         Log.d(ERIC, "updatePetProfileFamily succeeded")
                     }.addOnFailureListener {
                         Log.d(ERIC, "updatePetProfileFamily failed : $it")
@@ -209,7 +209,4 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun navigateToHomeCompleted() {
-        _navigateToHome.value = false
-    }
 }

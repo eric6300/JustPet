@@ -16,7 +16,6 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat

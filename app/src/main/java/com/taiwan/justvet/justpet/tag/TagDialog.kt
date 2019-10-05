@@ -39,7 +39,8 @@ class TagDialog : BottomSheetDialogFragment() {
             val bottomSheetDialog = (it as BottomSheetDialog)
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
             bottomSheetDialog?.let {
-                BottomSheetBehavior.from(bottomSheetDialog).state = BottomSheetBehavior.STATE_EXPANDED
+                BottomSheetBehavior.from(bottomSheetDialog).state =
+                    BottomSheetBehavior.STATE_EXPANDED
             }
         }
 
@@ -58,10 +59,10 @@ class TagDialog : BottomSheetDialogFragment() {
         setupListOfTags()
         setupSegmentedButtonGroup()
 
-        viewModel.leaveTagDialog.observe(this, Observer {
+        viewModel.leaveDialog.observe(this, Observer {
             if (it) {
                 dismiss()
-                viewModel.leaveTagDialogCompleted()
+                viewModel.leaveDialogCompleted()
             }
         })
 

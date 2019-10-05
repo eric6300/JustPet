@@ -12,10 +12,6 @@ import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
 
-const val EMAIL = "email"
-const val EMPTY_STRING = ""
-const val INVITER_EMAIL = "inviterEmail"
-const val INVITEE_EMAIL = "inviteeEmail"
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     private val _expandStatus = MutableLiveData<Boolean>()
@@ -93,8 +89,8 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         _loadStatus.value = LoadStatus.LOADING
 
         inviteReference
-            .whereEqualTo(INVITER_EMAIL, userEmail)
-            .whereEqualTo(INVITEE_EMAIL, inviteeEmail.value)
+            .whereEqualTo(Companion.INVITER_EMAIL, userEmail)
+            .whereEqualTo(Companion.INVITEE_EMAIL, inviteeEmail.value)
             .get()
             .addOnSuccessListener {
                 if (it.isEmpty) {
@@ -159,6 +155,11 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         } else {
             _expandStatus.value = null
         }
+    }
+
+    companion object {
+        const val INVITEE_EMAIL = "inviteeEmail"
+        const val INVITER_EMAIL = "inviterEmail"
     }
 
 }
