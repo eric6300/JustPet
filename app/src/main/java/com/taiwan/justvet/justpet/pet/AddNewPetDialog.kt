@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
@@ -23,10 +24,18 @@ import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogNewPetBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
+const val CAT = 0L
+const val DOG = 1L
+const val FEMALE = 0L
+const val MALE = 1L
 class AddNewPetDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogNewPetBinding
     private lateinit var petImage: ImageView
+    private lateinit var iconCat: ImageView
+    private lateinit var iconDog: ImageView
+    private lateinit var iconFemale: ImageView
+    private lateinit var iconMale: ImageView
     private val viewModel: AddNewPetViewModel by lazy {
         ViewModelProviders.of(this).get(AddNewPetViewModel::class.java)
     }
@@ -37,72 +46,56 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DialogNewPetBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.dialog_new_pet, container, false
+        )
 
-        petImage = binding.imagePet
-        petImage.clipToOutline = true
-        petImage.outlineProvider = object : ViewOutlineProvider() {
-            override fun getOutline(view: View, outline: Outline?) {
-                outline?.setRoundRect(0, 0, view.width, view.height, 36f)
+        binding.let {
+            it.lifecycleOwner = this
+            it.viewModel = viewModel
+            petImage = it.imagePet
+            iconCat = it.iconCat
+            iconDog = it.iconDog
+            iconFemale = it.iconFemale
+            iconMale = it.iconMale
+        }
+
+        petImage.let {
+            it.clipToOutline = true
+            it.outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline?) {
+                    outline?.setRoundRect(0, 0, view.width, view.height, 36f)
+                }
             }
         }
 
-        val iconCat = binding.iconCat
-        val iconDog = binding.iconDog
-        val iconFemale = binding.iconFemale
-        val iconMale = binding.iconMale
-
         dialog?.setOnShowListener {
-
-            val dialog = it as BottomSheetDialog
-            val bottomSheet = dialog
+            val bottomSheetDialog = (it as BottomSheetDialog)
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
-
+            bottomSheetDialog?.let {
+                BottomSheetBehavior.from(bottomSheetDialog).state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
+
+        setupGenderIcon()
+        setupSpeciesIcon()
+        setupPetName()
+        setupPetBirthday()
+
+        viewModel.showGallery.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    showGallery()
+                    viewModel.startGalleryCompleted()
+                }
+            }
+        })
 
         viewModel.navigateToHomeFragment.observe(this, Observer {
             if (it == true) {
                 dismiss()
                 (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_home
                 viewModel.navigateToHomeFragmentCompleted()
-            }
-        })
-
-        viewModel.petSpecies.observe(this, Observer {
-            when (it) {
-                0L -> {
-                    iconCat.alpha = 1.0f
-                    iconDog.alpha = 0.15f
-                }
-                1L -> {
-                    iconCat.alpha = 0.15f
-                    iconDog.alpha = 1.0f
-                }
-            }
-        })
-
-        viewModel.petGender.observe(this, Observer {
-            when (it) {
-                0L -> {
-                    iconFemale.alpha = 1.0f
-                    iconMale.alpha = 0.15f
-                }
-                1L -> {
-                    iconFemale.alpha = 0.15f
-                    iconMale.alpha = 1.0f
-                }
-            }
-        })
-
-        viewModel.startGallery.observe(this, Observer {
-            it?.let {
-                if (it) {
-                    startGallery()
-                    viewModel.startGalleryCompleted()
-                }
             }
         })
 
@@ -115,6 +108,46 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
             }
         })
 
+        return binding.root
+    }
+
+    private fun showGallery() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
+
+    private fun setupSpeciesIcon() {
+        viewModel.petSpecies.observe(this, Observer {
+            when (it) {
+                CAT -> {
+                    iconCat.alpha = 1.0f
+                    iconDog.alpha = 0.15f
+                }
+                DOG -> {
+                    iconCat.alpha = 0.15f
+                    iconDog.alpha = 1.0f
+                }
+            }
+        })
+    }
+
+    private fun setupGenderIcon() {
+        viewModel.petGender.observe(this, Observer {
+            when (it) {
+                FEMALE -> {
+                    iconFemale.alpha = 1.0f
+                    iconMale.alpha = 0.15f
+                }
+                MALE -> {
+                    iconFemale.alpha = 0.15f
+                    iconMale.alpha = 1.0f
+                }
+            }
+        })
+    }
+
+    private fun setupPetName() {
         viewModel.petName.observe(this, Observer {
             it?.let {
                 binding.editTextNameNew.error = ""
@@ -126,7 +159,9 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
                 binding.editTextNameNew.error = it
             }
         })
+    }
 
+    private fun setupPetBirthday() {
         viewModel.petBirthday.observe(this, Observer {
             it?.let {
                 binding.editTextBirthdayNew.error = ""
@@ -138,14 +173,6 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
                 binding.editTextBirthdayNew.error = it
             }
         })
-
-        return binding.root
-    }
-
-    fun startGallery() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        startActivityForResult(intent, PHOTO_FROM_GALLERY)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -67,10 +67,10 @@ class CalendarViewModel : ViewModel() {
                                     data.add(
                                         PetEvent(
                                             eventId = event.id,
-                                            petId = event["petId"] as String?,
-                                            petName = event["petName"] as String?,
-                                            petSpecies = event["petSpecies"] as Long?,
-                                            timestamp = event["timestamp"] as Long?,
+                                            petId = event["petId"] as String,
+                                            petName = event["petName"] as String,
+                                            petSpecies = event["petSpecies"] as Long,
+                                            timestamp = event["timestamp"] as Long,
                                             year = event["year"] as Long,
                                             month = event["month"] as Long,
                                             dayOfMonth = event["dayOfMonth"] as Long,
@@ -79,10 +79,10 @@ class CalendarViewModel : ViewModel() {
                                             note = event["note"] as String?,
                                             spirit = event["spirit"] as Double?,
                                             appetite = event["appetite"] as Double?,
-                                            weight = event["weight"] as String?,
-                                            temperature = event["temperature"] as String?,
-                                            respiratoryRate = event["respiratoryRate"] as String?,
-                                            heartRate = event["heartRate"] as String?,
+                                            weight = event["weight"] as Double?,
+                                            temperature = event["temperature"] as Double?,
+                                            respiratoryRate = event["respiratoryRate"] as Long?,
+                                            heartRate = event["heartRate"] as Long?,
                                             imageUrl = event["imageUrl"] as String?
                                         )
                                     )
@@ -115,8 +115,7 @@ class CalendarViewModel : ViewModel() {
                                         EventTag(
                                             type = tag["type"] as String?,
                                             index = tag["index"] as Long?,
-                                            title = tag["title"] as String?,
-                                            isSelected = tag["isSelected"] as Boolean?
+                                            title = tag["title"] as String?
                                         )
                                     )
                                 }

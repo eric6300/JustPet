@@ -16,33 +16,36 @@ import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.util.BarScore
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.COLON
+import com.taiwan.justvet.justpet.pet.SLASH
+import com.taiwan.justvet.justpet.util.LoadStatus
+import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
-import java.text.SimpleDateFormat
-import java.util.*
+import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
+import com.taiwan.justvet.justpet.util.toTimeListFormat
 
 class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
-    private val _navigateToCalendar = MutableLiveData<Boolean>()
-    val navigateToCalendar: LiveData<Boolean>
-        get() = _navigateToCalendar
+    private val _navigateToCalendarFragment = MutableLiveData<Boolean>()
+    val navigateToCalendarFragment: LiveData<Boolean>
+        get() = _navigateToCalendarFragment
 
     private val _expandStatus = MutableLiveData<Boolean>()
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     private val _eventTags = MutableLiveData<List<EventTag>>()
     val eventTags: LiveData<List<EventTag>>
         get() = _eventTags
 
-    private val _dateAndTime = MutableLiveData<String>()
-    val dateAndTime: LiveData<String>
-        get() = _dateAndTime
+    private val _dateAndTimeOfEvent = MutableLiveData<String>()
+    val dateAndTimeOfEvent: LiveData<String>
+        get() = _dateAndTimeOfEvent
 
     private val _showDatePickerDialog = MutableLiveData<Boolean>()
     val showDatePickerDialog: LiveData<Boolean>
@@ -52,34 +55,29 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val showTimePickerDialog: LiveData<Boolean>
         get() = _showTimePickerDialog
 
-    private val _startGallery = MutableLiveData<Boolean>()
-    val startGallery: LiveData<Boolean>
-        get() = _startGallery
+    private val _showGallery = MutableLiveData<Boolean>()
+    val showGallery: LiveData<Boolean>
+        get() = _showGallery
 
     var eventSpirit: Double? = 0.0
     var eventAppetite: Double? = 0.0
     val eventNote = MutableLiveData<String>()
     val eventWeight = MutableLiveData<String>()
     val eventTemper = MutableLiveData<String>()
-    val eventRR = MutableLiveData<String>()
-    val eventHR = MutableLiveData<String>()
+    val eventRr = MutableLiveData<String>()
+    val eventHr = MutableLiveData<String>()
     val eventTimestamp = MutableLiveData<Long>()
-
     val eventImage = MutableLiveData<String>()
 
     val calendar = Calendar.getInstance()
 
-    val firestore = FirebaseFirestore.getInstance()
-    val eventsReference = petEvent.petId?.let { petId ->
-        firestore.collection(PETS).document(petId).collection(EVENTS)
-    }
+    val eventsReference =
+        FirebaseFirestore.getInstance().collection(PETS).document(petEvent.petId).collection(EVENTS)
 
     val storageReference = FirebaseStorage.getInstance().reference
 
     init {
         initialEvent()
-        initialDateAndTime()
-        setEventTags()
     }
 
     private fun initialEvent() {
@@ -87,104 +85,98 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
             eventNote.value = it.note
             eventSpirit = it.spirit
             eventAppetite = it.appetite
-            eventWeight.value = it.weight
-            eventTemper.value = it.temperature
-            eventRR.value = it.respiratoryRate
-            eventHR.value = it.heartRate
             eventImage.value = it.imageUrl
-
-            if (it.timestamp == 0L) {
-                // navigate from tag dialog for add an event
-                eventTimestamp.value = (calendar.timeInMillis / 1000)
-                Log.d(ERIC, "timestamp :  ${eventTimestamp.value}")
-            } else {
-                // navigate from calendar fragment for edit the event
-                eventTimestamp.value = it.timestamp
+            _eventTags.value = it.eventTags
+            eventWeight.value = when (it.weight) {
+                null -> null
+                else -> it.weight.toString()
             }
-
-            _expandStatus.value = true
-
+            eventTemper.value = when (it.temperature) {
+                null -> null
+                else -> it.temperature.toString()
+            }
+            eventRr.value = when (it.respiratoryRate) {
+                null -> null
+                else -> it.respiratoryRate.toString()
+            }
+            eventHr.value = when (it.heartRate) {
+                null -> null
+                else -> it.heartRate.toString()
+            }
+            eventTimestamp.value = when (it.timestamp) {
+                0L -> (calendar.timeInMillis / 1000)
+                else -> it.timestamp
+            }
         }
+
+        _expandStatus.value = true
+
+        initialDateAndTimeOfEvent()
     }
 
-    private fun setEventTags() {
-        _eventTags.value = petEvent.eventTags
-    }
+    fun initialDateAndTimeOfEvent() {
+        _dateAndTimeOfEvent.value = when (petEvent.timestamp) {
+            0L -> (calendar.timeInMillis / 1000).toEventDateAndTimeFormat()
+            else -> petEvent.timestamp.toEventDateAndTimeFormat()
+        }
 
-    fun initialDateAndTime() {
-        _dateAndTime.value = SimpleDateFormat(
-            getString(R.string.date_time_format),
-            Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it * 1000) })
-
-
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
-
-        val hour = timeList[3].split(":")[0]
-        val minute = timeList[3].split(":")[1]
+        val timeList = getTimeListFromTimestamp(petEvent.timestamp)
 
         calendar.set(
             timeList[0].toInt(),
             timeList[1].toInt().minus(1),
             timeList[2].toInt(),
-            hour.toInt(),
-            minute.toInt()
+            timeList[3].split(COLON)[0].toInt(),
+            timeList[3].split(COLON)[1].toInt()
         )
     }
 
-    fun updateDateAndTime() {
-        _dateAndTime.value = SimpleDateFormat(
-            getString(R.string.date_time_format),
-            Locale.TAIWAN
-        ).format(calendar.time)
-
+    fun updateDateAndTimeOfEvent() {
+        _dateAndTimeOfEvent.value = calendar.time.toEventDateAndTimeFormat()
         eventTimestamp.value = (calendar.timeInMillis / 1000)
     }
 
     fun setSpiritScore(score: Float) {
-        for (item in BarScore.values()) {
-            if (score.toDouble() == item.score) {
-                eventSpirit = item.score
-            }
-        }
+        eventSpirit = score.toDouble()
     }
 
     fun setAppetiteScore(score: Float) {
-        for (item in BarScore.values()) {
-            if (score.toDouble() == item.score) {
-                eventAppetite = item.score
-            }
-        }
+        eventAppetite = score.toDouble()
     }
 
     fun checkEventId() {
-        if (petEvent.eventId == null) {
+        if (petEvent.eventId == EMPTY_STRING) {
+
             petEvent.eventTagsIndex?.let {
-                if (it.contains(5)) {
-                    if (eventWeight.value.isNullOrEmpty()) {
-                        Toast.makeText(JustPetApplication.appContext, "體重未填寫", Toast.LENGTH_LONG).show()
-                    } else {
-                        postEvent()
-                    }
+                if (it.contains(5) && eventWeight.value.isNullOrEmpty()) {
+
+                    Toast.makeText(
+                        JustPetApplication.appContext,
+                        getString(R.string.text_weight_empty_error),
+                        Toast.LENGTH_LONG
+                    ).show()
+
                 } else {
-                    postEvent()
+                    if (isAllFormatValid()) {
+                        postEvent()
+                    } else {
+                        Log.d(ERIC, "格式不對")
+                    }
                 }
             }
         } else {
-            updateEvent()
+            if (isAllFormatValid()) {
+                updateEvent()
+            } else {
+                Log.d(ERIC, "格式不對")
+            }
         }
     }
 
     private fun postEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        // get selected time and date string list
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
+        _loadStatus.value = LoadStatus.LOADING
+
+        val timeList = getTimeListFromTimestamp(petEvent.timestamp)
 
         val finalEvent = petEvent.let {
             PetEvent(
@@ -192,7 +184,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 petId = it.petId,
                 petName = it.petName,
                 petSpecies = it.petSpecies,
-                timestamp = eventTimestamp.value,
+                timestamp = (calendar.timeInMillis / 1000),
                 year = timeList[0].toLong(),
                 month = timeList[1].toLong(),
                 dayOfMonth = timeList[2].toLong(),
@@ -203,20 +195,20 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 note = eventNote.value,
                 spirit = eventSpirit,
                 appetite = eventAppetite,
-                weight = eventWeight.value,
-                temperature = eventTemper.value,
-                respiratoryRate = eventRR.value,
-                heartRate = eventHR.value
+                weight = eventWeight.value?.toDouble(),
+                temperature = eventTemper.value?.toDouble(),
+                respiratoryRate = eventRr.value?.toLong(),
+                heartRate = eventHr.value?.toLong()
             )
         }
-        eventsReference?.let {
+        eventsReference.let {
             it.add(finalEvent)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(ERIC, "postEvent succeeded ID : ${documentReference.id}")
-                    postTags(documentReference.id)
+                .addOnSuccessListener { document ->
+                    postTags(document.id)
+                    Log.d(ERIC, "postEvent succeeded ID : ${document.id}")
                 }
                 .addOnFailureListener { e ->
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "postEvent failed : $e")
                 }
         }
@@ -224,21 +216,28 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private fun postTags(eventId: String) {
         petEvent.eventTags?.apply {
-            eventsReference?.let {
+            eventsReference.let {
                 for (tag in this) {
                     it.document(eventId).collection(TAGS).add(tag)
                         .addOnSuccessListener {
                             Log.d(ERIC, "postTags succeeded ID : ${it.id}")
+
                             if (eventImage.value == null) {
-                                _loadStatus.value = LoadApiStatus.DONE
-                                Toast.makeText(JustPetApplication.appContext, "新增成功", Toast.LENGTH_SHORT).show()
+                                _loadStatus.value = LoadStatus.DONE
+
+                                Toast.makeText(
+                                    JustPetApplication.appContext,
+                                    "新增成功",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
                                 navigateToCalendar()
                             } else {
                                 uploadImage(eventId)
                             }
                         }
                         .addOnFailureListener {
-                            _loadStatus.value = LoadApiStatus.ERROR
+                            _loadStatus.value = LoadStatus.ERROR
                             Log.d(ERIC, "postTags failed : $it")
                         }
                 }
@@ -248,7 +247,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private fun uploadImage(eventId: String) {
         eventImage.value?.let {
-            val imageRef = storageReference.child("images/$eventId")
+            val imageRef = storageReference.child(getString(R.string.text_image_path, eventId))
             imageRef.putFile(it.toUri())
                 .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {
@@ -264,33 +263,30 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                         updateEventImageUrl(eventId, downloadUri)
                     }
                 }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "uploadImage failed : $it")
                 }
         }
     }
 
     private fun updateEventImageUrl(eventId: String, downloadUri: Uri?) {
-        eventsReference?.let {
+        eventsReference.let {
             it.document(eventId).update("imageUrl", downloadUri.toString())
                 .addOnSuccessListener {
-                    _loadStatus.value = LoadApiStatus.DONE
+                    _loadStatus.value = LoadStatus.DONE
                     navigateToCalendar()
                     Log.d(ERIC, "updateEventImageUrl succeed")
                 }.addOnFailureListener {
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "updateEventImageUrl failed : $it")
                 }
         }
     }
 
     private fun updateEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        // get selected time and date string list
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(eventTimestamp.value?.let { Date(it * 1000) }).split("/")
+        _loadStatus.value = LoadStatus.LOADING
+
+        val timeList = getTimeListFromTimestamp(petEvent.timestamp)
 
         val finalEvent =
             mapOf(
@@ -302,31 +298,106 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
                 "note" to eventNote.value,
                 "spirit" to eventSpirit,
                 "appetite" to eventAppetite,
-                "weight" to eventWeight.value,
-                "temperature" to eventTemper.value,
-                "respiratoryRate" to eventRR.value,
-                "heartRate" to eventHR.value,
+                "weight" to eventWeight.value?.toDouble(),
+                "temperature" to eventTemper.value?.toDouble(),
+                "respiratoryRate" to eventRr.value?.toLong(),
+                "heartRate" to eventHr.value?.toLong(),
                 "imageUrl" to eventImage.value
             )
 
-        petEvent.eventId?.let {
-            eventsReference?.document(it)?.update(finalEvent)?.addOnSuccessListener {
-                _loadStatus.value = LoadApiStatus.DONE
-                navigateToCalendar()
-                Log.d(ERIC, "update succeeded")
-            }?.addOnFailureListener {
-                _loadStatus.value = LoadApiStatus.ERROR
-                Log.d(ERIC, "update failed")
+        petEvent.eventId.let {
+            eventsReference.document(it).update(finalEvent)
+                .addOnSuccessListener {
+                    _loadStatus.value = LoadStatus.DONE
+                    navigateToCalendar()
+                    Log.d(ERIC, "update succeeded")
+                }.addOnFailureListener {
+                    _loadStatus.value = LoadStatus.ERROR
+                    Log.d(ERIC, "update failed")
+                }
+        }
+    }
+
+    fun getTimeListFromTimestamp(timestamp: Long): List<String> {
+        return when (timestamp) {
+            0L -> (calendar.timeInMillis / 1000).toTimeListFormat().split(SLASH)
+            else -> petEvent.timestamp.toTimeListFormat().split(SLASH)
+        }
+    }
+
+    fun isValidFormat(mutableLiveData: MutableLiveData<String>, type: Int): Boolean {
+        return when {
+            mutableLiveData.value == null -> true
+
+            "[0-9]{0,2}([.][0-9]{0,2})?".toRegex().matches(mutableLiveData.value.toString()) -> true
+
+            else -> {
+                when (type) {
+
+                    WEIGHT ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_weight_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    TEMPERATURE ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_temperature_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                }
+
+                false
             }
         }
     }
 
+    fun isValidRateFormat(mutableLiveData: MutableLiveData<String>, rateType: Int): Boolean {
+        return when {
+            mutableLiveData.value == null -> true
+
+            "[0-9]{0,3}?".toRegex().matches(mutableLiveData.value.toString()) -> true
+
+            else -> {
+
+                when (rateType) {
+
+                    RESPIRATORY_RATE ->
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_respiratory_rate_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                    HEART_RATE -> {
+                        Toast.makeText(
+                            JustPetApplication.appContext,
+                            getString(R.string.text_heart_rate_format_error),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+                false
+            }
+        }
+    }
+
+    fun isAllFormatValid(): Boolean {
+        return isValidFormat(eventWeight, WEIGHT) &&
+                isValidFormat(eventTemper, TEMPERATURE) &&
+                isValidRateFormat(eventRr, RESPIRATORY_RATE) &&
+                isValidRateFormat(eventHr, HEART_RATE)
+    }
+
     fun navigateToCalendar() {
-        _navigateToCalendar.value = true
+        _navigateToCalendarFragment.value = true
     }
 
     fun navigateToCalendarCompleted() {
-        _navigateToCalendar.value = null
+        _navigateToCalendarFragment.value = null
     }
 
     fun expandAdvanceMenu() {
@@ -349,12 +420,28 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         _showTimePickerDialog.value = false
     }
 
-    fun startGallery() {
-        _startGallery.value = true
+    fun showGallery() {
+        _showGallery.value = true
     }
 
-    fun startGalleryCompleted() {
-        _startGallery.value = false
+    fun showGalleryCompleted() {
+        _showGallery.value = false
+    }
+
+    fun defaultWeight() {
+        eventWeight.value = null
+    }
+
+    fun defaultTemper() {
+        eventTemper.value = null
+    }
+
+    fun defaultRr() {
+        eventRr.value = null
+    }
+
+    fun defaultHr() {
+        eventHr.value = null
     }
 
 }

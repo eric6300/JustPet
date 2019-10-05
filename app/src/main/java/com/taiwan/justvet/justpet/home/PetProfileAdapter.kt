@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Converter
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.databinding.ItemHomePetProfileBinding
@@ -31,7 +31,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         petImage.clipToOutline = true
         petImage.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                viewModel.isModified.value.let {
+                viewModel.isPetProfileModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else {
@@ -45,7 +45,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
         filter.clipToOutline = true
         filter.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline?) {
-                viewModel.isModified.value.let {
+                viewModel.isPetProfileModified.value.let {
                     if (it == true) {
                         outline?.setRoundRect(0, 0, view.width, view.height + 36, 36F)
                     } else {
@@ -77,7 +77,7 @@ class PetProfileAdapter(val viewModel: HomeViewModel, val onClickListener: OnCli
 
         viewModel.loadStatus.value?.let {
             when (it) {
-                LoadApiStatus.LOADING -> {
+                LoadStatus.LOADING -> {
                     holder.binding.buttonConfirm.isClickable = false
                     holder.binding.buttonCancel.isClickable = false
                 }

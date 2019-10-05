@@ -28,7 +28,7 @@
                 app:borderWidth="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_rate"
+                app:layout_constraintTop_toBottomOf="@+id/text_event_rate"
                 app:position="0"
                 app:radius="5dp"
                 app:ripple="true"
@@ -63,11 +63,11 @@
             </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
 
             <TextView
-                android:id="@+id/text_rate"
+                android:id="@+id/text_event_rate"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@={converter.longToString(viewModel.averageRate)}"
+                android:text="@{String.valueOf(viewModel.averageTapRate)}"
                 android:textAlignment="center"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -76,36 +76,36 @@
                 tools:text="128" />
 
             <TextView
-                android:id="@+id/title_rate"
+                android:id="@+id/title_event_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.rateType == 0 ? @string/title_average_respiratory_rate : @string/title_average_heart_rate }"
-                app:layout_constraintBottom_toBottomOf="@+id/text_rate"
-                app:layout_constraintEnd_toStartOf="@+id/text_rate"
-                app:layout_constraintTop_toTopOf="@+id/text_rate"
+                android:text="@{viewModel.tapRateType == 0 ? @string/text_average_respiratory_rate : @string/text_average_heart_rate }"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_rate"
+                app:layout_constraintEnd_toStartOf="@+id/text_event_rate"
+                app:layout_constraintTop_toTopOf="@+id/text_event_rate"
                 app:layout_constraintVertical_bias="0.76" />
 
             <TextView
-                android:id="@+id/title_unit_of_rate"
+                android:id="@+id/unit_of_event_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/unit_respiratory_rate"
-                app:layout_constraintBottom_toBottomOf="@+id/text_rate"
-                app:layout_constraintStart_toEndOf="@+id/text_rate"
-                app:layout_constraintTop_toTopOf="@+id/text_rate"
+                app:layout_constraintBottom_toBottomOf="@+id/text_event_rate"
+                app:layout_constraintStart_toEndOf="@+id/text_event_rate"
+                app:layout_constraintTop_toTopOf="@+id/text_event_rate"
                 app:layout_constraintVertical_bias="0.76" />
 
             <ImageView
-                android:id="@+id/image_tap_for_count"
+                android:id="@+id/image_tap_count"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="@{() -> viewModel.tapForCalculation()}"
+                android:onClick="@{() -> viewModel.countTapRate()}"
                 android:scaleType="centerCrop"
-                app:layout_constraintBottom_toTopOf="@+id/button_next_step"
+                app:layout_constraintBottom_toTopOf="@+id/button_reset_tap_count"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,13 +113,13 @@
                 app:srcCompat="@drawable/dog_lying" />
 
             <mehdi.sakout.fancybuttons.FancyButton
-                android:id="@+id/button_next_step"
+                android:id="@+id/button_reset_tap_count"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
-                android:onClick="@{() -> viewModel.reset()}"
+                android:onClick="@{() -> viewModel.resetTapRateCount()}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 app:fb_defaultColor="@color/colorPrimary"
@@ -147,8 +147,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:alpha="@{viewModel.averageRate == 0L ? 0.2f : 1f}"
-                android:clickable="@{viewModel.averageRate == 0L ? false : true}"
+                android:alpha="@{viewModel.averageTapRate == 0L ? 0.2f : 1f}"
+                android:clickable="@{viewModel.averageTapRate == 0L ? false : true}"
                 android:onClick="@{() -> viewModel.navigateToTag()}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"

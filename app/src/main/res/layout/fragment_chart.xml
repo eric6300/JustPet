@@ -20,7 +20,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_of_profile_chart"
-                listOfProfile="@{viewModel.listOfProfile}"
+                petList="@{viewModel.petList}"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="16dp"
@@ -81,7 +81,7 @@
                     android:padding="8dp"
                     app:rounded="true"
                     app:selectedTextColor="@android:color/background_light"
-                    app:text="@string/text_six_month"
+                    app:text="@string/text_six_months"
                     app:textSize="18sp" />
 
                 <com.addisonelliott.segmentedbutton.SegmentedButton

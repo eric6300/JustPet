@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogFamilyBinding
 
@@ -28,22 +27,25 @@ class FamilyDialog : AppCompatDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.dialog_family, container, false
-        )
-
         val petProfile = FamilyDialogArgs.fromBundle(arguments!!).petProfile
         val viewModel =
             ViewModelProviders.of(this, FamilyViewModelFactory(petProfile))
                 .get(FamilyViewModel::class.java)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
-        binding.listFamily.adapter = FamilyEmailAdapter(viewModel)
 
-        viewModel.leaveDialog.observe(this, Observer {
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.dialog_family, container, false
+        )
+
+        binding.let {
+            it.viewModel = viewModel
+            it.lifecycleOwner = this
+            it.listFamily.adapter = FamilyEmailAdapter(viewModel)
+        }
+
+        viewModel.leaveFamilyDialog.observe(this, Observer {
             if (it) {
-                findNavController().popBackStack()
-                viewModel.leaveDialogComplete()
+                dismiss()
+                viewModel.leaveFamilyDialogComplete()
             }
         })
 

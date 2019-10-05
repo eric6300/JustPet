@@ -21,21 +21,23 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.event.EventTagAdapter
 import com.taiwan.justvet.justpet.family.FamilyEmailAdapter
 import com.taiwan.justvet.justpet.home.EventNotificationAdapter
+import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.tag.TagPetAvatarAdapter
 import com.taiwan.justvet.justpet.tag.TagListAdapter
+import com.taiwan.justvet.justpet.tag.TagType
 
 @BindingAdapter("iconSpecies")
 fun bindSpeciesIcon(imageView: ImageView, species: Long) {
     species.let {
         when (it) {
-            0L -> {
+            PetSpecies.CAT.value -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_cat
                     )
                 )
             }
-            1L -> {
+            PetSpecies.DOG.value -> {
                 imageView.setImageDrawable(
                     JustPetApplication.appContext.getDrawable(
                         R.drawable.ic_dog
@@ -137,7 +139,7 @@ fun bindExpandIcon(imageView: ImageView, status: Boolean) {
     }
 }
 
-@BindingAdapter("listOfTags")
+@BindingAdapter("listOfTag")
 fun bindRecyclerViewWithListOfTags(recyclerView: RecyclerView, list: List<EventTag>?) {
     list?.let {
         recyclerView.adapter?.apply {
@@ -174,7 +176,7 @@ fun bindRecyclerViewWithListOfNotification(
     }
 }
 
-@BindingAdapter("listOfProfile")
+@BindingAdapter("petList")
 fun bindRecyclerViewWithListOfProfile(recyclerView: RecyclerView, list: List<PetProfile>?) {
     list?.let {
         recyclerView.adapter?.apply {

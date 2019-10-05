@@ -8,7 +8,7 @@
             name="viewModel"
             type="com.taiwan.justvet.justpet.family.FamilyViewModel" />
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
     </data>
 
     <ScrollView
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="飼主"
+                android:text="@string/text_owner"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_dialog" />
@@ -36,18 +36,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="家人"
+                android:text="@string/text_family_member"
                 android:textSize="18sp"
+                android:visibility="@{viewModel.petProfile.family.size() == 0 ? View.GONE : View.VISIBLE }"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_owner"
-                android:visibility="@{viewModel.petProfile.family.size() == 0 ? View.GONE : View.VISIBLE }"/>
+                app:layout_constraintTop_toBottomOf="@+id/title_owner" />
 
             <TextView
                 android:id="@+id/text_owner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{viewModel.ownerEmail}"
+                android:text="@{viewModel.petProfile.ownerEmail}"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/title_owner"
                 app:layout_constraintStart_toEndOf="@+id/title_owner"
@@ -77,7 +77,7 @@
                 android:id="@+id/layout_send_invite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="@{viewModel.isOwner == true ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.isOwner() == true ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -91,12 +91,12 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="16dp"
+                    android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
                     android:onClick="@{() -> viewModel.checkUser()}"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:text="送出邀請"
+                    android:text="@string/text_send_invitation"
                     android:visibility="@{viewModel.expandStatus != true ? View.GONE : View.VISIBLE}"
-                    android:clickable="@{viewModel.loadStatus == LoadApiStatus.LOADING ? false : true}"
                     app:fb_defaultColor="@color/colorPrimaryDark"
                     app:fb_focusColor="@color/colorPrimary"
                     app:fb_radius="5dp"
@@ -117,7 +117,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:onClick="@{() -> viewModel.leaveDialog()}"
+                    android:onClick="@{() -> viewModel.leaveFamilyDialog()}"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:text="@string/text_cancel"
@@ -138,7 +138,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:text="邀請"
+                    android:text="@string/text_invitation"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +202,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@{viewModel.petName}"
+                android:text="@{viewModel.petFamily}"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +217,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="@{viewModel.loadStatus == LoadApiStatus.LOADING ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.loadStatus == LoadStatus.LOADING ? View.VISIBLE : View.GONE}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

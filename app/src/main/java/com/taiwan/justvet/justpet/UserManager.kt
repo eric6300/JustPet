@@ -1,14 +1,11 @@
 package com.taiwan.justvet.justpet
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseUser
-import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 
 object UserManager {
-
     private val _userProfile = MutableLiveData<UserProfile>()
     val userProfile: LiveData<UserProfile>
         get() = _userProfile
@@ -54,16 +51,6 @@ object UserManager {
     }
 
     fun refreshUserProfileCompleted() {
-        _refreshUserProfileCompleted.value = null
-    }
-
-    /**
-     * Clear the [userProfile]/[_userProfile] data
-     */
-    fun clear() {
-        _userProfile.value = null
-        _userName.value = null
-        _getFirebaseUserCompleted.value = null
         _refreshUserProfileCompleted.value = null
     }
 

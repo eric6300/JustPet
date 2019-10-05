@@ -6,74 +6,82 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.ERIC
-import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.util.LoadApiStatus
-import com.taiwan.justvet.justpet.UserManager
+import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.util.Util.getString
 
+const val EMAIL = "email"
+const val EMPTY_STRING = ""
+const val INVITER_EMAIL = "inviterEmail"
+const val INVITEE_EMAIL = "inviteeEmail"
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
-
-    private val _leaveDialog = MutableLiveData<Boolean>()
-    val leaveDialog: LiveData<Boolean>
-        get() = _leaveDialog
 
     private val _expandStatus = MutableLiveData<Boolean>()
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
-    val petName = "${petProfile.name} 的家人"
-    val inviteeEmail = MutableLiveData<String>()
-    val ownerEmail = petProfile.ownerEmail
-    val userEmail: String?
-        get() = UserManager.userEmail.value
+    private val _leaveFamilyDialog = MutableLiveData<Boolean>()
+    val leaveFamilyDialog: LiveData<Boolean>
+        get() = _leaveFamilyDialog
 
-    val isOwner = ownerEmail.equals(userEmail)
+    val petFamily = getString(R.string.text_pet_family, petProfile.name)
+    val userEmail = UserManager.userEmail.value
+    val inviteeEmail = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
-    val usersReference = firebase.collection("users")
-    val inviteReference = firebase.collection("invites")
+    val usersReference = firebase.collection(USERS)
+    val inviteReference = firebase.collection(INVITES)
+
+    fun isOwner(): Boolean {
+        return petProfile.ownerEmail.equals(userEmail)
+    }
 
     fun checkUser() {
-        _errorMessage.value = ""
-        _loadStatus.value = LoadApiStatus.LOADING
-        UserManager.userProfile.value?.let {
-            if (inviteeEmail.value == null || inviteeEmail.value == "") {
-                _errorMessage.value = "用戶 E-mail 不可為空白"
-                _loadStatus.value = LoadApiStatus.ERROR
-            } else if (inviteeEmail.value == userEmail) {
-                _errorMessage.value = "你已經是 ${petName}囉！"
-                _loadStatus.value = LoadApiStatus.ERROR
-            } else {
+        _errorMessage.value = EMPTY_STRING
+        _loadStatus.value = LoadStatus.LOADING
+
+        when (inviteeEmail.value) {
+            null, EMPTY_STRING -> {
+                _errorMessage.value = getString(R.string.text_empty_email)
+                _loadStatus.value = LoadStatus.ERROR
+            }
+            userEmail -> {
+                _errorMessage.value = getString(R.string.text_user_already_pet_family, petProfile.name)
+                _loadStatus.value = LoadStatus.ERROR
+            }
+            else -> {
                 inviteeEmail.value?.let { inviteeEmail ->
-                    usersReference.whereEqualTo("email", inviteeEmail).get()
+                    usersReference.whereEqualTo(EMAIL, inviteeEmail).get()
                         .addOnSuccessListener {
                             if (it.size() > 0) {
-                                petProfile.family?.let {
-                                    if (it.contains(inviteeEmail)) {
-                                        _errorMessage.value = "該用戶已經是 $petName，無法再送出邀請"
-                                        _loadStatus.value = LoadApiStatus.DONE
+                                petProfile.family?.let { familyList ->
+                                    if (familyList.contains(inviteeEmail)) {
+                                        _errorMessage.value = getString(
+                                            R.string.text_invitee_already_pet_family,
+                                            petProfile.name
+                                        )
+                                        _loadStatus.value = LoadStatus.DONE
                                     } else {
                                         checkInvite()
                                     }
                                 }
                             } else {
-                                // show message
-                                _errorMessage.value = "該用戶不存在，請重新輸入E-mail"
-                                _loadStatus.value = LoadApiStatus.ERROR
+                                _errorMessage.value = getString(R.string.text_invitee_not_exist)
+                                _loadStatus.value = LoadStatus.ERROR
                             }
                         }.addOnFailureListener {
-                            _errorMessage.value = "發送失敗"
-                            _loadStatus.value = LoadApiStatus.ERROR
+                            _errorMessage.value = getString(R.string.text_invite_failure)
+                            _loadStatus.value = LoadStatus.ERROR
                             Log.d(ERIC, "checkUser() failed : $it")
                         }
                 }
@@ -82,58 +90,67 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     }
 
     private fun checkInvite() {
-        UserManager.userProfile.value?.let { userProfile ->
-            inviteReference
-                .whereEqualTo("inviterEmail", userProfile.email)
-                .whereEqualTo("inviteeEmail", inviteeEmail.value)
-                .get()
-                .addOnSuccessListener {
-                    if (it.isEmpty) {
-                        sendInvite()
-                    } else {
-                        _errorMessage.value = "無法重複發送邀請"
-                        _loadStatus.value = LoadApiStatus.ERROR
-                        Log.d(ERIC, "already sent invite")
-                    }
-                }.addOnFailureListener {
-                    _errorMessage.value = "發送失敗"
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Log.d(ERIC, "checkInvite() failed : $it")
+        _loadStatus.value = LoadStatus.LOADING
+
+        inviteReference
+            .whereEqualTo(INVITER_EMAIL, userEmail)
+            .whereEqualTo(INVITEE_EMAIL, inviteeEmail.value)
+            .get()
+            .addOnSuccessListener {
+                if (it.isEmpty) {
+                    sendInvite()
+                } else {
+                    _errorMessage.value = getString(R.string.text_invite_already_exist)
+                    _loadStatus.value = LoadStatus.ERROR
+                    Log.d(ERIC, "already sent invite")
                 }
-        }
+            }.addOnFailureListener {
+                _errorMessage.value = getString(R.string.text_invite_failure)
+                _loadStatus.value = LoadStatus.ERROR
+                Log.d(ERIC, "checkInvite() failed : $it")
+            }
     }
 
     private fun sendInvite() {
-        UserManager.userProfile.value?.let { userProfile ->
-            inviteeEmail.value?.let { inviteeEmail ->
-                inviteReference.add(
-                    Invitation(
-                        petId = petProfile.profileId,
-                        petName = petProfile.name,
-                        inviteeEmail = inviteeEmail,
-                        inviterName = UserManager.userName.value,
-                        inviterEmail = userProfile.email
-                    )
-                ).addOnSuccessListener {
-                    _loadStatus.value = LoadApiStatus.DONE
-                    Toast.makeText(JustPetApplication.appContext,"發送邀請成功！", Toast.LENGTH_LONG).show()
-                    Log.d(ERIC, "sendInvite() succeeded , ID : ${it.id}")
-                    leaveDialog()
-                }.addOnFailureListener {
-                    _errorMessage.value = "發送失敗"
-                    _loadStatus.value = LoadApiStatus.ERROR
-                    Log.d(ERIC, "sendInvite() failed : $it")
-                }
+        _loadStatus.value = LoadStatus.LOADING
+
+        inviteeEmail.value?.let { inviteeEmail ->
+            inviteReference.add(
+                Invitation(
+                    petId = petProfile.profileId,
+                    petName = petProfile.name,
+                    inviteeEmail = inviteeEmail,
+                    inviterName = UserManager.userName.value,
+                    inviterEmail = userEmail
+                )
+            ).addOnSuccessListener {
+                _loadStatus.value = LoadStatus.DONE
+
+                Toast.makeText(
+                    JustPetApplication.appContext,
+                    getString(R.string.text_invite_success),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                Log.d(ERIC, "sendInvite() succeeded , ID : ${it.id}")
+
+                leaveFamilyDialog()
+
+            }.addOnFailureListener {
+                _errorMessage.value = getString(R.string.text_invite_failure)
+                _loadStatus.value = LoadStatus.ERROR
+                Log.d(ERIC, "sendInvite() failed : $it")
             }
         }
+
     }
 
-    fun leaveDialog() {
-        _leaveDialog.value = true
+    fun leaveFamilyDialog() {
+        _leaveFamilyDialog.value = true
     }
 
-    fun leaveDialogComplete() {
-        _leaveDialog.value = false
+    fun leaveFamilyDialogComplete() {
+        _leaveFamilyDialog.value = false
     }
 
     fun expandDialog() {

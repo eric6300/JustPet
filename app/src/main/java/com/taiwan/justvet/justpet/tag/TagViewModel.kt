@@ -14,54 +14,50 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
-import com.taiwan.justvet.justpet.util.LoadApiStatus
-import com.taiwan.justvet.justpet.util.TagType
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.PetSpecies
+import com.taiwan.justvet.justpet.pet.SLASH
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
-import com.taiwan.justvet.justpet.util.Util.getDrawable
 import com.taiwan.justvet.justpet.util.Util.getString
+import com.taiwan.justvet.justpet.util.toTimeListFormat
+import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
-    private val _navigateToEditEvent = MutableLiveData<Boolean>()
-    val navigateToEditEvent: LiveData<Boolean>
-        get() = _navigateToEditEvent
+    private val _navigateToEventFragment = MutableLiveData<PetEvent>()
+    val navigateToEventFragment: LiveData<PetEvent>
+        get() = _navigateToEventFragment
 
-    private val _navigateToCalendar = MutableLiveData<Boolean>()
-    val navigateToCalendar: LiveData<Boolean>
-        get() = _navigateToCalendar
+    private val _navigateToCalendarFragment = MutableLiveData<Boolean>()
+    val navigateToCalendarFragment: LiveData<Boolean>
+        get() = _navigateToCalendarFragment
 
     private val _leaveTagDialog = MutableLiveData<Boolean>()
     val leaveTagDialog: LiveData<Boolean>
         get() = _leaveTagDialog
 
-    private val _listOfTags = MutableLiveData<List<EventTag>>()
-    val listOfTags: LiveData<List<EventTag>>
-        get() = _listOfTags
+    private val _listOfTag = MutableLiveData<List<EventTag>>()
+    val listOfTag: LiveData<List<EventTag>>
+        get() = _listOfTag
 
-    private val _listOfProfile = MutableLiveData<List<PetProfile>>()
-    val listOfProfile: LiveData<List<PetProfile>>
-        get() = _listOfProfile
+    private val _petList = MutableLiveData<List<PetProfile>>()
+    val petList: LiveData<List<PetProfile>>
+        get() = _petList
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
-    private val _currentEvent = MutableLiveData<PetEvent>()
-    val currentEvent: LiveData<PetEvent>
-        get() = _currentEvent
 
-    val calendar = Calendar.getInstance()
     var selectedPetProfile: PetProfile? = null
-    val petData = mutableListOf<PetProfile>()
     val eventTags = mutableListOf<EventTag>()
     val eventTagsIndex = mutableListOf<Long>()
 
-    private val listTagDiary = mutableListOf<EventTag>()
-    private val listTagSyndrome = mutableListOf<EventTag>()
-    private val listTagTreatment = mutableListOf<EventTag>()
+    private val diaryTags = mutableListOf<EventTag>()
+    private val syndromeTags = mutableListOf<EventTag>()
+    private val treatmentTags = mutableListOf<EventTag>()
 
     init {
         UserManager.userProfile.value?.let {
@@ -72,80 +68,59 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         setupSyndromeTagList()
         setupTreatmentTagList()
 
-        showDiaryTag()
+        showEventTags(0)
 
     }
 
-    val database = FirebaseFirestore.getInstance()
-    val pets = database.collection(PETS)
+    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
 
     fun getPetProfileData(userProfile: UserProfile) {
-        userProfile.pets?.let {
+        val petListFromFirebase = mutableListOf<PetProfile>()
+        userProfile.pets?.let { pets ->
             viewModelScope.launch {
                 var index = 1
-                for (petId in it) {
-                    pets.document(petId).get()
+                for (petId in pets) {
+                    petsReference.document(petId).get()
                         .addOnSuccessListener { document ->
-                            val petProfile = PetProfile(
-                                profileId = document.id,
-                                name = document["name"] as String?,
-                                species = document["species"] as Long?,
-                                gender = document["gender"] as Long?,
-                                neutered = document["neutered"] as Boolean?,
-                                birthday = document["birthday"] as Long?,
-                                idNumber = document["idNumber"] as String?,
-                                owner = document["owner"] as String?,
-                                ownerEmail = document["ownerEmail"] as String?,
-                                family = document["family"] as List<String>?,
-                                image = document["image"] as String?
-                            )
-                            petData.add(petProfile)
-                            if (index == it.size) {
-                                petData.sortBy { it.profileId }
-                                _listOfProfile.value = petData
+                            petListFromFirebase.add(document.toPetProfile())
+                            when (index) {
+                                pets.size -> {
+                                    _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                                }
+                                else -> {
+                                    index++
+                                }
                             }
-                            index++
-                            Log.d(ERIC, "TagViewModel getPetProfileData() succeeded")
+                            Log.d(ERIC, "TagViewModel getPetList() succeeded")
                         }
                         .addOnFailureListener {
-                            Log.d(ERIC, "TagViewModel getPetProfileData() failed : $it")
+                            Log.d(ERIC, "TagViewModel getPetList() failed : $it")
                         }
                 }
             }
         }
     }
 
-    fun getProfileByPosition(position: Int) {
-        selectedPetProfile = petData[position]
-    }
-
-
-    fun showDiaryTag() {
-        _listOfTags.value = listTagDiary
-    }
-
-    fun showSyndromeTag() {
-        _listOfTags.value = listTagSyndrome
-    }
-
-    fun showTreatmentTag() {
-        _listOfTags.value = listTagTreatment
+    fun getPetProfileByPosition(position: Int) {
+        _petList.value?.let {
+            selectedPetProfile = it[position]
+        }
     }
 
     private fun setupDiaryTagList() {
-        listTagDiary.let {
+        diaryTags.let {
             it.add(EventTag(TagType.DIARY.value, 0, getString(R.string.text_eating)))
             it.add(EventTag(TagType.DIARY.value, 1, getString(R.string.text_shower)))
             it.add(EventTag(TagType.DIARY.value, 2, getString(R.string.text_walking)))
             it.add(EventTag(TagType.DIARY.value, 3, getString(R.string.text_nail_trimming)))
             it.add(EventTag(TagType.DIARY.value, 4, getString(R.string.text_hair_trimming)))
             it.add(EventTag(TagType.DIARY.value, 5, getString(R.string.text_weight_measure)))
-            it.add(EventTag(TagType.DIARY.value, 6, getString(R.string.text_other_daily)))
+            it.add(EventTag(TagType.DIARY.value, 6, getString(R.string.text_other_diary)))
         }
     }
 
     private fun setupSyndromeTagList() {
-        listTagSyndrome.let {
+        syndromeTags.let {
             it.add(EventTag(TagType.SYNDROME.value, 100, getString(R.string.text_vomit)))
             it.add(EventTag(TagType.SYNDROME.value, 101, getString(R.string.text_diarrhea)))
             it.add(EventTag(TagType.SYNDROME.value, 102, getString(R.string.text_coughing)))
@@ -159,10 +134,16 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     private fun setupTreatmentTagList() {
-        listTagTreatment.let {
+        treatmentTags.let {
             it.add(EventTag(TagType.TREATMENT.value, 200, getString(R.string.text_ecto_prevention)))
             it.add(EventTag(TagType.TREATMENT.value, 201, getString(R.string.text_endo_prevention)))
-            it.add(EventTag(TagType.TREATMENT.value, 202, getString(R.string.text_heart_worm_prevention)))
+            it.add(
+                EventTag(
+                    TagType.TREATMENT.value,
+                    202,
+                    getString(R.string.text_heart_worm_prevention)
+                )
+            )
             it.add(EventTag(TagType.TREATMENT.value, 203, getString(R.string.text_sc_injection)))
             it.add(EventTag(TagType.TREATMENT.value, 204, getString(R.string.text_blood_glucose)))
             it.add(EventTag(TagType.TREATMENT.value, 205, getString(R.string.text_oral_med)))
@@ -174,127 +155,106 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    private fun navigateToEditEvent() {
+    fun showEventTags(index: Int) {
+        _listOfTag.value = when (index) {
+            TagType.DIARY.index -> {
+                diaryTags
+            }
+            TagType.SYNDROME.index -> {
+                syndromeTags
+            }
+            TagType.TREATMENT.index -> {
+                treatmentTags
+            }
+            else -> {
+                null
+            }
+        }
+    }
 
+    fun getIconDrawable(index: Long): Drawable? {
+        return Util.getIconDrawable(index)
+    }
+
+    fun getSelectedTagsForEvent(eventSaveType: EventSaveType) {
+        val arrayOfList = arrayListOf<List<EventTag>>()
+
+        arrayOfList.let {
+            it.add(diaryTags)
+            it.add(syndromeTags)
+            it.add(treatmentTags)
+        }
+
+        for (list in arrayOfList) {
+            for (tag in list) {
+                if (tag.isSelected) {
+                    eventTags.add(tag)
+                    tag.index?.let { index ->
+                        eventTagsIndex.add(index)
+                    }
+                }
+            }
+        }
+
+        saveEventBy(eventSaveType)
+    }
+
+    fun saveEventBy(eventSaveType: EventSaveType) {
+        _loadStatus.value = LoadStatus.LOADING
+
+        when (eventTags.size) {
+            0 -> {
+                Toast.makeText(
+                    JustPetApplication.appContext,
+                    getString(R.string.text_tag_empty_error),
+                    Toast.LENGTH_LONG
+                ).show()
+                _loadStatus.value = LoadStatus.ERROR
+            }
+            else -> {
+                when (eventSaveType) {
+                    EventSaveType.DETAIL -> navigateToEventFragment()
+                    EventSaveType.QUICK -> postEventToFirebase()
+                }
+            }
+        }
+    }
+
+    private fun navigateToEventFragment() {
         selectedPetProfile?.let {
-            _currentEvent.value = PetEvent(
+            _navigateToEventFragment.value = PetEvent(
                 petProfile = it,
-                petId = it.profileId,
-                petName = it.name,
-                petSpecies = it.species,
+                petId = it.profileId ?: EMPTY_STRING,
+                petName = it.name ?: EMPTY_STRING,
+                petSpecies = it.species ?: PetSpecies.CAT.value,
                 eventTags = eventTags,
                 eventTagsIndex = eventTagsIndex,
                 respiratoryRate = petEvent.respiratoryRate,
                 heartRate = petEvent.heartRate
             )
-            _navigateToEditEvent.value = true
-            _loadStatus.value = LoadApiStatus.DONE
+            _loadStatus.value = LoadStatus.DONE
         }
     }
 
-    fun navigateToEditEventCompleted() {
-        _navigateToEditEvent.value = false
+    fun navigateToEventFragmentCompleted() {
+        _navigateToEventFragment.value = null
     }
 
-    fun navigateToCalendarCompleted() {
-        _navigateToCalendar.value = false
-    }
+    private fun postEventToFirebase() {
+        _loadStatus.value = LoadStatus.LOADING
 
-    fun leaveTagDialog() {
-        _leaveTagDialog.value = true
-    }
+        val calendar = Calendar.getInstance()
 
-    fun getIconDrawable(index: Long): Drawable? {
-        return when (index) {
-            0L -> getDrawable(R.drawable.ic_food)
-            1L -> getDrawable(R.drawable.ic_shower)
-            2L -> getDrawable(R.drawable.ic_walking)
-            3L -> getDrawable(R.drawable.ic_nail_trimming)
-            4L -> getDrawable(R.drawable.ic_grooming)
-            5L -> getDrawable(R.drawable.ic_weighting)
-            200L -> getDrawable(R.drawable.ic_tick)
-            201L -> getDrawable(R.drawable.ic_medicine)
-            202L -> getDrawable(R.drawable.ic_heart)
-            203L -> getDrawable(R.drawable.ic_synrige)
-            204L -> getDrawable(R.drawable.ic_blood_test)
-            205L -> getDrawable(R.drawable.ic_medicine)
-            206L -> getDrawable(R.drawable.ic_ointment)
-            207L -> getDrawable(R.drawable.ic_eye_drops)
-            208L -> getDrawable(R.drawable.ic_synrige)
-            209L -> getDrawable(R.drawable.ic_blood_test)
-            else -> getDrawable(R.drawable.ic_others)
-        }
-    }
-
-    fun makeTagList() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        val arrayOfList = arrayListOf<List<EventTag>>()
-        arrayOfList.add(listTagDiary)
-        arrayOfList.add(listTagSyndrome)
-        arrayOfList.add(listTagTreatment)
-        viewModelScope.let {
-            for (list in arrayOfList) {
-                for (tag in list) {
-                    tag.title?.let {
-                        if (tag.isSelected == true) {
-                            eventTags.add(tag)
-                            tag.index?.let { index -> eventTagsIndex.add(index) }
-                        }
-                    }
-                }
-            }
-            if (eventTags.size == 0) {
-                _loadStatus.value = LoadApiStatus.ERROR
-                Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG).show()
-            } else {
-                navigateToEditEvent()
-            }
-        }
-    }
-
-
-    fun quickSave() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        val arrayOfList = arrayListOf<List<EventTag>>()
-        arrayOfList.add(listTagDiary)
-        arrayOfList.add(listTagSyndrome)
-        arrayOfList.add(listTagTreatment)
-        viewModelScope.let {
-            for (list in arrayOfList) {
-                for (tag in list) {
-                    tag.title?.let {
-                        if (tag.isSelected == true) {
-                            eventTags.add(tag)
-                            tag.index?.let { index -> eventTagsIndex.add(index) }
-                        }
-                    }
-                }
-            }
-            if (eventTags.size == 0) {
-                _loadStatus.value = LoadApiStatus.ERROR
-                Toast.makeText(JustPetApplication.appContext, "請至少選擇一個分類", Toast.LENGTH_LONG).show()
-            } else {
-                postEvent()
-            }
-        }
-    }
-
-    private fun postEvent() {
-        _loadStatus.value = LoadApiStatus.LOADING
-        // get selected time and date string list
-        val timeList = SimpleDateFormat(
-            getString(R.string.timelist_format),
-            Locale.TAIWAN
-        ).format(calendar.time).split("/")
+        val timeList = calendar.time.toTimeListFormat().split(SLASH)
 
         selectedPetProfile?.let {
             it.profileId?.apply {
-                pets.document(this).collection(EVENTS).add(
+                petsReference.document(this).collection(EVENTS).add(
                     PetEvent(
                         petProfile = it,
-                        petId = it.profileId,
-                        petName = it.name,
-                        petSpecies = it.species,
+                        petId = this,
+                        petName = it.name ?: EMPTY_STRING,
+                        petSpecies = it.species ?: PetSpecies.CAT.value,
                         timestamp = (calendar.timeInMillis / 1000),
                         year = timeList[0].toLong(),
                         month = timeList[1].toLong(),
@@ -305,11 +265,11 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                         respiratoryRate = petEvent.respiratoryRate,
                         heartRate = petEvent.heartRate
                     )
-                ).addOnSuccessListener { documentReference ->
-                    postTags(documentReference.id)
+                ).addOnSuccessListener { document ->
+                    postTags(document.id)
                     Log.d(ERIC, "TagViewModel quickSave() succeeded")
                 }.addOnFailureListener { e ->
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "TagViewModel quickSave() failed: $e")
                 }
             }
@@ -322,22 +282,61 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
                 viewModelScope.launch {
                     var index = 1
                     for (item in eventTags) {
-                        pets.document(it).collection(EVENTS)
+                        petsReference.document(it).collection(EVENTS)
                             .document(eventId).collection(TAGS).add(item)
                             .addOnSuccessListener {
+                                when (index) {
+                                    eventTags.size -> {
+                                        Toast.makeText(
+                                            JustPetApplication.appContext,
+                                            getString(R.string.text_event_save_success),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        navigateToCalendar()
+                                        _loadStatus.value = LoadStatus.DONE
+                                        Log.d(ERIC, "TagViewModel postTags() succeeded")
+                                    }
+                                    else -> {
+                                        index++
+                                    }
+                                }
                                 Log.d(ERIC, "TagViewModel postTags() succeeded")
                             }.addOnFailureListener { e ->
+                                when (index) {
+                                    eventTags.size -> {
+                                        Toast.makeText(
+                                            JustPetApplication.appContext,
+                                            getString(R.string.text_event_save_success),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        navigateToCalendar()
+                                        _loadStatus.value = LoadStatus.DONE
+                                    }
+                                    else -> {
+                                        index++
+                                    }
+                                }
                                 Log.d(ERIC, "TagViewModel postTags() failed: $e")
                             }
-                        if (index == eventTags.size) {
-                            _loadStatus.value = LoadApiStatus.DONE
-                            _navigateToCalendar.value = true
-                            Toast.makeText(JustPetApplication.appContext, "新增成功！", Toast.LENGTH_LONG).show()
-                        }
-                        index++
                     }
                 }
             }
         }
+    }
+
+    fun navigateToCalendar() {
+        _navigateToCalendarFragment.value = true
+    }
+
+    fun navigateToCalendarCompleted() {
+        _navigateToCalendarFragment.value = false
+    }
+
+    fun leaveTagDialog() {
+        _leaveTagDialog.value = true
+    }
+
+    fun leaveTagDialogCompleted() {
+        _leaveTagDialog.value = true
     }
 }

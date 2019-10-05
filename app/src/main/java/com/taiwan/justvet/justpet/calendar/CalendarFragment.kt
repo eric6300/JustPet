@@ -27,6 +27,7 @@ class CalendarFragment : Fragment(), OnDateSelectedListener {
     private lateinit var userProfile: UserProfile
     private lateinit var localDate: LocalDate
     private lateinit var adapter: CalendarEventAdapter
+
     private val viewModel: CalendarViewModel by lazy {
         ViewModelProviders.of(this).get(CalendarViewModel::class.java)
     }

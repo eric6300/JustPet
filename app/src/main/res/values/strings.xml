@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">JustPet</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     //  HomeFragment  //
     <string name="text_id_number">晶片號碼 ( 選填 )</string>
     <string name="text_name">名字</string>
     <string name="text_birthday">出生日期</string>
     <string name="text_gender">性別</string>
     <string name="text_neutered">絕育(結紮)</string>
+    <string name="text_name_empty_error">名字不可為空白</string>
+    <string name="text_profile_edit_success">修改寵物資料成功！</string>
+    <string name="text_vaccine_invalid">今年都還沒有打疫苗喔！</string>
+    <string name="text_no_event_notification">暫無提醒事項</string>
 
     //  EventDialog  //
     <string name="text_diary">日常</string>
@@ -19,8 +20,8 @@
     <string name="text_quick_save">快速記錄</string>
     <string name="date_format">yyyy/MM/dd</string>
     <string name="time_format">HH:mm</string>
-    <string name="date_time_format">yyyy/MM/dd  HH:mm</string>
-    <string name="timelist_format">yyyy/MM/dd/HH:mm</string>
+    <string name="event_time_format">yyyy/MM/dd  HH:mm</string>
+    <string name="time_list_format">yyyy/MM/dd/HH:mm</string>
     <string name="title_time">時間</string>
     <string name="title_tag">分類</string>
     <string name="title_note">備註</string>
@@ -39,28 +40,55 @@
     <string name="unit_temperature">℃</string>
     <string name="unit_respiratory_rate">次 / 分鐘</string>
     <string name="text_no_pet_no_new_event">目前沒有寵物資料，無法新增紀錄</string>
+    <string name="text_event_permission_message">開啟「設定」，點選「權限」，並開啟「儲存」</string>
+    <string name="text_open_app_setting">開啟「設定」</string>
+    <string name="text_weight_empty_error">體重未填寫</string>
+    <string name="text_weight_format_error">體重格式或數據錯誤，請修正數據</string>
+    <string name="text_temperature_format_error">體溫格式或數據錯誤，請修正數據</string>
+    <string name="text_respiratory_rate_format_error">呼吸次數格式或數據錯誤，請修正數據</string>
+    <string name="text_heart_rate_format_error">脈搏格式或數據錯誤，請修正數據</string>
 
     //  ToolFragment  //
     <string name="title_food_intake">基礎攝取熱量</string>
     <string name="title_water_intake">基礎飲水量</string>
     <string name="title_calculate_rate">呼吸 / 脈搏</string>
 
-
     //  BreathFragment  //
-    <string name="title_average_respiratory_rate">平均呼吸速率</string>
-    <string name="title_average_heart_rate">平均脈搏速率</string>
+    <string name="text_average_respiratory_rate">平均呼吸速率</string>
+    <string name="text_average_heart_rate">平均脈搏速率</string>
     <string name="text_heart_rate">脈搏速率</string>
     <string name="text_respiratory_rate">呼吸速率</string>
     <string name="text_reset">重設</string>
+    <string name="text_rate_empty_error">新增記錄時，速率不可為零</string>
 
     //  ChartFragment  //
-    <string name="chart_month_day_format">MM/dd</string>
-    <string name="chart_year_month_format">MMM</string>
-    <string name="text_one_month">一個月</string>
-    <string name="text_six_month">六個月</string>
-    <string name="text_one_year">一年</string>
+    <string name="chart_format_month_day">MM/dd</string>
+    <string name="chart_format_month">MMM</string>
     <string name="text_three_months">三個月</string>
+    <string name="text_six_months">六個月</string>
+    <string name="text_one_year">一年</string>
     <string name="text_vomit_count">嘔吐次數</string>
+
+    //  Family  //
+    <string name="text_pet_family">%s 的家人</string>
+    <string name="text_user_already_pet_family">你已經是 %s 的家人囉！</string>
+    <string name="text_invitee_already_pet_family">該用戶已經是 %s 的家人</string>
+    <string name="text_empty_email">用戶 E-mail 不可為空白</string>
+    <string name="text_invitee_not_exist">該用戶不存在，請重新輸入E-mail</string>
+    <string name="text_invite_failure">發送邀請失敗</string>
+    <string name="text_invite_success">發送邀請成功！</string>
+    <string name="text_invite_already_exist">無法重複發送邀請</string>
+    <string name="text_owner">飼主</string>
+    <string name="text_family_member">家人</string>
+    <string name="text_invitation">邀請</string>
+    <string name="text_send_invitation">發送邀請</string>
+
+    //  AddNewPet  //
+    <string name="text_empty_name_error">請輸入名字</string>
+    <string name="text_empty_birthday_error">請輸入出生日期</string>
+    <string name="text_birthday_format">%d/%d/%d</string>
+    <string name="text_image_path">image/%s</string>
+    <string name="text_profile_path">profile/%s</string>
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>
@@ -87,7 +115,7 @@
     <string name="text_nail_trimming">剪指甲</string>
     <string name="text_hair_trimming">剃毛</string>
     <string name="text_weight_measure">量體重</string>
-    <string name="text_other_daily">其他日常</string>
+    <string name="text_other_diary">其他日常</string>
 
     <string name="text_vomit">嘔吐</string>
     <string name="text_diarrhea">下痢</string>
@@ -110,5 +138,9 @@
     <string name="text_vaccine">疫苗注射</string>
     <string name="text_health_exam">健康檢查</string>
     <string name="text_other_treatment">其他醫療</string>
+
+    <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>
+    <string name="text_event_save_success">新增成功！</string>
+
 
 </resources>
