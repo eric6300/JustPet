@@ -12,7 +12,7 @@ import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.ItemChipTagBinding
 import com.taiwan.justvet.justpet.tag.TagListAdapter
 
-class EventTagAdapter(val viewModel: EventViewModel, val onClickListener: OnClickListener) :
+class EventTagAdapter(val viewModel: EventViewModel) :
     ListAdapter<EventTag, EventTagAdapter.ViewHolder>(TagListAdapter.TagDiffCallback()) {
 
     private lateinit var context: Context
@@ -71,9 +71,5 @@ class EventTagAdapter(val viewModel: EventViewModel, val onClickListener: OnClic
             binding.executePendingBindings()
         }
 
-    }
-
-    class OnClickListener(val clickListener: (eventTag: EventTag) -> Unit) {
-        fun onClick(eventTag: EventTag) = clickListener(eventTag)
     }
 }

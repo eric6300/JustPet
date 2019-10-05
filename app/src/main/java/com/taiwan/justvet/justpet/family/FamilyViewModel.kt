@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.util.LoadApiStatus
+import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
@@ -22,17 +22,17 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     val expandStatus: LiveData<Boolean>
         get() = _expandStatus
 
-    private val _loadStatus = MutableLiveData<LoadApiStatus>()
-    val loadStatus: LiveData<LoadApiStatus>
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
 
-    private val _leaveDialog = MutableLiveData<Boolean>()
-    val leaveDialog: LiveData<Boolean>
-        get() = _leaveDialog
+    private val _leaveFamilyDialog = MutableLiveData<Boolean>()
+    val leaveFamilyDialog: LiveData<Boolean>
+        get() = _leaveFamilyDialog
 
     val petFamily = getString(R.string.text_pet_family, petProfile.name)
     val userEmail = UserManager.userEmail.value
@@ -48,16 +48,16 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     fun checkUser() {
         _errorMessage.value = EMPTY_STRING
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         when (inviteeEmail.value) {
             null, EMPTY_STRING -> {
                 _errorMessage.value = getString(R.string.text_empty_email)
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
             }
             userEmail -> {
                 _errorMessage.value = getString(R.string.text_user_already_pet_family, petProfile.name)
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
             }
             else -> {
                 inviteeEmail.value?.let { inviteeEmail ->
@@ -70,18 +70,18 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                                             R.string.text_invitee_already_pet_family,
                                             petProfile.name
                                         )
-                                        _loadStatus.value = LoadApiStatus.DONE
+                                        _loadStatus.value = LoadStatus.DONE
                                     } else {
                                         checkInvite()
                                     }
                                 }
                             } else {
                                 _errorMessage.value = getString(R.string.text_invitee_not_exist)
-                                _loadStatus.value = LoadApiStatus.ERROR
+                                _loadStatus.value = LoadStatus.ERROR
                             }
                         }.addOnFailureListener {
                             _errorMessage.value = getString(R.string.text_invite_failure)
-                            _loadStatus.value = LoadApiStatus.ERROR
+                            _loadStatus.value = LoadStatus.ERROR
                             Log.d(ERIC, "checkUser() failed : $it")
                         }
                 }
@@ -90,7 +90,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     }
 
     private fun checkInvite() {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         inviteReference
             .whereEqualTo(INVITER_EMAIL, userEmail)
@@ -101,18 +101,18 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                     sendInvite()
                 } else {
                     _errorMessage.value = getString(R.string.text_invite_already_exist)
-                    _loadStatus.value = LoadApiStatus.ERROR
+                    _loadStatus.value = LoadStatus.ERROR
                     Log.d(ERIC, "already sent invite")
                 }
             }.addOnFailureListener {
                 _errorMessage.value = getString(R.string.text_invite_failure)
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
                 Log.d(ERIC, "checkInvite() failed : $it")
             }
     }
 
     private fun sendInvite() {
-        _loadStatus.value = LoadApiStatus.LOADING
+        _loadStatus.value = LoadStatus.LOADING
 
         inviteeEmail.value?.let { inviteeEmail ->
             inviteReference.add(
@@ -124,7 +124,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                     inviterEmail = userEmail
                 )
             ).addOnSuccessListener {
-                _loadStatus.value = LoadApiStatus.DONE
+                _loadStatus.value = LoadStatus.DONE
 
                 Toast.makeText(
                     JustPetApplication.appContext,
@@ -134,23 +134,23 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
                 Log.d(ERIC, "sendInvite() succeeded , ID : ${it.id}")
 
-                leaveDialog()
+                leaveFamilyDialog()
 
             }.addOnFailureListener {
                 _errorMessage.value = getString(R.string.text_invite_failure)
-                _loadStatus.value = LoadApiStatus.ERROR
+                _loadStatus.value = LoadStatus.ERROR
                 Log.d(ERIC, "sendInvite() failed : $it")
             }
         }
 
     }
 
-    fun leaveDialog() {
-        _leaveDialog.value = true
+    fun leaveFamilyDialog() {
+        _leaveFamilyDialog.value = true
     }
 
-    fun leaveDialogComplete() {
-        _leaveDialog.value = false
+    fun leaveFamilyDialogComplete() {
+        _leaveFamilyDialog.value = false
     }
 
     fun expandDialog() {

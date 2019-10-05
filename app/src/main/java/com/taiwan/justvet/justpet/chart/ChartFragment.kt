@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ObservableMap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -58,7 +57,7 @@ class ChartFragment : Fragment() {
         setupWeightChart()
         setupSegmentedButtonGroup()
 
-        viewModel.selectedProfile.observe(this, Observer {
+        viewModel.selectedPetProfile.observe(this, Observer {
             it?.let {
                 viewModel.getSyndromeData(it)
                 viewModel.getWeightData(it)
@@ -131,7 +130,7 @@ class ChartFragment : Fragment() {
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 86400f
         xAxis.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
-        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0005).toFloat()
+        xAxis.axisMaximum = (viewModel.nowTimestamp * 1.0015).toFloat()
 
         // set Y axis
         val yAxisRight = weightChart.axisRight

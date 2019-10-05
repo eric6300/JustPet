@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.taiwan.justvet.justpet.data.EventTag
 import com.taiwan.justvet.justpet.databinding.ItemIconTagBinding
 
-class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickListener) :
+class TagListAdapter(val viewModel: TagViewModel) :
     ListAdapter<EventTag, TagListAdapter.ViewHolder>(TagDiffCallback()) {
 
     private lateinit var context: Context
@@ -95,7 +95,4 @@ class TagListAdapter(val viewModel: TagViewModel, val onClickListener: OnClickLi
         }
     }
 
-    class OnClickListener(val clickListener: (eventTag: EventTag) -> Unit) {
-        fun onClick(eventTag: EventTag) = clickListener(eventTag)
-    }
 }

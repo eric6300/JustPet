@@ -70,10 +70,11 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
         }
 
         dialog?.setOnShowListener {
-            val dialog = it as BottomSheetDialog
-            val bottomSheet = dialog
+            val bottomSheetDialog = (it as BottomSheetDialog)
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetDialog?.let {
+                BottomSheetBehavior.from(bottomSheetDialog).state = BottomSheetBehavior.STATE_EXPANDED
+            }
         }
 
         setupGenderIcon()

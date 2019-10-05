@@ -1,6 +1,6 @@
 package com.taiwan.justvet.justpet.util
 
-enum class LoadApiStatus {
+enum class LoadStatus {
     LOADING,
     ERROR,
     DONE

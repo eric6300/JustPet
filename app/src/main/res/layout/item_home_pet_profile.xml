@@ -18,7 +18,7 @@
             type="com.taiwan.justvet.justpet.util.Converter" />
 
         <import type="android.view.View" />
-        <import type="com.taiwan.justvet.justpet.util.LoadApiStatus"/>
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -91,8 +91,8 @@
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_camera"
                     android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel.startGallery()}"
-                    android:visibility="@{viewModel.isModified() == true ? View.VISIBLE : View.GONE }"
+                    android:onClick="@{() -> viewModel.showGallery()}"
+                    android:visibility="@{viewModel.isPetProfileModified() == true ? View.VISIBLE : View.GONE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     tools:visibility="invisible" />
@@ -104,7 +104,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="13dp"
                     android:onClick="@{() -> viewModel.modifyPetProfile()}"
-                    android:visibility="@{viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toEndOf="@+id/image_pet"
                     app:srcCompat="@drawable/ic_edit_white" />
@@ -117,9 +117,9 @@
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/ic_house"
                     android:backgroundTint="@android:color/background_light"
-                    android:onClick="@{() -> viewModel.navigateToFamily(petProfile)}"
+                    android:onClick="@{() -> viewModel.navigateToFamilyDialog(petProfile)}"
                     android:padding="2dp"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{ viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -136,8 +136,8 @@
                     android:text="@{petProfile.name}"
                     android:textColor="@android:color/background_light"
                     android:textSize="24sp"
-                    android:onClick="@{() -> viewModel.navigateToFamily(petProfile)}"
-                    android:visibility="@{ viewModel.isModified() == true ? View.GONE : View.VISIBLE }"
+                    android:onClick="@{() -> viewModel.navigateToFamilyDialog(petProfile)}"
+                    android:visibility="@{ viewModel.isPetProfileModified() == true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="@+id/image_pet"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"
                     app:layout_constraintStart_toEndOf="@+id/icon_family"
@@ -147,7 +147,7 @@
                     android:id="@+id/detail_pet_profile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:visibility="@{ viewModel.isModified() != true ? View.GONE : View.VISIBLE }"
+                    android:visibility="@{ viewModel.isPetProfileModified() != true ? View.GONE : View.VISIBLE }"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -242,7 +242,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="15dp"
-                        android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+                        android:onClick="@{ () -> viewModel.showDatePicker() }"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/edit_text_name">
@@ -257,9 +257,9 @@
                             android:fontFamily="@font/roboto_mono"
                             android:hint="@string/text_birthday"
                             android:inputType="none"
-                            android:onClick="@{ (view) -> viewModel.datePicker(view) }"
+                            android:onClick="@{ () -> viewModel.showDatePicker() }"
                             android:singleLine="true"
-                            android:text="@{viewModel.petBirthday}"
+                            android:text="@{viewModel.petBirthdayString}"
                             android:textAlignment="center" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -300,7 +300,7 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
-                        android:onClick="@{() -> viewModel.modifyCancelled()}"
+                        android:onClick="@{() -> viewModel.modifyPetProfileCancelled()}"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         app:fb_defaultColor="@color/colorPrimary"

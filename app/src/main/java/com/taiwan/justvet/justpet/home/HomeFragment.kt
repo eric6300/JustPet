@@ -2,15 +2,16 @@ package com.taiwan.justvet.justpet.home
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,14 +24,15 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
+import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.pet.PetSpecies
+import java.util.*
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var profileAdapter: PetProfileAdapter
     private lateinit var notificationAdapter: EventNotificationAdapter
-    private lateinit var colorDrawableBackground: ColorDrawable
-    private lateinit var swipeIcon: Drawable
 
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,
@@ -47,7 +49,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,R.layout.fragment_home, container, false
+        )
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -69,10 +73,10 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.birthdayChange.observe(this, Observer {
-            if (it == true) {
+        viewModel.isBirthdayChanged.observe(this, Observer {
+            if (it) {
                 profileAdapter.notifyDataSetChanged()
-                viewModel.birthdayChangeCompleted()
+                viewModel.birthdayChangedCompleted()
             }
         })
 
@@ -94,18 +98,18 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToFamily.observe(this, Observer {
+        viewModel.navigateToFamilyDialog.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToFamilyDialog(it))
-                viewModel.navigateToFamilyCompleted()
+                viewModel.navigateToFamilyDialogCompleted()
             }
         })
 
-        viewModel.navigateToHome.observe(this, Observer {
+        viewModel.navigateToHomeFragment.observe(this, Observer {
             it?.let {
                 if (it) {
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                    viewModel.navigateToHomeCompleted()
+                    viewModel.navigateToHomeFragmentCompleted()
                 }
             }
         })
@@ -121,7 +125,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.selectedPet.observe(this, Observer {
+        viewModel.selectedPetProfile.observe(this, Observer {
             it?.let {
                 viewModel.showPetProfile(it)
                 viewModel.getPetEvents(it)
@@ -129,23 +133,30 @@ class HomeFragment : Fragment() {
             }
         })
 
-        viewModel.eventsList.observe(this, Observer {
+        viewModel.eventList.observe(this, Observer {
             it?.let {
                 viewModel.filterForNotification(it)
             }
         })
 
-        viewModel.startGallery.observe(this, Observer {
+        viewModel.showGallery.observe(this, Observer {
             if (it) {
                 startGallery()
-                viewModel.startGalleryCompleted()
+                viewModel.showGalleryCompleted()
             }
         })
 
-        viewModel.navigateToNewPet.observe(this, Observer {
+        viewModel.showDatePicker.observe(this, Observer {
+            if (it) {
+                showDatePicker()
+                viewModel.showDatePickerCompleted()
+            }
+        })
+
+        viewModel.navigateToNewPetDialog.observe(this, Observer {
             if (it) {
                 findNavController().navigate(NavGraphDirections.navigateToAddNewPetDialog())
-                viewModel.navigateToNewPetCompleted()
+                viewModel.navigateToNewPetDialogCompleted()
             }
         })
 
@@ -189,7 +200,7 @@ class HomeFragment : Fragment() {
         }
 
         // disable scroll function when editing pet profile
-        viewModel.isModified.observe(this, Observer {
+        viewModel.isPetProfileModified.observe(this, Observer {
             if (it == true) {
                 (listProfilePet.layoutManager as PetProfileLayoutManager).setScrollEnabled(flag = false)
                 profileAdapter.notifyDataSetChanged()
@@ -207,9 +218,9 @@ class HomeFragment : Fragment() {
                     findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment(
                         PetEvent(
                             petProfile = it.petProfile,
-                            petName = it.petProfile.name,
-                            petId = it.petProfile.profileId,
-                            petSpecies = it.petProfile.species,
+                            petName = it.petProfile.name ?: EMPTY_STRING,
+                            petId = it.petProfile.profileId ?: EMPTY_STRING,
+                            petSpecies = it.petProfile.species ?: PetSpecies.CAT.value,
                             eventTags = it.eventTags,
                             eventTagsIndex = it.eventTagsIndex
                         )
@@ -253,6 +264,23 @@ class HomeFragment : Fragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, PHOTO_FROM_GALLERY)
+    }
+
+    private fun showDatePicker() {
+        this.context?.let {
+            val list = viewModel.getPetBirthdayForDatePicker()
+            DatePickerDialog(
+                it,
+                DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+                    val calendar = Calendar.getInstance(Locale.getDefault())
+                    calendar.set(year, month, dayOfMonth, 0, 0, 0)
+
+                    viewModel.setPetBirthday(calendar.time)
+                    viewModel.birthdayChanged()
+
+                }, list[0], list[1], list[2]
+            ).show()
+        }
     }
 
     private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
