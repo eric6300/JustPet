@@ -23,9 +23,6 @@ import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 
 class AddNewPetViewModel : ViewModel() {
-    private val _navigateToHomeFragment = MutableLiveData<Boolean>()
-    val navigateToHomeFragment: LiveData<Boolean>
-        get() = _navigateToHomeFragment
 
     private val _leaveDialog = MutableLiveData<Boolean>()
     val leaveDialog: LiveData<Boolean>
@@ -209,7 +206,7 @@ class AddNewPetViewModel : ViewModel() {
         }
     }
 
-    fun refreshUserProfile(petId: String) {
+    private fun refreshUserProfile(petId: String) {
         UserManager.userProfile.value?.let { userProfile ->
 
             val newPets = arrayListOf<String>()
@@ -225,6 +222,7 @@ class AddNewPetViewModel : ViewModel() {
                     profileId = userProfile.profileId,
                     uid = userProfile.uid,
                     email = userProfile.email,
+                    displayName = userProfile.displayName,
                     pets = newPets
                 )
             )
@@ -239,14 +237,6 @@ class AddNewPetViewModel : ViewModel() {
 
     fun showGalleryCompleted() {
         _showGallery.value = false
-    }
-
-    fun navigateToHomeFragment() {
-        _navigateToHomeFragment.value = true
-    }
-
-    fun navigateToHomeFragmentCompleted() {
-        _navigateToHomeFragment.value = false
     }
 
     fun leaveDialog() {

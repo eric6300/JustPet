@@ -15,14 +15,14 @@ import com.taiwan.justvet.justpet.event.EventViewModel.Companion.HEART_RATE_TYPE
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.RESPIRATORY_RATE_TYPE
 import com.taiwan.justvet.justpet.util.Util
 
-
-
 class BreathViewModel : ViewModel() {
-    private val _navigateToTag = MutableLiveData<PetEvent>()
-    val navigateToTag: LiveData<PetEvent>
-        get() = _navigateToTag
+    private val _navigateToTagDialog = MutableLiveData<PetEvent>()
+    val navigateToTagDialog: LiveData<PetEvent>
+        get() = _navigateToTagDialog
 
-    var tapRateType = MutableLiveData<Int>()
+    private val _averageTapRate = MutableLiveData<Long>()
+    val averageTapRate: LiveData<Long>
+        get() = _averageTapRate
 
     private var tapCount = 0L
     private var startTime = 0L
@@ -31,15 +31,13 @@ class BreathViewModel : ViewModel() {
     private var totalInterval = 0L
     private var lastTapInterval = 0L
 
-    private val _averageTapRate = MutableLiveData<Long>()
-    val averageTapRate: LiveData<Long>
-        get() = _averageTapRate
-
     private val vibrator =
         JustPetApplication.appContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
+    var tapRateType = MutableLiveData<Int>()
+
     init {
-        _averageTapRate.value = 0L
+        resetTapRateCount()
         tapRateType.value = RESPIRATORY_RATE_TYPE
     }
 
@@ -84,7 +82,7 @@ class BreathViewModel : ViewModel() {
         _averageTapRate.value = 0L
     }
 
-    fun navigateToTag() {
+    fun navigateToTagDialog() {
         when (UserManager.userProfile.value?.pets?.size) {
             0 -> {
                 Toast.makeText(
@@ -107,11 +105,11 @@ class BreathViewModel : ViewModel() {
                             tapRateType.value?.let {
                                 when (it) {
                                     RESPIRATORY_RATE_TYPE -> {
-                                        _navigateToTag.value =
+                                        _navigateToTagDialog.value =
                                             PetEvent(respiratoryRate = tapRate)
                                     }
                                     HEART_RATE_TYPE -> {
-                                        _navigateToTag.value =
+                                        _navigateToTagDialog.value =
                                             PetEvent(heartRate = tapRate)
                                     }
                                 }
@@ -124,6 +122,6 @@ class BreathViewModel : ViewModel() {
     }
 
     fun navigateToTagCompleted() {
-        _navigateToTag.value = null
+        _navigateToTagDialog.value = null
     }
 }

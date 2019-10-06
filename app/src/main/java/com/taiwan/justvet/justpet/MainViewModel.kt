@@ -1,6 +1,5 @@
 package com.taiwan.justvet.justpet
 
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -10,63 +9,50 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_ID
+import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.FAMILY
+import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.INVITEE_EMAIL
+import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.INVITER_EMAIL
+import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.INVITER_NAME
+import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.PET_FAMILY
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
+import com.taiwan.justvet.justpet.util.Util.getString
 
 class MainViewModel : ViewModel() {
 
-    private val _userName = MutableLiveData<String>()
-    val userName: LiveData<String>
-        get() = _userName
-
-    private val _userEmail = MutableLiveData<String>()
-    val userEmail: LiveData<String>
-        get() = _userEmail
-
-    private val _userPhotoUrl = MutableLiveData<Uri>()
-    val userPhotoUrl: LiveData<Uri>
-        get() = _userPhotoUrl
-
-    private val _userHasPets = MutableLiveData<Boolean>()
-    val userHasPets: LiveData<Boolean>
-        get() = _userHasPets
-
-    private val _navigateToHome = MutableLiveData<Boolean>()
-    val navigateToHome: LiveData<Boolean>
-        get() = _navigateToHome
-
-    private val _inviteList = MutableLiveData<List<Invitation>>()
+    private val _invitationList = MutableLiveData<List<Invitation>>()
     val invitationList: LiveData<List<Invitation>>
-        get() = _inviteList
+        get() = _invitationList
 
-    var checkedInvite = false
+    private var hasCheckedInvitation = false
 
-    // Record current fragment to support data binding
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
 
     val firebase = FirebaseFirestore.getInstance()
     val usersReference = firebase.collection(USERS)
     val petsReference = firebase.collection(PETS)
-    val inviteReference = firebase.collection("invites")
+    val inviteReference = firebase.collection(INVITES)
 
     fun checkUserProfile(userProfile: UserProfile) {
         userProfile.uid?.let { uid ->
             usersReference.whereEqualTo(UID, uid).get()
                 .addOnSuccessListener {
-                    if (it.size() == 0) {
-                        registerUserProfile(userProfile)
-                    } else {
-                        Log.d(ERIC, "user already registered")
-                        for (item in it) {
-                            UserManager.refreshUserProfile(
-                                UserProfile(
-                                    profileId = item.id,
-                                    uid = item[UID] as String?,
-                                    email = item["email"] as String?,
-                                    pets = item["pets"] as List<String>?
+                    when (it.size()) {
+                        0 -> registerUserProfile(userProfile)
+                        else -> {
+                            for (user in it) {
+                                UserManager.refreshUserProfile(
+                                    UserProfile(
+                                        profileId = user.id,
+                                        uid = user[UID] as String?,
+                                        email = user[EMAIL] as String?,
+                                        displayName = userProfile.displayName,
+                                        pets = user[PETS] as List<String>?
+                                    )
                                 )
-                            )
+                            }
+                            checkInvite()
                         }
-                        checkInvite()
                     }
                 }
                 .addOnFailureListener {
@@ -79,8 +65,8 @@ class MainViewModel : ViewModel() {
         userProfile.uid?.let {
             usersReference.add(userProfile)
                 .addOnSuccessListener {
-                    Log.d(ERIC, "registerUserProfile() succeeded")
                     checkUserProfile(userProfile)
+                    Log.d(ERIC, "registerUserProfile() succeeded")
                 }
                 .addOnFailureListener {
                     Log.d(ERIC, "registerUserProfile() failed : $it")
@@ -88,30 +74,22 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun setupDrawerUser(userProfile: UserProfile) {
-        userProfile.let {
-            _userName.value = it.displayName
-            _userPhotoUrl.value = it.photoUrl
-            _userEmail.value = it.email
-        }
-    }
-
-    fun userHasPets(status: Boolean) {
-        _userHasPets.value = status
-    }
-
     fun checkInvite() {
         UserManager.userProfile.value?.let { userProfile ->
             inviteReference
-                .whereEqualTo("inviteeEmail", userProfile.email)
+                .whereEqualTo(INVITEE_EMAIL, userProfile.email)
                 .get()
                 .addOnSuccessListener { it ->
                     if (it.isEmpty) {
-                        Log.d(ERIC, "no invite")
-                        if (checkedInvite) {
-                            Toast.makeText(JustPetApplication.appContext, "目前沒有邀請", Toast.LENGTH_LONG).show()
+                        if (hasCheckedInvitation) {  //  not check invitation yet
+                            Toast.makeText(
+                                JustPetApplication.appContext,
+                                getString(R.string.text_no_invitation_now),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            hasCheckedInvitation = true
                         }
-                        checkedInvite = true
                     } else {
                         val list = mutableListOf<Invitation>()
 
@@ -119,17 +97,17 @@ class MainViewModel : ViewModel() {
                             list.add(
                                 Invitation(
                                     inviteId = it.id,
-                                    petId = it["petId"] as String?,
-                                    petName = it["petFamily"] as String?,
-                                    inviteeEmail = it["inviteeEmail"] as String?,
-                                    inviterName = it["inviterName"] as String?,
-                                    inviterEmail = it["inviterEmail"] as String?
+                                    petId = it[PET_ID] as String?,
+                                    petName = it[PET_FAMILY] as String?,
+                                    inviteeEmail = it[INVITEE_EMAIL] as String?,
+                                    inviterName = it[INVITER_NAME] as String?,
+                                    inviterEmail = it[INVITER_EMAIL] as String?
                                 )
                             )
                         }
-                        _inviteList.value = list
-//                        Toast.makeText(JustPetApplication.appContext, "你有${list.size}個邀請待確認", Toast.LENGTH_LONG).show()
-                        Log.d(ERIC, "invite list : $list")
+
+                        _invitationList.value = list
+
                     }
                 }.addOnFailureListener {
                     Log.d(ERIC, "checkInvite() failed : $it")
@@ -138,78 +116,86 @@ class MainViewModel : ViewModel() {
     }
 
     fun showInvite(invitationList: MutableList<Invitation>) {
-        if (invitationList.isNotEmpty()) {
-            _inviteList.value = invitationList
-        } else {
-            _inviteList.value = null
+        if (invitationList.isEmpty()) {
+            _invitationList.value = null
             Log.d(ERIC, "invitationList is empty")
+        } else {
+            _invitationList.value = invitationList
         }
     }
 
     fun confirmInvite(invitation: Invitation) {
         UserManager.userProfile.value?.let { userProfile ->
-            usersReference.whereEqualTo("uid", userProfile.uid).get()
+            usersReference.whereEqualTo(UID, userProfile.uid).get()
                 .addOnSuccessListener {
-                    updateUserProfile(invitation)
+                    updateUserPets(invitation)
                 }.addOnFailureListener {
                     Log.d(ERIC, "confirmInvite() failed : $it")
                 }
         }
     }
 
-    private fun updateUserProfile(invitation: Invitation) {
+    private fun updateUserPets(invitation: Invitation) {
         UserManager.userProfile.value?.profileId?.let {
             usersReference.document(it)
-                .update("pets", FieldValue.arrayUnion(invitation.petId))
+                .update(PETS, FieldValue.arrayUnion(invitation.petId))
                 .addOnSuccessListener {
-                    deleteInvite(invitation)
+                    deleteInvitation(invitation)
                 }.addOnFailureListener {
-                    Log.d(ERIC, "updateUserProfile() failed")
+                    Log.d(ERIC, "updateUserPets() failed")
                 }
         }
     }
 
-    private fun deleteInvite(invitation: Invitation) {
+    fun deleteInvitation(invitation: Invitation) {
         invitation.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
-                    updatePetProfileFamily(invitation)
+                    updateFamilyOfPet(invitation)
+                    Log.d(ERIC, "deleteInvitation() succeeded")
                 }.addOnFailureListener {
-                    Log.d(ERIC, "deleteInvite() failed")
+                    Log.d(ERIC, "deleteInvitation() failed")
                 }
         }
     }
 
-    private fun updatePetProfileFamily(invitation: Invitation) {
+    private fun updateFamilyOfPet(invitation: Invitation) {
         UserManager.userProfile.value?.let { userProfile ->
             invitation.petId?.let { petId ->
                 petsReference.document(petId)
-                    .update("family", FieldValue.arrayUnion(userProfile.email))
+                    .update(FAMILY, FieldValue.arrayUnion(userProfile.email))
                     .addOnSuccessListener {
-                        val newPetList = mutableListOf<String>()
-                        userProfile.pets?.let { newPetList.addAll(it) }
-                        newPetList.add(petId)
 
-                        val newUserProfile = UserProfile(
-                            profileId = userProfile.profileId,
-                            uid = userProfile.uid,
-                            email = userProfile.email,
-                            pets = newPetList.sortedBy { it },
-                            displayName = userProfile.displayName,
-                            photoUrl = userProfile.photoUrl
-                        )
+                        refreshUserProfile(petId)
 
-                        UserManager.refreshUserProfile(newUserProfile)
-                        _navigateToHome.value = true
-                        Log.d(ERIC, "updatePetProfileFamily succeeded")
+                        Log.d(ERIC, "updateFamilyOfPet() succeeded")
                     }.addOnFailureListener {
-                        Log.d(ERIC, "updatePetProfileFamily failed : $it")
+                        Log.d(ERIC, "updateFamilyOfPet() failed : $it")
                     }
             }
         }
     }
 
-    fun navigateToHomeCompleted() {
-        _navigateToHome.value = false
+    private fun refreshUserProfile(petId: String) {
+        UserManager.userProfile.value?.let { userProfile ->
+            val newPetList = mutableListOf<String>()
+
+            userProfile.pets?.let {
+                newPetList.addAll(it)
+            }
+
+            newPetList.add(petId)
+
+            UserManager.refreshUserProfile(
+                UserProfile(
+                    profileId = userProfile.profileId,
+                    uid = userProfile.uid,
+                    email = userProfile.email,
+                    pets = newPetList.sortedBy { it },
+                    displayName = userProfile.displayName,
+                    photoUrl = userProfile.photoUrl
+                )
+            )
+        }
     }
 }

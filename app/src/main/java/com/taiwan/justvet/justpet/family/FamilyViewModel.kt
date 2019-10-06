@@ -12,10 +12,6 @@ import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
 
-const val EMAIL = "email"
-const val EMPTY_STRING = ""
-const val INVITER_EMAIL = "inviterEmail"
-const val INVITEE_EMAIL = "inviteeEmail"
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     private val _expandStatus = MutableLiveData<Boolean>()
@@ -35,7 +31,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         get() = _leaveFamilyDialog
 
     val petFamily = getString(R.string.text_pet_family, petProfile.name)
-    val userEmail = UserManager.userEmail.value
+    val userEmail = UserManager.userProfile.value?.email
     val inviteeEmail = MutableLiveData<String>()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -120,7 +116,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
                     petId = petProfile.profileId,
                     petName = petProfile.name,
                     inviteeEmail = inviteeEmail,
-                    inviterName = UserManager.userName.value,
+                    inviterName = UserManager.userProfile.value?.displayName,
                     inviterEmail = userEmail
                 )
             ).addOnSuccessListener {
@@ -159,6 +155,14 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         } else {
             _expandStatus.value = null
         }
+    }
+
+    companion object {
+        const val FAMILY = "family"
+        const val PET_FAMILY = "petFamily"
+        const val INVITEE_EMAIL = "inviteeEmail"
+        const val INVITER_NAME = "inviterName"
+        const val INVITER_EMAIL = "inviterEmail"
     }
 
 }

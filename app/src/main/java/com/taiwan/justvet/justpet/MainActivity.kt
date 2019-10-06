@@ -22,12 +22,14 @@ import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
+import kotlinx.android.synthetic.main.activity_main.*
 
 const val PHOTO_FROM_GALLERY = 1
 const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
 const val ERIC = "testEric"
 const val UID = "uid"
+const val EMAIL = "email"
 const val USERS = "users"
 const val PETS = "pets"
 const val EVENTS = "events"
@@ -35,6 +37,7 @@ const val TAGS = "tags"
 const val INVITES = "invites"
 const val SLASH = "/"
 const val COLON = ":"
+const val EMPTY_STRING = ""
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,11 +59,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_bottom_chart -> {
-                    if (viewModel.userHasPets.value == true) {
+                    if (UserManager.userHasPets()) {
                         findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_chartFragment)
                         return@OnNavigationItemSelectedListener true
                     } else {
-                        Toast.makeText(this, "新增寵物後才能查看圖表", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this,
+                            getString(R.string.text_chart_not_available),
+                            Toast.LENGTH_LONG
+                        ).show()
                         return@OnNavigationItemSelectedListener false
                     }
                 }
@@ -90,34 +97,43 @@ class MainActivity : AppCompatActivity() {
 
         setUserManager()
 
-        UserManager.userProfile.observe(this, Observer {
+        UserManager.refreshUserProfileCompleted.observe(this, Observer {
             it?.let {
-                viewModel.userHasPets(it.pets?.size != 0)
+                if (it) {
+                    UserManager.userProfile.value?.let { userProfile ->
+                        nav_bottom_view.selectedItemId = R.id.nav_bottom_home
+                        UserManager.refreshUserProfileCompleted()
+                    }
+                }
             }
         })
 
-        viewModel.invitationList.observe(this, Observer { inviteList ->
-            inviteList?.let {
-                val invite = it[0]
+        viewModel.invitationList.observe(this, Observer { invitationList ->
+            invitationList?.let {
+                val invitation = it[0]
 
                 val dialog = this.let {
                     AlertDialog.Builder(it)
-                        .setTitle("邀請通知")
-                        .setMessage("${invite.inviterName} ( ${invite.inviterEmail} ) \n邀請你一起紀錄 ${invite.petName} 的生活")
-                        .setPositiveButton("接受") { _, _ ->
+                        .setTitle(getString(R.string.title_invitation_dialog))
+                        .setMessage("${invitation.inviterName} ( ${invitation.inviterEmail} ) \n邀請你一起紀錄 ${invitation.petName} 的生活")
+                        .setPositiveButton(getString(R.string.text_receive)) { _, _ ->
 
-                            viewModel.confirmInvite(invite)
+                            viewModel.confirmInvite(invitation)
 
-                            val newList = mutableListOf<Invitation>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
+                            showNextInvitation(invitationList)
+
                         }
-                        .setNeutralButton("再想想") { _, _ ->
-                            val newList = mutableListOf<Invitation>()
-                            newList.addAll(inviteList)
-                            newList.removeAt(0)
-                            viewModel.showInvite(newList)
+                        .setNeutralButton(getString(R.string.text_consider)) { _, _ ->
+
+                            showNextInvitation(invitationList)
+
+                        }
+                        .setNegativeButton(getString(R.string.text_refuse)) { _, _ ->
+
+                            viewModel.deleteInvitation(invitation)
+
+                            showNextInvitation(invitationList)
+
                         }.create()
 
                 }
@@ -126,15 +142,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.navigateToHome.observe(this, Observer {
-            it?.let {
-                if (it) {
-                    findNavController(R.id.nav_host_fragment).navigate(R.id.navigate_to_homeFragment)
-                    viewModel.navigateToHomeCompleted()
-                }
-            }
-        })
+    }
 
+    private fun showNextInvitation(invitationList: List<Invitation>) {
+        val newList = mutableListOf<Invitation>()
+        newList.addAll(invitationList)
+        newList.removeAt(0)
+        viewModel.showInvite(newList)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -174,12 +188,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFab() {
         binding.floatingActionButton.setOnClickListener {
-            if (viewModel.userHasPets.value == true) {
+            if (UserManager.userHasPets()) {
                 findNavController(R.id.nav_host_fragment).navigate(
                     NavGraphDirections.navigateToTagDialog(PetEvent())
                 )
             } else {
-                Toast.makeText(this, "新增寵物後才能替寵物記錄生活", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.text_fab_not_available),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -205,33 +223,36 @@ class MainActivity : AppCompatActivity() {
 
         val authListener: FirebaseAuth.AuthStateListener =
             FirebaseAuth.AuthStateListener { auth: FirebaseAuth ->
-                val user = auth.currentUser
-                if (user == null) {
-                    val intent = AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(authProvider)
-                        .setAlwaysShowSignInMethodScreen(true)
-                        .setIsSmartLockEnabled(false)
-                        .setTheme(R.style.LoginTheme)
-                        .setAuthMethodPickerLayout(customLayout)
-                        .build()
-                    startActivityForResult(intent, RC_SIGN_IN)
-                } else {
-                    UserManager.getFirebaseUser(user)
+                when (val user = auth.currentUser) {
+                    null -> {
+                        val intent = AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(authProvider)
+                            .setAlwaysShowSignInMethodScreen(true)
+                            .setIsSmartLockEnabled(false)
+                            .setTheme(R.style.LoginTheme)
+                            .setAuthMethodPickerLayout(customLayout)
+                            .build()
+                        startActivityForResult(intent, RC_SIGN_IN)
+                    }
+                    else -> {
+                        UserManager.getFirebaseUser(user)
+                    }
                 }
+
             }
 
-        FirebaseAuth.getInstance()
-            .addAuthStateListener(authListener)
+        FirebaseAuth.getInstance().addAuthStateListener(authListener)
     }
 
     private fun setUserManager() {
         UserManager.getFirebaseUserCompleted.observe(this, Observer {
-            if (it == true) {
-                UserManager.userProfile.value?.let { userProfile ->
-                    viewModel.checkUserProfile(userProfile)
-                    viewModel.setupDrawerUser(userProfile)
-                    UserManager.userProfileCompleted()
+            it?.let {
+                if (it) {
+                    UserManager.userProfile.value?.let { userProfile ->
+                        viewModel.checkUserProfile(userProfile)
+                        UserManager.userProfileCompleted()
+                    }
                 }
             }
         })

@@ -24,10 +24,6 @@ import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogNewPetBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
-const val CAT = 0L
-const val DOG = 1L
-const val FEMALE = 0L
-const val MALE = 1L
 class AddNewPetDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogNewPetBinding
@@ -91,14 +87,6 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
             }
         })
 
-        viewModel.navigateToHomeFragment.observe(this, Observer {
-            if (it == true) {
-                dismiss()
-                (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_home
-                viewModel.navigateToHomeFragmentCompleted()
-            }
-        })
-
         viewModel.leaveDialog.observe(this, Observer {
             it?.let {
                 if (it) {
@@ -120,11 +108,11 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private fun setupSpeciesIcon() {
         viewModel.petSpecies.observe(this, Observer {
             when (it) {
-                CAT -> {
+                PetSpecies.CAT.value -> {
                     iconCat.alpha = 1.0f
                     iconDog.alpha = 0.15f
                 }
-                DOG -> {
+                PetSpecies.DOG.value -> {
                     iconCat.alpha = 0.15f
                     iconDog.alpha = 1.0f
                 }
@@ -135,11 +123,11 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private fun setupGenderIcon() {
         viewModel.petGender.observe(this, Observer {
             when (it) {
-                FEMALE -> {
+                PetGender.FEMALE.value -> {
                     iconFemale.alpha = 1.0f
                     iconMale.alpha = 0.15f
                 }
-                MALE -> {
+                PetGender.MALE.value -> {
                     iconFemale.alpha = 0.15f
                     iconMale.alpha = 1.0f
                 }

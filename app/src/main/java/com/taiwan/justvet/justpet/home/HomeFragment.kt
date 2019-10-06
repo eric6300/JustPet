@@ -24,7 +24,6 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
-import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.pet.PetSpecies
 import java.util.*
 
@@ -63,15 +62,6 @@ class HomeFragment : Fragment() {
 
         setupPetProfile()
         setupEventNotification()
-
-        UserManager.refreshUserProfileCompleted.observe(this, Observer {
-            if (it == true) {
-                UserManager.userProfile.value?.let { userProfile ->
-                    findNavController().navigate(R.id.navigate_to_homeFragment)
-                    UserManager.refreshUserProfileCompleted()
-                }
-            }
-        })
 
         viewModel.isBirthdayChanged.observe(this, Observer {
             if (it) {
@@ -165,8 +155,7 @@ class HomeFragment : Fragment() {
 
     private fun setupPetProfile() {
         // set adapter
-        profileAdapter = PetProfileAdapter(viewModel, PetProfileAdapter.OnClickListener {
-        })
+        profileAdapter = PetProfileAdapter(viewModel)
 
         // set layoutManager
         val layoutManager = PetProfileLayoutManager(this.context)
