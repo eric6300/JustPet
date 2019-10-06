@@ -222,6 +222,7 @@ class AddNewPetViewModel : ViewModel() {
                     profileId = userProfile.profileId,
                     uid = userProfile.uid,
                     email = userProfile.email,
+                    displayName = userProfile.displayName,
                     pets = newPets
                 )
             )

@@ -9,6 +9,13 @@
     <string name="event">記錄詳情</string>
     <string name="text_new_pet_profile">新增寵物</string>
     <string name="text_check_invite">確認邀請</string>
+    <string name="text_chart_not_available">新增寵物後才能查看圖表</string>
+    <string name="text_fab_not_available">新增寵物後才能替寵物記錄生活</string>
+    <string name="text_no_invitation_now">目前沒有邀請</string>
+    <string name="title_invitation_dialog">邀請通知</string>
+    <string name="text_receive">接受</string>
+    <string name="text_consider">再想想</string>
+    <string name="text_refuse">拒絕</string>
 
     //  Login  //
     <string name="text_google_sign_in">Google 登入</string>

@@ -82,7 +82,7 @@ class BreathViewModel : ViewModel() {
         _averageTapRate.value = 0L
     }
 
-    fun navigateToTag() {
+    fun navigateToTagDialog() {
         when (UserManager.userProfile.value?.pets?.size) {
             0 -> {
                 Toast.makeText(

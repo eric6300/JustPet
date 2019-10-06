@@ -18,14 +18,6 @@ object UserManager {
     val refreshUserProfileCompleted: LiveData<Boolean>
         get() = _refreshUserProfileCompleted
 
-    private val _userName = MutableLiveData<String>()
-    val userName: LiveData<String>
-        get() = _userName
-
-    private val _userEmail = MutableLiveData<String>()
-    val userEmail: LiveData<String>
-        get() = _userEmail
-
     fun getFirebaseUser(firebaseUser: FirebaseUser) {
         firebaseUser.apply {
             _userProfile.value = UserProfile(
@@ -35,8 +27,6 @@ object UserManager {
                 displayName = this.displayName,
                 photoUrl = this.photoUrl
             )
-            _userName.value = this.displayName
-            _userEmail.value = this.email
         }
         _getFirebaseUserCompleted.value = true
     }
@@ -52,6 +42,16 @@ object UserManager {
 
     fun refreshUserProfileCompleted() {
         _refreshUserProfileCompleted.value = null
+    }
+
+    fun userHasPets(): Boolean {
+        userProfile.value?.let {
+            return when (it.pets?.size) {
+                0, null -> false
+                else -> true
+            }
+        }
+        return false
     }
 
 }
