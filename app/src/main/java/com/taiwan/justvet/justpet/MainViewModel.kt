@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.Invitation
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_ID
@@ -25,8 +24,8 @@ class MainViewModel : ViewModel() {
     val invitationList: LiveData<List<Invitation>>
         get() = _invitationList
 
-    var hasCheckedInvitation = false
-    
+    private var hasCheckedInvitation = false
+
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
 
     val firebase = FirebaseFirestore.getInstance()
@@ -66,8 +65,8 @@ class MainViewModel : ViewModel() {
         userProfile.uid?.let {
             usersReference.add(userProfile)
                 .addOnSuccessListener {
-                    Log.d(ERIC, "registerUserProfile() succeeded")
                     checkUserProfile(userProfile)
+                    Log.d(ERIC, "registerUserProfile() succeeded")
                 }
                 .addOnFailureListener {
                     Log.d(ERIC, "registerUserProfile() failed : $it")
@@ -129,21 +128,21 @@ class MainViewModel : ViewModel() {
         UserManager.userProfile.value?.let { userProfile ->
             usersReference.whereEqualTo(UID, userProfile.uid).get()
                 .addOnSuccessListener {
-                    updateUserProfile(invitation)
+                    updateUserPets(invitation)
                 }.addOnFailureListener {
                     Log.d(ERIC, "confirmInvite() failed : $it")
                 }
         }
     }
 
-    private fun updateUserProfile(invitation: Invitation) {
+    private fun updateUserPets(invitation: Invitation) {
         UserManager.userProfile.value?.profileId?.let {
             usersReference.document(it)
                 .update(PETS, FieldValue.arrayUnion(invitation.petId))
                 .addOnSuccessListener {
                     deleteInvitation(invitation)
                 }.addOnFailureListener {
-                    Log.d(ERIC, "updateUserProfile() failed")
+                    Log.d(ERIC, "updateUserPets() failed")
                 }
         }
     }
@@ -152,14 +151,15 @@ class MainViewModel : ViewModel() {
         invitation.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
-                    updatePetProfileFamily(invitation)
+                    updateFamilyOfPet(invitation)
+                    Log.d(ERIC, "deleteInvitation() succeeded")
                 }.addOnFailureListener {
                     Log.d(ERIC, "deleteInvitation() failed")
                 }
         }
     }
 
-    private fun updatePetProfileFamily(invitation: Invitation) {
+    private fun updateFamilyOfPet(invitation: Invitation) {
         UserManager.userProfile.value?.let { userProfile ->
             invitation.petId?.let { petId ->
                 petsReference.document(petId)
@@ -168,9 +168,9 @@ class MainViewModel : ViewModel() {
 
                         refreshUserProfile(petId)
 
-                        Log.d(ERIC, "updatePetProfileFamily succeeded")
+                        Log.d(ERIC, "updateFamilyOfPet() succeeded")
                     }.addOnFailureListener {
-                        Log.d(ERIC, "updatePetProfileFamily failed : $it")
+                        Log.d(ERIC, "updateFamilyOfPet() failed : $it")
                     }
             }
         }
@@ -197,7 +197,5 @@ class MainViewModel : ViewModel() {
                 )
             )
         }
-
     }
-
 }
