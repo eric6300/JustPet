@@ -256,10 +256,8 @@ class ChartViewModel : ViewModel() {
 
         val entries = ArrayList<Entry>()
         for (event in weightData) {
-            event.timestamp?.let { timestamp ->
-                event.weight?.let { weight ->
-                    entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
-                }
+            event.weight?.let { weight ->
+                entries.add(Entry(event.timestamp.toFloat(), weight.toFloat()))
             }
         }
 

@@ -2,11 +2,13 @@ package com.taiwan.justvet.justpet
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
+import com.taiwan.justvet.justpet.util.toDateFormat
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.*
+import java.util.*
 
 /**
  * Instrumented sortSyndromeData, which will execute on an Android device.
@@ -17,7 +19,7 @@ import org.junit.Assert.*
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
-        // Context of the app under sortSyndromeData.
+        // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.taiwan.justvet.justpet", appContext.packageName)
     }

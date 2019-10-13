@@ -15,7 +15,7 @@ android {
         targetSdkVersion 29
         versionCode 4
         versionName "1.4"
-        testInstrumentationRunner "androidx.sortSyndromeData.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -35,6 +35,9 @@ android {
     }
     androidExtensions {
         experimental = true
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
     }
 }
 
@@ -124,5 +127,14 @@ dependencies {
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
+    // QuickPermission
     implementation 'com.github.quickpermissions:quickpermissions-kotlin:0.4.1'
+
+    // Testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:2.19.0'
 }

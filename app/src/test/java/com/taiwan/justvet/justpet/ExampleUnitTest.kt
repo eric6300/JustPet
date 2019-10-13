@@ -1,11 +1,14 @@
 package com.taiwan.justvet.justpet
 
+import com.google.common.base.CharMatcher.`is`
+import com.taiwan.justvet.justpet.util.toDateFormat
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.util.*
 
 /**
- * Example local unit sortSyndromeData, which will execute on the development machine (host).
+ * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
