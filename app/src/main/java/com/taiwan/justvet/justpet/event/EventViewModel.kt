@@ -286,19 +286,19 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
         val finalEvent =
             mapOf(
-                "year" to timeList[0].toLong(),
-                "month" to timeList[1].toLong(),
-                "dayOfMonth" to timeList[2].toLong(),
-                "time" to timeList[3],
-                "timestamp" to eventTimestamp.value,
-                "note" to eventNote.value,
-                "spirit" to eventSpirit,
-                "appetite" to eventAppetite,
-                "weight" to eventWeight.value?.toDouble(),
-                "temperature" to eventTemper.value?.toDouble(),
-                "respiratoryRate" to eventRr.value?.toLong(),
-                "heartRate" to eventHr.value?.toLong(),
-                "imageUrl" to eventImage.value
+                YEAR to timeList[0].toLong(),
+                MONTH to timeList[1].toLong(),
+                DAY_OF_MONTH to timeList[2].toLong(),
+                TIME to timeList[3],
+                TIMESTAMP to eventTimestamp.value,
+                NOTE to eventNote.value,
+                SPIRIT to eventSpirit,
+                APPETITE to eventAppetite,
+                WEIGHT to eventWeight.value?.toDouble(),
+                TEMPERATURE to eventTemper.value?.toDouble(),
+                RESPIRATORY_RATE to eventRr.value?.toLong(),
+                HEART_RATE to eventHr.value?.toLong(),
+                IMAGE_URL to eventImage.value
             )
 
         petEvent.eventId.let {
