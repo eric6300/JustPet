@@ -17,11 +17,13 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
+import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
 class ChartViewModel : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
@@ -155,17 +157,17 @@ class ChartViewModel : ViewModel() {
             )
 
             // create hashMap of last 12 months
-            val dataMap = HashMap<Date, List<PetEvent>>()
+            val dataMap = LinkedHashMap<String, List<PetEvent>>()
 
             for (i in 1..12) {
-                calendar.add(Calendar.MONTH, -1)
-                dataMap[calendar.time] = mutableListOf()
+                dataMap[calendar.time.toMonthOnlyFormat()] = mutableListOf()
+                calendar.add(Calendar.MONTH, 1)
             }
 
             if (data.isNotEmpty()) {
                 // sort data into hashMap
                 data.forEach { petEvent ->
-                    val dateOfEvent = petEvent.getDateOfEvent()
+                    val dateOfEvent = petEvent.getDateOfEvent()?.toMonthOnlyFormat()
 
                     if (dataMap.contains(dateOfEvent)) {
                         (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
@@ -173,31 +175,11 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-            val sortedMap = dataMap.toSortedMap()
-            Log.d(ERIC, "$sortedMap")
-            setEntriesForSyndrome(sortedMap)
+            setEntriesForSyndrome(dataMap)
         }
     }
 
-    fun getDateOfEvent(
-        petEvent: PetEvent,
-        calendar: Calendar
-    ): Date? {
-        val calendarClone = calendar.clone() as Calendar
-
-        calendarClone.set(
-            petEvent.year.toInt(),
-            petEvent.month.toInt().minus(1),
-            1,
-            0,
-            0,
-            0
-        )
-
-        return calendarClone.time
-    }
-
-    fun setEntriesForSyndrome(syndromeData: Map<Date, List<PetEvent>>) {
+    fun setEntriesForSyndrome(syndromeData: Map<String, List<PetEvent>>) {
         viewModelScope.launch {
             // Setting Data
             val entries = mutableListOf<BarEntry>()
@@ -211,8 +193,6 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-            Log.d(ERIC, "$entries")
-
             _syndromeEntries.value = entries
         }
     }
@@ -220,7 +200,7 @@ class ChartViewModel : ViewModel() {
     fun getWeightData(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
+                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
                     if (it.size() > 0) {
                         val data = mutableListOf<PetEvent>()
