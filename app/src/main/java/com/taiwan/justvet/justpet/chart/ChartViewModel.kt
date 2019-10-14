@@ -165,7 +165,7 @@ class ChartViewModel : ViewModel() {
             if (data.isNotEmpty()) {
                 // sort data into hashMap
                 data.forEach { petEvent ->
-                    val dateOfEvent = getDateOfEvent(petEvent, calendar)
+                    val dateOfEvent = petEvent.getDateOfEvent()
 
                     if (dataMap.contains(dateOfEvent)) {
                         (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)

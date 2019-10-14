@@ -38,6 +38,7 @@ android {
     }
     testOptions {
         unitTests.includeAndroidResources = true
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -134,7 +135,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    testImplementation "android.arch.core:core-testing:1.1.1"
 
     // Optional -- Mockito framework
     testImplementation 'org.mockito:mockito-core:2.19.0'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.9.0'
 }
