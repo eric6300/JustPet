@@ -144,25 +144,7 @@ class ChartViewModel : ViewModel() {
         data: List<PetEvent>
     ) {
         viewModelScope.launch {
-            val calendar = Calendar.getInstance()
-
-            //  set the calendar to first day of next month
-            calendar.set(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH).plus(1),
-                1,
-                0,
-                0,
-                0
-            )
-
-            // create hashMap of last 12 months
-            val dataMap = LinkedHashMap<String, List<PetEvent>>()
-
-            for (i in 1..12) {
-                dataMap[calendar.time.toMonthOnlyFormat()] = mutableListOf()
-                calendar.add(Calendar.MONTH, 1)
-            }
+            val dataMap = setLastYearMap()
 
             if (data.isNotEmpty()) {
                 // sort data into hashMap
@@ -179,7 +161,27 @@ class ChartViewModel : ViewModel() {
         }
     }
 
-    fun setEntriesForSyndrome(syndromeData: Map<String, List<PetEvent>>) {
+    private fun setLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
+        val calendar = Calendar.getInstance()
+
+        //  set the calendar to first day of next month
+        calendar.set(
+            Calendar.MONTH,
+            calendar.get(Calendar.MONTH).plus(1)
+        )
+
+        // create hashMap of last 12 months
+        val map = LinkedHashMap<String, List<PetEvent>>()
+
+        for (i in 1..12) {
+            map[calendar.time.toMonthOnlyFormat()] = mutableListOf()
+            calendar.add(Calendar.MONTH, 1)
+        }
+
+        return map
+    }
+
+    private fun setEntriesForSyndrome(syndromeData: Map<String, List<PetEvent>>) {
         viewModelScope.launch {
             // Setting Data
             val entries = mutableListOf<BarEntry>()
