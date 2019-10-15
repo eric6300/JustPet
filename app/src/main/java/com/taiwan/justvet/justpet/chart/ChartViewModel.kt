@@ -20,9 +20,7 @@ import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.LinkedHashMap
 
 class ChartViewModel : ViewModel() {
@@ -51,11 +49,36 @@ class ChartViewModel : ViewModel() {
     var sixMonthsAgoTimestamp = 0L
     var oneYearAgoTimestamp = 0L
 
+    private val _syndrome3MonthsDataSize = MutableLiveData<Int>()
+    val syndrome3MonthsDataSize: LiveData<Int>
+        get() = _syndrome3MonthsDataSize
+
+    private val _syndrome6MonthsDataSize = MutableLiveData<Int>()
+    val syndrome6MonthsDataSize: LiveData<Int>
+        get() = _syndrome6MonthsDataSize
+
+    private val _syndrome1YearDataSize = MutableLiveData<Int>()
+    val syndrome1YearDataSize: LiveData<Int>
+        get() = _syndrome1YearDataSize
+
+    private val _weight3MonthsDataSize = MutableLiveData<Int>()
+    val weight3MonthsDataSize: LiveData<Int>
+        get() = _weight3MonthsDataSize
+
+    private val _weight6MonthsDataSize = MutableLiveData<Int>()
+    val weight6MonthsDataSize: LiveData<Int>
+        get() = _weight6MonthsDataSize
+
+    private val _weight1YearDataSize = MutableLiveData<Int>()
+    val weight1YearDataSize: LiveData<Int>
+        get() = _weight1YearDataSize
+
     init {
         UserManager.userProfile.value?.let {
             selectedEventTag = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
             calculateTimestamp()
             getPetProfileData(it)
+            defaultDataSize()
         }
     }
 
@@ -84,7 +107,7 @@ class ChartViewModel : ViewModel() {
         _selectedPetProfile.value = _petList.value?.get(position)
     }
 
-    fun getPetProfileData(userProfile: UserProfile) {
+    private fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let { pets ->
 
             val list = mutableListOf<PetProfile>()
@@ -144,6 +167,9 @@ class ChartViewModel : ViewModel() {
         data: List<PetEvent>
     ) {
         viewModelScope.launch {
+
+            calculateSyndromeDataSize(data)
+
             val dataMap = setLastYearMap()
 
             if (data.isNotEmpty()) {
@@ -161,10 +187,35 @@ class ChartViewModel : ViewModel() {
         }
     }
 
+    private fun calculateSyndromeDataSize(syndromeData: List<PetEvent>) {
+        defaultDataSize()
+
+        var threeMonths = 0
+        var sixMonths = 0
+        var oneYear = 0
+
+        syndromeData.forEach {
+            if (it.timestamp >= threeMonthsAgoTimestamp) {
+                threeMonths += 1
+            }
+            if (it.timestamp >= sixMonthsAgoTimestamp) {
+                sixMonths += 1
+            }
+            if (it.timestamp >= oneYearAgoTimestamp) {
+                oneYear += 1
+            }
+        }
+
+        _syndrome3MonthsDataSize.value = threeMonths
+        _syndrome6MonthsDataSize.value = sixMonths
+        _syndrome1YearDataSize.value = oneYear
+
+    }
+
     private fun setLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
         val calendar = Calendar.getInstance()
 
-        //  set the calendar to first day of next month
+        //  set the calendar to next month
         calendar.set(
             Calendar.MONTH,
             calendar.get(Calendar.MONTH).plus(1)
@@ -172,7 +223,6 @@ class ChartViewModel : ViewModel() {
 
         // create hashMap of last 12 months
         val map = LinkedHashMap<String, List<PetEvent>>()
-
         for (i in 1..12) {
             map[calendar.time.toMonthOnlyFormat()] = mutableListOf()
             calendar.add(Calendar.MONTH, 1)
@@ -234,7 +284,7 @@ class ChartViewModel : ViewModel() {
 
     private fun setEntriesForWeight(weightData: List<PetEvent>) {
 
-        filterWeightDataSize(weightData)
+        calculateWeightDataSize(weightData)
 
         val entries = ArrayList<Entry>()
         for (event in weightData) {
@@ -246,24 +296,38 @@ class ChartViewModel : ViewModel() {
         _weightEntries.value = entries
     }
 
-    private fun filterWeightDataSize(weightData: List<PetEvent>) {
+    fun defaultDataSize() {
+        _syndrome3MonthsDataSize.value = null
+        _syndrome6MonthsDataSize.value = null
+        _syndrome1YearDataSize.value = null
+
+        _weight3MonthsDataSize.value = null
+        _weight6MonthsDataSize.value = null
+        _weight1YearDataSize.value = null
+    }
+
+    private fun calculateWeightDataSize(weightData: List<PetEvent>) {
+        defaultDataSize()
+
         var threeMonths = 0
         var sixMonths = 0
         var oneYear = 0
 
         weightData.forEach {
-            it.timestamp?.let { timestamp ->
-                if (timestamp >= threeMonthsAgoTimestamp) {
-                    threeMonths += 1
-                }
-                if (timestamp >= sixMonthsAgoTimestamp) {
-                    sixMonths += 1
-                }
-                if (timestamp >= oneYearAgoTimestamp) {
-                    oneYear += 1
-                }
+            if (it.timestamp >= threeMonthsAgoTimestamp) {
+                threeMonths += 1
+            }
+            if (it.timestamp >= sixMonthsAgoTimestamp) {
+                sixMonths += 1
+            }
+            if (it.timestamp >= oneYearAgoTimestamp) {
+                oneYear += 1
             }
         }
+
+        _weight3MonthsDataSize.value = threeMonths
+        _weight6MonthsDataSize.value = sixMonths
+        _weight1YearDataSize.value = oneYear
 
     }
 }

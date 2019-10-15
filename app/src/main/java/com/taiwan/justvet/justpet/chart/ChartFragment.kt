@@ -79,7 +79,6 @@ class ChartFragment : Fragment() {
             }
         })
 
-
         return binding.root
     }
 
@@ -225,6 +224,12 @@ class ChartFragment : Fragment() {
         val markerView = WeightMarkerView()
         weightChart.marker = markerView
 
+        when (binding.filterChartGroup.position) {
+            0 -> showNoWeightDataText(viewModel.weight3MonthsDataSize.value)
+            1 -> showNoWeightDataText(viewModel.weight6MonthsDataSize.value)
+            2 -> showNoWeightDataText(viewModel.weight1YearDataSize.value)
+        }
+
         // refresh
         weightChart.notifyDataSetChanged()
         weightChart.invalidate()
@@ -244,9 +249,15 @@ class ChartFragment : Fragment() {
         }
 
         syndromeChart.data = BarData(dataset)
-        if (binding.filterChartGroup.position == 0) {
-            syndromeChart.moveViewToX(9.5f)
-            syndromeChart.setVisibleXRangeMaximum(3f)
+
+        when (binding.filterChartGroup.position) {
+            0 -> {
+                syndromeChart.moveViewToX(9.5f)
+                syndromeChart.setVisibleXRangeMaximum(3f)
+                showNoSyndromeDataText(viewModel.syndrome3MonthsDataSize.value)
+            }
+            1 -> showNoSyndromeDataText(viewModel.syndrome6MonthsDataSize.value)
+            2 -> showNoSyndromeDataText(viewModel.syndrome1YearDataSize.value)
         }
         // refresh
         syndromeChart.notifyDataSetChanged()
@@ -268,6 +279,9 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(3f)
                     }
 
+                    showNoWeightDataText(viewModel.weight3MonthsDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome3MonthsDataSize.value)
+
                 }
                 1 -> {
                     weightChart.xAxis.axisMinimum =
@@ -280,6 +294,9 @@ class ChartFragment : Fragment() {
                         it.moveViewToX(6.5f)
                         it.setVisibleXRangeMaximum(6f)
                     }
+
+                    showNoWeightDataText(viewModel.weight6MonthsDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome6MonthsDataSize.value)
 
                 }
                 2 -> {
@@ -294,7 +311,27 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(12f)
                     }
 
+                    showNoWeightDataText(viewModel.weight1YearDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome1YearDataSize.value)
                 }
+            }
+        }
+    }
+
+    fun showNoWeightDataText(dataSize: Int?) {
+        dataSize?.let {
+        binding.textNoWeightData.visibility = when (dataSize) {
+            0 -> View.VISIBLE
+            else -> View.GONE
+            }
+        }
+    }
+
+    fun showNoSyndromeDataText(dataSize: Int?) {
+        dataSize?.let {
+            binding.textNoSyndromeData.visibility = when (dataSize) {
+                0 -> View.VISIBLE
+                else -> View.GONE
             }
         }
     }

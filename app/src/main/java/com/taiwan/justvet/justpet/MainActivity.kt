@@ -25,7 +25,6 @@ import com.taiwan.justvet.justpet.util.CurrentFragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 
 const val PHOTO_FROM_GALLERY = 1
-const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
 const val ERIC = "testEric"
 const val UID = "uid"
