@@ -1,6 +1,9 @@
 # JustPet
 JustPet 為一款以動物為中心的生活記錄手機應用程式。透過圖表及月曆形式呈現寵物的生活點滴，輔以提醒功能來提醒生活中的大小事情，幫助飼主掌握寵物的健康狀況。
 
+[<img src="https://i.imgur.com/I58bWLd.png" width="200">](https://play.google.com/store/apps/details?id=com.taiwan.justvet.justpet)
+
+
 ## 功能特色
 * 待辦提醒
     * 回顧寵物的記錄，提醒飼主重要待辦事項。如：疫苗注射或體重測量
@@ -57,7 +60,7 @@ JustPet 為一款以動物為中心的生活記錄手機應用程式。透過圖
 * Android Studio 3.0+
 
 ## 版本
-* 1.4
+* 1.5.5
 
 ## 聯絡方式
 Eric Chung <br />
