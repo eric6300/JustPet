@@ -1,5 +1,6 @@
 package com.taiwan.justvet.justpet.pet
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Outline
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +20,9 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
@@ -35,6 +40,11 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private val viewModel: AddNewPetViewModel by lazy {
         ViewModelProviders.of(this).get(AddNewPetViewModel::class.java)
     }
+
+    private val quickPermissionsOption = QuickPermissionsOptions(
+        handleRationale = false,
+        permanentDeniedMethod = { permissionsPermanentlyDenied(it) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,7 +109,22 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun showGallery() {
+    private fun permissionsPermanentlyDenied(req: QuickPermissionsRequest) {
+        this.context?.let {
+            AlertDialog.Builder(it)
+                .setMessage(getString(R.string.text_event_permission_message))
+                .setPositiveButton(getString(R.string.text_open_app_setting)) { _, _ -> req.openAppSettings() }
+                .setNegativeButton(getString(R.string.text_cancel)) { _, _ -> req.cancel() }
+                .setCancelable(true)
+                .show()
+        }
+    }
+
+    fun showGallery() = runWithPermissions(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        options = quickPermissionsOption
+    ) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, PHOTO_FROM_GALLERY)

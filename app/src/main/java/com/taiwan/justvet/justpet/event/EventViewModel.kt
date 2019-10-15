@@ -66,7 +66,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val eventTimestamp = MutableLiveData<Long>()
     val eventImage = MutableLiveData<String>()
 
-    val calendar = Calendar.getInstance()
+    val calendar: Calendar = Calendar.getInstance()
 
     private val eventsReference =
         JustPetRepository.firestoreInstance.collection(PETS).document(petEvent.petId).collection(EVENTS)
@@ -111,7 +111,7 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
         initialDateAndTimeOfEvent()
     }
 
-    fun initialDateAndTimeOfEvent() {
+    private fun initialDateAndTimeOfEvent() {
         _dateAndTimeOfEvent.value = when (petEvent.timestamp) {
             0L -> (calendar.timeInMillis / 1000).toEventDateAndTimeFormat()
             else -> petEvent.timestamp.toEventDateAndTimeFormat()
