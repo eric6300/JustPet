@@ -29,7 +29,7 @@ JustPet 為一款以動物為中心的生活記錄手機應用程式。透過圖
  <br /> <img src="https://i.imgur.com/BYGAwQR.png" width="200" > <img src="https://i.imgur.com/WzIk0io.png" width="200" > <img src="https://i.imgur.com/CRYtzuU.png" width="200" > <img src="https://i.imgur.com/FzRB3KI.png" width="200" >
  <br /> <img src="https://i.imgur.com/9AcofW6.png" width="200" > 
  
-## 實作
+## 實作技術
 * Programming Language
     * Kotlin
 
