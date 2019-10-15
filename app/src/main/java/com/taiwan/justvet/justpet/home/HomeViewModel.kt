@@ -89,8 +89,8 @@ class HomeViewModel : ViewModel() {
     var sixMonthsAgoTimestamp = 0L
     var oneYearAgoTimestamp = 0L
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
-    val storageReference = FirebaseStorage.getInstance().reference
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
+    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         calculateTimestamp()

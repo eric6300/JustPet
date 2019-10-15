@@ -5,10 +5,10 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.util.LoadStatus
-import com.taiwan.justvet.justpet.data.Invitation
+import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
 
@@ -34,9 +34,8 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
     val userEmail = UserManager.userProfile.value?.email
     val inviteeEmail = MutableLiveData<String>()
 
-    val firebase = FirebaseFirestore.getInstance()
-    val usersReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection(INVITES)
+    val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
+    val inviteReference = JustPetRepository.firestoreInstance.collection(INVITES)
 
     fun isOwner(): Boolean {
         return petProfile.ownerEmail.equals(userEmail)
@@ -112,7 +111,7 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
         inviteeEmail.value?.let { inviteeEmail ->
             inviteReference.add(
-                Invitation(
+                Invite(
                     petId = petProfile.profileId,
                     petName = petProfile.name,
                     inviteeEmail = inviteeEmail,

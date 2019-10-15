@@ -8,12 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
@@ -69,20 +65,20 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     }
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
     fun getPetProfileData(userProfile: UserProfile) {
-        val petListFromFirebase = mutableListOf<PetProfile>()
+        val list = mutableListOf<PetProfile>()
         userProfile.pets?.let { pets ->
             viewModelScope.launch {
                 var index = 1
                 for (petId in pets) {
                     petsReference.document(petId).get()
                         .addOnSuccessListener { document ->
-                            petListFromFirebase.add(document.toPetProfile())
+                            list.add(document.toPetProfile())
                             when (index) {
                                 pets.size -> {
-                                    _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                                    _petList.value = list.sortedBy { it.profileId }
                                 }
                                 else -> {
                                     index++

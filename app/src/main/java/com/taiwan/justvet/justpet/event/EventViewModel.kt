@@ -15,6 +15,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
@@ -67,10 +68,10 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     val calendar = Calendar.getInstance()
 
-    val eventsReference =
-        FirebaseFirestore.getInstance().collection(PETS).document(petEvent.petId).collection(EVENTS)
+    private val eventsReference =
+        JustPetRepository.firestoreInstance.collection(PETS).document(petEvent.petId).collection(EVENTS)
 
-    val storageReference = FirebaseStorage.getInstance().reference
+    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         initialEvent()

@@ -10,10 +10,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
@@ -42,7 +39,7 @@ class ChartViewModel : ViewModel() {
 
     var selectedEventTag: EventTag? = null
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
     var nowTimestamp = 0L
     var threeMonthsAgoTimestamp = 0L

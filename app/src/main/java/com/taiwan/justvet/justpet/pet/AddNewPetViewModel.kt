@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.home.HomeViewModel.Companion.IMAGE
@@ -56,10 +57,9 @@ class AddNewPetViewModel : ViewModel() {
     val petIdNumber = MutableLiveData<String>()
     val petImage = MutableLiveData<String>()
 
-    val firebase = FirebaseFirestore.getInstance()
-    private val usersReference = firebase.collection(USERS)
-    private val petsReference = firebase.collection(PETS)
-    private val storageReference = FirebaseStorage.getInstance().reference
+    private val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
+    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         petSpecies.value = PetSpecies.CAT.value
