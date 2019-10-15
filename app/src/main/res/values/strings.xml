@@ -154,4 +154,7 @@
     //  CalendarFragment //
     <string name="text_delete_event_message">確定要刪除此筆記錄嗎？</string>
 
+
+    <string name="text_hello_mockito">Hello! Mockito~</string>
+
 </resources>

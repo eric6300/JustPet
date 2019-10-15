@@ -32,10 +32,13 @@ class ExampleUnitTest {
 
     @Test
     fun testGetDateOfEvent() {
-        val event = PetEvent(year = 2019, month = 2, dayOfMonth = 1, timestamp = 1551369600L)
+        val eventA = PetEvent(year = 2019, month = 2, dayOfMonth = 1, time = "03:22", timestamp = 1551369600L)
+        val resultA = eventA.getDateOfEvent()
 
-        val result = event.getDateOfEvent()
+        val eventB = PetEvent(year = 2018, month = 8, dayOfMonth = 27, time = "05:22", timestamp = 1537996920L)
+        val resultB = eventB.getDateOfEvent()
 
-        assertEquals(Date(1551369600L * 1000), result)
+        assertEquals(Date(1551369600L * 1000), resultA)
+        assertEquals(Date(1537996920L * 1000), resultB)
     }
 }
