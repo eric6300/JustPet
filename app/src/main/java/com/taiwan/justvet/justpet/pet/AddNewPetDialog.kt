@@ -163,13 +163,13 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private fun setupPetName() {
         viewModel.petName.observe(this, Observer {
             it?.let {
-                binding.editTextNameNew.error = ""
+                binding.layoutEditTextName.error = ""
             }
         })
 
         viewModel.errorName.observe(this, Observer {
             it?.let {
-                binding.editTextNameNew.error = it
+                binding.layoutEditTextName.error = it
             }
         })
     }
@@ -177,13 +177,13 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private fun setupPetBirthday() {
         viewModel.petBirthday.observe(this, Observer {
             it?.let {
-                binding.editTextBirthdayNew.error = ""
+                binding.layoutEditTextBirthday.error = ""
             }
         })
 
         viewModel.errorBirthday.observe(this, Observer {
             it?.let {
-                binding.editTextBirthdayNew.error = it
+                binding.layoutEditTextBirthday.error = it
             }
         })
     }

@@ -67,7 +67,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
-    fun getPetProfileData(userProfile: UserProfile) {
+    private fun getPetProfileData(userProfile: UserProfile) {
         val list = mutableListOf<PetProfile>()
         userProfile.pets?.let { pets ->
             viewModelScope.launch {

@@ -1,26 +1,8 @@
 package com.taiwan.justvet.justpet
 
-import android.content.Context
-import android.icu.util.Calendar
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
-import com.google.common.base.CharMatcher.`is`
-import com.google.firebase.FirebaseApp
-import com.taiwan.justvet.justpet.chart.ChartViewModel
 import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.util.toDateFormat
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
 /**
@@ -41,4 +23,6 @@ class ExampleUnitTest {
         assertEquals(Date(1551369600L * 1000), resultA)
         assertEquals(Date(1537996920L * 1000), resultB)
     }
+
+
 }

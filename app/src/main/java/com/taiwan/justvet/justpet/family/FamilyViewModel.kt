@@ -31,11 +31,11 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         get() = _leaveFamilyDialog
 
     val petFamily = getString(R.string.text_pet_family, petProfile.name)
-    val userEmail = UserManager.userProfile.value?.email
+    private val userEmail = UserManager.userProfile.value?.email
     val inviteeEmail = MutableLiveData<String>()
 
-    val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
-    val inviteReference = JustPetRepository.firestoreInstance.collection(INVITES)
+    private val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
+    private val inviteReference = JustPetRepository.firestoreInstance.collection(INVITES)
 
     fun isOwner(): Boolean {
         return petProfile.ownerEmail.equals(userEmail)

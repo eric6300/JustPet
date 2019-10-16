@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
-class ChartViewModel : ViewModel() {
+class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -39,7 +39,7 @@ class ChartViewModel : ViewModel() {
 
     var selectedEventTag: EventTag? = null
 
-    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
+    private val petsReference = repository.firestoreInstance.collection(PETS)
 
     var nowTimestamp = 0L
     var threeMonthsAgoTimestamp = 0L
@@ -79,7 +79,7 @@ class ChartViewModel : ViewModel() {
         }
     }
 
-    fun calculateTimestamp() {
+    private fun calculateTimestamp() {
         val calendar = Calendar.getInstance()
 
         calendar.apply {
@@ -184,7 +184,7 @@ class ChartViewModel : ViewModel() {
         }
     }
 
-    private fun calculateSyndromeDataSize(syndromeData: List<PetEvent>) {
+    fun calculateSyndromeDataSize(syndromeData: List<PetEvent>) {
         defaultDataSize()
 
         var threeMonths = 0

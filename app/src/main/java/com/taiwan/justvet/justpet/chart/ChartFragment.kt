@@ -26,6 +26,7 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.EMPTY_STRING
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.util.toChartDateFormat
@@ -37,10 +38,7 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
-
-    private val viewModel: ChartViewModel by lazy {
-        ViewModelProviders.of(this).get(ChartViewModel::class.java)
-    }
+    private lateinit var viewModel: ChartViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +49,9 @@ class ChartFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_chart, container, false
         )
+
+        viewModel = ViewModelProviders.of(this, ChartViewModelFactory(JustPetRepository))
+            .get(ChartViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -320,9 +321,9 @@ class ChartFragment : Fragment() {
 
     fun showNoWeightDataText(dataSize: Int?) {
         dataSize?.let {
-        binding.textNoWeightData.visibility = when (dataSize) {
-            0 -> View.VISIBLE
-            else -> View.GONE
+            binding.textNoWeightData.visibility = when (dataSize) {
+                0 -> View.VISIBLE
+                else -> View.GONE
             }
         }
     }
