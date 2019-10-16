@@ -1,7 +1,6 @@
 package com.taiwan.justvet.justpet
 
-import android.view.View
-import org.junit.runner.RunWith
+import android.widget.DatePicker
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.*
@@ -11,16 +10,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
+import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
-import android.widget.DatePicker
-import androidx.test.espresso.matcher.ViewMatchers.withClassName
-import androidx.test.espresso.Espresso.onView
-import org.hamcrest.Matchers
-import androidx.test.espresso.matcher.BoundedMatcher
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-
+import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityEspressoTest {
