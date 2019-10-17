@@ -39,7 +39,7 @@ class BreathFragment : Fragment() {
             viewModel.setTapRateType(it)
         }
 
-        viewModel.navigateToTag.observe(this, Observer {
+        viewModel.navigateToTagDialog.observe(this, Observer {
             it?.let {
                 findNavController().navigate(NavGraphDirections.navigateToTagDialog(it))
                 viewModel.navigateToTagCompleted()

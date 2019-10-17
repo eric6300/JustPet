@@ -23,10 +23,11 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
+import com.taiwan.justvet.justpet.EMPTY_STRING
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
-import com.taiwan.justvet.justpet.family.EMPTY_STRING
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.util.toChartDateFormat
 import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
@@ -37,10 +38,7 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
-
-    private val viewModel: ChartViewModel by lazy {
-        ViewModelProviders.of(this).get(ChartViewModel::class.java)
-    }
+    private lateinit var viewModel: ChartViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +49,9 @@ class ChartFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_chart, container, false
         )
+
+        viewModel = ViewModelProviders.of(this, ChartViewModelFactory(JustPetRepository))
+            .get(ChartViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -78,7 +79,6 @@ class ChartFragment : Fragment() {
                 showSyndromeData(it)
             }
         })
-
 
         return binding.root
     }
@@ -225,6 +225,12 @@ class ChartFragment : Fragment() {
         val markerView = WeightMarkerView()
         weightChart.marker = markerView
 
+        when (binding.filterChartGroup.position) {
+            0 -> showNoWeightDataText(viewModel.weight3MonthsDataSize.value)
+            1 -> showNoWeightDataText(viewModel.weight6MonthsDataSize.value)
+            2 -> showNoWeightDataText(viewModel.weight1YearDataSize.value)
+        }
+
         // refresh
         weightChart.notifyDataSetChanged()
         weightChart.invalidate()
@@ -244,9 +250,15 @@ class ChartFragment : Fragment() {
         }
 
         syndromeChart.data = BarData(dataset)
-        if (binding.filterChartGroup.position == 0) {
-            syndromeChart.moveViewToX(9.5f)
-            syndromeChart.setVisibleXRangeMaximum(3f)
+
+        when (binding.filterChartGroup.position) {
+            0 -> {
+                syndromeChart.moveViewToX(9.5f)
+                syndromeChart.setVisibleXRangeMaximum(3f)
+                showNoSyndromeDataText(viewModel.syndrome3MonthsDataSize.value)
+            }
+            1 -> showNoSyndromeDataText(viewModel.syndrome6MonthsDataSize.value)
+            2 -> showNoSyndromeDataText(viewModel.syndrome1YearDataSize.value)
         }
         // refresh
         syndromeChart.notifyDataSetChanged()
@@ -268,6 +280,9 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(3f)
                     }
 
+                    showNoWeightDataText(viewModel.weight3MonthsDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome3MonthsDataSize.value)
+
                 }
                 1 -> {
                     weightChart.xAxis.axisMinimum =
@@ -280,6 +295,9 @@ class ChartFragment : Fragment() {
                         it.moveViewToX(6.5f)
                         it.setVisibleXRangeMaximum(6f)
                     }
+
+                    showNoWeightDataText(viewModel.weight6MonthsDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome6MonthsDataSize.value)
 
                 }
                 2 -> {
@@ -294,7 +312,27 @@ class ChartFragment : Fragment() {
                         it.setVisibleXRangeMaximum(12f)
                     }
 
+                    showNoWeightDataText(viewModel.weight1YearDataSize.value)
+                    showNoSyndromeDataText(viewModel.syndrome1YearDataSize.value)
                 }
+            }
+        }
+    }
+
+    fun showNoWeightDataText(dataSize: Int?) {
+        dataSize?.let {
+            binding.textNoWeightData.visibility = when (dataSize) {
+                0 -> View.VISIBLE
+                else -> View.GONE
+            }
+        }
+    }
+
+    fun showNoSyndromeDataText(dataSize: Int?) {
+        dataSize?.let {
+            binding.textNoSyndromeData.visibility = when (dataSize) {
+                0 -> View.VISIBLE
+                else -> View.GONE
             }
         }
     }

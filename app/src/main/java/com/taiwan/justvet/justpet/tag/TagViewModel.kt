@@ -8,13 +8,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.data.UserProfile
-import com.taiwan.justvet.justpet.family.EMPTY_STRING
+import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
@@ -33,9 +28,9 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     val navigateToCalendarFragment: LiveData<Boolean>
         get() = _navigateToCalendarFragment
 
-    private val _leaveTagDialog = MutableLiveData<Boolean>()
-    val leaveTagDialog: LiveData<Boolean>
-        get() = _leaveTagDialog
+    private val _leaveDialog = MutableLiveData<Boolean>()
+    val leaveDialog: LiveData<Boolean>
+        get() = _leaveDialog
 
     private val _listOfTag = MutableLiveData<List<EventTag>>()
     val listOfTag: LiveData<List<EventTag>>
@@ -70,20 +65,20 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     }
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
-    fun getPetProfileData(userProfile: UserProfile) {
-        val petListFromFirebase = mutableListOf<PetProfile>()
+    private fun getPetProfileData(userProfile: UserProfile) {
+        val list = mutableListOf<PetProfile>()
         userProfile.pets?.let { pets ->
             viewModelScope.launch {
                 var index = 1
                 for (petId in pets) {
                     petsReference.document(petId).get()
                         .addOnSuccessListener { document ->
-                            petListFromFirebase.add(document.toPetProfile())
+                            list.add(document.toPetProfile())
                             when (index) {
                                 pets.size -> {
-                                    _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                                    _petList.value = list.sortedBy { it.profileId }
                                 }
                                 else -> {
                                     index++
@@ -322,7 +317,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         }
     }
 
-    fun navigateToCalendar() {
+    private fun navigateToCalendar() {
         _navigateToCalendarFragment.value = true
     }
 
@@ -330,11 +325,11 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
         _navigateToCalendarFragment.value = false
     }
 
-    fun leaveTagDialog() {
-        _leaveTagDialog.value = true
+    fun leaveDialog() {
+        _leaveDialog.value = true
     }
 
-    fun leaveTagDialogCompleted() {
-        _leaveTagDialog.value = true
+    fun leaveDialogCompleted() {
+        _leaveDialog.value = true
     }
 }

@@ -149,7 +149,7 @@
                 android:layout_marginBottom="16dp"
                 android:alpha="@{viewModel.averageTapRate == 0L ? 0.2f : 1f}"
                 android:clickable="@{viewModel.averageTapRate == 0L ? false : true}"
-                android:onClick="@{() -> viewModel.navigateToTag()}"
+                android:onClick="@{() -> viewModel.navigateToTagDialog()}"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 app:fb_defaultColor="@color/colorPrimary"

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.APPETITE
@@ -61,7 +62,7 @@ class CalendarViewModel : ViewModel() {
 
     val localDate = LocalDate.now()
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
     init {
         UserManager.userProfile.value?.let {

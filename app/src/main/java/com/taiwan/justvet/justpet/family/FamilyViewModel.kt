@@ -5,17 +5,13 @@ import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.util.LoadStatus
-import com.taiwan.justvet.justpet.data.Invitation
+import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.util.Util.getString
 
-const val EMAIL = "email"
-const val EMPTY_STRING = ""
-const val INVITER_EMAIL = "inviterEmail"
-const val INVITEE_EMAIL = "inviteeEmail"
 class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
     private val _expandStatus = MutableLiveData<Boolean>()
@@ -35,12 +31,11 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         get() = _leaveFamilyDialog
 
     val petFamily = getString(R.string.text_pet_family, petProfile.name)
-    val userEmail = UserManager.userEmail.value
+    private val userEmail = UserManager.userProfile.value?.email
     val inviteeEmail = MutableLiveData<String>()
 
-    val firebase = FirebaseFirestore.getInstance()
-    val usersReference = firebase.collection(USERS)
-    val inviteReference = firebase.collection(INVITES)
+    private val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
+    private val inviteReference = JustPetRepository.firestoreInstance.collection(INVITES)
 
     fun isOwner(): Boolean {
         return petProfile.ownerEmail.equals(userEmail)
@@ -116,11 +111,11 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
 
         inviteeEmail.value?.let { inviteeEmail ->
             inviteReference.add(
-                Invitation(
+                Invite(
                     petId = petProfile.profileId,
                     petName = petProfile.name,
                     inviteeEmail = inviteeEmail,
-                    inviterName = UserManager.userName.value,
+                    inviterName = UserManager.userProfile.value?.displayName,
                     inviterEmail = userEmail
                 )
             ).addOnSuccessListener {
@@ -159,6 +154,14 @@ class FamilyViewModel(val petProfile: PetProfile) : ViewModel() {
         } else {
             _expandStatus.value = null
         }
+    }
+
+    companion object {
+        const val FAMILY = "family"
+        const val PET_FAMILY = "petFamily"
+        const val INVITEE_EMAIL = "inviteeEmail"
+        const val INVITER_NAME = "inviterName"
+        const val INVITER_EMAIL = "inviterEmail"
     }
 
 }

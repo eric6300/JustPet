@@ -1,11 +1,20 @@
 package com.taiwan.justvet.justpet.data
 
+import android.icu.util.Calendar
 import android.os.Parcelable
+import android.text.format.DateFormat
 import com.google.firebase.firestore.Exclude
+import com.taiwan.justvet.justpet.JustPetApplication
+import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.util.Util
+import com.taiwan.justvet.justpet.util.toDateFormat
+import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import kotlinx.android.parcel.Parcelize
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Parcelize
-data class PetEvent (
+data class PetEvent(
     @get:Exclude val petProfile: PetProfile? = null,
     val petId: String = "",
     val petName: String = "",
@@ -27,4 +36,9 @@ data class PetEvent (
     val respiratoryRate: Long? = null,
     val heartRate: Long? = null,
     val imageUrl: String? = null
-): Parcelable
+) : Parcelable {
+
+    fun getDateOfEvent(): Date? {
+        return java.util.Calendar.getInstance().apply { timeInMillis = timestamp * 1000 }.time
+    }
+}

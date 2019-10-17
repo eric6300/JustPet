@@ -10,20 +10,17 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
-import com.taiwan.justvet.justpet.data.EventTag
-import com.taiwan.justvet.justpet.data.PetEvent
-import com.taiwan.justvet.justpet.data.PetProfile
-import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
+import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashMap
 
-class ChartViewModel : ViewModel() {
+class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -42,22 +39,47 @@ class ChartViewModel : ViewModel() {
 
     var selectedEventTag: EventTag? = null
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
+    private val petsReference = repository.firestoreInstance.collection(PETS)
 
     var nowTimestamp = 0L
     var threeMonthsAgoTimestamp = 0L
     var sixMonthsAgoTimestamp = 0L
     var oneYearAgoTimestamp = 0L
 
+    private val _syndrome3MonthsDataSize = MutableLiveData<Int>()
+    val syndrome3MonthsDataSize: LiveData<Int>
+        get() = _syndrome3MonthsDataSize
+
+    private val _syndrome6MonthsDataSize = MutableLiveData<Int>()
+    val syndrome6MonthsDataSize: LiveData<Int>
+        get() = _syndrome6MonthsDataSize
+
+    private val _syndrome1YearDataSize = MutableLiveData<Int>()
+    val syndrome1YearDataSize: LiveData<Int>
+        get() = _syndrome1YearDataSize
+
+    private val _weight3MonthsDataSize = MutableLiveData<Int>()
+    val weight3MonthsDataSize: LiveData<Int>
+        get() = _weight3MonthsDataSize
+
+    private val _weight6MonthsDataSize = MutableLiveData<Int>()
+    val weight6MonthsDataSize: LiveData<Int>
+        get() = _weight6MonthsDataSize
+
+    private val _weight1YearDataSize = MutableLiveData<Int>()
+    val weight1YearDataSize: LiveData<Int>
+        get() = _weight1YearDataSize
+
     init {
         UserManager.userProfile.value?.let {
             selectedEventTag = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
             calculateTimestamp()
             getPetProfileData(it)
+            defaultDataSize()
         }
     }
 
-    fun calculateTimestamp() {
+    private fun calculateTimestamp() {
         val calendar = Calendar.getInstance()
 
         calendar.apply {
@@ -82,7 +104,7 @@ class ChartViewModel : ViewModel() {
         _selectedPetProfile.value = _petList.value?.get(position)
     }
 
-    fun getPetProfileData(userProfile: UserProfile) {
+    private fun getPetProfileData(userProfile: UserProfile) {
         userProfile.pets?.let { pets ->
 
             val list = mutableListOf<PetProfile>()
@@ -142,30 +164,15 @@ class ChartViewModel : ViewModel() {
         data: List<PetEvent>
     ) {
         viewModelScope.launch {
-            val calendar = Calendar.getInstance()
 
-            //  set the calendar to first day of next month
-            calendar.set(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH).plus(1),
-                1,
-                0,
-                0,
-                0
-            )
+            calculateSyndromeDataSize(data)
 
-            // create hashMap of last 12 months
-            val dataMap = HashMap<Date, List<PetEvent>>()
-
-            for (i in 1..12) {
-                calendar.add(Calendar.MONTH, -1)
-                dataMap[calendar.time] = mutableListOf()
-            }
+            val dataMap = setLastYearMap()
 
             if (data.isNotEmpty()) {
                 // sort data into hashMap
                 data.forEach { petEvent ->
-                    val dateOfEvent = getDateOfEvent(petEvent, calendar)
+                    val dateOfEvent = petEvent.getDateOfEvent()?.toMonthOnlyFormat()
 
                     if (dataMap.contains(dateOfEvent)) {
                         (dataMap[dateOfEvent] as MutableList<PetEvent>).add(petEvent)
@@ -173,31 +180,55 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-            val sortedMap = dataMap.toSortedMap()
-            Log.d(ERIC, "$sortedMap")
-            setEntriesForSyndrome(sortedMap)
+            setEntriesForSyndrome(dataMap)
         }
     }
 
-    fun getDateOfEvent(
-        petEvent: PetEvent,
-        calendar: Calendar
-    ): Date? {
-        val calendarClone = calendar.clone() as Calendar
+    fun calculateSyndromeDataSize(syndromeData: List<PetEvent>) {
+        defaultDataSize()
 
-        calendarClone.set(
-            petEvent.year.toInt(),
-            petEvent.month.toInt().minus(1),
-            1,
-            0,
-            0,
-            0
-        )
+        var threeMonths = 0
+        var sixMonths = 0
+        var oneYear = 0
 
-        return calendarClone.time
+        syndromeData.forEach {
+            if (it.timestamp >= threeMonthsAgoTimestamp) {
+                threeMonths += 1
+            }
+            if (it.timestamp >= sixMonthsAgoTimestamp) {
+                sixMonths += 1
+            }
+            if (it.timestamp >= oneYearAgoTimestamp) {
+                oneYear += 1
+            }
+        }
+
+        _syndrome3MonthsDataSize.value = threeMonths
+        _syndrome6MonthsDataSize.value = sixMonths
+        _syndrome1YearDataSize.value = oneYear
+
     }
 
-    fun setEntriesForSyndrome(syndromeData: Map<Date, List<PetEvent>>) {
+    private fun setLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
+        val calendar = Calendar.getInstance()
+
+        //  set the calendar to next month
+        calendar.set(
+            Calendar.MONTH,
+            calendar.get(Calendar.MONTH).plus(1)
+        )
+
+        // create hashMap of last 12 months
+        val map = LinkedHashMap<String, List<PetEvent>>()
+        for (i in 1..12) {
+            map[calendar.time.toMonthOnlyFormat()] = mutableListOf()
+            calendar.add(Calendar.MONTH, 1)
+        }
+
+        return map
+    }
+
+    private fun setEntriesForSyndrome(syndromeData: Map<String, List<PetEvent>>) {
         viewModelScope.launch {
             // Setting Data
             val entries = mutableListOf<BarEntry>()
@@ -211,8 +242,6 @@ class ChartViewModel : ViewModel() {
                 }
             }
 
-            Log.d(ERIC, "$entries")
-
             _syndromeEntries.value = entries
         }
     }
@@ -220,7 +249,7 @@ class ChartViewModel : ViewModel() {
     fun getWeightData(petProfile: PetProfile) {
         petProfile.profileId?.let {
             petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan("timestamp", oneYearAgoTimestamp).get()
+                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
                 .addOnSuccessListener {
                     if (it.size() > 0) {
                         val data = mutableListOf<PetEvent>()
@@ -252,38 +281,50 @@ class ChartViewModel : ViewModel() {
 
     private fun setEntriesForWeight(weightData: List<PetEvent>) {
 
-        filterWeightDataSize(weightData)
+        calculateWeightDataSize(weightData)
 
         val entries = ArrayList<Entry>()
         for (event in weightData) {
-            event.timestamp?.let { timestamp ->
-                event.weight?.let { weight ->
-                    entries.add(Entry(timestamp.toFloat(), weight.toFloat()))
-                }
+            event.weight?.let { weight ->
+                entries.add(Entry(event.timestamp.toFloat(), weight.toFloat()))
             }
         }
 
         _weightEntries.value = entries
     }
 
-    private fun filterWeightDataSize(weightData: List<PetEvent>) {
+    fun defaultDataSize() {
+        _syndrome3MonthsDataSize.value = null
+        _syndrome6MonthsDataSize.value = null
+        _syndrome1YearDataSize.value = null
+
+        _weight3MonthsDataSize.value = null
+        _weight6MonthsDataSize.value = null
+        _weight1YearDataSize.value = null
+    }
+
+    private fun calculateWeightDataSize(weightData: List<PetEvent>) {
+        defaultDataSize()
+
         var threeMonths = 0
         var sixMonths = 0
         var oneYear = 0
 
         weightData.forEach {
-            it.timestamp?.let { timestamp ->
-                if (timestamp >= threeMonthsAgoTimestamp) {
-                    threeMonths += 1
-                }
-                if (timestamp >= sixMonthsAgoTimestamp) {
-                    sixMonths += 1
-                }
-                if (timestamp >= oneYearAgoTimestamp) {
-                    oneYear += 1
-                }
+            if (it.timestamp >= threeMonthsAgoTimestamp) {
+                threeMonths += 1
+            }
+            if (it.timestamp >= sixMonthsAgoTimestamp) {
+                sixMonths += 1
+            }
+            if (it.timestamp >= oneYearAgoTimestamp) {
+                oneYear += 1
             }
         }
+
+        _weight3MonthsDataSize.value = threeMonths
+        _weight6MonthsDataSize.value = sixMonths
+        _weight1YearDataSize.value = oneYear
 
     }
 }
