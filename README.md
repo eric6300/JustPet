@@ -60,8 +60,7 @@ JustPet 為一款以動物為中心的生活記錄手機應用程式。透過圖
 * Android Studio 3.0+
 
 ## 版本
-* 1.5.5
+* 1.6
 
 ## 聯絡方式
-Eric Chung <br />
 justvet.tw@gmail.com
