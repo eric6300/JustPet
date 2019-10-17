@@ -188,7 +188,7 @@
                         app:srcCompat="@drawable/ic_female" />
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/edit_text_name"
+                        android:id="@+id/layout_edit_text_name"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -245,7 +245,7 @@
                         android:onClick="@{ () -> viewModel.showDatePicker() }"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/edit_text_name">
+                        app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_name">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"

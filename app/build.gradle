@@ -15,7 +15,7 @@ android {
         targetSdkVersion 29
         versionCode 5
         versionName "1.5"
-        testInstrumentationRunner "androidx.sortSyndromeData.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -35,6 +35,10 @@ android {
     }
     androidExtensions {
         experimental = true
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -124,5 +128,19 @@ dependencies {
     // Crashlytics
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
+    // QuickPermission
     implementation 'com.github.quickpermissions:quickpermissions-kotlin:0.4.1'
+
+    // Testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation "android.arch.core:core-testing:1.1.1"
+
+    // Mockito framework
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    testImplementation group: 'org.mockito', name: 'mockito-inline', version: '2.9.0'
 }

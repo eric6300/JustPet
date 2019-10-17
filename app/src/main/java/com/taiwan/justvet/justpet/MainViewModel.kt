@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.taiwan.justvet.justpet.data.Invitation
+import com.taiwan.justvet.justpet.data.Invite
+import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.PET_ID
 import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.FAMILY
@@ -20,18 +20,17 @@ import com.taiwan.justvet.justpet.util.Util.getString
 
 class MainViewModel : ViewModel() {
 
-    private val _invitationList = MutableLiveData<List<Invitation>>()
-    val invitationList: LiveData<List<Invitation>>
+    private val _invitationList = MutableLiveData<List<Invite>>()
+    val invitationList: LiveData<List<Invite>>
         get() = _invitationList
 
     private var hasCheckedInvitation = false
 
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
 
-    val firebase = FirebaseFirestore.getInstance()
-    val usersReference = firebase.collection(USERS)
-    val petsReference = firebase.collection(PETS)
-    val inviteReference = firebase.collection(INVITES)
+    private val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
+    private val inviteReference = JustPetRepository.firestoreInstance.collection(INVITES)
 
     fun checkUserProfile(userProfile: UserProfile) {
         userProfile.uid?.let { uid ->
@@ -91,11 +90,11 @@ class MainViewModel : ViewModel() {
                             hasCheckedInvitation = true
                         }
                     } else {
-                        val list = mutableListOf<Invitation>()
+                        val list = mutableListOf<Invite>()
 
                         it.documents.forEach {
                             list.add(
-                                Invitation(
+                                Invite(
                                     inviteId = it.id,
                                     petId = it[PET_ID] as String?,
                                     petName = it[PET_FAMILY] as String?,
@@ -115,7 +114,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun showInvite(invitationList: MutableList<Invitation>) {
+    fun showInvite(invitationList: MutableList<Invite>) {
         if (invitationList.isEmpty()) {
             _invitationList.value = null
             Log.d(ERIC, "invitationList is empty")
@@ -124,7 +123,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun confirmInvite(invitation: Invitation) {
+    fun confirmInvite(invitation: Invite) {
         UserManager.userProfile.value?.let { userProfile ->
             usersReference.whereEqualTo(UID, userProfile.uid).get()
                 .addOnSuccessListener {
@@ -135,7 +134,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun updateUserPets(invitation: Invitation) {
+    private fun updateUserPets(invitation: Invite) {
         UserManager.userProfile.value?.profileId?.let {
             usersReference.document(it)
                 .update(PETS, FieldValue.arrayUnion(invitation.petId))
@@ -147,7 +146,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun deleteInvitation(invitation: Invitation) {
+    fun deleteInvitation(invitation: Invite) {
         invitation.inviteId?.let {
             inviteReference.document(it).delete()
                 .addOnSuccessListener {
@@ -159,7 +158,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun updateFamilyOfPet(invitation: Invitation) {
+    private fun updateFamilyOfPet(invitation: Invite) {
         UserManager.userProfile.value?.let { userProfile ->
             invitation.petId?.let { petId ->
                 petsReference.document(petId)

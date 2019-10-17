@@ -195,7 +195,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edit_text_name_new"
+            android:id="@+id/layout_edit_text_name"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -209,6 +209,7 @@
             app:layout_constraintTop_toBottomOf="@+id/icon_dog">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_text_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
@@ -219,7 +220,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edit_text_birthday_new"
+            android:id="@+id/layout_edit_text_birthday"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -231,9 +232,10 @@
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_name_new">
+            app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_name">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_text_birthday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
@@ -259,7 +261,7 @@
             android:clickable="@{viewModel.loadStatus == LoadStatus.LOADING ? false : true}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_birthday_new">
+            app:layout_constraintTop_toBottomOf="@+id/layout_edit_text_birthday">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

@@ -155,7 +155,8 @@
                         app:layout_constraintBottom_toBottomOf="@+id/graph_weight"
                         app:layout_constraintEnd_toEndOf="@+id/graph_weight"
                         app:layout_constraintStart_toStartOf="@+id/graph_weight"
-                        app:layout_constraintTop_toTopOf="@+id/graph_weight" />
+                        app:layout_constraintTop_toTopOf="@+id/graph_weight"
+                        tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>

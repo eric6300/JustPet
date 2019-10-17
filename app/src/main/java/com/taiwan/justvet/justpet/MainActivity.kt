@@ -18,14 +18,13 @@ import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.taiwan.justvet.justpet.data.Invitation
+import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 
 const val PHOTO_FROM_GALLERY = 1
-const val PHOTO_FROM_CAMERA = 2
 const val RC_SIGN_IN = 101
 const val ERIC = "testEric"
 const val UID = "uid"
@@ -144,8 +143,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun showNextInvitation(invitationList: List<Invitation>) {
-        val newList = mutableListOf<Invitation>()
+    private fun showNextInvitation(invitationList: List<Invite>) {
+        val newList = mutableListOf<Invite>()
         newList.addAll(invitationList)
         newList.removeAt(0)
         viewModel.showInvite(newList)

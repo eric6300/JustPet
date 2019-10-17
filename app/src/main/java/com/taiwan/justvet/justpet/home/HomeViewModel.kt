@@ -89,8 +89,8 @@ class HomeViewModel : ViewModel() {
     var sixMonthsAgoTimestamp = 0L
     var oneYearAgoTimestamp = 0L
 
-    val petsReference = FirebaseFirestore.getInstance().collection(PETS)
-    val storageReference = FirebaseStorage.getInstance().reference
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
+    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         calculateTimestamp()
@@ -214,30 +214,28 @@ class HomeViewModel : ViewModel() {
         val weight = mutableListOf<PetEvent>()
 
         eventList.forEach { event ->
-            event.timestamp?.let { timestamp ->
 
-                // filter for syndrome tags
-                event.eventTagsIndex?.let { tags ->
-                    // vomit
-                    if ((timestamp > oneMonthAgoTimestamp) && tags.contains(tagVomit.index)) {
-                        vomit.add(event)
-                    }
-                    // vaccine
-                    if ((timestamp > oneYearAgoTimestamp) && tags.contains(tagVaccine.index)) {
-                        vaccine.add(event)
-                    }
+            // filter for syndrome tags
+            event.eventTagsIndex?.let { tags ->
+                // vomit
+                if ((event.timestamp > oneMonthAgoTimestamp) && tags.contains(tagVomit.index)) {
+                    vomit.add(event)
                 }
+                // vaccine
+                if ((event.timestamp > oneYearAgoTimestamp) && tags.contains(tagVaccine.index)) {
+                    vaccine.add(event)
+                }
+            }
 
-                // filter for weight measurement
-                event.weight?.let {
-                    if (timestamp > threeMonthsAgoTimestamp) {
-                        weight.add(event)
-                    }
+            // filter for weight measurement
+            event.weight?.let {
+                if (event.timestamp > threeMonthsAgoTimestamp) {
+                    weight.add(event)
                 }
             }
         }
 
-        // Vomiting
+        // Vomiting Notification
         if (vomit.size > 1) {
             val tags = arrayListOf<EventTag>()
             val tagsIndex = arrayListOf<Long>()
@@ -250,7 +248,8 @@ class HomeViewModel : ViewModel() {
                 )
             }?.let { notificationList.add(it) }
         }
-        // Vaccine
+
+        // Vaccine Notification
         if (vaccine.size == 0) {
             val tags = arrayListOf<EventTag>()
             val tagsIndex = arrayListOf<Long>()
@@ -263,6 +262,7 @@ class HomeViewModel : ViewModel() {
                 )
             }?.let { notificationList.add(it) }
         }
+
         // Weight measure
         if (weight.size == 0) {
             val tags = arrayListOf<EventTag>()
@@ -277,6 +277,7 @@ class HomeViewModel : ViewModel() {
             }?.let { notificationList.add(it) }
         }
 
+        //  no notification
         if (notificationList.isEmpty()) {
             _selectedPetProfile.value?.let {
                 notificationList.add(
