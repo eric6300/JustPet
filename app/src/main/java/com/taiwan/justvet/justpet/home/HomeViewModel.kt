@@ -99,7 +99,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun calculateTimestamp() {
+    private fun calculateTimestamp() {
         val calendar = Calendar.getInstance(Locale.getDefault())
 
         calendar.add(Calendar.MONTH, -1)
@@ -115,7 +115,9 @@ class HomeViewModel : ViewModel() {
         oneYearAgoTimestamp = (calendar.timeInMillis / 1000)
     }
 
-    fun getPetProfileData(userProfile: UserProfile) {
+    private fun getPetProfileData(userProfile: UserProfile) {
+
+        _loadStatus.value = LoadStatus.LOADING
 
         if (userProfile.pets?.size != 0) {
 
@@ -126,6 +128,7 @@ class HomeViewModel : ViewModel() {
                 fun getNextPetProfile(index: Int) {
 
                     if (index == pets.size) { // already get all pet data from firebase
+                        _loadStatus.value = LoadStatus.DONE
                         _petList.value = petListFromFirebase.sortedBy { it.profileId }
                         return
                     }
@@ -136,12 +139,12 @@ class HomeViewModel : ViewModel() {
                             petListFromFirebase.add(document.toPetProfile())
 
                             getNextPetProfile(index.plus(1))
-                            Log.d(ERIC, "getPetList() succeeded: ${document.id}")
+
                         }
                         .addOnFailureListener {
 
                             getNextPetProfile(index.plus(1))
-                            Log.d(ERIC, "getPetList() failed: $it")
+
                         }
                 }
 
@@ -149,13 +152,16 @@ class HomeViewModel : ViewModel() {
             }
         } else {
             _petList.value = mutableListOf()
+
             Log.d(ERIC, "viewModel petList = zero")
         }
     }
 
     fun selectPetProfile(index: Int) {
         _selectedPetProfile.value = _petList.value?.let {
+
             Log.d(ERIC, "selected pet profile id : ${it[index].profileId}")
+
             it[index]
         }
     }
