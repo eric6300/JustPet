@@ -60,9 +60,11 @@ class TagDialog : BottomSheetDialogFragment() {
         setupSegmentedButtonGroup()
 
         viewModel.leaveDialog.observe(this, Observer {
-            if (it) {
-                dismiss()
-                viewModel.leaveDialogCompleted()
+            it?.let {
+                if (it) {
+                    dismiss()
+                    viewModel.leaveDialogCompleted()
+                }
             }
         })
 
@@ -82,10 +84,12 @@ class TagDialog : BottomSheetDialogFragment() {
         })
 
         viewModel.navigateToCalendarFragment.observe(this, Observer {
-            if (it) {
-                dismiss()
-                (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
-                viewModel.navigateToCalendarCompleted()
+            it?.let {
+                if (it) {
+                    dismiss()
+                    (activity as MainActivity).nav_bottom_view.selectedItemId = R.id.nav_bottom_calendar
+                    viewModel.navigateToCalendarCompleted()
+                }
             }
         })
 

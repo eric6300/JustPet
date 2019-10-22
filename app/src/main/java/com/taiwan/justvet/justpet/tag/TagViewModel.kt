@@ -43,7 +43,7 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     private val _loadStatus = MutableLiveData<LoadStatus>()
     val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
-    
+
     var selectedPetProfile: PetProfile? = null
     val eventTags = mutableListOf<EventTag>()
     val eventTagsIndex = mutableListOf<Long>()
@@ -51,6 +51,8 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     private val diaryTags = mutableListOf<EventTag>()
     private val syndromeTags = mutableListOf<EventTag>()
     private val treatmentTags = mutableListOf<EventTag>()
+
+    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
     init {
         UserManager.userProfile.value?.let {
@@ -65,31 +67,42 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
 
     }
 
-    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
-
     private fun getPetProfileData(userProfile: UserProfile) {
-        val list = mutableListOf<PetProfile>()
-        userProfile.pets?.let { pets ->
-            viewModelScope.launch {
-                var index = 1
-                for (petId in pets) {
-                    petsReference.document(petId).get()
+
+        if (userProfile.pets?.size != 0) {
+
+            _loadStatus.value = LoadStatus.LOADING
+
+            val petListFromFirebase = mutableListOf<PetProfile>()
+
+            userProfile.pets?.let { pets ->
+
+
+                fun getNextPetProfile(index: Int) {
+
+                    if (index == pets.size) { // already get all pet data from firebase
+                        _petList.value = petListFromFirebase.sortedBy { it.profileId }
+                        _loadStatus.value = LoadStatus.DONE
+                        return
+                    }
+
+                    petsReference.document(pets[index]).get()
                         .addOnSuccessListener { document ->
-                            list.add(document.toPetProfile())
-                            when (index) {
-                                pets.size -> {
-                                    _petList.value = list.sortedBy { it.profileId }
-                                }
-                                else -> {
-                                    index++
-                                }
-                            }
-                            Log.d(ERIC, "TagViewModel getPetList() succeeded")
+
+                            petListFromFirebase.add(document.toPetProfile())
+
+                            getNextPetProfile(index.plus(1))
+
                         }
                         .addOnFailureListener {
-                            Log.d(ERIC, "TagViewModel getPetList() failed : $it")
+
+                            getNextPetProfile(index.plus(1))
+
                         }
                 }
+
+                getNextPetProfile(0) //  get first pet profile
+
             }
         }
     }
@@ -330,6 +343,6 @@ class TagViewModel(val petEvent: PetEvent) : ViewModel() {
     }
 
     fun leaveDialogCompleted() {
-        _leaveDialog.value = true
+        _leaveDialog.value = false
     }
 }
