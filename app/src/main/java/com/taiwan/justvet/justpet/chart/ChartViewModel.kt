@@ -14,13 +14,14 @@ import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
+import com.taiwan.justvet.justpet.util.Util.calculateSyndromeDataSize
 import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import com.taiwan.justvet.justpet.util.toPetProfile
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
-class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
+class ChartViewModel(repository: JustPetRepository) : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -37,7 +38,7 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
     val syndromeEntries: LiveData<List<BarEntry>>
         get() = _syndromeEntries
 
-    var selectedEventTag: EventTag? = null
+    private var selectedEventTag: EventTag? = null
 
     private val petsReference = repository.firestoreInstance.collection(PETS)
 
@@ -87,9 +88,7 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
 
             set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1, 0, 0, 0)
 
-            Log.d(ERIC, "date : ${calendar.time}")
-
-            add(Calendar.MONTH, -3)
+            add(Calendar.MONTH, -2)
             threeMonthsAgoTimestamp = (timeInMillis / 1000)
 
             add(Calendar.MONTH, -3)
@@ -165,7 +164,16 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
     ) {
         viewModelScope.launch {
 
-            calculateSyndromeDataSize(data)
+            defaultDataSize()
+
+            setSyndromeDataSize(
+                calculateSyndromeDataSize(
+                    data,
+                    threeMonthsAgoTimestamp,
+                    sixMonthsAgoTimestamp,
+                    oneYearAgoTimestamp
+                )
+            )
 
             val dataMap = setLastYearMap()
 
@@ -179,34 +187,14 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
                     }
                 }
             }
-
             setEntriesForSyndrome(dataMap)
         }
     }
 
-    fun calculateSyndromeDataSize(syndromeData: List<PetEvent>) {
-        defaultDataSize()
-
-        var threeMonths = 0
-        var sixMonths = 0
-        var oneYear = 0
-
-        syndromeData.forEach {
-            if (it.timestamp >= threeMonthsAgoTimestamp) {
-                threeMonths += 1
-            }
-            if (it.timestamp >= sixMonthsAgoTimestamp) {
-                sixMonths += 1
-            }
-            if (it.timestamp >= oneYearAgoTimestamp) {
-                oneYear += 1
-            }
-        }
-
-        _syndrome3MonthsDataSize.value = threeMonths
-        _syndrome6MonthsDataSize.value = sixMonths
-        _syndrome1YearDataSize.value = oneYear
-
+    private fun setSyndromeDataSize(list: List<Int>) {
+        _syndrome3MonthsDataSize.value = list[0]
+        _syndrome6MonthsDataSize.value = list[1]
+        _syndrome1YearDataSize.value = list[2]
     }
 
     private fun setLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
@@ -281,6 +269,8 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
 
     private fun setEntriesForWeight(weightData: List<PetEvent>) {
 
+        defaultDataSize()
+
         calculateWeightDataSize(weightData)
 
         val entries = ArrayList<Entry>()
@@ -293,7 +283,7 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
         _weightEntries.value = entries
     }
 
-    fun defaultDataSize() {
+    private fun defaultDataSize() {
         _syndrome3MonthsDataSize.value = null
         _syndrome6MonthsDataSize.value = null
         _syndrome1YearDataSize.value = null
@@ -304,7 +294,6 @@ class ChartViewModel(val repository: JustPetRepository) : ViewModel() {
     }
 
     private fun calculateWeightDataSize(weightData: List<PetEvent>) {
-        defaultDataSize()
 
         var threeMonths = 0
         var sixMonths = 0
