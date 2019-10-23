@@ -25,4 +25,18 @@ class ExampleUnitTest {
     }
 
 
+    @Test
+    fun testCalculateSyndromeDataSize() {
+        val threeMonthsTimestamp = 155000
+
+
+
+
+
+
+
+
+    }
+
+
 }

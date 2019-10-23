@@ -88,9 +88,7 @@ class ChartViewModel(repository: JustPetRepository) : ViewModel() {
 
             set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1, 0, 0, 0)
 
-            Log.d(ERIC, "date : ${calendar.time}")
-
-            add(Calendar.MONTH, -3)
+            add(Calendar.MONTH, -2)
             threeMonthsAgoTimestamp = (timeInMillis / 1000)
 
             add(Calendar.MONTH, -3)
