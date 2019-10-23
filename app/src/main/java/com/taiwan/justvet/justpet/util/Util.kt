@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.util
 import android.graphics.drawable.Drawable
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
+import com.taiwan.justvet.justpet.data.PetEvent
 
 object Util {
 
@@ -40,20 +41,46 @@ object Util {
         }
     }
 
-    const val FOOD          = 0L
-    const val SHOWER        = 1L
-    const val WALKING       = 2L
+    fun calculateSyndromeDataSize(
+        syndromeData: List<PetEvent>,
+        threeMonthsAgoTimestamp: Long,
+        sixMonthsAgoTimestamp: Long,
+        oneYearAgoTimestamp: Long
+    ): List<Int> {
+
+        var threeMonths = 0
+        var sixMonths = 0
+        var oneYear = 0
+
+        syndromeData.forEach {
+            if (it.timestamp >= threeMonthsAgoTimestamp) {
+                threeMonths += 1
+            }
+            if (it.timestamp >= sixMonthsAgoTimestamp) {
+                sixMonths += 1
+            }
+            if (it.timestamp >= oneYearAgoTimestamp) {
+                oneYear += 1
+            }
+        }
+
+        return listOf(threeMonths, sixMonths, oneYear)
+    }
+
+    const val FOOD = 0L
+    const val SHOWER = 1L
+    const val WALKING = 2L
     const val NAIL_TRIMMING = 3L
     const val HAIR_TRIMMING = 4L
-    const val WEIGHTING     = 5L
-    const val ECTO_PREVENT  = 200L
-    const val ENDO_PREVENT  = 201L
-    const val HEART_WORM    = 202L
-    const val SC_INJECTION  = 203L
-    const val GLUCOSE_TEST  = 204L
+    const val WEIGHTING = 5L
+    const val ECTO_PREVENT = 200L
+    const val ENDO_PREVENT = 201L
+    const val HEART_WORM = 202L
+    const val SC_INJECTION = 203L
+    const val GLUCOSE_TEST = 204L
     const val ORAL_MEDICINE = 205L
-    const val OINTMENT      = 206L
-    const val DROPS         = 207L
-    const val VACCINE       = 208L
-    const val BLOOD_TEST    = 209L
+    const val OINTMENT = 206L
+    const val DROPS = 207L
+    const val VACCINE = 208L
+    const val BLOOD_TEST = 209L
 }

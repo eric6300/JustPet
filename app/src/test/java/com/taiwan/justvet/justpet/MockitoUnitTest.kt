@@ -1,24 +1,12 @@
 package com.taiwan.justvet.justpet
 
 import android.content.Context
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.taiwan.justvet.justpet.chart.ChartFragment
-import com.taiwan.justvet.justpet.chart.ChartViewModel
-import com.taiwan.justvet.justpet.chart.ChartViewModelFactory
-import com.taiwan.justvet.justpet.data.JustPetRepository
-import com.taiwan.justvet.justpet.data.PetEvent
-import junit.framework.Assert.assertEquals
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 private const val FAKE_STRING = "HELLO WORLD"
