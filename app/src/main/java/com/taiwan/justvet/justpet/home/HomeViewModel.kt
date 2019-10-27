@@ -10,12 +10,13 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
+import com.taiwan.justvet.justpet.ext.toDateFormat
+import com.taiwan.justvet.justpet.ext.toPetProfile
+import com.taiwan.justvet.justpet.ext.toTimestamp
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.*
 import com.taiwan.justvet.justpet.util.Util.getString

@@ -8,15 +8,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
-import com.google.firebase.firestore.FirebaseFirestore
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.Util.calculateSyndromeDataSize
-import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
-import com.taiwan.justvet.justpet.util.toPetProfile
+import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
+import com.taiwan.justvet.justpet.ext.toPetProfile
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap

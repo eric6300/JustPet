@@ -29,8 +29,8 @@ import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toChartDateFormat
-import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
+import com.taiwan.justvet.justpet.ext.toChartDateFormat
+import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
 
 class ChartFragment : Fragment() {
 

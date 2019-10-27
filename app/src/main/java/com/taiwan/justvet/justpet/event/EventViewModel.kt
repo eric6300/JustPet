@@ -10,8 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.EventTag
@@ -19,8 +17,8 @@ import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toEventDateAndTimeFormat
-import com.taiwan.justvet.justpet.util.toTimeListFormat
+import com.taiwan.justvet.justpet.ext.toEventDateAndTimeFormat
+import com.taiwan.justvet.justpet.ext.toTimeListFormat
 
 class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 

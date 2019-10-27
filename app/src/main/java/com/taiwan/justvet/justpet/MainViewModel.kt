@@ -18,7 +18,7 @@ import com.taiwan.justvet.justpet.family.FamilyViewModel.Companion.PET_FAMILY
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
 import com.taiwan.justvet.justpet.util.Util.getString
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) : ViewModel() {
 
     private val _invitationList = MutableLiveData<List<Invite>>()
     val invitationList: LiveData<List<Invite>>
