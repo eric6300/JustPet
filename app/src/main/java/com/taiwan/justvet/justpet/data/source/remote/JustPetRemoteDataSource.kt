@@ -7,9 +7,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
 import com.taiwan.justvet.justpet.data.JustPetRepository
+import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.data.source.JustPetDataSource
+import com.taiwan.justvet.justpet.event.EventViewModel
 import com.taiwan.justvet.justpet.ext.toPetProfile
 import com.taiwan.justvet.justpet.util.LoadStatus
 import kotlinx.coroutines.tasks.await
@@ -41,7 +43,7 @@ object JustPetRemoteDataSource : JustPetDataSource {
 
                     } catch (e: FirebaseFirestoreException) {
 
-                        Log.d(ERIC, "error: e")
+                        Log.d(ERIC, "error: $e")
 
                         continue
                     }
@@ -51,7 +53,44 @@ object JustPetRemoteDataSource : JustPetDataSource {
                 }
 
                 return petListFromFirebase.sortedBy { it.profileId }
-                
+
+            }
+        }
+    }
+
+    override suspend fun getPetEvents(
+        petProfile: PetProfile,
+        timestamp: Long
+    ): List<PetEvent> {
+
+        val profileId = petProfile.profileId ?: EMPTY_STRING
+
+        val result = petsReference.document(profileId).collection(EVENTS)
+            .whereGreaterThan(EventViewModel.TIMESTAMP, timestamp).get().await()
+
+        if (result == null) {
+
+            return emptyList()
+
+        } else {
+
+            return when (result.size()) {
+
+                0 -> emptyList()
+
+                else -> {
+
+                    val eventListFromFirebase = mutableListOf<PetEvent>()
+
+                    for (index in 0 until result.size()) {
+                        result.documents[index].toObject(PetEvent::class.java)?.let { event ->
+                            eventListFromFirebase.add(event)
+                        }
+                    }
+
+                    eventListFromFirebase.sortedBy { it.timestamp }
+
+                }
             }
         }
     }

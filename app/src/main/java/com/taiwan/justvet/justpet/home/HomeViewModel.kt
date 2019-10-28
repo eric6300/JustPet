@@ -121,6 +121,7 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     private fun getPetProfileData(userProfile: UserProfile) {
 
         viewModelScope.launch {
+
             _loadStatus.value = LoadStatus.LOADING
 
             val pets = justPetRepository.getPetProfiles(userProfile)
@@ -128,10 +129,7 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
             _loadStatus.value = LoadStatus.DONE
 
             _petList.value = pets
-
-            Log.d(ERIC, "${pets.size}")
         }
-
     }
 
     fun selectPetProfile(index: Int) {
@@ -153,43 +151,22 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     }
 
     fun getPetEvents(petProfile: PetProfile) {
-        petProfile.profileId?.let {
-            petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
-                .addOnSuccessListener { events ->
+        viewModelScope.launch {
 
-                    if (events.size() > 0) {
+            _loadStatus.value = LoadStatus.LOADING
 
-                        val list = mutableListOf<PetEvent>()
+            val events = justPetRepository.getPetEvents(petProfile, oneYearAgoTimestamp)
 
-                        fun getNextEvent(index: Int) {
+            _loadStatus.value = LoadStatus.DONE
 
-                            if (index == events.size()) {
-                                _eventList.value = list
-                                return
-                            }
-
-                            events.documents[index].toObject(PetEvent::class.java)?.let { it ->
-                                Log.d(ERIC, "$it")
-                                list.add(it)
-                            }
-
-                            getNextEvent(index.plus(1))
-                        }
-
-                        getNextEvent(0)  // get first pet event
-
-                    } else {
-                        _eventList.value = mutableListOf()
-                    }
-
-                }.addOnFailureListener {
-                    Log.d(ERIC, "getPetEvents() failed : $it")
-                }
+            _eventList.value = events
         }
     }
 
     fun filterForNotification(eventList: List<PetEvent>) {
+
+        _loadStatus.value = LoadStatus.LOADING
+
         val notificationList = mutableListOf<EventNotification>()
 
         val vomit = mutableListOf<PetEvent>()
@@ -281,6 +258,8 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
                 it.type
             }
         }
+
+        _loadStatus.value = LoadStatus.DONE
     }
 
     fun getPetBirthdayForDatePicker(): List<Int> {
