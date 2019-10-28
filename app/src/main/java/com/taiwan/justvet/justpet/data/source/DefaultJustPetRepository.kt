@@ -16,4 +16,11 @@ class DefaultJustPetRepository(
         return justPetRemoteDataSource.getPetEvents(petProfile, timestamp)
     }
 
+    override suspend fun getSyndromeEvents(
+        profileId: String,
+        tagIndex: Long,
+        timestamp: Long
+    ): List<PetEvent> {
+        return justPetRemoteDataSource.getSyndromeEvents(profileId, tagIndex, timestamp)
+    }
 }

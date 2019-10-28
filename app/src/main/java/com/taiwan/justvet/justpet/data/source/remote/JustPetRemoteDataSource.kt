@@ -12,6 +12,8 @@ import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.data.source.JustPetDataSource
 import com.taiwan.justvet.justpet.event.EventViewModel
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
+import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.ext.toPetProfile
 import com.taiwan.justvet.justpet.util.LoadStatus
 import kotlinx.coroutines.tasks.await
@@ -43,7 +45,7 @@ object JustPetRemoteDataSource : JustPetDataSource {
 
                     } catch (e: FirebaseFirestoreException) {
 
-                        Log.d(ERIC, "error: $e")
+                        Log.d(ERIC, "repository getPetProfiles error: $e")
 
                         continue
                     }
@@ -65,8 +67,13 @@ object JustPetRemoteDataSource : JustPetDataSource {
 
         val profileId = petProfile.profileId ?: EMPTY_STRING
 
-        val result = petsReference.document(profileId).collection(EVENTS)
-            .whereGreaterThan(EventViewModel.TIMESTAMP, timestamp).get().await()
+        val result = try {
+            petsReference.document(profileId).collection(EVENTS)
+                .whereGreaterThan(TIMESTAMP, timestamp).get().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository getPetEvents error: $e")
+            null
+        }
 
         if (result == null) {
 
@@ -82,14 +89,60 @@ object JustPetRemoteDataSource : JustPetDataSource {
 
                     val eventListFromFirebase = mutableListOf<PetEvent>()
 
-                    for (index in 0 until result.size()) {
-                        result.documents[index].toObject(PetEvent::class.java)?.let { event ->
+                    for (item in result.documents) {
+
+                        item.toObject(PetEvent::class.java)?.let { event ->
+
                             eventListFromFirebase.add(event)
+
                         }
                     }
 
                     eventListFromFirebase.sortedBy { it.timestamp }
 
+                }
+            }
+        }
+    }
+
+    override suspend fun getSyndromeEvents(
+        profileId: String,
+        tagIndex: Long,
+        timestamp: Long
+    ): List<PetEvent> {
+
+        val result = try {
+            petsReference.document(profileId).collection(EVENTS)
+                .whereArrayContains(EVENT_TAGS_INDEX, tagIndex)
+                .whereGreaterThan(TIMESTAMP, timestamp).get().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository getSyndromeEvents error: $e")
+            null
+        }
+
+        if (result == null) {
+
+            return emptyList()
+
+        } else {
+            return when (result.size()) {
+
+                0 -> emptyList()
+
+                else -> {
+
+                    val eventListFromFirebase = mutableListOf<PetEvent>()
+
+                    for (item in result.documents) {
+
+                        item.toObject(PetEvent::class.java)?.let { event ->
+
+                            eventListFromFirebase.add(event)
+
+                        }
+                    }
+
+                    eventListFromFirebase.sortedBy { it.timestamp }
                 }
             }
         }

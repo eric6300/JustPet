@@ -117,33 +117,17 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
     }
 
     fun getSyndromeData(petProfile: PetProfile) {
-//        petProfile.profileId?.let {
-//            selectedEventTag?.index?.let { index ->
-//                petsReference.document(it).collection(EVENTS)
-//                    .whereArrayContains(EVENT_TAGS_INDEX, index)
-//                    .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
-//                    .addOnSuccessListener {
-//
-//                        if (it.size() > 0) {
-//                            val data = mutableListOf<PetEvent>()
-//
-//                            for (item in it.documents) {
-//                                val event = item.toObject(PetEvent::class.java)
-//                                event?.let {
-//                                    data.add(it)
-//                                }
-//                            }
-//
-//                            sortSyndromeData(data)  // get 12 months sorted syndrome data
-//                        } else {
-//                            sortSyndromeData(emptyList())
-//                        }
-//                    }.addOnFailureListener {
-//                        sortSyndromeData(emptyList())
-//                        Log.d(ERIC, "getSyndromeEntries() failed : $it")
-//                    }
-//            }
-//        }
+
+        viewModelScope.launch {
+
+            val profileId = petProfile.profileId ?: EMPTY_STRING
+            val tagIndex = selectedEventTag?.index ?: -1
+
+            val syndromeData = justPetRepository.getSyndromeEvents(profileId, tagIndex, oneYearAgoTimestamp)
+
+            sortSyndromeData(syndromeData)
+
+        }
     }
 
     private fun sortSyndromeData(
