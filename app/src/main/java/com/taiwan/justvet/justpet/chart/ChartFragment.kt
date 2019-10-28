@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,9 +29,11 @@ import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.ext.toChartDateFormat
 import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
+import com.taiwan.justvet.justpet.home.HomeViewModel
 
 class ChartFragment : Fragment() {
 
@@ -38,7 +41,7 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
-    private lateinit var viewModel: ChartViewModel
+    private val viewModel by viewModels<ChartViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,9 +52,6 @@ class ChartFragment : Fragment() {
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_chart, container, false
         )
-
-        viewModel = ViewModelProviders.of(this, ChartViewModelFactory(JustPetRepository))
-            .get(ChartViewModel::class.java)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -10,17 +10,20 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
+import com.taiwan.justvet.justpet.data.source.JustPetRepository
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.Util.calculateSyndromeDataSize
 import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
 import com.taiwan.justvet.justpet.ext.toPetProfile
+import com.taiwan.justvet.justpet.util.LoadStatus
+import com.taiwan.justvet.justpet.util.ServiceLocator.justPetRepository
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
-class ChartViewModel(repository: JustPetRepository) : ViewModel() {
+class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -38,8 +41,6 @@ class ChartViewModel(repository: JustPetRepository) : ViewModel() {
         get() = _syndromeEntries
 
     private var selectedEventTag: EventTag? = null
-
-    private val petsReference = repository.firestoreInstance.collection(PETS)
 
     var nowTimestamp = 0L
     var threeMonthsAgoTimestamp = 0L
@@ -103,59 +104,46 @@ class ChartViewModel(repository: JustPetRepository) : ViewModel() {
     }
 
     private fun getPetProfileData(userProfile: UserProfile) {
-        userProfile.pets?.let { pets ->
+        viewModelScope.launch {
 
-            val list = mutableListOf<PetProfile>()
+//            _loadStatus.value = LoadStatus.LOADING
 
-            fun getNextProfile(index: Int) {
-                if (index == pets.size) {
-                    _petList.value = list.sortedBy { it.profileId }
-                    return
-                }
+            val pets = justPetRepository.getPetProfiles(userProfile)
 
-                petsReference.document(pets[index]).get()
-                    .addOnSuccessListener { document ->
-                        list.add(document.toPetProfile())
-                        getNextProfile(index.plus(1))
-                    }
-                    .addOnFailureListener {
-                        getNextProfile(index.plus(1))
-                        Log.d(ERIC, "ChartViewModel getPetList() failed : $it")
-                    }
-            }
+//            _loadStatus.value = LoadStatus.DONE
 
-            getNextProfile(0)
+            _petList.value = pets
         }
     }
 
     fun getSyndromeData(petProfile: PetProfile) {
-        petProfile.profileId?.let {
-            selectedEventTag?.index?.let { index ->
-                petsReference.document(it).collection(EVENTS)
-                    .whereArrayContains(EVENT_TAGS_INDEX, index)
-                    .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
-                    .addOnSuccessListener {
-
-                        if (it.size() > 0) {
-                            val data = mutableListOf<PetEvent>()
-
-                            for (item in it.documents) {
-                                val event = item.toObject(PetEvent::class.java)
-                                event?.let {
-                                    data.add(it)
-                                }
-                            }
-
-                            sortSyndromeData(data)  // get 12 months sorted syndrome data
-                        } else {
-                            sortSyndromeData(emptyList())
-                        }
-                    }.addOnFailureListener {
-                        sortSyndromeData(emptyList())
-                        Log.d(ERIC, "getSyndromeEntries() failed : $it")
-                    }
-            }
-        }
+//        petProfile.profileId?.let {
+//            selectedEventTag?.index?.let { index ->
+//                petsReference.document(it).collection(EVENTS)
+//                    .whereArrayContains(EVENT_TAGS_INDEX, index)
+//                    .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
+//                    .addOnSuccessListener {
+//
+//                        if (it.size() > 0) {
+//                            val data = mutableListOf<PetEvent>()
+//
+//                            for (item in it.documents) {
+//                                val event = item.toObject(PetEvent::class.java)
+//                                event?.let {
+//                                    data.add(it)
+//                                }
+//                            }
+//
+//                            sortSyndromeData(data)  // get 12 months sorted syndrome data
+//                        } else {
+//                            sortSyndromeData(emptyList())
+//                        }
+//                    }.addOnFailureListener {
+//                        sortSyndromeData(emptyList())
+//                        Log.d(ERIC, "getSyndromeEntries() failed : $it")
+//                    }
+//            }
+//        }
     }
 
     private fun sortSyndromeData(
@@ -234,36 +222,36 @@ class ChartViewModel(repository: JustPetRepository) : ViewModel() {
     }
 
     fun getWeightData(petProfile: PetProfile) {
-        petProfile.profileId?.let {
-            petsReference.document(it).collection(EVENTS)
-                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
-                .addOnSuccessListener {
-                    if (it.size() > 0) {
-                        val data = mutableListOf<PetEvent>()
-
-                        for (item in it.documents) {
-                            val event = item.toObject(PetEvent::class.java)
-                            event?.let {
-                                data.add(event)
-                            }
-                        }
-
-                        // Setting Data
-                        val weightData = data.filter {
-                            it.weight != null
-                        }
-
-                        setEntriesForWeight(weightData)
-
-                    } else {
-                        setEntriesForWeight(emptyList())
-                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of weight")
-                    }
-                }.addOnFailureListener {
-                    setEntriesForWeight(emptyList())
-                    Log.d(ERIC, "getWeightData() failed : $it")
-                }
-        }
+//        petProfile.profileId?.let {
+//            petsReference.document(it).collection(EVENTS)
+//                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
+//                .addOnSuccessListener {
+//                    if (it.size() > 0) {
+//                        val data = mutableListOf<PetEvent>()
+//
+//                        for (item in it.documents) {
+//                            val event = item.toObject(PetEvent::class.java)
+//                            event?.let {
+//                                data.add(event)
+//                            }
+//                        }
+//
+//                        // Setting Data
+//                        val weightData = data.filter {
+//                            it.weight != null
+//                        }
+//
+//                        setEntriesForWeight(weightData)
+//
+//                    } else {
+//                        setEntriesForWeight(emptyList())
+//                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of weight")
+//                    }
+//                }.addOnFailureListener {
+//                    setEntriesForWeight(emptyList())
+//                    Log.d(ERIC, "getWeightData() failed : $it")
+//                }
+//        }
     }
 
     private fun setEntriesForWeight(weightData: List<PetEvent>) {

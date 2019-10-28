@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.taiwan.justvet.justpet.MainViewModel
+import com.taiwan.justvet.justpet.chart.ChartViewModel
 import com.taiwan.justvet.justpet.data.source.JustPetRepository
 import com.taiwan.justvet.justpet.home.HomeViewModel
 
@@ -18,6 +19,9 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(HomeViewModel::class.java) ->
                     HomeViewModel(justPetRepository)
+
+                isAssignableFrom(ChartViewModel::class.java) ->
+                    ChartViewModel(justPetRepository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
