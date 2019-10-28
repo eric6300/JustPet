@@ -131,6 +131,7 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
             Log.d(ERIC, "${pets.size}")
         }
+
     }
 
     fun selectPetProfile(index: Int) {

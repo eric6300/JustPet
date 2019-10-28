@@ -2,6 +2,7 @@ package com.taiwan.justvet.justpet.data.source.remote
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.UserManager.userProfile
@@ -30,17 +31,27 @@ object JustPetRemoteDataSource : JustPetDataSource {
                 return emptyList()
             }
             else -> {
-                val pets = userProfile.pets ?: mutableListOf()
+                val pets = userProfile.pets ?: emptyList()
                 val petListFromFirebase = mutableListOf<PetProfile>()
 
                 for (index in 0 until pets.size) {
-                    val result = petsReference.document(pets[index]).get().await()
-                    Log.d(ERIC, "index: $index -> get result")
+                    val result = try {
+
+                        petsReference.document(pets[index]).get().await()
+
+                    } catch (e: FirebaseFirestoreException) {
+
+                        Log.d(ERIC, "error: e")
+
+                        continue
+                    }
+
                     petListFromFirebase.add(result.toPetProfile())
-                    Log.d(ERIC, "index: $index -> add result")
+
                 }
 
                 return petListFromFirebase.sortedBy { it.profileId }
+                
             }
         }
     }
