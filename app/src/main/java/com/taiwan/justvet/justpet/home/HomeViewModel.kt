@@ -8,6 +8,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
@@ -20,9 +21,10 @@ import com.taiwan.justvet.justpet.ext.toTimestamp
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.*
 import com.taiwan.justvet.justpet.util.Util.getString
+import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) : ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
@@ -95,8 +97,8 @@ class HomeViewModel : ViewModel() {
 
     init {
         calculateTimestamp()
-        UserManager.userProfile.value?.let { userProfile ->
-            getPetProfileData(userProfile)
+        UserManager.userProfile.value?.let { it ->
+            getPetProfileData(it)
         }
     }
 
@@ -118,43 +120,16 @@ class HomeViewModel : ViewModel() {
 
     private fun getPetProfileData(userProfile: UserProfile) {
 
-        _loadStatus.value = LoadStatus.LOADING
+        viewModelScope.launch {
+            _loadStatus.value = LoadStatus.LOADING
 
-        if (userProfile.pets?.size != 0) {
+            val pets = justPetRepository.getPetProfiles(userProfile)
 
-            val petListFromFirebase = mutableListOf<PetProfile>()
+            _loadStatus.value = LoadStatus.DONE
 
-            userProfile.pets?.let { pets ->
+            _petList.value = pets
 
-                fun getNextPetProfile(index: Int) {
-
-                    if (index == pets.size) { // already get all pet data from firebase
-                        _loadStatus.value = LoadStatus.DONE
-                        _petList.value = petListFromFirebase.sortedBy { it.profileId }
-                        return
-                    }
-
-                    petsReference.document(pets[index]).get()
-                        .addOnSuccessListener { document ->
-
-                            petListFromFirebase.add(document.toPetProfile())
-
-                            getNextPetProfile(index.plus(1))
-
-                        }
-                        .addOnFailureListener {
-
-                            getNextPetProfile(index.plus(1))
-
-                        }
-                }
-
-                getNextPetProfile(0) //  get first pet profile
-            }
-        } else {
-            _petList.value = mutableListOf()
-
-            Log.d(ERIC, "viewModel petList = zero")
+            Log.d(ERIC, "${pets.size}")
         }
     }
 

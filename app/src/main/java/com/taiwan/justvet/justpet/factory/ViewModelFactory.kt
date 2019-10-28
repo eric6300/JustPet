@@ -16,6 +16,9 @@ class ViewModelFactory constructor(
                 isAssignableFrom(MainViewModel::class.java) ->
                     MainViewModel(justPetRepository)
 
+                isAssignableFrom(HomeViewModel::class.java) ->
+                    HomeViewModel(justPetRepository)
+
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
