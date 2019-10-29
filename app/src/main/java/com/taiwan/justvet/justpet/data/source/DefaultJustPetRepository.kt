@@ -48,4 +48,12 @@ class DefaultJustPetRepository(
     override suspend fun updatePetsOfUserProfile(userID: String, petId: String): LoadStatus {
         return justPetRemoteDataSource.updatePetsOfUserProfile(userID, petId)
     }
+
+    override suspend fun uploadPetEventImage(eventId: String, imageUri: String): String {
+        return justPetRemoteDataSource.uploadPetEventImage(eventId, imageUri)
+    }
+
+    override suspend fun updatePetEventImageUrl(eventId: String, downloadUrl: String): LoadStatus {
+        return justPetRemoteDataSource.updatePetEventImageUrl(eventId, downloadUrl)
+    }
 }

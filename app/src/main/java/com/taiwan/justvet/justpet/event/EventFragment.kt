@@ -17,6 +17,7 @@ import android.widget.TimePicker
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
@@ -26,6 +27,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentEventBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.util.Converter
 import com.xw.repo.BubbleSeekBar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,9 +35,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 class EventFragment : Fragment() {
 
     private lateinit var binding: FragmentEventBinding
-    private lateinit var viewModel: EventViewModel
     private lateinit var currentEvent: PetEvent
     private lateinit var calendar: Calendar
+    private val viewModel by viewModels<EventViewModel> {
+        getVmFactory(
+            EventFragmentArgs.fromBundle(
+                arguments!!
+            ).petEvent
+        )
+    }
 
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,
@@ -49,9 +57,6 @@ class EventFragment : Fragment() {
     ): View? {
 
         currentEvent = EventFragmentArgs.fromBundle(arguments!!).petEvent
-        viewModel =
-            ViewModelProviders.of(this, EventViewModelFactory(currentEvent))
-                .get(EventViewModel::class.java)
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_event, container, false

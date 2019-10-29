@@ -8,6 +8,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
@@ -19,8 +20,12 @@ import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.ext.toEventDateAndTimeFormat
 import com.taiwan.justvet.justpet.ext.toTimeListFormat
+import kotlinx.coroutines.launch
 
-class EventViewModel(val petEvent: PetEvent) : ViewModel() {
+class EventViewModel(
+    val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository,
+    val petEvent: PetEvent
+) : ViewModel() {
 
     private val _navigateToCalendarFragment = MutableLiveData<Boolean>()
     val navigateToCalendarFragment: LiveData<Boolean>
@@ -67,7 +72,8 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
     val calendar: Calendar = Calendar.getInstance()
 
     private val eventsReference =
-        JustPetRepository.firestoreInstance.collection(PETS).document(petEvent.petId).collection(EVENTS)
+        JustPetRepository.firestoreInstance.collection(PETS).document(petEvent.petId)
+            .collection(EVENTS)
 
     private val storageReference = JustPetRepository.storageInstance.reference
 
@@ -242,6 +248,13 @@ class EventViewModel(val petEvent: PetEvent) : ViewModel() {
 
     private fun uploadImage(eventId: String) {
         eventImage.value?.let {
+
+            viewModelScope.launch {
+
+
+            }
+
+
             val imageRef = storageReference.child(getString(R.string.text_image_path, eventId))
             imageRef.putFile(it.toUri())
                 .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->

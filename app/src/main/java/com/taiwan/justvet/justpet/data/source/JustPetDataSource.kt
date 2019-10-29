@@ -27,4 +27,8 @@ interface JustPetDataSource {
     suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): LoadStatus
 
     suspend fun updatePetsOfUserProfile(userID: String, petId: String): LoadStatus
+
+    suspend fun uploadPetEventImage(eventId: String, imageUri: String): String
+
+    suspend fun updatePetEventImageUrl(eventId: String, downloadUrl: String): LoadStatus
 }

@@ -283,4 +283,33 @@ object JustPetRemoteDataSource : JustPetDataSource {
             else -> LoadStatus.SUCCESS
         }
     }
+
+    override suspend fun uploadPetEventImage(eventId: String, imageUri: String): String {
+
+        val imageRef = storageReference.child(Util.getString(R.string.text_image_path, eventId))
+
+        val result = try {
+
+            imageRef.putFile(imageUri.toUri())
+                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+                    return@Continuation imageRef.downloadUrl
+                }).await()
+
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository uploadPetEventImage error: $e")
+            null
+        }
+
+        //  return downloadUrl
+        return result?.toString() ?: EMPTY_STRING
+    }
+
+    override suspend fun updatePetEventImageUrl(eventId: String, downloadUrl: String): LoadStatus {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
