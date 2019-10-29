@@ -3,6 +3,7 @@ package com.taiwan.justvet.justpet.data.source
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.data.PetProfile
 import com.taiwan.justvet.justpet.data.UserProfile
+import com.taiwan.justvet.justpet.util.LoadStatus
 
 class DefaultJustPetRepository(
     private val justPetRemoteDataSource: JustPetDataSource
@@ -26,6 +27,10 @@ class DefaultJustPetRepository(
 
     override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
         return justPetRemoteDataSource.getWeightEvents(profileId, timestamp)
+    }
+
+    override suspend fun updatePetProfile(petId: String, updateDataMap: Map<String, Any?>): LoadStatus {
+        return justPetRemoteDataSource.updatePetProfile(petId, updateDataMap)
     }
 
     override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {

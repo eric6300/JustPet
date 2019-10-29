@@ -195,6 +195,20 @@ object JustPetRemoteDataSource : JustPetDataSource {
         }
     }
 
+    override suspend fun updatePetProfile(petId: String, updateDataMap: Map<String, Any?>): LoadStatus {
+
+        val result = try {
+            petsReference.document(petId).update(updateDataMap).await()
+        } catch (e: FirebaseFirestoreException) {
+            false
+        }
+
+        return when (result) {
+            false -> LoadStatus.FAILURE
+            else -> LoadStatus.SUCCESS
+        }
+    }
+
     override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {
 
         val imageReference =

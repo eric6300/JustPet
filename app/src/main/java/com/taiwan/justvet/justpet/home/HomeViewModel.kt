@@ -68,11 +68,11 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     val loadStatus: LiveData<LoadStatus>
         get() = _loadStatus
 
-    val tagVomit = EventTag(TagType.SYNDROME.value, 100, getString(R.string.text_vomit))
-
-    val tagVaccine = EventTag(TagType.TREATMENT.value, 208, getString(R.string.text_vaccine))
-
-    val tagWeight = EventTag(TagType.DIARY.value, 5, getString(R.string.text_weight_measure))
+    private val tagVomit = EventTag(TagType.SYNDROME.value, 100, getString(R.string.text_vomit))
+    private val tagVaccine =
+        EventTag(TagType.TREATMENT.value, 208, getString(R.string.text_vaccine))
+    private val tagWeight =
+        EventTag(TagType.DIARY.value, 5, getString(R.string.text_weight_measure))
 
     val petName = MutableLiveData<String>()
     val petBirthdayString = MutableLiveData<String>()
@@ -81,10 +81,10 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     val petGender = MutableLiveData<Long>()
     val petImage = MutableLiveData<String>()
 
-    var oneMonthAgoTimestamp = 0L
-    var threeMonthsAgoTimestamp = 0L
-    var sixMonthsAgoTimestamp = 0L
-    var oneYearAgoTimestamp = 0L
+    private var oneMonthAgoTimestamp = 0L
+    private var threeMonthsAgoTimestamp = 0L
+    private var sixMonthsAgoTimestamp = 0L
+    private var oneYearAgoTimestamp = 0L
 
     private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
@@ -285,47 +285,57 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
     fun updatePetProfile() {
         when (petName.value) {
+
             null, EMPTY_STRING -> {
+
                 Toast.makeText(
                     JustPetApplication.appContext,
                     Util.getString(R.string.text_name_empty_error),
                     Toast.LENGTH_SHORT
                 ).show()
+
             }
             else -> {
-                _loadStatus.value = LoadStatus.LOADING
 
-                selectedPetProfile.value?.profileId?.let { petId ->
-                    petsReference.document(petId).update(
-                        mapOf(
-                            Companion.NAME to petName.value,
-                            Companion.BIRTHDAY to petBirthdayString.value?.toTimestamp(),
-                            Companion.ID_NUMBER to petIdNumber.value,
-                            Companion.SPECIES to petSpecies.value,
-                            Companion.GENDER to petGender.value
+                viewModelScope.launch {
+
+                    _loadStatus.value = LoadStatus.LOADING
+
+                    val result = justPetRepository.updatePetProfile(
+                        petId = selectedPetProfile.value?.profileId ?: EMPTY_STRING,
+                        updateDataMap = mapOf(
+                            NAME to petName.value,
+                            BIRTHDAY to petBirthdayString.value?.toTimestamp(),
+                            ID_NUMBER to petIdNumber.value,
+                            SPECIES to petSpecies.value,
+                            GENDER to petGender.value
                         )
-                    ).addOnSuccessListener {
-                        val imageUri = petImage.value
+                    )
 
-                        if (imageUri != null && !imageUri.startsWith(HTTPS)) {
+                    when (result) {
+                        LoadStatus.SUCCESS -> {
 
-                            uploadPetImage(petId, imageUri)
+                            val imageUri = petImage.value
 
-                        } else {
+                            if (imageUri != null && !imageUri.startsWith(HTTPS)) {
 
-                            modifyPetProfileCompleted()
-                            navigateToHomeFragment()
-                            _loadStatus.value = LoadStatus.DONE
+                                uploadPetImage(
+                                    selectedPetProfile.value?.profileId ?: EMPTY_STRING,
+                                    imageUri
+                                )
 
+                            } else {
+
+                                modifyPetProfileCompleted()
+                                navigateToHomeFragment()
+                                _loadStatus.value = LoadStatus.DONE
+
+                            }
                         }
 
-                        Log.d(ERIC, "updatePetProfile() succeeded ")
-
-                    }.addOnFailureListener {
-
-                        _loadStatus.value = LoadStatus.ERROR
-                        Log.d(ERIC, "updatePetProfile() failed : $it")
-
+                        else -> {
+                            _loadStatus.value = LoadStatus.ERROR
+                        }
                     }
                 }
             }
