@@ -23,4 +23,8 @@ class DefaultJustPetRepository(
     ): List<PetEvent> {
         return justPetRemoteDataSource.getSyndromeEvents(profileId, tagIndex, timestamp)
     }
+
+    override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
+        return justPetRemoteDataSource.getWeightEvents(profileId, timestamp)
+    }
 }

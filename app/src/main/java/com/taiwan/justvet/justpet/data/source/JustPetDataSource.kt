@@ -9,7 +9,11 @@ interface JustPetDataSource {
 
     suspend fun getPetEvents(petProfile: PetProfile, timestamp: Long): List<PetEvent>
 
-    suspend fun getSyndromeEvents(profileId: String,
-                                  tagIndex: Long,
-                                  timestamp: Long): List<PetEvent>
+    suspend fun getSyndromeEvents(
+        profileId: String,
+        tagIndex: Long,
+        timestamp: Long
+    ): List<PetEvent>
+
+    suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent>
 }

@@ -147,4 +147,43 @@ object JustPetRemoteDataSource : JustPetDataSource {
             }
         }
     }
+
+    override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
+
+        val result = try {
+            petsReference.document(profileId).collection(EVENTS)
+                .whereGreaterThan(TIMESTAMP, timestamp).get().await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository getWeightEvents error: $e")
+            null
+        }
+
+        if (result == null) {
+
+            return emptyList()
+
+        } else {
+            return when (result.size()) {
+
+                0 -> emptyList()
+
+                else -> {
+
+                    val eventListFromFirebase = mutableListOf<PetEvent>()
+
+                    for (item in result.documents) {
+
+                        item.toObject(PetEvent::class.java)?.let { event ->
+                            eventListFromFirebase.add(event)
+                        }
+
+                    }
+
+                    eventListFromFirebase.filter {
+                        (it.weight != null) && (it.weight > 0)
+                    }
+                }
+            }
+        }
+    }
 }

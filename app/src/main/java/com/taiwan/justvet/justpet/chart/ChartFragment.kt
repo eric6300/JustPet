@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.github.mikephil.charting.charts.BarChart
@@ -27,13 +26,11 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.EMPTY_STRING
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
 import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.util.Util.getString
 import com.taiwan.justvet.justpet.ext.toChartDateFormat
 import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
-import com.taiwan.justvet.justpet.home.HomeViewModel
 
 class ChartFragment : Fragment() {
 
@@ -63,7 +60,7 @@ class ChartFragment : Fragment() {
 
         viewModel.selectedPetProfile.observe(this, Observer {
             it?.let {
-                viewModel.getSyndromeData(it)
+                viewModel.getSyndromeEvents(it)
                 viewModel.getWeightData(it)
             }
         })

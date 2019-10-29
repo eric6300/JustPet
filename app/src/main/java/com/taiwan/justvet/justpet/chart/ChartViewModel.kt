@@ -1,7 +1,6 @@
 package com.taiwan.justvet.justpet.chart
 
 import android.icu.util.Calendar
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,19 +10,16 @@ import com.github.mikephil.charting.data.Entry
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
 import com.taiwan.justvet.justpet.data.source.JustPetRepository
-import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
-import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.Util.calculateSyndromeDataSize
 import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
-import com.taiwan.justvet.justpet.ext.toPetProfile
 import com.taiwan.justvet.justpet.util.LoadStatus
-import com.taiwan.justvet.justpet.util.ServiceLocator.justPetRepository
 import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
+
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
         get() = _petList
@@ -39,6 +35,10 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
     private val _syndromeEntries = MutableLiveData<List<BarEntry>>()
     val syndromeEntries: LiveData<List<BarEntry>>
         get() = _syndromeEntries
+
+    private val _loadStatus = MutableLiveData<LoadStatus>()
+    val loadStatus: LiveData<LoadStatus>
+        get() = _loadStatus
 
     private var selectedEventTag: EventTag? = null
 
@@ -75,8 +75,9 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
         UserManager.userProfile.value?.let {
             selectedEventTag = EventTag(TagType.SYNDROME.value, 100, "嘔吐")
             calculateTimestamp()
-            getPetProfileData(it)
-            defaultDataSize()
+            getPetProfiles(it)
+            defaultSyndromeDataSize()
+            defaultWeightDataSize()
         }
     }
 
@@ -103,39 +104,39 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
         _selectedPetProfile.value = _petList.value?.get(position)
     }
 
-    private fun getPetProfileData(userProfile: UserProfile) {
+    private fun getPetProfiles(userProfile: UserProfile) {
         viewModelScope.launch {
 
-//            _loadStatus.value = LoadStatus.LOADING
+            _loadStatus.value = LoadStatus.LOADING
 
             val pets = justPetRepository.getPetProfiles(userProfile)
 
-//            _loadStatus.value = LoadStatus.DONE
+            _loadStatus.value = LoadStatus.DONE
 
             _petList.value = pets
         }
     }
 
-    fun getSyndromeData(petProfile: PetProfile) {
+    fun getSyndromeEvents(petProfile: PetProfile) {
 
         viewModelScope.launch {
 
-            val profileId = petProfile.profileId ?: EMPTY_STRING
-            val tagIndex = selectedEventTag?.index ?: -1
+            val syndromeEvents =
+                justPetRepository.getSyndromeEvents(
+                    petProfile.profileId ?: EMPTY_STRING,
+                    selectedEventTag?.index ?: -1,
+                    oneYearAgoTimestamp
+                )
 
-            val syndromeData = justPetRepository.getSyndromeEvents(profileId, tagIndex, oneYearAgoTimestamp)
-
-            sortSyndromeData(syndromeData)
+            sortSyndromeEvents(syndromeEvents)
 
         }
     }
 
-    private fun sortSyndromeData(
-        data: List<PetEvent>
-    ) {
+    private fun sortSyndromeEvents(data: List<PetEvent>) {
         viewModelScope.launch {
 
-            defaultDataSize()
+            defaultSyndromeDataSize()
 
             setSyndromeDataSize(
                 calculateSyndromeDataSize(
@@ -146,7 +147,7 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
                 )
             )
 
-            val dataMap = setLastYearMap()
+            val dataMap = getLastYearMap()
 
             if (data.isNotEmpty()) {
                 // sort data into hashMap
@@ -158,6 +159,7 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
                     }
                 }
             }
+
             setEntriesForSyndrome(dataMap)
         }
     }
@@ -168,7 +170,7 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
         _syndrome1YearDataSize.value = list[2]
     }
 
-    private fun setLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
+    private fun getLastYearMap(): LinkedHashMap<String, List<PetEvent>> {
         val calendar = Calendar.getInstance()
 
         //  set the calendar to next month
@@ -179,6 +181,7 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
 
         // create hashMap of last 12 months
         val map = LinkedHashMap<String, List<PetEvent>>()
+
         for (i in 1..12) {
             map[calendar.time.toMonthOnlyFormat()] = mutableListOf()
             calendar.add(Calendar.MONTH, 1)
@@ -206,41 +209,24 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
     }
 
     fun getWeightData(petProfile: PetProfile) {
-//        petProfile.profileId?.let {
-//            petsReference.document(it).collection(EVENTS)
-//                .whereGreaterThan(TIMESTAMP, oneYearAgoTimestamp).get()
-//                .addOnSuccessListener {
-//                    if (it.size() > 0) {
-//                        val data = mutableListOf<PetEvent>()
-//
-//                        for (item in it.documents) {
-//                            val event = item.toObject(PetEvent::class.java)
-//                            event?.let {
-//                                data.add(event)
-//                            }
-//                        }
-//
-//                        // Setting Data
-//                        val weightData = data.filter {
-//                            it.weight != null
-//                        }
-//
-//                        setEntriesForWeight(weightData)
-//
-//                    } else {
-//                        setEntriesForWeight(emptyList())
-//                        Log.d(ERIC, "${petProfile.name} doesn't have event contains tag of weight")
-//                    }
-//                }.addOnFailureListener {
-//                    setEntriesForWeight(emptyList())
-//                    Log.d(ERIC, "getWeightData() failed : $it")
-//                }
-//        }
+
+        viewModelScope.launch {
+
+            val weightEvents =
+                justPetRepository.getWeightEvents(
+                    petProfile.profileId ?: EMPTY_STRING,
+                    oneYearAgoTimestamp
+                )
+
+            setEntriesForWeight(weightEvents)
+
+        }
+
     }
 
     private fun setEntriesForWeight(weightData: List<PetEvent>) {
 
-        defaultDataSize()
+        defaultWeightDataSize()
 
         calculateWeightDataSize(weightData)
 
@@ -254,11 +240,13 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
         _weightEntries.value = entries
     }
 
-    private fun defaultDataSize() {
+    private fun defaultSyndromeDataSize() {
         _syndrome3MonthsDataSize.value = null
         _syndrome6MonthsDataSize.value = null
         _syndrome1YearDataSize.value = null
+    }
 
+    private fun defaultWeightDataSize() {
         _weight3MonthsDataSize.value = null
         _weight6MonthsDataSize.value = null
         _weight1YearDataSize.value = null
