@@ -27,4 +27,8 @@ class DefaultJustPetRepository(
     override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
         return justPetRemoteDataSource.getWeightEvents(profileId, timestamp)
     }
+
+    override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {
+        return justPetRemoteDataSource.uploadPetProfileImage(imageUri, petId)
+    }
 }

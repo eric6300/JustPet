@@ -16,4 +16,6 @@ interface JustPetRepository {
     ): List<PetEvent>
 
     suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent>
+
+    suspend fun uploadPetProfileImage(imageUri: String, petId: String): String
 }

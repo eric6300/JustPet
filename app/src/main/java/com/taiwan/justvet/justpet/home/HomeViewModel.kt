@@ -4,19 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.icu.util.Calendar
-import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.Task
-import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.*
-import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.ext.toDateFormat
-import com.taiwan.justvet.justpet.ext.toPetProfile
 import com.taiwan.justvet.justpet.ext.toTimestamp
 import com.taiwan.justvet.justpet.tag.TagType
 import com.taiwan.justvet.justpet.util.*
@@ -24,7 +17,8 @@ import com.taiwan.justvet.justpet.util.Util.getString
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) : ViewModel() {
+class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) :
+    ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
     val petList: LiveData<List<PetProfile>>
@@ -93,7 +87,6 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     var oneYearAgoTimestamp = 0L
 
     private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
-    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         calculateTimestamp()
@@ -124,11 +117,10 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
             _loadStatus.value = LoadStatus.LOADING
 
-            val pets = justPetRepository.getPetProfiles(userProfile)
+            _petList.value = justPetRepository.getPetProfiles(userProfile)
 
             _loadStatus.value = LoadStatus.DONE
 
-            _petList.value = pets
         }
     }
 
@@ -155,11 +147,9 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
             _loadStatus.value = LoadStatus.LOADING
 
-            val events = justPetRepository.getPetEvents(petProfile, oneYearAgoTimestamp)
+            _eventList.value = justPetRepository.getPetEvents(petProfile, oneYearAgoTimestamp)
 
             _loadStatus.value = LoadStatus.DONE
-
-            _eventList.value = events
         }
     }
 
@@ -315,62 +305,62 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
                             Companion.GENDER to petGender.value
                         )
                     ).addOnSuccessListener {
-                        if (petImage.value != null) {
-                            uploadImage(petId)
+                        val imageUri = petImage.value
+
+                        if (imageUri != null && !imageUri.startsWith(HTTPS)) {
+
+                            uploadPetImage(petId, imageUri)
+
                         } else {
+
                             modifyPetProfileCompleted()
                             navigateToHomeFragment()
                             _loadStatus.value = LoadStatus.DONE
+
                         }
+
                         Log.d(ERIC, "updatePetProfile() succeeded ")
+
                     }.addOnFailureListener {
+
                         _loadStatus.value = LoadStatus.ERROR
                         Log.d(ERIC, "updatePetProfile() failed : $it")
+
                     }
                 }
             }
         }
     }
 
-    private fun uploadImage(petId: String) {
-        petImage.value?.let {
-            if (it.startsWith(HTTPS)) {
-                navigateToHomeFragment()
-                modifyPetProfileCompleted()
-                _loadStatus.value = LoadStatus.DONE
-            } else {
-                val imageRef = storageReference.child(getString(R.string.text_profile_path, petId))
+    private fun uploadPetImage(petId: String, imageUri: String) {
 
-                imageRef.putFile(it.toUri())
-                    .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                        if (!task.isSuccessful) {
-                            task.exception?.let {
-                                throw it
-                            }
-                        }
-                        return@Continuation imageRef.downloadUrl
-                    }).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            updateProfileImageUrl(petId, task.result)
-                        }
-                    }.addOnFailureListener {
-                        _loadStatus.value = LoadStatus.ERROR
-                        Log.d(ERIC, "uploadImage failed : $it")
-                    }
+        viewModelScope.launch {
+
+            when (val downloadUrl = justPetRepository.uploadPetProfileImage(imageUri, petId)) {
+
+                EMPTY_STRING -> {
+                    _loadStatus.value = LoadStatus.DONE
+                    //TODO Toast for error ?
+                }
+
+                else -> {
+                    updatePetProfileImageUrl(petId, downloadUrl)
+                }
             }
         }
     }
 
-    private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
-        petsReference.document(petId).update(IMAGE, downloadUri.toString())
+    private fun updatePetProfileImageUrl(petId: String, downloadUrl: String) {
+
+        petsReference.document(petId).update(IMAGE, downloadUrl)
             .addOnSuccessListener {
                 modifyPetProfileCompleted()
                 navigateToHomeFragment()
                 _loadStatus.value = LoadStatus.DONE
-                Log.d(ERIC, "updateProfileImageUrl succeed")
+                Log.d(ERIC, "updatePetProfileImageUrl succeed")
             }.addOnFailureListener {
                 _loadStatus.value = LoadStatus.ERROR
-                Log.d(ERIC, "updateProfileImageUrl failed : $it")
+                Log.d(ERIC, "updatePetProfileImageUrl failed : $it")
             }
 
     }

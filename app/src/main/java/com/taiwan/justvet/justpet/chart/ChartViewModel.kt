@@ -42,10 +42,10 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
 
     private var selectedEventTag: EventTag? = null
 
-    var nowTimestamp = 0L
-    var threeMonthsAgoTimestamp = 0L
-    var sixMonthsAgoTimestamp = 0L
-    var oneYearAgoTimestamp = 0L
+    private var nowTimestamp = 0L
+    private var threeMonthsAgoTimestamp = 0L
+    private var sixMonthsAgoTimestamp = 0L
+    private var oneYearAgoTimestamp = 0L
 
     private val _syndrome3MonthsDataSize = MutableLiveData<Int>()
     val syndrome3MonthsDataSize: LiveData<Int>
@@ -274,5 +274,21 @@ class ChartViewModel(val justPetRepository: JustPetRepository) : ViewModel() {
         _weight6MonthsDataSize.value = sixMonths
         _weight1YearDataSize.value = oneYear
 
+    }
+
+    fun getNowTimestamp(): Long {
+        return nowTimestamp
+    }
+
+    fun getThreeMonthsAgoTimestamp(): Long {
+        return threeMonthsAgoTimestamp
+    }
+
+    fun getSixMonthsAgoTimestamp(): Long {
+        return sixMonthsAgoTimestamp
+    }
+
+    fun getOneYearAgoTimestamp(): Long {
+        return oneYearAgoTimestamp
     }
 }

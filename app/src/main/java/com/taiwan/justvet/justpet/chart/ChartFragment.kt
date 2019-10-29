@@ -137,8 +137,8 @@ class ChartFragment : Fragment() {
             it.setDrawLabels(false)
             it.position = XAxis.XAxisPosition.BOTTOM
             it.granularity = 86400f
-            it.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
-            it.axisMaximum = (viewModel.nowTimestamp * 1.0005).toFloat()
+            it.axisMinimum = (viewModel.getThreeMonthsAgoTimestamp() * 0.9995).toFloat()
+            it.axisMaximum = (viewModel.getNowTimestamp() * 1.0005).toFloat()
         }
 
         // set Y axis
@@ -267,9 +267,9 @@ class ChartFragment : Fragment() {
             when (index) {
                 0 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getThreeMonthsAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.0005).toFloat()
+                        (viewModel.getNowTimestamp() * 1.0005).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -283,9 +283,9 @@ class ChartFragment : Fragment() {
                 }
                 1 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.sixMonthsAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getSixMonthsAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.001).toFloat()
+                        (viewModel.getNowTimestamp() * 1.001).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -299,9 +299,9 @@ class ChartFragment : Fragment() {
                 }
                 2 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.oneYearAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getOneYearAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.0020).toFloat()
+                        (viewModel.getNowTimestamp() * 1.0020).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
