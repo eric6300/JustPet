@@ -31,4 +31,8 @@ class DefaultJustPetRepository(
     override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {
         return justPetRemoteDataSource.uploadPetProfileImage(imageUri, petId)
     }
+
+    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): Boolean {
+        return justPetRemoteDataSource.updatePetProfileImageUrl(petId, downloadUrl)
+    }
 }

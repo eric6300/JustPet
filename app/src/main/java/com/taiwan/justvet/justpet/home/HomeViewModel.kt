@@ -352,17 +352,19 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
     private fun updatePetProfileImageUrl(petId: String, downloadUrl: String) {
 
-        petsReference.document(petId).update(IMAGE, downloadUrl)
-            .addOnSuccessListener {
-                modifyPetProfileCompleted()
-                navigateToHomeFragment()
-                _loadStatus.value = LoadStatus.DONE
-                Log.d(ERIC, "updatePetProfileImageUrl succeed")
-            }.addOnFailureListener {
-                _loadStatus.value = LoadStatus.ERROR
-                Log.d(ERIC, "updatePetProfileImageUrl failed : $it")
-            }
+        viewModelScope.launch {
 
+            when (justPetRepository.updatePetProfileImageUrl(petId, downloadUrl)) {
+                true -> {
+                    modifyPetProfileCompleted()
+                    navigateToHomeFragment()
+                    _loadStatus.value = LoadStatus.DONE
+                }
+                false -> {
+                    _loadStatus.value = LoadStatus.ERROR
+                }
+            }
+        }
     }
 
     fun modifyPetProfile() {

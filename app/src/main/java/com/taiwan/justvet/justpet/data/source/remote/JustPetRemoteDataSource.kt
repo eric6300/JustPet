@@ -20,6 +20,7 @@ import com.taiwan.justvet.justpet.event.EventViewModel
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.EVENT_TAGS_INDEX
 import com.taiwan.justvet.justpet.event.EventViewModel.Companion.TIMESTAMP
 import com.taiwan.justvet.justpet.ext.toPetProfile
+import com.taiwan.justvet.justpet.home.HomeViewModel
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
 import kotlinx.coroutines.tasks.await
@@ -217,5 +218,16 @@ object JustPetRemoteDataSource : JustPetDataSource {
         }
 
         return result?.toString() ?: EMPTY_STRING
+    }
+
+    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): Boolean {
+        val result = try {
+            petsReference.document(petId).update(HomeViewModel.IMAGE, downloadUrl).await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository updatePetProfileImageUrl error: $e")
+            false
+        }
+
+        return result != false
     }
 }
