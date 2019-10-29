@@ -6,6 +6,7 @@ import com.taiwan.justvet.justpet.MainViewModel
 import com.taiwan.justvet.justpet.chart.ChartViewModel
 import com.taiwan.justvet.justpet.data.source.JustPetRepository
 import com.taiwan.justvet.justpet.home.HomeViewModel
+import com.taiwan.justvet.justpet.pet.AddNewPetViewModel
 
 class ViewModelFactory constructor(
     private val justPetRepository: JustPetRepository
@@ -22,6 +23,9 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(ChartViewModel::class.java) ->
                     ChartViewModel(justPetRepository)
+
+                isAssignableFrom(AddNewPetViewModel::class.java) ->
+                    AddNewPetViewModel(justPetRepository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

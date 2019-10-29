@@ -17,7 +17,7 @@ import com.taiwan.justvet.justpet.util.Util.getString
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) :
+class HomeViewModel(private val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) :
     ViewModel() {
 
     private val _petList = MutableLiveData<List<PetProfile>>()
@@ -85,8 +85,6 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
     private var threeMonthsAgoTimestamp = 0L
     private var sixMonthsAgoTimestamp = 0L
     private var oneYearAgoTimestamp = 0L
-
-    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
 
     init {
         calculateTimestamp()
@@ -334,6 +332,13 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
                         }
 
                         else -> {
+
+                            Toast.makeText(
+                                JustPetApplication.appContext,
+                                getString(R.string.text_update_pet_profile_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+
                             _loadStatus.value = LoadStatus.ERROR
                         }
                     }
@@ -346,11 +351,19 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
         viewModelScope.launch {
 
-            when (val downloadUrl = justPetRepository.uploadPetProfileImage(imageUri, petId)) {
+            _loadStatus.value = LoadStatus.LOADING
+
+            when (val downloadUrl = justPetRepository.uploadPetProfileImage(petId, imageUri)) {
 
                 EMPTY_STRING -> {
-                    _loadStatus.value = LoadStatus.DONE
-                    //TODO Toast for error ?
+
+                    Toast.makeText(
+                        JustPetApplication.appContext,
+                        getString(R.string.text_update_pet_profile_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    _loadStatus.value = LoadStatus.ERROR
                 }
 
                 else -> {
@@ -364,13 +377,15 @@ class HomeViewModel(val justPetRepository: com.taiwan.justvet.justpet.data.sourc
 
         viewModelScope.launch {
 
+            _loadStatus.value = LoadStatus.LOADING
+
             when (justPetRepository.updatePetProfileImageUrl(petId, downloadUrl)) {
-                true -> {
+                LoadStatus.SUCCESS -> {
                     modifyPetProfileCompleted()
                     navigateToHomeFragment()
                     _loadStatus.value = LoadStatus.DONE
                 }
-                false -> {
+                else -> {
                     _loadStatus.value = LoadStatus.ERROR
                 }
             }

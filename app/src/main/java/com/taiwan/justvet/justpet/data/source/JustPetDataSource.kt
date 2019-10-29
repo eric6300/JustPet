@@ -6,21 +6,25 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.util.LoadStatus
 
 interface JustPetDataSource {
+    suspend fun addNewPetProfile(petProfile: PetProfile): String
+
     suspend fun getPetProfiles(userProfile: UserProfile): List<PetProfile>
 
     suspend fun getPetEvents(petProfile: PetProfile, timestamp: Long): List<PetEvent>
 
     suspend fun getSyndromeEvents(
-        profileId: String,
+        petId: String,
         tagIndex: Long,
         timestamp: Long
     ): List<PetEvent>
 
-    suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent>
+    suspend fun getWeightEvents(petId: String, timestamp: Long): List<PetEvent>
 
     suspend fun updatePetProfile(petId: String, updateDataMap: Map<String, Any?>): LoadStatus
 
-    suspend fun uploadPetProfileImage(imageUri: String, petId: String): String
+    suspend fun uploadPetProfileImage(petId: String, imageUri: String): String
 
-    suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): Boolean
+    suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): LoadStatus
+
+    suspend fun updatePetsOfUserProfile(userID: String, petId: String): LoadStatus
 }

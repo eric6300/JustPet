@@ -5,15 +5,14 @@ import android.icu.util.Calendar
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.JustPetRepository
@@ -22,8 +21,10 @@ import com.taiwan.justvet.justpet.data.UserProfile
 import com.taiwan.justvet.justpet.home.HomeViewModel.Companion.IMAGE
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util.getString
+import kotlinx.coroutines.launch
 
-class AddNewPetViewModel : ViewModel() {
+class AddNewPetViewModel(private val justPetRepository: com.taiwan.justvet.justpet.data.source.JustPetRepository) :
+    ViewModel() {
 
     private val _leaveDialog = MutableLiveData<Boolean>()
     val leaveDialog: LiveData<Boolean>
@@ -56,10 +57,6 @@ class AddNewPetViewModel : ViewModel() {
     val petBirthday = MutableLiveData<String>()
     val petIdNumber = MutableLiveData<String>()
     val petImage = MutableLiveData<String>()
-
-    private val usersReference = JustPetRepository.firestoreInstance.collection(USERS)
-    private val petsReference = JustPetRepository.firestoreInstance.collection(PETS)
-    private val storageReference = JustPetRepository.storageInstance.reference
 
     init {
         petSpecies.value = PetSpecies.CAT.value
@@ -105,103 +102,126 @@ class AddNewPetViewModel : ViewModel() {
     }
 
     private fun addNewPet() {
-        _loadStatus.value = LoadStatus.LOADING
-
         UserManager.userProfile.value?.let { userProfile ->
-            petBirthday.value?.let {
-                val timeList = it.split(SLASH)
-                calendar.set(
-                    timeList[0].toInt(), //  year
-                    timeList[1].toInt().minus(1),  //  month
-                    timeList[2].toInt())  //  dayOfMonth
-            }
 
-            petsReference.add(
-                PetProfile(
-                    name = petName.value,
-                    species = petSpecies.value,
-                    gender = petGender.value,
-                    idNumber = petIdNumber.value,
-                    birthday = (calendar.timeInMillis / 1000),
-                    owner = userProfile.profileId,
-                    ownerEmail = userProfile.email
+            viewModelScope.launch {
+
+                _loadStatus.value = LoadStatus.LOADING
+
+                petBirthday.value?.let {
+                    val timeList = it.split(SLASH)
+                    calendar.set(
+                        timeList[0].toInt(), //  year
+                        timeList[1].toInt().minus(1),  //  month
+                        timeList[2].toInt()  //  dayOfMonth
+                    )
+                }
+
+                val result = justPetRepository.addNewPetProfile(
+                    PetProfile(
+                        name = petName.value,
+                        species = petSpecies.value,
+                        gender = petGender.value,
+                        idNumber = petIdNumber.value,
+                        birthday = (calendar.timeInMillis / 1000),
+                        owner = userProfile.profileId,
+                        ownerEmail = userProfile.email
+                    )
                 )
-            ).addOnSuccessListener {
-                Log.d(ERIC, "addNewPet() succeeded")
-                updatePetsOfUser(it.id)
-            }.addOnFailureListener {
-                _loadStatus.value = LoadStatus.ERROR
-                Log.d(ERIC, "addNewPet() failed : $it")
+
+                when (result) {
+                    EMPTY_STRING -> {
+                        _loadStatus.value = LoadStatus.ERROR
+
+                        //  TODO : Error Handle
+                    }
+                    else -> {
+                        updatePetsOfUser(result)
+                    }
+                }
             }
         }
     }
 
     private fun updatePetsOfUser(petId: String) {
-        _loadStatus.value = LoadStatus.LOADING
+        UserManager.userProfile.value?.profileId?.let { userId ->
 
-        UserManager.userProfile.value?.let { userProfile ->
-            userProfile.profileId?.let { profileId ->
-                usersReference.document(profileId).update(PETS, FieldValue.arrayUnion(petId))
-                    .addOnSuccessListener {
+            viewModelScope.launch {
+
+                _loadStatus.value = LoadStatus.LOADING
+
+                when (justPetRepository.updatePetsOfUserProfile(userId, petId)) {
+
+                    LoadStatus.SUCCESS -> {
+
                         when (petImage.value) {
-                            null -> {  //  no new pet image
+
+                            null -> {  //  no image of new pet
+
                                 refreshUserProfile(petId)
+
                                 _loadStatus.value = LoadStatus.DONE
+
                             }
-                            else -> {  //  new pet image to upload
-                                uploadPetImage(petId)
+
+                            else -> {  //  upload new pet image
+
+                                uploadPetProfileImage(petId, petImage.value!!)
+
                             }
                         }
-                        Log.d(ERIC, "updatePetsOfUser() succeeded")
                     }
-                    .addOnFailureListener {
+                    else -> {
                         _loadStatus.value = LoadStatus.ERROR
-                        Log.d(ERIC, "updatePetsOfUser() failed : $it")
+
+                        //  TODO : Error Handle
                     }
+                }
             }
         }
     }
 
-    private fun uploadPetImage(petId: String) {
-        _loadStatus.value = LoadStatus.LOADING
+    private fun uploadPetProfileImage(petId: String, imageUri: String) {
+        viewModelScope.launch {
 
-        petImage.value?.let {
-            val imageRef =
-                storageReference.child(getString(R.string.text_image_path, petId))
-            imageRef.putFile(it.toUri())
-                .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            throw it
-                        }
-                    }
-                    return@Continuation imageRef.downloadUrl
-                }).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val downloadUri = task.result
-                        Log.d(ERIC, "downloadUri : $downloadUri")
-                        updateProfileImageUrl(petId, downloadUri)
-                    }
-                }.addOnFailureListener {
+            _loadStatus.value = LoadStatus.LOADING
+
+            when (val downloadUrl = justPetRepository.uploadPetProfileImage(petId, imageUri)) {
+
+                EMPTY_STRING -> {
+
                     _loadStatus.value = LoadStatus.ERROR
-                    Log.d(ERIC, "uploadImage failed : $it")
+
+                    //  TODO Error Handle
                 }
+
+                else -> {
+
+                    updateProfileImageUrl(petId, downloadUrl)
+
+                }
+            }
         }
     }
 
-    private fun updateProfileImageUrl(petId: String, downloadUri: Uri?) {
-        _loadStatus.value = LoadStatus.LOADING
-        UserManager.userProfile.value?.let { userProfile ->
-            petsReference.let {
-                it.document(petId).update(IMAGE, downloadUri.toString())
-                    .addOnSuccessListener {
-                        refreshUserProfile(petId)
-                        _loadStatus.value = LoadStatus.DONE
-                        Log.d(ERIC, "updateEventImageUrl succeed")
-                    }.addOnFailureListener {
-                        _loadStatus.value = LoadStatus.ERROR
-                        Log.d(ERIC, "updateEventImageUrl failed : $it")
-                    }
+    private fun updateProfileImageUrl(petId: String, downloadUrl: String) {
+
+        viewModelScope.launch {
+
+            _loadStatus.value = LoadStatus.LOADING
+
+            when (justPetRepository.updatePetProfileImageUrl(petId, downloadUrl)) {
+                LoadStatus.SUCCESS -> {
+
+                    refreshUserProfile(petId)
+                    _loadStatus.value = LoadStatus.DONE
+
+                }
+                else -> {
+                    _loadStatus.value = LoadStatus.ERROR
+
+                    //  TODO  Error Handle
+                }
             }
         }
     }
@@ -226,6 +246,12 @@ class AddNewPetViewModel : ViewModel() {
                     pets = newPets
                 )
             )
+
+            Toast.makeText(
+                JustPetApplication.appContext,
+                getString(R.string.text_add_new_pet_profile_success),
+                Toast.LENGTH_SHORT
+            ).show()
 
             leaveDialog()
         }

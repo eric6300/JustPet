@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
@@ -34,6 +35,21 @@ object JustPetRemoteDataSource : JustPetDataSource {
     private val petsReference = firestoreInstance.collection(PETS)
     private val inviteReference = firestoreInstance.collection(INVITES)
     private val storageReference = storageInstance.reference
+
+    override suspend fun addNewPetProfile(petProfile: PetProfile): String {
+        val result = try {
+            petsReference.add(petProfile).await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository addNewPetProfile error: $e")
+            null
+        }
+
+        //  return petId
+        return when (result) {
+            null -> EMPTY_STRING
+            else -> result.id
+        }
+    }
 
     override suspend fun getPetProfiles(userProfile: UserProfile): List<PetProfile> {
 
@@ -114,13 +130,13 @@ object JustPetRemoteDataSource : JustPetDataSource {
     }
 
     override suspend fun getSyndromeEvents(
-        profileId: String,
+        petId: String,
         tagIndex: Long,
         timestamp: Long
     ): List<PetEvent> {
 
         val result = try {
-            petsReference.document(profileId).collection(EVENTS)
+            petsReference.document(petId).collection(EVENTS)
                 .whereArrayContains(EVENT_TAGS_INDEX, tagIndex)
                 .whereGreaterThan(TIMESTAMP, timestamp).get().await()
         } catch (e: FirebaseFirestoreException) {
@@ -156,14 +172,18 @@ object JustPetRemoteDataSource : JustPetDataSource {
         }
     }
 
-    override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
+    override suspend fun getWeightEvents(petId: String, timestamp: Long): List<PetEvent> {
 
         val result = try {
-            petsReference.document(profileId).collection(EVENTS)
+
+            petsReference.document(petId).collection(EVENTS)
                 .whereGreaterThan(TIMESTAMP, timestamp).get().await()
+
         } catch (e: FirebaseFirestoreException) {
+
             Log.d(ERIC, "repository getWeightEvents error: $e")
             null
+
         }
 
         if (result == null) {
@@ -209,7 +229,7 @@ object JustPetRemoteDataSource : JustPetDataSource {
         }
     }
 
-    override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {
+    override suspend fun uploadPetProfileImage(petId: String, imageUri: String): String {
 
         val imageReference =
             storageReference.child(Util.getString(R.string.text_profile_path, petId))
@@ -220,7 +240,7 @@ object JustPetRemoteDataSource : JustPetDataSource {
                 .continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                     if (!task.isSuccessful) {
                         task.exception?.let {
-                            throw it
+                            Log.d(ERIC, "repository uploadPetProfileImage exception: $it")
                         }
                     }
                     return@Continuation imageReference.downloadUrl
@@ -231,10 +251,12 @@ object JustPetRemoteDataSource : JustPetDataSource {
             null
         }
 
+        //  return downloadUrl
         return result?.toString() ?: EMPTY_STRING
     }
 
-    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): Boolean {
+    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): LoadStatus {
+
         val result = try {
             petsReference.document(petId).update(HomeViewModel.IMAGE, downloadUrl).await()
         } catch (e: FirebaseFirestoreException) {
@@ -242,6 +264,23 @@ object JustPetRemoteDataSource : JustPetDataSource {
             false
         }
 
-        return result != false
+        return when (result) {
+            false -> LoadStatus.FAILURE
+            else -> LoadStatus.SUCCESS
+        }
+    }
+
+    override suspend fun updatePetsOfUserProfile(userID: String, petId: String): LoadStatus {
+        val result = try {
+            usersReference.document(userID).update(PETS, FieldValue.arrayUnion(petId)).await()
+        } catch (e: FirebaseFirestoreException) {
+            Log.d(ERIC, "repository updatePetsOfUserProfile error: $e")
+            false
+        }
+
+        return when (result) {
+            false -> LoadStatus.FAILURE
+            else -> LoadStatus.SUCCESS
+        }
     }
 }

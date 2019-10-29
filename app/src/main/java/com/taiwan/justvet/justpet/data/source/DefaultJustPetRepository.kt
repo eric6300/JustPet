@@ -9,6 +9,10 @@ class DefaultJustPetRepository(
     private val justPetRemoteDataSource: JustPetDataSource
 ) : JustPetRepository {
 
+    override suspend fun addNewPetProfile(petProfile: PetProfile): String {
+        return justPetRemoteDataSource.addNewPetProfile(petProfile)
+    }
+
     override suspend fun getPetProfiles(userProfile: UserProfile): List<PetProfile> {
         return justPetRemoteDataSource.getPetProfiles(userProfile)
     }
@@ -18,26 +22,30 @@ class DefaultJustPetRepository(
     }
 
     override suspend fun getSyndromeEvents(
-        profileId: String,
+        petId: String,
         tagIndex: Long,
         timestamp: Long
     ): List<PetEvent> {
-        return justPetRemoteDataSource.getSyndromeEvents(profileId, tagIndex, timestamp)
+        return justPetRemoteDataSource.getSyndromeEvents(petId, tagIndex, timestamp)
     }
 
-    override suspend fun getWeightEvents(profileId: String, timestamp: Long): List<PetEvent> {
-        return justPetRemoteDataSource.getWeightEvents(profileId, timestamp)
+    override suspend fun getWeightEvents(petId: String, timestamp: Long): List<PetEvent> {
+        return justPetRemoteDataSource.getWeightEvents(petId, timestamp)
     }
 
     override suspend fun updatePetProfile(petId: String, updateDataMap: Map<String, Any?>): LoadStatus {
         return justPetRemoteDataSource.updatePetProfile(petId, updateDataMap)
     }
 
-    override suspend fun uploadPetProfileImage(imageUri: String, petId: String): String {
-        return justPetRemoteDataSource.uploadPetProfileImage(imageUri, petId)
+    override suspend fun uploadPetProfileImage(petId: String, imageUri: String): String {
+        return justPetRemoteDataSource.uploadPetProfileImage(petId, imageUri)
     }
 
-    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): Boolean {
+    override suspend fun updatePetProfileImageUrl(petId: String, downloadUrl: String): LoadStatus {
         return justPetRemoteDataSource.updatePetProfileImageUrl(petId, downloadUrl)
+    }
+
+    override suspend fun updatePetsOfUserProfile(userID: String, petId: String): LoadStatus {
+        return justPetRemoteDataSource.updatePetsOfUserProfile(userID, petId)
     }
 }
