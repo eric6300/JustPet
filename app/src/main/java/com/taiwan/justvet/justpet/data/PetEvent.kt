@@ -1,16 +1,8 @@
 package com.taiwan.justvet.justpet.data
 
-import android.icu.util.Calendar
 import android.os.Parcelable
-import android.text.format.DateFormat
 import com.google.firebase.firestore.Exclude
-import com.taiwan.justvet.justpet.JustPetApplication
-import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.util.Util
-import com.taiwan.justvet.justpet.util.toDateFormat
-import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
 import kotlinx.android.parcel.Parcelize
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Parcelize

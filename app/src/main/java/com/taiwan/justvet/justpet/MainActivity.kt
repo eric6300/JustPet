@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.taiwan.justvet.justpet.data.Invite
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.ActivityMainBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.util.CurrentFragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -41,9 +43,7 @@ const val EMPTY_STRING = ""
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by lazy {
-        ViewModelProviders.of(this).get(MainViewModel::class.java)
-    }
+    private val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->

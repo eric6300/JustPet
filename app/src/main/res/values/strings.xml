@@ -32,6 +32,7 @@
     <string name="text_cancel">取消</string>
     <string name="text_confirm">確定</string>
     <string name="text_name_empty_error">名字不可為空白</string>
+    <string name="text_update_pet_profile_error">修改寵物資料失敗，請再試一次</string>
     <string name="text_profile_edit_success">修改寵物資料成功！</string>
     <string name="text_vaccine_invalid">今年都還沒有打疫苗喔！</string>
     <string name="text_no_event_notification">暫無提醒事項</string>
@@ -116,6 +117,7 @@
     <string name="text_birthday_format">%d/%d/%d</string>
     <string name="text_image_path">image/%s</string>
     <string name="text_profile_path">profile/%s</string>
+    <string name="text_add_new_pet_profile_success">新增寵物資料成功！</string>
 
     //  TagDialog  //
     <string name="text_tag_empty_error">請至少選擇一個分類標籤</string>

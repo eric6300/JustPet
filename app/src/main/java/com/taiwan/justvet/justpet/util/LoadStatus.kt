@@ -3,5 +3,7 @@ package com.taiwan.justvet.justpet.util
 enum class LoadStatus {
     LOADING,
     ERROR,
-    DONE
+    DONE,
+    SUCCESS,
+    FAILURE
 }

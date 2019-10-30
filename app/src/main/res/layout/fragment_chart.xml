@@ -7,6 +7,10 @@
         <variable
             name="viewModel"
             type="com.taiwan.justvet.justpet.chart.ChartViewModel" />
+
+        <import type="com.taiwan.justvet.justpet.util.LoadStatus"/>
+
+        <import type="android.view.View"/>
     </data>
 
     <ScrollView
@@ -224,6 +228,17 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.loadStatus == LoadStatus.LOADING ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/list_of_profile_chart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/list_of_profile_chart" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

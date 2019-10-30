@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.github.mikephil.charting.charts.BarChart
@@ -26,11 +26,11 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.taiwan.justvet.justpet.EMPTY_STRING
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
-import com.taiwan.justvet.justpet.data.JustPetRepository
 import com.taiwan.justvet.justpet.databinding.FragmentChartBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toChartDateFormat
-import com.taiwan.justvet.justpet.util.toMonthOnlyFormat
+import com.taiwan.justvet.justpet.ext.toChartDateFormat
+import com.taiwan.justvet.justpet.ext.toMonthOnlyFormat
 
 class ChartFragment : Fragment() {
 
@@ -38,7 +38,7 @@ class ChartFragment : Fragment() {
     private lateinit var avatarAdapterChart: ChartPetAvatarAdapter
     private lateinit var weightChart: LineChart
     private lateinit var syndromeChart: BarChart
-    private lateinit var viewModel: ChartViewModel
+    private val viewModel by viewModels<ChartViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,9 +50,6 @@ class ChartFragment : Fragment() {
             inflater, R.layout.fragment_chart, container, false
         )
 
-        viewModel = ViewModelProviders.of(this, ChartViewModelFactory(JustPetRepository))
-            .get(ChartViewModel::class.java)
-
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -63,7 +60,7 @@ class ChartFragment : Fragment() {
 
         viewModel.selectedPetProfile.observe(this, Observer {
             it?.let {
-                viewModel.getSyndromeData(it)
+                viewModel.getSyndromeEvents(it)
                 viewModel.getWeightData(it)
             }
         })
@@ -140,8 +137,8 @@ class ChartFragment : Fragment() {
             it.setDrawLabels(false)
             it.position = XAxis.XAxisPosition.BOTTOM
             it.granularity = 86400f
-            it.axisMinimum = (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
-            it.axisMaximum = (viewModel.nowTimestamp * 1.0005).toFloat()
+            it.axisMinimum = (viewModel.getThreeMonthsAgoTimestamp() * 0.9995).toFloat()
+            it.axisMaximum = (viewModel.getNowTimestamp() * 1.0005).toFloat()
         }
 
         // set Y axis
@@ -270,9 +267,9 @@ class ChartFragment : Fragment() {
             when (index) {
                 0 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.threeMonthsAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getThreeMonthsAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.0005).toFloat()
+                        (viewModel.getNowTimestamp() * 1.0005).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -286,9 +283,9 @@ class ChartFragment : Fragment() {
                 }
                 1 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.sixMonthsAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getSixMonthsAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.001).toFloat()
+                        (viewModel.getNowTimestamp() * 1.001).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
@@ -302,9 +299,9 @@ class ChartFragment : Fragment() {
                 }
                 2 -> {
                     weightChart.xAxis.axisMinimum =
-                        (viewModel.oneYearAgoTimestamp * 0.9995).toFloat()
+                        (viewModel.getOneYearAgoTimestamp() * 0.9995).toFloat()
                     weightChart.xAxis.axisMaximum =
-                        (viewModel.nowTimestamp * 1.0020).toFloat()
+                        (viewModel.getNowTimestamp() * 1.0020).toFloat()
                     weightChart.fitScreen()
                     syndromeChart.let {
                         it.fitScreen()
