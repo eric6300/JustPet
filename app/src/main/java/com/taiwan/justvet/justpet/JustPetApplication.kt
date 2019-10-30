@@ -20,6 +20,5 @@ class JustPetApplication : Application() {
     companion object {
         lateinit var appContext: Context
         var instance: JustPetApplication by Delegates.notNull()
-//            private set
     }
 }
