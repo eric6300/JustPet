@@ -1,14 +1,14 @@
-package com.taiwan.justvet.justpet.util
+package com.taiwan.justvet.justpet.ext
 
 import android.text.format.DateFormat
 import com.google.firebase.firestore.DocumentSnapshot
 import com.taiwan.justvet.justpet.JustPetApplication
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.data.PetProfile
+import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.types.checker.TypeIntersector
 
 fun Long.toDateFormat(): String {
     return DateFormat.format(

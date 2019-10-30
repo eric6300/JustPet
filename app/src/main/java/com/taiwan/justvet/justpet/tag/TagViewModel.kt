@@ -14,8 +14,8 @@ import com.taiwan.justvet.justpet.pet.PetSpecies
 import com.taiwan.justvet.justpet.util.LoadStatus
 import com.taiwan.justvet.justpet.util.Util
 import com.taiwan.justvet.justpet.util.Util.getString
-import com.taiwan.justvet.justpet.util.toTimeListFormat
-import com.taiwan.justvet.justpet.util.toPetProfile
+import com.taiwan.justvet.justpet.ext.toTimeListFormat
+import com.taiwan.justvet.justpet.ext.toPetProfile
 import kotlinx.coroutines.launch
 
 class TagViewModel(val petEvent: PetEvent) : ViewModel() {

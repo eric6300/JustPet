@@ -117,7 +117,7 @@ class CalendarViewModel : ViewModel() {
         }
     }
 
-    fun getEventWithTags(data: List<PetEvent>) {
+    private fun getEventWithTags(data: List<PetEvent>) {
         val finalMonthEventData = mutableListOf<PetEvent>()
         var index = 1
         for (event in data) {

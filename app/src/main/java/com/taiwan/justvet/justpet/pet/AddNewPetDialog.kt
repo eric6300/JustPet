@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
@@ -27,6 +28,8 @@ import com.taiwan.justvet.justpet.MainActivity
 import com.taiwan.justvet.justpet.PHOTO_FROM_GALLERY
 import com.taiwan.justvet.justpet.R
 import com.taiwan.justvet.justpet.databinding.DialogNewPetBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
+import com.taiwan.justvet.justpet.home.HomeViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 class AddNewPetDialog : BottomSheetDialogFragment() {
@@ -37,9 +40,7 @@ class AddNewPetDialog : BottomSheetDialogFragment() {
     private lateinit var iconDog: ImageView
     private lateinit var iconFemale: ImageView
     private lateinit var iconMale: ImageView
-    private val viewModel: AddNewPetViewModel by lazy {
-        ViewModelProviders.of(this).get(AddNewPetViewModel::class.java)
-    }
+    private val viewModel by viewModels<AddNewPetViewModel> { getVmFactory() }
 
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = false,

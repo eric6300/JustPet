@@ -10,9 +10,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -24,6 +26,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.taiwan.justvet.justpet.*
 import com.taiwan.justvet.justpet.data.PetEvent
 import com.taiwan.justvet.justpet.databinding.FragmentHomeBinding
+import com.taiwan.justvet.justpet.ext.getVmFactory
 import com.taiwan.justvet.justpet.pet.PetSpecies
 import java.util.*
 
@@ -38,9 +41,7 @@ class HomeFragment : Fragment() {
         permanentDeniedMethod = { permissionsPermanentlyDenied(it) }
     )
 
-    private val viewModel: HomeViewModel by lazy {
-        ViewModelProviders.of(this).get(HomeViewModel::class.java)
-    }
+    private val viewModel by viewModels<HomeViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
